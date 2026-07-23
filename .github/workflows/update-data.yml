@@ -20,7 +20,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install jsondiffpatch lz-string
+          # Use older version that supports require()
+          npm install jsondiffpatch@0.4.1 lz-string
 
       - name: Save payload to file
         run: |
@@ -33,7 +34,6 @@ jobs:
             const jsondiffpatch = require('jsondiffpatch');
             const LZString = require('lz-string');
             
-            // Read current data.json
             let currentData = {};
             try {
               const content = fs.readFileSync('data.json', 'utf8');
@@ -42,20 +42,17 @@ jobs:
               console.log('No existing data.json, creating new one');
             }
             
-            // Read payload
             const payload = JSON.parse(fs.readFileSync('payload.json', 'utf8'));
             const payloadType = payload.type || 'diff';
             const compression = payload.compression || 'none';
             
             let newData = null;
             
-            // Handle chunked payloads
             if (payloadType === 'chunked') {
               const chunkIndex = payload.chunk_index || 0;
               const totalChunks = payload.total_chunks || 1;
               const chunkData = payload.chunk_data || '';
               
-              // Store chunk
               const chunkFile = 'chunk_' + chunkIndex + '.json';
               fs.writeFileSync(chunkFile, chunkData);
               
@@ -91,9 +88,7 @@ jobs:
                 console.log('Chunk ' + (chunkIndex + 1) + '/' + totalChunks + ' received');
                 process.exit(0);
               }
-            } 
-            // Handle single payload
-            else {
+            } else {
               let payloadData = payload.data || '';
               
               if (compression === 'lzstring') {
@@ -142,7 +137,7 @@ jobs:
             echo "No changes to commit"
           else
             git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git config.user.email "github-actions[bot]@users.noreply.github.com"
             git add data.json
             git commit -m "Apply changes from web [skip ci]" || echo "No changes to commit"
             git push
