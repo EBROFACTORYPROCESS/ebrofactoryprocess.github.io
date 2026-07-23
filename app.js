@@ -169,7 +169,7 @@ async function loadData() {
         if (loading) loading.style.display = 'flex';
         if (root) root.style.display = 'none';
 
-        const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${DATA_PATH}?t=${Date.now()}`;
+        const url = `data.json?t=${Date.now()}`;
         const response = await fetch(url, {
             cache: 'no-store',
             headers: { 'Pragma': 'no-cache', 'Cache-Control': 'no-cache' }
