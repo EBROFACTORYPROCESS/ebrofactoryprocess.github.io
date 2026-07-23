@@ -335,7 +335,7 @@ function initializeSnapshot(data) {
 }
 
 // ============================
-// Save data to GitHub (Plan B - with LZString compression)
+// Save data to GitHub (with chunking + compression)
 // ============================
 
 async function saveDataToGitHub(data) {
@@ -376,33 +376,110 @@ async function saveDataToGitHub(data) {
             return;
         }
 
-        // Check if LZString is available
-        let payloadData = diff;
+        // Prepare payload data
+        let jsonStr = JSON.stringify(diff);
+        console.log(`📊 Diff size: ${jsonStr.length} bytes (${(jsonStr.length/1024).toFixed(1)} KB)`);
+
+        // Compress first
+        let compressed = jsonStr;
         let compression = 'none';
-        
         if (typeof LZString !== 'undefined' && LZString.compressToEncodedURIComponent) {
-            const jsonStr = JSON.stringify(diff);
-            const compressed = LZString.compressToEncodedURIComponent(jsonStr);
-            if (compressed && compressed.length < jsonStr.length) {
-                payloadData = compressed;
+            const testCompress = LZString.compressToEncodedURIComponent(jsonStr);
+            if (testCompress && testCompress.length < jsonStr.length) {
+                compressed = testCompress;
                 compression = 'lzstring';
-                console.log(`📊 Compressed: ${jsonStr.length} -> ${compressed.length} bytes`);
+                console.log(`📊 Compressed: ${jsonStr.length} -> ${compressed.length} bytes (${(compressed.length/1024).toFixed(1)} KB)`);
             }
         }
 
-        // Build payload
+        // If compressed data is still large (> 40KB), split into chunks
+        const MAX_CHUNK_SIZE = 40000; // 40KB per chunk (safe under 64KB limit)
+        let payloadData = compressed;
+        let totalChunks = 1;
+        let isChunked = false;
+        let chunkIndex = 0;
+
+        if (compressed.length > MAX_CHUNK_SIZE) {
+            totalChunks = Math.ceil(compressed.length / MAX_CHUNK_SIZE);
+            isChunked = true;
+            console.log(`📦 Splitting into ${totalChunks} chunks`);
+
+            // Send chunks sequentially
+            for (chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+                const start = chunkIndex * MAX_CHUNK_SIZE;
+                const end = Math.min(start + MAX_CHUNK_SIZE, compressed.length);
+                const chunkData = compressed.substring(start, end);
+
+                if (saveBtn) {
+                    saveBtn.textContent = `⏳ Sending chunk ${chunkIndex + 1}/${totalChunks}...`;
+                }
+
+                const payload = {
+                    event_type: 'update-data',
+                    client_payload: {
+                        type: 'chunked',
+                        compression: compression,
+                        chunk_index: chunkIndex,
+                        total_chunks: totalChunks,
+                        chunk_data: chunkData,
+                        snapshot_id: Date.now()
+                    }
+                };
+
+                const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Chunk ${chunkIndex + 1} failed: ${errorData.message || response.statusText}`);
+                }
+
+                // Wait 1 second between chunks to avoid rate limiting
+                if (chunkIndex < totalChunks - 1) {
+                    await new Promise(r => setTimeout(r, 1000));
+                }
+            }
+
+            // All chunks sent successfully
+            saveSnapshot(data);
+            alert(`✅ Changes saved successfully!\n\n` +
+                  `📊 Total size: ${(jsonStr.length/1024).toFixed(1)} KB\n` +
+                  `📦 Split into ${totalChunks} chunks\n` +
+                  `🔒 Compression: ${compression === 'lzstring' ? 'Enabled' : 'None'}\n\n` +
+                  'GitHub Actions is processing all chunks. Please wait a moment.');
+
+            setTimeout(() => {
+                if (confirm('Refresh page to see the latest data?')) {
+                    location.reload();
+                }
+            }, 10000);
+
+            isSaving = false;
+            if (saveBtn) {
+                saveBtn.textContent = '💾 Save to GitHub';
+                saveBtn.disabled = false;
+            }
+            return;
+        }
+
+        // Single payload (small enough)
         const payload = {
             event_type: 'update-data',
             client_payload: {
                 type: 'diff',
                 compression: compression,
-                data: payloadData,
+                data: compressed,
                 snapshot_id: Date.now()
             }
         };
-
-        console.log('📤 Sending payload with compression:', compression);
-        console.log('📤 Payload data length:', JSON.stringify(payloadData).length);
 
         const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`;
         const response = await fetch(url, {
@@ -426,7 +503,8 @@ async function saveDataToGitHub(data) {
 
         saveSnapshot(data);
         alert('✅ Changes saved successfully!\n\n' +
-              `📊 Compression: ${compression === 'lzstring' ? '🔒 Compressed' : '📄 Plain'}\n\n` +
+              `📊 Size: ${(jsonStr.length/1024).toFixed(1)} KB\n` +
+              `🔒 Compression: ${compression === 'lzstring' ? 'Enabled' : 'None'}\n\n` +
               'GitHub Actions is applying the changes.');
 
         setTimeout(() => {
