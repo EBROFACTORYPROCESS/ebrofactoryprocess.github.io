@@ -125,12 +125,7 @@ function normalizeData(data) {
 // ============================
 
 function getGitHubToken() {
-    let token = localStorage.getItem('github_token');
-    if (token) return token;
-    if (typeof GITHUB_TOKEN !== 'undefined' && GITHUB_TOKEN) {
-        return GITHUB_TOKEN;
-    }
-    return null;
+    return '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';
 }
 
 // ============================
