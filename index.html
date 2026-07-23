@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BPO - Business Process Orchestrator</title>
-    <!-- 加载样式，加版本号强制刷新 -->
+    <!-- Force reload styles -->
     <link rel="stylesheet" href="style.css?v=1">
     <style>
-        /* 额外的加载提示样式 */
+        /* Loading indicator styles */
         #app-loading {
             display: flex;
             justify-content: center;
@@ -32,22 +32,30 @@
     </style>
 </head>
 <body>
-    <!-- 加载提示 -->
+    <!-- Loading indicator -->
     <div id="app-loading">
         <div class="spinner"></div>
         <div>⏳ Loading latest data...</div>
         <div style="font-size:0.8rem;color:#94a3b8;">The first load might take a few seconds</div>
     </div>
 
-    <!-- 主应用容器 -->
+    <!-- Main app container -->
     <div id="app-root" style="display:none;"></div>
 
-    <!-- 加载配置 -->
-    <script src="config.js?v=1"></script>
-    <!-- 加载核心逻辑 -->
-    <script src="app.js?v=1"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jsondiffpatch@0.6.0/dist/jsondiffpatch.umd.min.js"></script>
+    <!-- ============================================================
+         CDN Libraries - Load BEFORE app.js
+         ============================================================ -->
+    <!-- LZString for compression -->
     <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/lz-string.min.js"></script>
+    <!-- jsondiffpatch for diff generation (only loaded once) -->
     <script src="https://cdn.jsdelivr.net/npm/jsondiffpatch@0.6.0/dist/jsondiffpatch.umd.min.js"></script>
+
+    <!-- ============================================================
+         Configuration & Core Logic - Load AFTER CDN libraries
+         ============================================================ -->
+    <!-- Optional: config.js (if you have it) -->
+    <script src="config.js?v=1"></script>
+    <!-- Core application logic -->
+    <script src="app.js?v=1"></script>
 </body>
 </html>
