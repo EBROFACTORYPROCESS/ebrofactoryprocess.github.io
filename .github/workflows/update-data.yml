@@ -7,6 +7,7 @@ on:
 jobs:
   update-data:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,7 +29,6 @@ jobs:
         run: |
           node -e "
             const fs = require('fs');
-            const { execSync } = require('child_process');
             
             console.log('=== Starting apply changes ===');
             
@@ -62,41 +62,80 @@ jobs:
             // ============================================================
             if (payloadType === 'gist') {
               const gistId = payload.gist_id;
+              
+              if (!gistId) {
+                console.error('No gist_id provided');
+                process.exit(1);
+              }
+              
               console.log('📥 Downloading data from Gist:', gistId);
               
-              // Use GitHub CLI to download the gist content
-              try {
-                // Get the gist content using curl
-                const gistUrl = `https://api.github.com/gists/${gistId}`;
-                const gistResponse = execSync(`curl -s -H "Accept: application/vnd.github.v3+json" ${gistUrl}`, { encoding: 'utf8' });
-                const gistData = JSON.parse(gistResponse);
-                
-                // Get the file content (the first file in the gist)
+              // Use Node.js fetch (available in v18+)
+              fetch(`https://api.github.com/gists/${gistId}`, {
+                headers: {
+                  'Accept': 'application/vnd.github.v3+json',
+                  'User-Agent': 'BPO-Workflow'
+                }
+              })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error(`Gist API returned ${response.status}`);
+                }
+                return response.json();
+              })
+              .then(gistData => {
                 const files = gistData.files;
                 const fileNames = Object.keys(files);
                 if (fileNames.length === 0) {
-                  console.error('No files found in gist');
-                  process.exit(1);
+                  throw new Error('No files found in gist');
                 }
                 
                 const fileContent = files[fileNames[0]].content;
                 console.log('Downloaded data length:', fileContent.length);
+                fullData = JSON.parse(fileContent);
+                console.log('Data parsed successfully');
                 
-                try {
-                  fullData = JSON.parse(fileContent);
-                  console.log('Data parsed successfully');
-                } catch (e) {
-                  console.error('Failed to parse downloaded data:', e.message);
-                  process.exit(1);
+                // Apply changes
+                applyChanges(fullData);
+                
+                // Clean up - delete the gist
+                const token = process.env.GITHUB_TOKEN;
+                if (token && gistId) {
+                  console.log('🗑️ Deleting temporary Gist...');
+                  fetch(`https://api.github.com/gists/${gistId}`, {
+                    method: 'DELETE',
+                    headers: {
+                      'Authorization': `token ${token}`,
+                      'Accept': 'application/vnd.github.v3+json'
+                    }
+                  })
+                  .then(() => console.log('✅ Gist deleted'))
+                  .catch(() => console.log('⚠️ Could not delete Gist (may need manual cleanup)'));
                 }
-              } catch (e) {
-                console.error('Failed to download from gist:', e.message);
+              })
+              .catch(error => {
+                console.error('Error processing gist:', error.message);
                 process.exit(1);
+              });
+              
+              // Wait for async operations to complete
+              function waitForCompletion() {
+                if (fullData === null) {
+                  setTimeout(waitForCompletion, 500);
+                  return;
+                }
+                // All done, exit with success
+                console.log('✅ All operations completed');
+                process.exit(0);
               }
+              
+              // Start the wait loop
+              setTimeout(waitForCompletion, 1000);
+              return; // Exit early to avoid duplicate processing
             }
             
             // ============================================================
-            // CASE 2: Direct diff payload
+            // CASE 2: Direct diff payload (small data)
             // ============================================================
             else {
               console.log('Processing direct payload...');
@@ -107,20 +146,20 @@ jobs:
                 process.exit(1);
               }
               
-              try {
-                fullData = JSON.parse(payloadData);
-                console.log('Payload parsed successfully');
-              } catch (e) {
-                console.error('Failed to parse payload data:', e.message);
-                console.log('Payload data preview:', payloadData.substring(0, 200));
-                process.exit(1);
-              }
+              fullData = JSON.parse(payloadData);
+              console.log('Payload parsed successfully');
+              applyChanges(fullData);
             }
             
             // ============================================================
-            // Apply the changes
+            // Apply the changes (shared function)
             // ============================================================
-            if (fullData) {
+            function applyChanges(data) {
+              if (!data) {
+                console.log('No data to apply');
+                process.exit(1);
+              }
+              
               console.log('Applying changes...');
               let newData;
               
@@ -136,19 +175,16 @@ jobs:
                 return target;
               }
               
-              if (fullData._full || payload.type === 'full') {
-                newData = fullData._full || fullData;
+              if (data._full || payload.type === 'full') {
+                newData = data._full || data;
                 console.log('Full data replacement');
               } else {
-                newData = deepMerge(JSON.parse(JSON.stringify(currentData)), fullData);
+                newData = deepMerge(JSON.parse(JSON.stringify(currentData)), data);
                 console.log('Deep merge applied');
               }
               
               fs.writeFileSync('data.json', JSON.stringify(newData, null, 2));
               console.log('✅ data.json updated successfully');
-            } else {
-              console.log('No data to apply');
-              process.exit(1);
             }
           "
 
@@ -161,6 +197,8 @@ jobs:
               exit 1
             fi
             echo "✅ JSON validation passed"
+          else
+            echo "⚠️ data.json not found or empty"
           fi
 
       - name: Commit and push
