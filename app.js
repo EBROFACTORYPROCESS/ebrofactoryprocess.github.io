@@ -2212,6 +2212,283 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ============================
+// Compression utilities
+// ============================
+
+function compressData(data) {
+    if (typeof LZString !== 'undefined') {
+        return LZString.compressToEncodedURIComponent(JSON.stringify(data));
+    }
+    // Fallback: simple minify
+    return JSON.stringify(data).replace(/\s+/g, ' ');
+}
+
+function decompressData(compressed) {
+    if (typeof LZString !== 'undefined') {
+        const decompressed = LZString.decompressFromEncodedURIComponent(compressed);
+        if (decompressed) return JSON.parse(decompressed);
+    }
+    // Fallback: try parsing directly
+    try {
+        return JSON.parse(compressed);
+    } catch (e) {
+        console.error('Failed to decompress data:', e);
+        return null;
+    }
+}
+
+// ============================
+// Chunk/split large data
+// ============================
+
+function chunkData(data, maxChunkSize = 50000) { // 50KB per chunk
+    const jsonStr = JSON.stringify(data);
+    const totalSize = jsonStr.length;
+    
+    if (totalSize <= maxChunkSize) {
+        return { chunks: [jsonStr], totalChunks: 1, totalSize: totalSize };
+    }
+    
+    // Split into chunks
+    const chunks = [];
+    let start = 0;
+    let chunkId = 0;
+    
+    // Try to split at natural boundaries (commas between top-level keys)
+    while (start < jsonStr.length) {
+        let end = Math.min(start + maxChunkSize, jsonStr.length);
+        
+        // If not at the end, try to find a natural break point
+        if (end < jsonStr.length) {
+            // Look for a comma after a closing } or ]
+            for (let i = end; i > Math.max(start, end - 200); i--) {
+                const char = jsonStr[i];
+                if (char === ',' && (jsonStr[i-1] === '}' || jsonStr[i-1] === ']')) {
+                    end = i + 1;
+                    break;
+                }
+            }
+        }
+        
+        chunks.push(jsonStr.substring(start, end));
+        start = end;
+        chunkId++;
+    }
+    
+    return {
+        chunks: chunks,
+        totalChunks: chunks.length,
+        totalSize: totalSize,
+        isChunked: true
+    };
+}
+
+// ============================
+// Save data with compression + chunking
+// ============================
+
+async function saveDataToGitHub(data) {
+    if (isSaving) return;
+    isSaving = true;
+
+    const saveBtn = document.getElementById('saveDataBtn');
+    if (saveBtn) {
+        saveBtn.textContent = '⏳ Checking changes...';
+        saveBtn.disabled = true;
+    }
+
+    try {
+        // 1. Get Token
+        let token = getGitHubToken();
+        if (!token) {
+            token = prompt(
+                '🔑 A GitHub Token is required to save data\n\n' +
+                'Please enter your GitHub Token. It will be saved in your browser.'
+            );
+            if (token && token.trim()) {
+                localStorage.setItem('github_token', token.trim());
+                alert('✅ Token saved to browser local storage');
+            } else {
+                throw new Error('No Token provided, save cancelled');
+            }
+        }
+
+        // 2. Generate diff
+        let diff = generateDiff(lastSnapshot, data);
+        
+        if (!diff) {
+            alert('ℹ️ No changes detected. Nothing to save.');
+            isSaving = false;
+            if (saveBtn) {
+                saveBtn.textContent = '💾 Save to GitHub';
+                saveBtn.disabled = false;
+            }
+            return;
+        }
+
+        // 3. Prepare payload
+        let payloadData = diff;
+        let payloadType = 'diff';
+        let compressionUsed = false;
+        let chunkInfo = null;
+
+        // 4. Check size and choose strategy
+        let diffStr = JSON.stringify(diff);
+        let currentSize = diffStr.length;
+        
+        console.log(`📊 Diff size: ${currentSize} bytes (${(currentSize/1024).toFixed(1)} KB)`);
+
+        // 5. Strategy: Compress if > 30KB
+        if (currentSize > 30000 && typeof LZString !== 'undefined') {
+            console.log('🔄 Compressing payload...');
+            const compressed = compressData(diff);
+            const compressedSize = compressed.length;
+            console.log(`📊 Compressed size: ${compressedSize} bytes (${(compressedSize/1024).toFixed(1)} KB)`);
+            
+            if (compressedSize < currentSize) {
+                payloadData = compressed;
+                payloadType = 'compressed-diff';
+                compressionUsed = true;
+                currentSize = compressedSize;
+            }
+        }
+
+        // 6. Strategy: Chunk if still > 50KB
+        if (currentSize > 50000) {
+            console.log('📦 Chunking payload...');
+            const chunkResult = chunkData(payloadData, 45000);
+            
+            if (chunkResult.isChunked && chunkResult.totalChunks > 1) {
+                chunkInfo = {
+                    totalChunks: chunkResult.totalChunks,
+                    totalSize: chunkResult.totalSize,
+                    chunkSize: currentSize
+                };
+                
+                // Send chunks sequentially
+                const results = [];
+                for (let i = 0; i < chunkResult.totalChunks; i++) {
+                    if (saveBtn) {
+                        saveBtn.textContent = `⏳ Sending chunk ${i+1}/${chunkResult.totalChunks}...`;
+                    }
+                    
+                    const chunkPayload = {
+                        event_type: 'update-data',
+                        client_payload: {
+                            type: 'chunked',
+                            compression: compressionUsed ? 'lzstring' : 'none',
+                            chunk_index: i,
+                            total_chunks: chunkResult.totalChunks,
+                            chunk_data: chunkResult.chunks[i],
+                            snapshot_id: Date.now()
+                        }
+                    };
+                    
+                    const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
+                        },
+                        body: JSON.stringify(chunkPayload)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`Chunk ${i+1} failed: ${errorData.message || response.statusText}`);
+                    }
+                    
+                    results.push({ index: i, status: 'success' });
+                    
+                    // Small delay between chunks to avoid rate limiting
+                    if (i < chunkResult.totalChunks - 1) {
+                        await new Promise(r => setTimeout(r, 1000));
+                    }
+                }
+                
+                // All chunks sent successfully
+                saveSnapshot(data);
+                alert(`✅ Changes saved successfully!\n\n` +
+                      `📊 Total size: ${(chunkResult.totalSize/1024).toFixed(1)} KB\n` +
+                      `📦 Split into ${chunkResult.totalChunks} chunks\n` +
+                      `${compressionUsed ? '🔒 Compressed' : '📄 Plain'}\n\n` +
+                      'GitHub Actions is processing all chunks. Please wait a moment.');
+                
+                setTimeout(() => {
+                    if (confirm('Refresh page to see the latest data?')) {
+                        location.reload();
+                    }
+                }, 10000);
+                
+                isSaving = false;
+                if (saveBtn) {
+                    saveBtn.textContent = '💾 Save to GitHub';
+                    saveBtn.disabled = false;
+                }
+                return;
+            }
+        }
+
+        // 7. Simple single payload (compressed or not)
+        const payload = {
+            event_type: 'update-data',
+            client_payload: {
+                type: payloadType,
+                compression: compressionUsed ? 'lzstring' : 'none',
+                data: payloadData,
+                snapshot_id: Date.now()
+            }
+        };
+
+        if (saveBtn) {
+            saveBtn.textContent = '⏳ Sending...';
+        }
+
+        const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `token ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            if (response.status === 401) {
+                localStorage.removeItem('github_token');
+                throw new Error('Token is invalid or expired. Please re-enter your Token.');
+            }
+            throw new Error(errorData.message || `HTTP ${response.status}`);
+        }
+
+        saveSnapshot(data);
+        alert(`✅ Changes saved successfully!\n\n` +
+              `📊 Size: ${(currentSize/1024).toFixed(1)} KB\n` +
+              `${compressionUsed ? '🔒 Compressed' : '📄 Plain'}\n\n` +
+              'GitHub Actions is applying the changes.');
+
+        setTimeout(() => {
+            if (confirm('Refresh page to see the latest data?')) {
+                location.reload();
+            }
+        }, 8000);
+
+    } catch (error) {
+        console.error('Save failed:', error);
+        alert(`❌ Save failed: ${error.message}`);
+    } finally {
+        isSaving = false;
+        if (saveBtn) {
+            saveBtn.textContent = '💾 Save to GitHub';
+            saveBtn.disabled = false;
+        }
+    }
+}
+// ============================
 // 26. Expose Global Functions for HTML
 // ============================
 
