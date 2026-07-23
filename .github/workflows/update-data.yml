@@ -21,8 +21,11 @@ jobs:
       - name: Install lz-string only
         run: npm install lz-string
 
-      - name: Save payload to file
-        run: echo '${{ toJSON(github.event.client_payload) }}' > payload.json
+      - name: Write payload directly to file
+        run: |
+          cat > payload.json << 'EOF'
+          ${{ toJSON(github.event.client_payload) }}
+          EOF
 
       - name: Apply changes
         run: |
@@ -39,17 +42,31 @@ jobs:
               console.log('No existing data.json, creating new one');
             }
             
-            const payload = JSON.parse(fs.readFileSync('payload.json', 'utf8'));
-            const compression = payload.compression || 'none';
+            // Read payload
+            let payload;
+            try {
+              const payloadContent = fs.readFileSync('payload.json', 'utf8');
+              payload = JSON.parse(payloadContent);
+            } catch (e) {
+              console.error('Failed to parse payload.json:', e.message);
+              console.log('Payload content preview:', fs.readFileSync('payload.json', 'utf8').substring(0, 200));
+              process.exit(1);
+            }
             
+            const compression = payload.compression || 'none';
             let payloadData = payload.data || '';
             
             if (compression === 'lzstring') {
-              const decompressed = LZString.decompressFromEncodedURIComponent(payloadData);
-              if (decompressed) {
-                payloadData = decompressed;
-              } else {
-                console.error('Failed to decompress data');
+              try {
+                const decompressed = LZString.decompressFromEncodedURIComponent(payloadData);
+                if (decompressed) {
+                  payloadData = decompressed;
+                } else {
+                  console.error('Failed to decompress data');
+                  process.exit(1);
+                }
+              } catch (e) {
+                console.error('Decompression error:', e.message);
                 process.exit(1);
               }
             }
@@ -81,7 +98,8 @@ jobs:
               fs.writeFileSync('data.json', JSON.stringify(newData, null, 2));
               console.log('✅ data.json updated successfully');
             } catch (e) {
-              console.error('Failed to parse payload:', e.message);
+              console.error('Failed to parse payload data:', e.message);
+              console.log('Payload data preview:', payloadData.substring(0, 200));
               process.exit(1);
             }
           "
