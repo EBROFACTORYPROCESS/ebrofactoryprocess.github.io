@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BPO - Business Process Orchestrator</title>
-    <!-- Force reload styles -->
     <link rel="stylesheet" href="style.css?v=1">
     <style>
-        /* Loading indicator styles */
         #app-loading {
             display: flex;
             justify-content: center;
@@ -32,30 +30,21 @@
     </style>
 </head>
 <body>
-    <!-- Loading indicator -->
     <div id="app-loading">
         <div class="spinner"></div>
         <div>⏳ Loading latest data...</div>
         <div style="font-size:0.8rem;color:#94a3b8;">The first load might take a few seconds</div>
     </div>
 
-    <!-- Main app container -->
     <div id="app-root" style="display:none;"></div>
 
-    <!-- ============================================================
-         CDN Libraries - Load BEFORE app.js
-         ============================================================ -->
-    <!-- LZString for compression -->
+    <!-- CDN Libraries - Load once, in correct order -->
     <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/lz-string.min.js"></script>
-    <!-- jsondiffpatch for diff generation (only loaded once) -->
     <script src="https://cdn.jsdelivr.net/npm/jsondiffpatch@0.6.0/dist/jsondiffpatch.umd.min.js"></script>
-
-    <!-- ============================================================
-         Configuration & Core Logic - Load AFTER CDN libraries
-         ============================================================ -->
-    <!-- Optional: config.js (if you have it) -->
+    
+    <!-- Optional config -->
     <script src="config.js?v=1"></script>
-    <!-- Core application logic -->
+    <!-- Core app -->
     <script src="app.js?v=1"></script>
 </body>
 </html>
