@@ -20,7 +20,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # Use the 'diff' package - works with require() and handles JSON diff
           npm install diff lz-string
 
       - name: Save payload to file
@@ -49,6 +48,7 @@ jobs:
             const compression = payload.compression || 'none';
             
             let newData = null;
+            let shouldExit = false;
             
             // Handle chunked payloads
             if (payloadType === 'chunked') {
@@ -56,20 +56,87 @@ jobs:
               const totalChunks = payload.total_chunks || 1;
               const chunkData = payload.chunk_data || '';
               
+              console.log('Processing chunk ' + (chunkIndex + 1) + '/' + totalChunks);
+              
+              // Write chunk to file
               const chunkFile = 'chunk_' + chunkIndex + '.json';
               fs.writeFileSync(chunkFile, chunkData);
               
+              // Initialize combined.json if this is the first chunk
               if (chunkIndex === 0) {
-                fs.writeFileSync('combined.json', chunkData);
+                // For first chunk, it might be a complete JSON object or a partial
+                // We need to handle both cases
+                let combinedData = chunkData;
+                // If the chunk doesn't end with a complete JSON structure, we'll append later
+                fs.writeFileSync('combined.json', combinedData);
+                console.log('Initialized combined.json with chunk 0');
               } else {
+                // For subsequent chunks, append to existing combined.json
+                // Check if combined.json exists
+                if (!fs.existsSync('combined.json')) {
+                  console.error('combined.json does not exist for chunk ' + chunkIndex);
+                  process.exit(1);
+                }
+                
                 const existing = fs.readFileSync('combined.json', 'utf8');
-                let combined = existing.slice(0, -1) + ',' + chunkData.slice(1);
+                
+                // Remove trailing '}' or ']' from existing and combine with new chunk
+                let combined = existing;
+                // If existing ends with '}' or ']', remove it before appending
+                if (combined.trim().endsWith('}') || combined.trim().endsWith(']')) {
+                  // Find the last } or ] and remove it
+                  const lastBrace = combined.lastIndexOf(combined.trim().endsWith('}') ? '}' : ']');
+                  if (lastBrace !== -1) {
+                    combined = combined.substring(0, lastBrace);
+                    // Add a comma if needed (if the new chunk starts with '{' or '[')
+                    const trimmedChunk = chunkData.trim();
+                    if (trimmedChunk.startsWith('{') || trimmedChunk.startsWith('[')) {
+                      combined += ',';
+                    }
+                    combined += chunkData;
+                  } else {
+                    combined += ',' + chunkData;
+                  }
+                } else {
+                  // If no closing brace, just append
+                  combined += ',' + chunkData;
+                }
+                
                 fs.writeFileSync('combined.json', combined);
+                console.log('Appended chunk ' + chunkIndex + ' to combined.json');
               }
               
+              // Check if this is the last chunk
               if (chunkIndex === totalChunks - 1) {
+                console.log('All chunks received, processing combined data...');
+                
+                // Read the combined file and validate it's complete JSON
                 let fullData = fs.readFileSync('combined.json', 'utf8');
                 
+                // Try to complete the JSON if it's incomplete
+                try {
+                  JSON.parse(fullData);
+                } catch (e) {
+                  // If JSON is incomplete, try to complete it
+                  console.log('Fixing incomplete JSON...');
+                  // Check if it's missing closing braces
+                  const openBraces = (fullData.match(/{/g) || []).length;
+                  const closeBraces = (fullData.match(/}/g) || []).length;
+                  const openBrackets = (fullData.match(/\[/g) || []).length;
+                  const closeBrackets = (fullData.match(/\]/g) || []).length;
+                  
+                  // Add missing closing braces
+                  let fixed = fullData;
+                  if (openBraces > closeBraces) {
+                    fixed += '}'.repeat(openBraces - closeBraces);
+                  }
+                  if (openBrackets > closeBrackets) {
+                    fixed += ']'.repeat(openBrackets - closeBrackets);
+                  }
+                  fullData = fixed;
+                }
+                
+                // Decompress if needed
                 if (compression === 'lzstring') {
                   const decompressed = LZString.decompressFromEncodedURIComponent(fullData);
                   if (decompressed) {
@@ -83,7 +150,6 @@ jobs:
                 try {
                   const parsed = JSON.parse(fullData);
                   // Use the diff package to apply changes
-                  const currentStr = JSON.stringify(currentData);
                   const patch = diffJson(currentData, parsed);
                   newData = applyPatch(currentData, patch);
                 } catch (e) {
@@ -91,8 +157,9 @@ jobs:
                   process.exit(1);
                 }
               } else {
-                console.log('Chunk ' + (chunkIndex + 1) + '/' + totalChunks + ' received');
-                process.exit(0);
+                // Not the last chunk, exit gracefully
+                console.log('Chunk ' + (chunkIndex + 1) + '/' + totalChunks + ' received, waiting for more...');
+                shouldExit = true;
               }
             } 
             // Handle single payload
@@ -124,9 +191,15 @@ jobs:
               }
             }
             
+            // Write the updated data if we have it
             if (newData) {
               fs.writeFileSync('data.json', JSON.stringify(newData, null, 2));
               console.log('✅ data.json updated successfully');
+            }
+            
+            // If we're waiting for more chunks, exit successfully
+            if (shouldExit) {
+              process.exit(0);
             }
           "
 
