@@ -27,28 +27,6 @@ jobs:
           ${{ toJSON(github.event.client_payload) }}
           EOF
 
-      - name: DEBUG - Show payload content
-        run: |
-          echo "=== PAYLOAD CONTENT ==="
-          cat payload.json
-          echo "=== END PAYLOAD ==="
-          echo "Payload size: $(wc -c < payload.json) bytes"
-
-      - name: DEBUG - Show payload keys
-        run: |
-          node -e "
-            const fs = require('fs');
-            const payload = JSON.parse(fs.readFileSync('payload.json', 'utf8'));
-            console.log('Payload keys:', Object.keys(payload));
-            console.log('Payload type:', payload.type);
-            console.log('Compression:', payload.compression);
-            console.log('Data exists?', payload.data ? 'YES' : 'NO');
-            if (payload.data) {
-              console.log('Data length:', payload.data.length);
-              console.log('Data preview:', payload.data.substring(0, 100));
-            }
-          "
-
       - name: Apply changes
         run: |
           node -e "
@@ -68,7 +46,6 @@ jobs:
             }
             
             // Read payload
-            console.log('Reading payload.json...');
             const payloadContent = fs.readFileSync('payload.json', 'utf8');
             console.log('Payload content length:', payloadContent.length);
             
@@ -79,19 +56,134 @@ jobs:
               console.log('Payload keys:', Object.keys(payload));
             } catch (e) {
               console.error('Failed to parse payload.json:', e.message);
-              console.log('First 500 chars:', payloadContent.substring(0, 500));
               process.exit(1);
             }
             
+            let fullData = null;
+            const payloadType = payload.type || 'diff';
             const compression = payload.compression || 'none';
-            console.log('Compression:', compression);
             
-            let payloadData = payload.data || '';
-            console.log('Payload data length:', payloadData.length);
+            // ============================================================
+            // CASE 1: Chunked payload (multiple chunks coming separately)
+            // ============================================================
+            if (payloadType === 'chunked') {
+              const chunkIndex = payload.chunk_index || 0;
+              const totalChunks = payload.total_chunks || 1;
+              const chunkData = payload.chunk_data || '';
+              
+              console.log('Processing chunk', chunkIndex + 1, 'of', totalChunks);
+              console.log('Chunk data length:', chunkData.length);
+              
+              // Write chunk to file
+              const chunkFile = 'chunk_' + chunkIndex + '.json';
+              fs.writeFileSync(chunkFile, chunkData);
+              
+              // Initialize or append to combined.json
+              if (chunkIndex === 0) {
+                fs.writeFileSync('combined.json', chunkData);
+                console.log('Initialized combined.json with chunk 0');
+              } else {
+                // Check if combined.json exists
+                if (!fs.existsSync('combined.json')) {
+                  console.error('combined.json not found for chunk', chunkIndex);
+                  process.exit(1);
+                }
+                
+                const existing = fs.readFileSync('combined.json', 'utf8');
+                
+                // Combine: remove trailing '}' or ']' and append new chunk
+                let combined = existing;
+                const trimmedExisting = existing.trim();
+                const trimmedChunk = chunkData.trim();
+                
+                if (trimmedExisting.endsWith('}') || trimmedExisting.endsWith(']')) {
+                  // Find the last } or ] and remove it
+                  const lastChar = trimmedExisting.endsWith('}') ? '}' : ']';
+                  const lastIndex = combined.lastIndexOf(lastChar);
+                  if (lastIndex !== -1) {
+                    combined = combined.substring(0, lastIndex);
+                    // Add comma if needed
+                    if (trimmedChunk.startsWith('{') || trimmedChunk.startsWith('[')) {
+                      combined += ',';
+                    }
+                    combined += chunkData;
+                  } else {
+                    combined += ',' + chunkData;
+                  }
+                } else {
+                  combined += ',' + chunkData;
+                }
+                
+                fs.writeFileSync('combined.json', combined);
+                console.log('Appended chunk', chunkIndex, 'to combined.json');
+              }
+              
+              // If this is the last chunk, process the combined data
+              if (chunkIndex === totalChunks - 1) {
+                console.log('All chunks received, processing combined data...');
+                let combinedContent = fs.readFileSync('combined.json', 'utf8');
+                
+                // Fix incomplete JSON if needed
+                try {
+                  JSON.parse(combinedContent);
+                } catch (e) {
+                  console.log('Fixing incomplete JSON...');
+                  const openBraces = (combinedContent.match(/{/g) || []).length;
+                  const closeBraces = (combinedContent.match(/}/g) || []).length;
+                  const openBrackets = (combinedContent.match(/\[/g) || []).length;
+                  const closeBrackets = (combinedContent.match(/\]/g) || []).length;
+                  
+                  if (openBraces > closeBraces) {
+                    combinedContent += '}'.repeat(openBraces - closeBraces);
+                  }
+                  if (openBrackets > closeBrackets) {
+                    combinedContent += ']'.repeat(openBrackets - closeBrackets);
+                  }
+                }
+                
+                // Decompress if needed
+                if (compression === 'lzstring') {
+                  console.log('Decompressing combined data...');
+                  const decompressed = LZString.decompressFromEncodedURIComponent(combinedContent);
+                  if (decompressed) {
+                    combinedContent = decompressed;
+                    console.log('Decompressed successfully, length:', combinedContent.length);
+                  } else {
+                    console.error('Failed to decompress combined data');
+                    process.exit(1);
+                  }
+                }
+                
+                try {
+                  fullData = JSON.parse(combinedContent);
+                  console.log('Combined data parsed successfully');
+                } catch (e) {
+                  console.error('Failed to parse combined data:', e.message);
+                  console.log('Combined data preview:', combinedContent.substring(0, 200));
+                  process.exit(1);
+                }
+              } else {
+                // Not the last chunk - exit successfully
+                console.log('Chunk', chunkIndex + 1, 'of', totalChunks, 'received, waiting for more...');
+                process.exit(0);
+              }
+            }
             
-            if (compression === 'lzstring') {
-              console.log('Decompressing lzstring data...');
-              try {
+            // ============================================================
+            // CASE 2: Single payload (Plan B - direct data)
+            // ============================================================
+            else {
+              console.log('Processing single payload...');
+              let payloadData = payload.data || '';
+              
+              if (!payloadData && payload.diff) {
+                payloadData = JSON.stringify(payload.diff);
+              }
+              
+              console.log('Payload data length:', payloadData.length);
+              
+              if (compression === 'lzstring') {
+                console.log('Decompressing lzstring data...');
                 const decompressed = LZString.decompressFromEncodedURIComponent(payloadData);
                 if (decompressed) {
                   payloadData = decompressed;
@@ -100,19 +192,23 @@ jobs:
                   console.error('Failed to decompress data');
                   process.exit(1);
                 }
+              }
+              
+              try {
+                fullData = JSON.parse(payloadData);
+                console.log('Payload parsed successfully');
               } catch (e) {
-                console.error('Decompression error:', e.message);
+                console.error('Failed to parse payload data:', e.message);
+                console.log('Payload data preview:', payloadData.substring(0, 200));
                 process.exit(1);
               }
             }
             
-            console.log('Final payload data length:', payloadData.length);
-            console.log('Payload data preview:', payloadData.substring(0, 200));
-            
-            try {
-              const parsed = JSON.parse(payloadData);
-              console.log('Parsed successfully, keys:', Object.keys(parsed));
-              
+            // ============================================================
+            // Apply the changes
+            // ============================================================
+            if (fullData) {
+              console.log('Applying changes...');
               let newData;
               
               function deepMerge(target, source) {
@@ -127,20 +223,30 @@ jobs:
                 return target;
               }
               
-              if (parsed._full || payload.type === 'full') {
-                newData = parsed._full || parsed;
+              // If it's a full data replacement
+              if (fullData._full || payload.type === 'full') {
+                newData = fullData._full || fullData;
                 console.log('Full data replacement');
               } else {
-                newData = deepMerge(JSON.parse(JSON.stringify(currentData)), parsed);
+                newData = deepMerge(JSON.parse(JSON.stringify(currentData)), fullData);
                 console.log('Deep merge applied');
               }
               
               fs.writeFileSync('data.json', JSON.stringify(newData, null, 2));
               console.log('✅ data.json updated successfully');
-            } catch (e) {
-              console.error('Failed to parse payload data:', e.message);
-              console.log('Payload data preview:', payloadData.substring(0, 200));
-              process.exit(1);
+              
+              // Clean up temp files
+              try { fs.unlinkSync('combined.json'); } catch(e) {}
+              try { 
+                const files = fs.readdirSync('.');
+                for (const file of files) {
+                  if (file.startsWith('chunk_')) {
+                    fs.unlinkSync(file);
+                  }
+                }
+              } catch(e) {}
+            } else {
+              console.log('No data to apply');
             }
           "
 
