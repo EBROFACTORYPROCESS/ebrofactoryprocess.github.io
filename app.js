@@ -1754,6 +1754,7 @@ function updateUIVisibility() {
     } else {
         root.classList.remove('edit-mode');
         root.classList.add('display-mode');
+        
     }
 
     let addBtn = document.getElementById('addRowBtn');
@@ -1765,6 +1766,37 @@ function updateUIVisibility() {
     if (importBtn) importBtn.style.display = isEdit ? 'inline-flex' : 'none';
     if (saveBtn) saveBtn.style.display = isEdit ? 'inline-flex' : 'none';
     if (modeBtn) modeBtn.innerHTML = isEdit ? '👁️ Display Mode' : '✏️ Edit Mode';
+
+    if (currentMode === 'edit') {
+        const token = getGitHubToken();
+        let statusDiv = document.getElementById('tokenStatus');
+        
+        // Create status element if it doesn't exist
+        if (!statusDiv) {
+            statusDiv = document.createElement('div');
+            statusDiv.id = 'tokenStatus';
+            statusDiv.style.marginLeft = '1rem';
+            statusDiv.style.fontSize = '0.85rem';
+            const titleSection = document.querySelector('.title-section');
+            if (titleSection) {
+                titleSection.appendChild(statusDiv);
+            }
+        }
+        
+        if (token) {
+            statusDiv.innerHTML = '🟢 Token configured';
+            statusDiv.style.color = '#16a34a';
+            } else {
+            statusDiv.innerHTML = '🔴 No Token - Cannot save to GitHub';
+            statusDiv.style.color = '#dc2626';
+            }
+        } else {
+            // Remove or hide status indicator in display mode
+            const statusDiv = document.getElementById('tokenStatus');
+            if (statusDiv) {
+            statusDiv.style.display = 'none';
+        }
+    }
 }
 
 // ============================
