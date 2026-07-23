@@ -1572,7 +1572,7 @@ function bindEvents() {
         }
     };
 
-    // 添加流程
+    // Add process
     document.getElementById('addRowBtn').onclick = () => {
         if (currentMode !== 'edit') return;
         let sc = getCurrentScenario();
@@ -1598,7 +1598,7 @@ function bindEvents() {
         renderCurrentView();
     };
 
-    // 模式切换
+    // Mode Switch
     document.getElementById('modeToggleBtn').onclick = () => {
         if (currentMode === 'display') {
             let pwd = prompt('Password:');
@@ -1618,7 +1618,7 @@ function bindEvents() {
         }
     };
 
-    // 保存数据
+    // Savedata
     document.getElementById('saveDataBtn').onclick = () => {
         saveDataToGitHub(appData);
     };
@@ -1630,31 +1630,31 @@ function bindEvents() {
     };
     document.getElementById('closeMasterBtn').onclick = () => document.getElementById('masterModal').classList.remove('active');
 
-    // 视图切换
+    // Switch view
     document.getElementById('tableViewTab').onclick = () => setView('table');
     document.getElementById('sequenceViewTab').onclick = () => setView('sequence');
 
-    // 搜索
+    // Search
     document.getElementById('searchInput').oninput = (e) => {
         searchKeyword = e.target.value;
         renderCurrentView();
     };
 
-    // 折叠
+    // Collapse
     document.getElementById('collapseAllBtn').onclick = collapseAllParents;
     document.getElementById('expandAllBtn').onclick = expandAllParents;
 
-    // 筛选
+    // Filter
     document.getElementById('addFilterBtn').onclick = openFilterColumnsModal;
     document.getElementById('clearFiltersBtn').onclick = clearFilters;
     document.getElementById('filterColumnsConfirm').onclick = addFiltersFromSelection;
     document.getElementById('filterColumnsCancel').onclick = () => document.getElementById('filterColumnsModal').classList.remove('active');
 
-    // 导入导出
+    // Exportimport
     document.getElementById('exportProcessesBtn').onclick = exportProcesses;
     document.getElementById('importProcessesBtn').onclick = importProcesses;
 
-    // 模态框
+    // Modal
     document.getElementById('cancelModalBtn').onclick = closeModal;
     document.getElementById('saveModalBtn').onclick = saveModal;
     document.getElementById('deleteAcceptBtn').onclick = () => {
@@ -1679,17 +1679,17 @@ function bindEvents() {
     };
     document.getElementById('importCancelBtn').onclick = closeImportPreview;
 
-    // 文件导入
+    // Document import
     document.getElementById('masterImportFile').onchange = handleMasterImport;
     document.getElementById('processImportFile').onchange = handleProcessImport;
 
-    // 文档链接
+    // Document link
     document.getElementById('modalBusinessDoc').addEventListener('input', () => updateDocumentLinkIcon('modalBusinessDoc', 'businessDocLink'));
     document.getElementById('modalUserManual').addEventListener('input', () => updateDocumentLinkIcon('modalUserManual', 'userManualLink'));
 }
 
 // ============================
-// 23. 视图控制
+// 23. View Control
 // ============================
 
 function setView(view) {
@@ -1749,20 +1749,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const token = getGitHubToken();
     if (!token) {
         const shouldSetup = confirm(
-            '🔑 首次使用需要配置 GitHub Token\n\n' +
-            'Token 用于读写 data.json 文件。\n' +
-            '点击"确定"输入 Token，点击"取消"以只读模式查看。'
+            '🔑 GitHub Token Required for First-Time Setup\n\n' +
+            'The token is used to read and write the data.json file.\n' +
+            'Click "OK" to enter your token, or "Cancel" to proceed in read-only mode.'
         );
         if (shouldSetup) {
             showTokenSetup();
         }
     }
 
-    // 加载数据
+    // Load data
     loadData();
 });
 
-// 暴露全局函数供 HTML 调用
+// Expose global functions for HTML to call
 window.toggleCollapse = toggleCollapse;
 window.openProcessDetail = openProcessDetail;
 window.saveDataToGitHub = saveDataToGitHub;
