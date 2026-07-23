@@ -202,6 +202,16 @@ async function loadData() {
     if (appData) {
         initializeSnapshot(appData);
     }
+    // After successfully loading and normalizing data
+    if (appData) {
+        // Initialize snapshot if not already done
+        if (!lastSnapshot) {
+            if (!loadSnapshot()) {
+                saveSnapshot(appData);
+            }
+        }
+        renderApp();
+    }
 }
 
 // ============================
