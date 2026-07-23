@@ -247,22 +247,36 @@ function getDefaultData() {
 }
 
 // ============================
-// 保存数据（通过 GitHub Actions）
+// Save data to GitHub
 // ============================
-
 async function saveDataToGitHub(data) {
     if (isSaving) return;
     isSaving = true;
 
+    const saveBtn = document.getElementById('saveDataBtn');
+    if (saveBtn) {
+        saveBtn.textContent = '⏳ Saving...';
+        saveBtn.disabled = true;
+    }
+
     try {
-        // 显示保存中状态
-        const saveBtn = document.getElementById('saveDataBtn');
-        if (saveBtn) {
-            saveBtn.textContent = '⏳ 保存中...';
-            saveBtn.disabled = true;
+        // 🔑 Check for Token again when saving
+        let token = getGitHubToken();
+        if (!token) {
+            // No Token stored, prompt user
+            token = prompt(
+                '🔑 A GitHub Token is required to save data\n\n' +
+                'Please enter your GitHub Token. It will be saved in your browser.'
+            );
+            if (token && token.trim()) {
+                localStorage.setItem('github_token', token.trim());
+                alert('✅ Token saved to browser local storage');
+            } else {
+                throw new Error('No Token provided, save cancelled');
+            }
         }
 
-        // 调用 GitHub API 触发 Actions
+        // Call GitHub API to trigger Actions
         const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`;
         const payload = {
             event_type: 'update-data',
@@ -271,54 +285,40 @@ async function saveDataToGitHub(data) {
             }
         };
 
-        // 注意：这里需要一个特殊的 Token（只用于触发 Actions，不需要 repo 写入权限）
-        // 但我们仍然使用用户输入的 Token（或者你可以直接硬编码一个只读 Token）
-        const token = getGitHubToken();
-        if (!token) {
-            alert('❌ 请先配置 GitHub Token\n\n点击 ⚙️ 设置 → 输入 Token');
-            isSaving = false;
-            if (saveBtn) {
-                saveBtn.textContent = '💾 保存到 GitHub';
-                saveBtn.disabled = false;
-            }
-            return;
-        }
-
         const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Authorization': `token ${token}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.v3+json'
             },
             body: JSON.stringify(payload)
         });
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.message || '触发 Actions 失败');
+            // If Token is invalid, clear it so user can re-enter
+            if (response.status === 401) {
+                localStorage.removeItem('github_token');
+                throw new Error('Token is invalid or expired. Please re-enter your Token.');
+            }
+            throw new Error(errorData.message || `HTTP ${response.status}`);
         }
 
-        alert('✅ 数据已提交保存！\n\n' +
-              'GitHub Actions 正在处理，请等待 10-30 秒后刷新页面查看最新数据。');
-
-        // 等待 5 秒后自动刷新页面
-        setTimeout(() => {
-            location.reload();
-        }, 5000);
+        alert('✅ Data submitted for saving!\n\nGitHub Actions is processing. Please wait 10-30 seconds and refresh the page.');
+        setTimeout(() => location.reload(), 5000);
 
     } catch (error) {
-        console.error('保存失败:', error);
-        alert(`❌ 保存失败: ${error.message}\n\n请检查 Token 是否有效，或稍后重试。`);
+        console.error('Save failed:', error);
+        alert(`❌ Save failed: ${error.message}`);
     } finally {
         isSaving = false;
-        const saveBtn = document.getElementById('saveDataBtn');
         if (saveBtn) {
-            saveBtn.textContent = '💾 保存到 GitHub';
+            saveBtn.textContent = '💾 Save to GitHub';
             saveBtn.disabled = false;
         }
     }
 }
-
 
 // ============================
 // 9. Token 设置
