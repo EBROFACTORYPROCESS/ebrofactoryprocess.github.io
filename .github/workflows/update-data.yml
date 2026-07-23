@@ -18,20 +18,17 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install lz-string
-        run: npm install lz-string
-
       - name: Write payload to file
         run: |
           cat > payload.json << 'EOF'
           ${{ toJSON(github.event.client_payload) }}
           EOF
 
-      - name: Process payload (single or chunked)
+      - name: Apply changes
         run: |
           node -e "
             const fs = require('fs');
-            const LZString = require('lz-string');
+            const { execSync } = require('child_process');
             
             console.log('=== Starting apply changes ===');
             
@@ -47,8 +44,6 @@ jobs:
             
             // Read payload
             const payloadContent = fs.readFileSync('payload.json', 'utf8');
-            console.log('Payload content length:', payloadContent.length);
-            
             let payload;
             try {
               payload = JSON.parse(payloadContent);
@@ -59,144 +54,57 @@ jobs:
               process.exit(1);
             }
             
-            const payloadType = payload.type || 'diff';
-            const compression = payload.compression || 'none';
             let fullData = null;
+            const payloadType = payload.type || 'diff';
             
             // ============================================================
-            // CASE 1: Chunked payload - use Artifacts to share state
+            // CASE 1: Gist payload (large data)
             // ============================================================
-            if (payloadType === 'chunked') {
-              const chunkIndex = payload.chunk_index || 0;
-              const totalChunks = payload.total_chunks || 1;
-              const chunkData = payload.chunk_data || '';
+            if (payloadType === 'gist') {
+              const gistId = payload.gist_id;
+              console.log('📥 Downloading data from Gist:', gistId);
               
-              console.log('Processing chunk', chunkIndex + 1, 'of', totalChunks);
-              console.log('Chunk data length:', chunkData.length);
-              
-              // Read existing combined data from artifact (if any)
-              let combinedData = '';
-              const combinedFile = 'combined.json';
-              if (fs.existsSync(combinedFile)) {
-                combinedData = fs.readFileSync(combinedFile, 'utf8');
-                console.log('Loaded existing combined data, length:', combinedData.length);
-              }
-              
-              // Append new chunk
-              if (chunkIndex === 0) {
-                // First chunk - start fresh
-                combinedData = chunkData;
-              } else {
-                // Append to existing - need to merge JSON properly
-                if (combinedData) {
-                  // Remove trailing '}' or ']' from existing
-                  let trimmed = combinedData.trim();
-                  if (trimmed.endsWith('}') || trimmed.endsWith(']')) {
-                    const lastChar = trimmed.endsWith('}') ? '}' : ']';
-                    const lastIndex = combinedData.lastIndexOf(lastChar);
-                    if (lastIndex !== -1) {
-                      combinedData = combinedData.substring(0, lastIndex);
-                      // Add comma if needed
-                      const chunkTrimmed = chunkData.trim();
-                      if (chunkTrimmed.startsWith('{') || chunkTrimmed.startsWith('[')) {
-                        combinedData += ',';
-                      }
-                      combinedData += chunkData;
-                    } else {
-                      combinedData += ',' + chunkData;
-                    }
-                  } else {
-                    combinedData += ',' + chunkData;
-                  }
-                } else {
-                  combinedData = chunkData;
-                }
-              }
-              
-              // Save combined data for next chunk
-              fs.writeFileSync(combinedFile, combinedData);
-              console.log('Updated combined data, length:', combinedData.length);
-              
-              // If this is the last chunk, process it
-              if (chunkIndex === totalChunks - 1) {
-                console.log('All chunks received, processing combined data...');
-                let fullContent = combinedData;
+              // Use GitHub CLI to download the gist content
+              try {
+                // Get the gist content using curl
+                const gistUrl = `https://api.github.com/gists/${gistId}`;
+                const gistResponse = execSync(`curl -s -H "Accept: application/vnd.github.v3+json" ${gistUrl}`, { encoding: 'utf8' });
+                const gistData = JSON.parse(gistResponse);
                 
-                // Fix incomplete JSON if needed
-                try {
-                  JSON.parse(fullContent);
-                } catch (e) {
-                  console.log('Fixing incomplete JSON...');
-                  const openBraces = (fullContent.match(/{/g) || []).length;
-                  const closeBraces = (fullContent.match(/}/g) || []).length;
-                  const openBrackets = (fullContent.match(/\[/g) || []).length;
-                  const closeBrackets = (fullContent.match(/\]/g) || []).length;
-                  
-                  if (openBraces > closeBraces) {
-                    fullContent += '}'.repeat(openBraces - closeBraces);
-                  }
-                  if (openBrackets > closeBrackets) {
-                    fullContent += ']'.repeat(openBrackets - closeBrackets);
-                  }
-                }
-                
-                // Decompress if needed
-                if (compression === 'lzstring') {
-                  console.log('Decompressing combined data...');
-                  const decompressed = LZString.decompressFromEncodedURIComponent(fullContent);
-                  if (decompressed) {
-                    fullContent = decompressed;
-                    console.log('Decompressed successfully, length:', fullContent.length);
-                  } else {
-                    console.error('Failed to decompress combined data');
-                    process.exit(1);
-                  }
-                }
-                
-                try {
-                  fullData = JSON.parse(fullContent);
-                  console.log('Combined data parsed successfully');
-                } catch (e) {
-                  console.error('Failed to parse combined data:', e.message);
-                  console.log('Combined data preview:', fullContent.substring(0, 200));
+                // Get the file content (the first file in the gist)
+                const files = gistData.files;
+                const fileNames = Object.keys(files);
+                if (fileNames.length === 0) {
+                  console.error('No files found in gist');
                   process.exit(1);
                 }
-              } else {
-                // Not the last chunk - save artifact for next run
-                console.log('Chunk', chunkIndex + 1, 'of', totalChunks, 'received. Saving state for next chunk...');
                 
-                // Upload artifact for the next chunk
-                const { execSync } = require('child_process');
+                const fileContent = files[fileNames[0]].content;
+                console.log('Downloaded data length:', fileContent.length);
+                
                 try {
-                  execSync('mkdir -p .github/artifacts', { stdio: 'inherit' });
-                  fs.copyFileSync('combined.json', '.github/artifacts/combined.json');
-                  console.log('✅ Artifact saved for next chunk');
+                  fullData = JSON.parse(fileContent);
+                  console.log('Data parsed successfully');
                 } catch (e) {
-                  console.log('Could not save artifact, will use local file if available');
+                  console.error('Failed to parse downloaded data:', e.message);
+                  process.exit(1);
                 }
-                
-                console.log('Waiting for chunk', chunkIndex + 2, 'of', totalChunks);
-                process.exit(0);
+              } catch (e) {
+                console.error('Failed to download from gist:', e.message);
+                process.exit(1);
               }
             }
             
             // ============================================================
-            // CASE 2: Single payload
+            // CASE 2: Direct diff payload
             // ============================================================
             else {
-              console.log('Processing single payload...');
+              console.log('Processing direct payload...');
               let payloadData = payload.data || '';
               
-              if (compression === 'lzstring') {
-                console.log('Decompressing lzstring data...');
-                const decompressed = LZString.decompressFromEncodedURIComponent(payloadData);
-                if (decompressed) {
-                  payloadData = decompressed;
-                  console.log('Decompressed successfully, length:', payloadData.length);
-                } else {
-                  console.error('Failed to decompress data');
-                  process.exit(1);
-                }
+              if (!payloadData) {
+                console.error('No data found in payload');
+                process.exit(1);
               }
               
               try {
@@ -238,31 +146,11 @@ jobs:
               
               fs.writeFileSync('data.json', JSON.stringify(newData, null, 2));
               console.log('✅ data.json updated successfully');
-              
-              // Clean up
-              try { fs.unlinkSync('combined.json'); } catch(e) {}
-              try { fs.rmSync('.github/artifacts', { recursive: true, force: true }); } catch(e) {}
             } else {
-              console.log('Waiting for more chunks...');
+              console.log('No data to apply');
+              process.exit(1);
             }
           "
-
-      - name: Upload artifact for chunk state (if not complete)
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: chunk-state
-          path: |
-            combined.json
-            .github/artifacts/
-          retention-days: 1
-
-      - name: Download artifact for chunk state (if exists)
-        uses: actions/download-artifact@v4
-        with:
-          name: chunk-state
-          path: .
-        continue-on-error: true
 
       - name: Validate JSON
         run: |
