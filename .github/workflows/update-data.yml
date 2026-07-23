@@ -18,19 +18,16 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies
-        run: |
-          npm install diff lz-string
+      - name: Install lz-string only
+        run: npm install lz-string
 
       - name: Save payload to file
-        run: |
-          echo '${{ toJSON(github.event.client_payload) }}' > payload.json
+        run: echo '${{ toJSON(github.event.client_payload) }}' > payload.json
 
       - name: Apply changes
         run: |
           node -e "
             const fs = require('fs');
-            const { diffJson, applyPatch } = require('diff');
             const LZString = require('lz-string');
             
             // Read current data.json
@@ -42,164 +39,50 @@ jobs:
               console.log('No existing data.json, creating new one');
             }
             
-            // Read payload
             const payload = JSON.parse(fs.readFileSync('payload.json', 'utf8'));
-            const payloadType = payload.type || 'diff';
             const compression = payload.compression || 'none';
             
-            let newData = null;
-            let shouldExit = false;
+            let payloadData = payload.data || '';
             
-            // Handle chunked payloads
-            if (payloadType === 'chunked') {
-              const chunkIndex = payload.chunk_index || 0;
-              const totalChunks = payload.total_chunks || 1;
-              const chunkData = payload.chunk_data || '';
-              
-              console.log('Processing chunk ' + (chunkIndex + 1) + '/' + totalChunks);
-              
-              // Write chunk to file
-              const chunkFile = 'chunk_' + chunkIndex + '.json';
-              fs.writeFileSync(chunkFile, chunkData);
-              
-              // Initialize combined.json if this is the first chunk
-              if (chunkIndex === 0) {
-                // For first chunk, it might be a complete JSON object or a partial
-                // We need to handle both cases
-                let combinedData = chunkData;
-                // If the chunk doesn't end with a complete JSON structure, we'll append later
-                fs.writeFileSync('combined.json', combinedData);
-                console.log('Initialized combined.json with chunk 0');
+            if (compression === 'lzstring') {
+              const decompressed = LZString.decompressFromEncodedURIComponent(payloadData);
+              if (decompressed) {
+                payloadData = decompressed;
               } else {
-                // For subsequent chunks, append to existing combined.json
-                // Check if combined.json exists
-                if (!fs.existsSync('combined.json')) {
-                  console.error('combined.json does not exist for chunk ' + chunkIndex);
-                  process.exit(1);
-                }
-                
-                const existing = fs.readFileSync('combined.json', 'utf8');
-                
-                // Remove trailing '}' or ']' from existing and combine with new chunk
-                let combined = existing;
-                // If existing ends with '}' or ']', remove it before appending
-                if (combined.trim().endsWith('}') || combined.trim().endsWith(']')) {
-                  // Find the last } or ] and remove it
-                  const lastBrace = combined.lastIndexOf(combined.trim().endsWith('}') ? '}' : ']');
-                  if (lastBrace !== -1) {
-                    combined = combined.substring(0, lastBrace);
-                    // Add a comma if needed (if the new chunk starts with '{' or '[')
-                    const trimmedChunk = chunkData.trim();
-                    if (trimmedChunk.startsWith('{') || trimmedChunk.startsWith('[')) {
-                      combined += ',';
-                    }
-                    combined += chunkData;
-                  } else {
-                    combined += ',' + chunkData;
-                  }
-                } else {
-                  // If no closing brace, just append
-                  combined += ',' + chunkData;
-                }
-                
-                fs.writeFileSync('combined.json', combined);
-                console.log('Appended chunk ' + chunkIndex + ' to combined.json');
-              }
-              
-              // Check if this is the last chunk
-              if (chunkIndex === totalChunks - 1) {
-                console.log('All chunks received, processing combined data...');
-                
-                // Read the combined file and validate it's complete JSON
-                let fullData = fs.readFileSync('combined.json', 'utf8');
-                
-                // Try to complete the JSON if it's incomplete
-                try {
-                  JSON.parse(fullData);
-                } catch (e) {
-                  // If JSON is incomplete, try to complete it
-                  console.log('Fixing incomplete JSON...');
-                  // Check if it's missing closing braces
-                  const openBraces = (fullData.match(/{/g) || []).length;
-                  const closeBraces = (fullData.match(/}/g) || []).length;
-                  const openBrackets = (fullData.match(/\[/g) || []).length;
-                  const closeBrackets = (fullData.match(/\]/g) || []).length;
-                  
-                  // Add missing closing braces
-                  let fixed = fullData;
-                  if (openBraces > closeBraces) {
-                    fixed += '}'.repeat(openBraces - closeBraces);
-                  }
-                  if (openBrackets > closeBrackets) {
-                    fixed += ']'.repeat(openBrackets - closeBrackets);
-                  }
-                  fullData = fixed;
-                }
-                
-                // Decompress if needed
-                if (compression === 'lzstring') {
-                  const decompressed = LZString.decompressFromEncodedURIComponent(fullData);
-                  if (decompressed) {
-                    fullData = decompressed;
-                  } else {
-                    console.error('Failed to decompress chunked data');
-                    process.exit(1);
-                  }
-                }
-                
-                try {
-                  const parsed = JSON.parse(fullData);
-                  // Use the diff package to apply changes
-                  const patch = diffJson(currentData, parsed);
-                  newData = applyPatch(currentData, patch);
-                } catch (e) {
-                  console.error('Failed to apply chunked diff:', e.message);
-                  process.exit(1);
-                }
-              } else {
-                // Not the last chunk, exit gracefully
-                console.log('Chunk ' + (chunkIndex + 1) + '/' + totalChunks + ' received, waiting for more...');
-                shouldExit = true;
-              }
-            } 
-            // Handle single payload
-            else {
-              let payloadData = payload.data || '';
-              
-              if (compression === 'lzstring') {
-                const decompressed = LZString.decompressFromEncodedURIComponent(payloadData);
-                if (decompressed) {
-                  payloadData = decompressed;
-                } else {
-                  console.error('Failed to decompress data');
-                  process.exit(1);
-                }
-              }
-              
-              try {
-                const parsed = JSON.parse(payloadData);
-                if (payloadType === 'diff' || payloadType === 'compressed-diff') {
-                  // Use the diff package to apply changes
-                  const patch = diffJson(currentData, parsed);
-                  newData = applyPatch(currentData, patch);
-                } else {
-                  newData = parsed;
-                }
-              } catch (e) {
-                console.error('Failed to parse payload:', e.message);
+                console.error('Failed to decompress data');
                 process.exit(1);
               }
             }
             
-            // Write the updated data if we have it
-            if (newData) {
+            try {
+              const parsed = JSON.parse(payloadData);
+              let newData;
+              
+              // Deep merge function
+              function deepMerge(target, source) {
+                for (const key in source) {
+                  if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+                    if (!target[key]) target[key] = {};
+                    deepMerge(target[key], source[key]);
+                  } else {
+                    target[key] = source[key];
+                  }
+                }
+                return target;
+              }
+              
+              // If it's a full data replacement
+              if (parsed._full || payload.type === 'full') {
+                newData = parsed._full || parsed;
+              } else {
+                newData = deepMerge(JSON.parse(JSON.stringify(currentData)), parsed);
+              }
+              
               fs.writeFileSync('data.json', JSON.stringify(newData, null, 2));
               console.log('✅ data.json updated successfully');
-            }
-            
-            // If we're waiting for more chunks, exit successfully
-            if (shouldExit) {
-              process.exit(0);
+            } catch (e) {
+              console.error('Failed to parse payload:', e.message);
+              process.exit(1);
             }
           "
 
