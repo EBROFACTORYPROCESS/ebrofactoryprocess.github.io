@@ -125,7 +125,7 @@ function normalizeData(data) {
 // ============================
 
 function getGitHubToken() {
-    return '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';
+    return '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';
 }
 
 // ============================
