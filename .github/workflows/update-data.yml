@@ -27,7 +27,7 @@ jobs:
           ${{ toJSON(github.event.client_payload) }}
           EOF
 
-      - name: Apply changes
+      - name: Process payload (single or chunked)
         run: |
           node -e "
             const fs = require('fs');
@@ -59,12 +59,12 @@ jobs:
               process.exit(1);
             }
             
-            let fullData = null;
             const payloadType = payload.type || 'diff';
             const compression = payload.compression || 'none';
+            let fullData = null;
             
             // ============================================================
-            // CASE 1: Chunked payload (multiple chunks coming separately)
+            // CASE 1: Chunked payload - use Artifacts to share state
             // ============================================================
             if (payloadType === 'chunked') {
               const chunkIndex = payload.chunk_index || 0;
@@ -74,80 +74,79 @@ jobs:
               console.log('Processing chunk', chunkIndex + 1, 'of', totalChunks);
               console.log('Chunk data length:', chunkData.length);
               
-              // Write chunk to file
-              const chunkFile = 'chunk_' + chunkIndex + '.json';
-              fs.writeFileSync(chunkFile, chunkData);
-              
-              // Initialize or append to combined.json
-              if (chunkIndex === 0) {
-                fs.writeFileSync('combined.json', chunkData);
-                console.log('Initialized combined.json with chunk 0');
-              } else {
-                // Check if combined.json exists
-                if (!fs.existsSync('combined.json')) {
-                  console.error('combined.json not found for chunk', chunkIndex);
-                  process.exit(1);
-                }
-                
-                const existing = fs.readFileSync('combined.json', 'utf8');
-                
-                // Combine: remove trailing '}' or ']' and append new chunk
-                let combined = existing;
-                const trimmedExisting = existing.trim();
-                const trimmedChunk = chunkData.trim();
-                
-                if (trimmedExisting.endsWith('}') || trimmedExisting.endsWith(']')) {
-                  // Find the last } or ] and remove it
-                  const lastChar = trimmedExisting.endsWith('}') ? '}' : ']';
-                  const lastIndex = combined.lastIndexOf(lastChar);
-                  if (lastIndex !== -1) {
-                    combined = combined.substring(0, lastIndex);
-                    // Add comma if needed
-                    if (trimmedChunk.startsWith('{') || trimmedChunk.startsWith('[')) {
-                      combined += ',';
-                    }
-                    combined += chunkData;
-                  } else {
-                    combined += ',' + chunkData;
-                  }
-                } else {
-                  combined += ',' + chunkData;
-                }
-                
-                fs.writeFileSync('combined.json', combined);
-                console.log('Appended chunk', chunkIndex, 'to combined.json');
+              // Read existing combined data from artifact (if any)
+              let combinedData = '';
+              const combinedFile = 'combined.json';
+              if (fs.existsSync(combinedFile)) {
+                combinedData = fs.readFileSync(combinedFile, 'utf8');
+                console.log('Loaded existing combined data, length:', combinedData.length);
               }
               
-              // If this is the last chunk, process the combined data
+              // Append new chunk
+              if (chunkIndex === 0) {
+                // First chunk - start fresh
+                combinedData = chunkData;
+              } else {
+                // Append to existing - need to merge JSON properly
+                if (combinedData) {
+                  // Remove trailing '}' or ']' from existing
+                  let trimmed = combinedData.trim();
+                  if (trimmed.endsWith('}') || trimmed.endsWith(']')) {
+                    const lastChar = trimmed.endsWith('}') ? '}' : ']';
+                    const lastIndex = combinedData.lastIndexOf(lastChar);
+                    if (lastIndex !== -1) {
+                      combinedData = combinedData.substring(0, lastIndex);
+                      // Add comma if needed
+                      const chunkTrimmed = chunkData.trim();
+                      if (chunkTrimmed.startsWith('{') || chunkTrimmed.startsWith('[')) {
+                        combinedData += ',';
+                      }
+                      combinedData += chunkData;
+                    } else {
+                      combinedData += ',' + chunkData;
+                    }
+                  } else {
+                    combinedData += ',' + chunkData;
+                  }
+                } else {
+                  combinedData = chunkData;
+                }
+              }
+              
+              // Save combined data for next chunk
+              fs.writeFileSync(combinedFile, combinedData);
+              console.log('Updated combined data, length:', combinedData.length);
+              
+              // If this is the last chunk, process it
               if (chunkIndex === totalChunks - 1) {
                 console.log('All chunks received, processing combined data...');
-                let combinedContent = fs.readFileSync('combined.json', 'utf8');
+                let fullContent = combinedData;
                 
                 // Fix incomplete JSON if needed
                 try {
-                  JSON.parse(combinedContent);
+                  JSON.parse(fullContent);
                 } catch (e) {
                   console.log('Fixing incomplete JSON...');
-                  const openBraces = (combinedContent.match(/{/g) || []).length;
-                  const closeBraces = (combinedContent.match(/}/g) || []).length;
-                  const openBrackets = (combinedContent.match(/\[/g) || []).length;
-                  const closeBrackets = (combinedContent.match(/\]/g) || []).length;
+                  const openBraces = (fullContent.match(/{/g) || []).length;
+                  const closeBraces = (fullContent.match(/}/g) || []).length;
+                  const openBrackets = (fullContent.match(/\[/g) || []).length;
+                  const closeBrackets = (fullContent.match(/\]/g) || []).length;
                   
                   if (openBraces > closeBraces) {
-                    combinedContent += '}'.repeat(openBraces - closeBraces);
+                    fullContent += '}'.repeat(openBraces - closeBraces);
                   }
                   if (openBrackets > closeBrackets) {
-                    combinedContent += ']'.repeat(openBrackets - closeBrackets);
+                    fullContent += ']'.repeat(openBrackets - closeBrackets);
                   }
                 }
                 
                 // Decompress if needed
                 if (compression === 'lzstring') {
                   console.log('Decompressing combined data...');
-                  const decompressed = LZString.decompressFromEncodedURIComponent(combinedContent);
+                  const decompressed = LZString.decompressFromEncodedURIComponent(fullContent);
                   if (decompressed) {
-                    combinedContent = decompressed;
-                    console.log('Decompressed successfully, length:', combinedContent.length);
+                    fullContent = decompressed;
+                    console.log('Decompressed successfully, length:', fullContent.length);
                   } else {
                     console.error('Failed to decompress combined data');
                     process.exit(1);
@@ -155,32 +154,38 @@ jobs:
                 }
                 
                 try {
-                  fullData = JSON.parse(combinedContent);
+                  fullData = JSON.parse(fullContent);
                   console.log('Combined data parsed successfully');
                 } catch (e) {
                   console.error('Failed to parse combined data:', e.message);
-                  console.log('Combined data preview:', combinedContent.substring(0, 200));
+                  console.log('Combined data preview:', fullContent.substring(0, 200));
                   process.exit(1);
                 }
               } else {
-                // Not the last chunk - exit successfully
-                console.log('Chunk', chunkIndex + 1, 'of', totalChunks, 'received, waiting for more...');
+                // Not the last chunk - save artifact for next run
+                console.log('Chunk', chunkIndex + 1, 'of', totalChunks, 'received. Saving state for next chunk...');
+                
+                // Upload artifact for the next chunk
+                const { execSync } = require('child_process');
+                try {
+                  execSync('mkdir -p .github/artifacts', { stdio: 'inherit' });
+                  fs.copyFileSync('combined.json', '.github/artifacts/combined.json');
+                  console.log('✅ Artifact saved for next chunk');
+                } catch (e) {
+                  console.log('Could not save artifact, will use local file if available');
+                }
+                
+                console.log('Waiting for chunk', chunkIndex + 2, 'of', totalChunks);
                 process.exit(0);
               }
             }
             
             // ============================================================
-            // CASE 2: Single payload (Plan B - direct data)
+            // CASE 2: Single payload
             // ============================================================
             else {
               console.log('Processing single payload...');
               let payloadData = payload.data || '';
-              
-              if (!payloadData && payload.diff) {
-                payloadData = JSON.stringify(payload.diff);
-              }
-              
-              console.log('Payload data length:', payloadData.length);
               
               if (compression === 'lzstring') {
                 console.log('Decompressing lzstring data...');
@@ -223,7 +228,6 @@ jobs:
                 return target;
               }
               
-              // If it's a full data replacement
               if (fullData._full || payload.type === 'full') {
                 newData = fullData._full || fullData;
                 console.log('Full data replacement');
@@ -235,20 +239,30 @@ jobs:
               fs.writeFileSync('data.json', JSON.stringify(newData, null, 2));
               console.log('✅ data.json updated successfully');
               
-              // Clean up temp files
+              // Clean up
               try { fs.unlinkSync('combined.json'); } catch(e) {}
-              try { 
-                const files = fs.readdirSync('.');
-                for (const file of files) {
-                  if (file.startsWith('chunk_')) {
-                    fs.unlinkSync(file);
-                  }
-                }
-              } catch(e) {}
+              try { fs.rmSync('.github/artifacts', { recursive: true, force: true }); } catch(e) {}
             } else {
-              console.log('No data to apply');
+              console.log('Waiting for more chunks...');
             }
           "
+
+      - name: Upload artifact for chunk state (if not complete)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: chunk-state
+          path: |
+            combined.json
+            .github/artifacts/
+          retention-days: 1
+
+      - name: Download artifact for chunk state (if exists)
+        uses: actions/download-artifact@v4
+        with:
+          name: chunk-state
+          path: .
+        continue-on-error: true
 
       - name: Validate JSON
         run: |
