@@ -18,14 +18,36 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install lz-string only
+      - name: Install lz-string
         run: npm install lz-string
 
-      - name: Write payload directly to file
+      - name: Write payload to file
         run: |
           cat > payload.json << 'EOF'
           ${{ toJSON(github.event.client_payload) }}
           EOF
+
+      - name: DEBUG - Show payload content
+        run: |
+          echo "=== PAYLOAD CONTENT ==="
+          cat payload.json
+          echo "=== END PAYLOAD ==="
+          echo "Payload size: $(wc -c < payload.json) bytes"
+
+      - name: DEBUG - Show payload keys
+        run: |
+          node -e "
+            const fs = require('fs');
+            const payload = JSON.parse(fs.readFileSync('payload.json', 'utf8'));
+            console.log('Payload keys:', Object.keys(payload));
+            console.log('Payload type:', payload.type);
+            console.log('Compression:', payload.compression);
+            console.log('Data exists?', payload.data ? 'YES' : 'NO');
+            if (payload.data) {
+              console.log('Data length:', payload.data.length);
+              console.log('Data preview:', payload.data.substring(0, 100));
+            }
+          "
 
       - name: Apply changes
         run: |
@@ -33,34 +55,47 @@ jobs:
             const fs = require('fs');
             const LZString = require('lz-string');
             
+            console.log('=== Starting apply changes ===');
+            
             // Read current data.json
             let currentData = {};
             try {
               const content = fs.readFileSync('data.json', 'utf8');
               currentData = JSON.parse(content);
+              console.log('Current data loaded, size:', Object.keys(currentData).length);
             } catch (e) {
               console.log('No existing data.json, creating new one');
             }
             
             // Read payload
+            console.log('Reading payload.json...');
+            const payloadContent = fs.readFileSync('payload.json', 'utf8');
+            console.log('Payload content length:', payloadContent.length);
+            
             let payload;
             try {
-              const payloadContent = fs.readFileSync('payload.json', 'utf8');
               payload = JSON.parse(payloadContent);
+              console.log('Payload parsed successfully');
+              console.log('Payload keys:', Object.keys(payload));
             } catch (e) {
               console.error('Failed to parse payload.json:', e.message);
-              console.log('Payload content preview:', fs.readFileSync('payload.json', 'utf8').substring(0, 200));
+              console.log('First 500 chars:', payloadContent.substring(0, 500));
               process.exit(1);
             }
             
             const compression = payload.compression || 'none';
+            console.log('Compression:', compression);
+            
             let payloadData = payload.data || '';
+            console.log('Payload data length:', payloadData.length);
             
             if (compression === 'lzstring') {
+              console.log('Decompressing lzstring data...');
               try {
                 const decompressed = LZString.decompressFromEncodedURIComponent(payloadData);
                 if (decompressed) {
                   payloadData = decompressed;
+                  console.log('Decompressed successfully, length:', payloadData.length);
                 } else {
                   console.error('Failed to decompress data');
                   process.exit(1);
@@ -71,11 +106,15 @@ jobs:
               }
             }
             
+            console.log('Final payload data length:', payloadData.length);
+            console.log('Payload data preview:', payloadData.substring(0, 200));
+            
             try {
               const parsed = JSON.parse(payloadData);
+              console.log('Parsed successfully, keys:', Object.keys(parsed));
+              
               let newData;
               
-              // Deep merge function
               function deepMerge(target, source) {
                 for (const key in source) {
                   if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
@@ -88,11 +127,12 @@ jobs:
                 return target;
               }
               
-              // If it's a full data replacement
               if (parsed._full || payload.type === 'full') {
                 newData = parsed._full || parsed;
+                console.log('Full data replacement');
               } else {
                 newData = deepMerge(JSON.parse(JSON.stringify(currentData)), parsed);
+                console.log('Deep merge applied');
               }
               
               fs.writeFileSync('data.json', JSON.stringify(newData, null, 2));
@@ -109,7 +149,7 @@ jobs:
           if [ -f data.json ] && [ -s data.json ]; then
             if ! jq empty data.json 2>/dev/null; then
               echo "❌ Invalid JSON in data.json"
-              cat data.json
+              cat data.json | head -100
               exit 1
             fi
             echo "✅ JSON validation passed"
