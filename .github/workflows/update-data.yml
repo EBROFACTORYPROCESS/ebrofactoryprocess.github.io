@@ -22,7 +22,11 @@ jobs:
         run: |
           npm install jsondiffpatch lz-string
 
-      - name: Process and apply changes
+      - name: Save payload to file
+        run: |
+          echo '${{ toJSON(github.event.client_payload) }}' > payload.json
+
+      - name: Apply changes
         run: |
           node -e "
             const fs = require('fs');
@@ -38,96 +42,90 @@ jobs:
               console.log('No existing data.json, creating new one');
             }
             
-            const payloadType = '${{ github.event.client_payload.type }}';
-            const compression = '${{ github.event.client_payload.compression }}';
+            // Read payload
+            const payload = JSON.parse(fs.readFileSync('payload.json', 'utf8'));
+            const payloadType = payload.type || 'diff';
+            const compression = payload.compression || 'none';
+            
             let newData = null;
             
             // Handle chunked payloads
             if (payloadType === 'chunked') {
-              const chunkIndex = parseInt('${{ github.event.client_payload.chunk_index }}');
-              const totalChunks = parseInt('${{ github.event.client_payload.total_chunks }}');
-              const chunkData = '${{ github.event.client_payload.chunk_data }}';
+              const chunkIndex = payload.chunk_index || 0;
+              const totalChunks = payload.total_chunks || 1;
+              const chunkData = payload.chunk_data || '';
               
-              // Store chunk in temporary file
-              const chunkFile = `chunk_\${chunkIndex}.json`;
+              // Store chunk
+              const chunkFile = 'chunk_' + chunkIndex + '.json';
               fs.writeFileSync(chunkFile, chunkData);
               
-              // If this is the first chunk, initialize the combined file
               if (chunkIndex === 0) {
-                fs.writeFileSync('combined_chunks.json', chunkData);
+                fs.writeFileSync('combined.json', chunkData);
               } else {
-                // Append to existing combined file
-                const existing = fs.readFileSync('combined_chunks.json', 'utf8');
-                // Remove trailing '}' or ']' and combine
+                const existing = fs.readFileSync('combined.json', 'utf8');
                 let combined = existing.slice(0, -1) + ',' + chunkData.slice(1);
-                fs.writeFileSync('combined_chunks.json', combined);
+                fs.writeFileSync('combined.json', combined);
               }
               
-              // If last chunk, process the combined data
               if (chunkIndex === totalChunks - 1) {
-                const fullData = fs.readFileSync('combined_chunks.json', 'utf8');
+                let fullData = fs.readFileSync('combined.json', 'utf8');
                 
-                // Decompress if needed
-                let decompressed = fullData;
                 if (compression === 'lzstring') {
-                  decompressed = LZString.decompressFromEncodedURIComponent(fullData);
-                  if (!decompressed) {
+                  const decompressed = LZString.decompressFromEncodedURIComponent(fullData);
+                  if (decompressed) {
+                    fullData = decompressed;
+                  } else {
                     console.error('Failed to decompress chunked data');
                     process.exit(1);
                   }
                 }
                 
                 try {
-                  const parsed = JSON.parse(decompressed);
+                  const parsed = JSON.parse(fullData);
                   newData = jsondiffpatch.patch(currentData, parsed);
                 } catch (e) {
-                  console.error('Failed to apply chunked diff:', e);
+                  console.error('Failed to apply chunked diff:', e.message);
                   process.exit(1);
                 }
-                
-                // Clean up temp files
-                for (let i = 0; i < totalChunks; i++) {
-                  try { fs.unlinkSync(`chunk_\${i}.json`); } catch(e) {}
-                }
-                try { fs.unlinkSync('combined_chunks.json'); } catch(e) {}
               } else {
-                console.log(`✅ Chunk \${chunkIndex+1}/\${totalChunks} received`);
-                process.exit(0); // Exit early, wait for next chunk
+                console.log('Chunk ' + (chunkIndex + 1) + '/' + totalChunks + ' received');
+                process.exit(0);
               }
             } 
-            // Handle single payload (compressed or plain)
+            // Handle single payload
             else {
-              let payloadData = '${{ github.event.client_payload.data }}';
+              let payloadData = payload.data || '';
               
-              // Decompress if needed
               if (compression === 'lzstring') {
-                payloadData = LZString.decompressFromEncodedURIComponent(payloadData);
-                if (!payloadData) {
+                const decompressed = LZString.decompressFromEncodedURIComponent(payloadData);
+                if (decompressed) {
+                  payloadData = decompressed;
+                } else {
                   console.error('Failed to decompress data');
                   process.exit(1);
                 }
               }
               
-              const parsed = JSON.parse(payloadData);
-              
-              if (payloadType === 'diff' || payloadType === 'compressed-diff') {
-                newData = jsondiffpatch.patch(currentData, parsed);
-              } else {
-                // Fallback: direct replacement
-                newData = parsed;
+              try {
+                const parsed = JSON.parse(payloadData);
+                if (payloadType === 'diff' || payloadType === 'compressed-diff') {
+                  newData = jsondiffpatch.patch(currentData, parsed);
+                } else {
+                  newData = parsed;
+                }
+              } catch (e) {
+                console.error('Failed to parse payload:', e.message);
+                process.exit(1);
               }
             }
             
-            // Write the updated data
             if (newData) {
               fs.writeFileSync('data.json', JSON.stringify(newData, null, 2));
               console.log('✅ data.json updated successfully');
-            } else {
-              console.log('⚠️ No data to write, waiting for more chunks');
             }
           "
 
-      - name: Validate JSON (if data.json was updated)
+      - name: Validate JSON
         run: |
           if [ -f data.json ] && [ -s data.json ]; then
             if ! jq empty data.json 2>/dev/null; then
@@ -138,7 +136,7 @@ jobs:
             echo "✅ JSON validation passed"
           fi
 
-      - name: Commit and push (if data changed)
+      - name: Commit and push
         run: |
           if [ -f data.json ] && git diff --quiet data.json; then
             echo "No changes to commit"
@@ -149,5 +147,3 @@ jobs:
             git commit -m "Apply changes from web [skip ci]" || echo "No changes to commit"
             git push
           fi
-          git commit -m "Apply changes from web [skip ci]" || echo "No changes to commit"
-          git push
