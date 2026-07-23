@@ -335,7 +335,7 @@ function initializeSnapshot(data) {
 }
 
 // ============================
-// 9. Save Data to GitHub (Send only diff)
+// Save data to GitHub (Plan B - with LZString compression)
 // ============================
 
 async function saveDataToGitHub(data) {
@@ -344,7 +344,7 @@ async function saveDataToGitHub(data) {
 
     const saveBtn = document.getElementById('saveDataBtn');
     if (saveBtn) {
-        saveBtn.textContent = '⏳ Checking changes...';
+        saveBtn.textContent = '⏳ Saving...';
         saveBtn.disabled = true;
     }
 
@@ -368,38 +368,43 @@ async function saveDataToGitHub(data) {
         
         if (!diff) {
             alert('ℹ️ No changes detected. Nothing to save.');
+            isSaving = false;
             if (saveBtn) {
                 saveBtn.textContent = '💾 Save to GitHub';
                 saveBtn.disabled = false;
             }
-            isSaving = false;
             return;
         }
 
-        // Calculate diff size
-        const diffStr = JSON.stringify(diff);
-        console.log(`📊 Diff size: ${diffStr.length} bytes (${(diffStr.length/1024).toFixed(1)} KB)`);
-
-        // Make sure diff is under 64KB
-        if (diffStr.length > 64000) {
-            console.warn('⚠️ Diff is large, falling back to full data');
-            diff = { _full: data };
+        // Check if LZString is available
+        let payloadData = diff;
+        let compression = 'none';
+        
+        if (typeof LZString !== 'undefined' && LZString.compressToEncodedURIComponent) {
+            const jsonStr = JSON.stringify(diff);
+            const compressed = LZString.compressToEncodedURIComponent(jsonStr);
+            if (compressed && compressed.length < jsonStr.length) {
+                payloadData = compressed;
+                compression = 'lzstring';
+                console.log(`📊 Compressed: ${jsonStr.length} -> ${compressed.length} bytes`);
+            }
         }
 
-        const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`;
+        // Build payload
         const payload = {
             event_type: 'update-data',
             client_payload: {
                 type: 'diff',
-                diff: diff,
+                compression: compression,
+                data: payloadData,
                 snapshot_id: Date.now()
             }
         };
 
-        if (saveBtn) {
-            saveBtn.textContent = '⏳ Sending diff...';
-        }
+        console.log('📤 Sending payload with compression:', compression);
+        console.log('📤 Payload data length:', JSON.stringify(payloadData).length);
 
+        const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`;
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -419,12 +424,10 @@ async function saveDataToGitHub(data) {
             throw new Error(errorData.message || `HTTP ${response.status}`);
         }
 
-        // Save successful - update snapshot
         saveSnapshot(data);
-
         alert('✅ Changes saved successfully!\n\n' +
-              `📊 Diff size: ${(diffStr.length/1024).toFixed(1)} KB\n` +
-              'GitHub Actions is applying the changes. Please wait a moment and refresh.');
+              `📊 Compression: ${compression === 'lzstring' ? '🔒 Compressed' : '📄 Plain'}\n\n` +
+              'GitHub Actions is applying the changes.');
 
         setTimeout(() => {
             if (confirm('Refresh page to see the latest data?')) {
@@ -443,36 +446,6 @@ async function saveDataToGitHub(data) {
         }
     }
 }
-
-// ============================
-// 10. Token Setup
-// ============================
-
-function showTokenSetup() {
-    const currentToken = getGitHubToken() || '';
-    const newToken = prompt(
-        '🔑 Enter your GitHub Personal Access Token\n\n' +
-        'How to get one:\n' +
-        '1. GitHub Settings → Developer settings\n' +
-        '2. Personal access tokens → Tokens (classic)\n' +
-        '3. Check "repo" (all permissions)\n\n' +
-        'The token will be saved in your browser.',
-        currentToken
-    );
-    if (newToken !== null && newToken.trim()) {
-        localStorage.setItem('github_token', newToken.trim());
-        alert('✅ Token saved to browser local storage');
-        loadData();
-    } else if (newToken === '') {
-        localStorage.removeItem('github_token');
-        alert('Token cleared');
-    }
-}
-
-window.setupToken = showTokenSetup;
-window.loadData = loadData;
-window.saveDataToGitHub = saveDataToGitHub;
-
 // ============================
 // 11. Get Current Scenario
 // ============================
