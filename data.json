@@ -1,1 +1,46 @@
-
+{
+  "departments": ["Sales", "Production Planning", "Material Planning", "Material Handling", "Purchase ", "Production Execution", "Production Execution (Body)", "Production Execution (Paint)", "Production Execution (Trim)", "Production Enginnering ", "Production Enginnering (Body)", "Production Enginnering (Paint)", "Production Enginnering (Trim) ", "Trade & Complaince", "Finance & Controlling", "Inbound Logistic ", "Outbound Logistic", "Parts Quality", "Vehicle Quality", "Environment", "BOM Management", "All"],
+  "sysNameList": ["SAP", "LES", "MES", "KAPTURE", "IOT", "LEGATO", "SCADA", "SPS", "WMS", "To Be Determined"],
+  "sysStatusList": [
+    { "value": "Operational", "color": "green" },
+    { "value": "Completed", "color": "green" },
+    { "value": "Offline", "color": "red" },
+    { "value": "To Be Implemented", "color": "red" },
+    { "value": "Work in Porgress", "color": "yellow" }
+  ],
+  "sysRespList": [],
+  "businessStatuses": [
+    { "value": "Not Defined", "color": "red" },
+    { "value": "In Progress", "color": "yellow" },
+    { "value": "Completed", "color": "green" }
+  ],
+  "scenarios": [
+    {
+      "id": "default",
+      "name": "Manufacturing",
+      "processes": [
+        {
+          "id": "1781161866074-ccs1x0d0",
+          "seq": "10",
+          "name": "Sales Forecast",
+          "description": "Sales forecast agreed in S&OP meeting",
+          "raci": { "r": ["Sales"], "a": [], "c": [], "i": [] },
+          "businessStatus": "Completed",
+          "system": { "name": "To Be Determined", "status": "Offline", "responsible": "" },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request..."
+        }
+        // ... 继续复制所有 processes
+      ]
+    },
+    {
+      "id": "1777474499044-2n4tvjmh",
+      "name": "No qualified parts",
+      "processes": [
+        // ... 复制第二个场景的所有 processes
+      ]
+    }
+  ],
+  "currentScenarioId": "default"
+}
