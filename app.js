@@ -335,7 +335,7 @@ function initializeSnapshot(data) {
 }
 
 // ============================
-// Save data to GitHub (with chunking + compression)
+// Save data to GitHub (JSON-aware chunking)
 // ============================
 
 async function saveDataToGitHub(data) {
@@ -388,28 +388,168 @@ async function saveDataToGitHub(data) {
             if (testCompress && testCompress.length < jsonStr.length) {
                 compressed = testCompress;
                 compression = 'lzstring';
-                console.log(`📊 Compressed: ${jsonStr.length} -> ${compressed.length} bytes (${(compressed.length/1024).toFixed(1)} KB)`);
+                console.log(`📊 Compressed: ${jsonStr.length} -> ${compressed.length} bytes`);
             }
         }
 
-        // If compressed data is still large (> 40KB), split into chunks
-        const MAX_CHUNK_SIZE = 40000; // 40KB per chunk (safe under 64KB limit)
-        let payloadData = compressed;
+        // If compressed data is still large (> 40KB), split into chunks at JSON boundaries
+        const MAX_CHUNK_SIZE = 40000;
         let totalChunks = 1;
-        let isChunked = false;
         let chunkIndex = 0;
+        let chunks = [];
 
         if (compressed.length > MAX_CHUNK_SIZE) {
-            totalChunks = Math.ceil(compressed.length / MAX_CHUNK_SIZE);
-            isChunked = true;
-            console.log(`📦 Splitting into ${totalChunks} chunks`);
-
+            // For JSON-aware chunking, we need to work with the original JSON
+            // If compressed, we need to decompress first, chunk, then re-compress each chunk
+            let workingData = jsonStr; // Use uncompressed for chunking
+            let isCompressed = false;
+            
+            if (compression === 'lzstring') {
+                // Decompress to get the raw JSON
+                const decompressed = LZString.decompressFromEncodedURIComponent(compressed);
+                if (decompressed) {
+                    workingData = decompressed;
+                    isCompressed = true;
+                }
+            }
+            
+            // Find safe split points at JSON boundaries
+            // We want to split after complete objects or arrays
+            let splitPoints = [];
+            let braceCount = 0;
+            let bracketCount = 0;
+            let inString = false;
+            let escapeNext = false;
+            
+            for (let i = 0; i < workingData.length; i++) {
+                const char = workingData[i];
+                
+                if (escapeNext) {
+                    escapeNext = false;
+                    continue;
+                }
+                
+                if (char === '\\') {
+                    escapeNext = true;
+                    continue;
+                }
+                
+                if (char === '"' && !escapeNext) {
+                    inString = !inString;
+                    continue;
+                }
+                
+                if (inString) continue;
+                
+                if (char === '{') braceCount++;
+                if (char === '}') braceCount--;
+                if (char === '[') bracketCount++;
+                if (char === ']') bracketCount--;
+                
+                // If we're at a safe boundary (brace/bracket count is 0 and we're at a comma)
+                if (braceCount === 0 && bracketCount === 0 && char === ',') {
+                    // Only split if we've accumulated enough data
+                    const lastSplit = splitPoints.length > 0 ? splitPoints[splitPoints.length - 1] : -1;
+                    if (i - lastSplit > MAX_CHUNK_SIZE * 0.5) {
+                        splitPoints.push(i);
+                    }
+                }
+            }
+            
+            // If no safe split points found, fallback to character-based splitting
+            if (splitPoints.length === 0) {
+                console.log('No safe JSON boundaries found, falling back to character-based splitting');
+                const chunkSize = MAX_CHUNK_SIZE;
+                for (let i = 0; i < workingData.length; i += chunkSize) {
+                    splitPoints.push(Math.min(i + chunkSize, workingData.length));
+                }
+                splitPoints = splitPoints.slice(0, -1); // Remove the last one (it's the end)
+            }
+            
+            // Create chunks from split points
+            let start = 0;
+            for (const end of splitPoints) {
+                const chunk = workingData.substring(start, end);
+                // Make sure the chunk is valid JSON
+                try {
+                    JSON.parse(chunk);
+                    chunks.push(chunk);
+                    start = end;
+                } catch (e) {
+                    // If the chunk is not valid JSON, try to find a valid sub-chunk
+                    console.log('Chunk at position', start, 'was not valid JSON, adjusting...');
+                    // Try to find the last complete object in this chunk
+                    let adjustedEnd = end;
+                    let found = false;
+                    let braceCount2 = 0;
+                    let bracketCount2 = 0;
+                    let inString2 = false;
+                    let escapeNext2 = false;
+                    
+                    for (let i = start; i < end; i++) {
+                        const char2 = workingData[i];
+                        if (escapeNext2) {
+                            escapeNext2 = false;
+                            continue;
+                        }
+                        if (char2 === '\\') {
+                            escapeNext2 = true;
+                            continue;
+                        }
+                        if (char2 === '"' && !escapeNext2) {
+                            inString2 = !inString2;
+                            continue;
+                        }
+                        if (inString2) continue;
+                        if (char2 === '{') braceCount2++;
+                        if (char2 === '}') braceCount2--;
+                        if (char2 === '[') bracketCount2++;
+                        if (char2 === ']') bracketCount2--;
+                        
+                        if (braceCount2 === 0 && bracketCount2 === 0) {
+                            // Found a safe point
+                            const candidate = workingData.substring(start, i + 1);
+                            try {
+                                JSON.parse(candidate);
+                                adjustedEnd = i + 1;
+                                found = true;
+                            } catch (e2) {
+                                // Not valid, continue
+                            }
+                        }
+                    }
+                    
+                    if (found) {
+                        chunks.push(workingData.substring(start, adjustedEnd));
+                        start = adjustedEnd;
+                    } else {
+                        // If still not found, just use the original end
+                        chunks.push(workingData.substring(start, end));
+                        start = end;
+                    }
+                }
+            }
+            
+            // Add the last chunk if any
+            if (start < workingData.length) {
+                chunks.push(workingData.substring(start));
+            }
+            
+            // If chunks were created from decompressed data, re-compress each chunk
+            if (isCompressed && chunks.length > 1) {
+                const compressedChunks = chunks.map(c => LZString.compressToEncodedURIComponent(c));
+                // Verify each compressed chunk is valid
+                chunks = compressedChunks;
+                compression = 'lzstring';
+            }
+            
+            totalChunks = chunks.length;
+            console.log(`📦 Split into ${totalChunks} JSON-safe chunks`);
+            
             // Send chunks sequentially
             for (chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
-                const start = chunkIndex * MAX_CHUNK_SIZE;
-                const end = Math.min(start + MAX_CHUNK_SIZE, compressed.length);
-                const chunkData = compressed.substring(start, end);
-
+                const chunkData = chunks[chunkIndex];
+                
                 if (saveBtn) {
                     saveBtn.textContent = `⏳ Sending chunk ${chunkIndex + 1}/${totalChunks}...`;
                 }
@@ -442,19 +582,16 @@ async function saveDataToGitHub(data) {
                     throw new Error(`Chunk ${chunkIndex + 1} failed: ${errorData.message || response.statusText}`);
                 }
 
-                // Wait 1 second between chunks to avoid rate limiting
                 if (chunkIndex < totalChunks - 1) {
                     await new Promise(r => setTimeout(r, 1000));
                 }
             }
 
-            // All chunks sent successfully
             saveSnapshot(data);
             alert(`✅ Changes saved successfully!\n\n` +
                   `📊 Total size: ${(jsonStr.length/1024).toFixed(1)} KB\n` +
-                  `📦 Split into ${totalChunks} chunks\n` +
-                  `🔒 Compression: ${compression === 'lzstring' ? 'Enabled' : 'None'}\n\n` +
-                  'GitHub Actions is processing all chunks. Please wait a moment.');
+                  `📦 Split into ${totalChunks} JSON-safe chunks\n\n` +
+                  'GitHub Actions is processing all chunks.');
 
             setTimeout(() => {
                 if (confirm('Refresh page to see the latest data?')) {
@@ -503,8 +640,7 @@ async function saveDataToGitHub(data) {
 
         saveSnapshot(data);
         alert('✅ Changes saved successfully!\n\n' +
-              `📊 Size: ${(jsonStr.length/1024).toFixed(1)} KB\n` +
-              `🔒 Compression: ${compression === 'lzstring' ? 'Enabled' : 'None'}\n\n` +
+              `📊 Size: ${(jsonStr.length/1024).toFixed(1)} KB\n\n` +
               'GitHub Actions is applying the changes.');
 
         setTimeout(() => {
