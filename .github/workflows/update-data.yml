@@ -20,8 +20,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # Use older version that supports require()
-          npm install jsondiffpatch@0.4.1 lz-string
+          # Use the 'diff' package - works with require() and handles JSON diff
+          npm install diff lz-string
 
       - name: Save payload to file
         run: |
@@ -31,9 +31,10 @@ jobs:
         run: |
           node -e "
             const fs = require('fs');
-            const jsondiffpatch = require('jsondiffpatch');
+            const { diffJson, applyPatch } = require('diff');
             const LZString = require('lz-string');
             
+            // Read current data.json
             let currentData = {};
             try {
               const content = fs.readFileSync('data.json', 'utf8');
@@ -42,12 +43,14 @@ jobs:
               console.log('No existing data.json, creating new one');
             }
             
+            // Read payload
             const payload = JSON.parse(fs.readFileSync('payload.json', 'utf8'));
             const payloadType = payload.type || 'diff';
             const compression = payload.compression || 'none';
             
             let newData = null;
             
+            // Handle chunked payloads
             if (payloadType === 'chunked') {
               const chunkIndex = payload.chunk_index || 0;
               const totalChunks = payload.total_chunks || 1;
@@ -79,7 +82,10 @@ jobs:
                 
                 try {
                   const parsed = JSON.parse(fullData);
-                  newData = jsondiffpatch.patch(currentData, parsed);
+                  // Use the diff package to apply changes
+                  const currentStr = JSON.stringify(currentData);
+                  const patch = diffJson(currentData, parsed);
+                  newData = applyPatch(currentData, patch);
                 } catch (e) {
                   console.error('Failed to apply chunked diff:', e.message);
                   process.exit(1);
@@ -88,7 +94,9 @@ jobs:
                 console.log('Chunk ' + (chunkIndex + 1) + '/' + totalChunks + ' received');
                 process.exit(0);
               }
-            } else {
+            } 
+            // Handle single payload
+            else {
               let payloadData = payload.data || '';
               
               if (compression === 'lzstring') {
@@ -104,7 +112,9 @@ jobs:
               try {
                 const parsed = JSON.parse(payloadData);
                 if (payloadType === 'diff' || payloadType === 'compressed-diff') {
-                  newData = jsondiffpatch.patch(currentData, parsed);
+                  // Use the diff package to apply changes
+                  const patch = diffJson(currentData, parsed);
+                  newData = applyPatch(currentData, patch);
                 } else {
                   newData = parsed;
                 }
@@ -137,7 +147,7 @@ jobs:
             echo "No changes to commit"
           else
             git config user.name "github-actions[bot]"
-            git config.user.email "github-actions[bot]@users.noreply.github.com"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
             git add data.json
             git commit -m "Apply changes from web [skip ci]" || echo "No changes to commit"
             git push
