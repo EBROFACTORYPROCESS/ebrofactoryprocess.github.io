@@ -13,14 +13,65 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
 
-      - name: Update data.json
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install jsondiffpatch
+        run: npm install jsondiffpatch
+
+      - name: Apply diff to data.json
         run: |
-          echo '${{ github.event.client_payload.content }}' > data.json
+          node -e "
+            const fs = require('fs');
+            const jsondiffpatch = require('jsondiffpatch');
+            
+            // Get the diff from the payload
+            const diff = ${{ toJSON(github.event.client_payload.diff) }};
+            const type = '${{ github.event.client_payload.type }}';
+            
+            // Read current data.json
+            let currentData = {};
+            try {
+              const content = fs.readFileSync('data.json', 'utf8');
+              currentData = JSON.parse(content);
+            } catch (e) {
+              console.log('No existing data.json, creating new one');
+            }
+            
+            let newData;
+            if (type === 'diff') {
+              // Apply the diff
+              if (diff._full) {
+                // Full data fallback
+                newData = diff._full;
+              } else {
+                // Use jsondiffpatch to apply the diff
+                newData = jsondiffpatch.patch(currentData, diff);
+              }
+            } else {
+              // Legacy: just use the content directly
+              newData = ${{ toJSON(github.event.client_payload.content) }};
+            }
+            
+            // Write the updated data
+            fs.writeFileSync('data.json', JSON.stringify(newData, null, 2));
+            console.log('✅ data.json updated successfully');
+          "
+
+      - name: Validate JSON
+        run: |
+          if ! jq empty data.json 2>/dev/null; then
+            echo "❌ Invalid JSON in data.json"
+            cat data.json
+            exit 1
+          fi
 
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data.json
-          git commit -m "Update data.json from web [skip ci]" || echo "No changes to commit"
+          git commit -m "Apply changes from web [skip ci]" || echo "No changes to commit"
           git push
