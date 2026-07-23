@@ -1595,25 +1595,56 @@ function bindEvents() {
     };
 
     // Mode Switch
-    document.getElementById('modeToggleBtn').onclick = () => {
+    document.getElementById('modeToggleBtn').onclick = function() {
         if (currentMode === 'display') {
-            let pwd = prompt('Password:');
-            if (pwd !== 'admin') return;
+            // Switch to edit mode
+            const pwd = prompt('Enter edit password:');
+            if (pwd !== 'admin') {
+                alert('Incorrect password');
+                return;
+            }
+        
+            // Password correct, enter edit mode
             currentMode = 'edit';
             collapseState.clear();
+        
+            // 🔑 Check for existing Token
+            const token = getGitHubToken();
+            if (!token) {
+                // No Token stored, prompt user
+                const newToken = prompt(
+                    '🔑 Enter your GitHub Token to enable saving\n\n' +
+                    'The Token will be saved in your browser and you won\'t need to re-enter it next time.\n\n' +
+                    'If you skip this step, you can still view and edit data, but you won\'t be able to save to GitHub.'
+                );
+                if (newToken && newToken.trim()) {
+                    localStorage.setItem('github_token', newToken.trim());
+                    alert('✅ Token saved to browser local storage');
+                    // Reload data to ensure connection is working
+                    loadData();
+                } else {
+                    alert('⚠️ No Token provided. You can still edit data, but saving to GitHub will not work.\n' +
+                          'You can export your changes as CSV or HTML as a backup.');
+                }
+            }
+        
+            // Update UI
             renderCurrentView();
+            updateUIVisibility();
+        
         } else {
+            // Switch to display mode
             currentMode = 'display';
-            let sc = getCurrentScenario();
+            const sc = getCurrentScenario();
             if (sc) {
                 for (let p of sc.processes) {
                     if (!p.seq.includes('.')) collapseState.set(p.id, true);
                 }
             }
             renderCurrentView();
+            updateUIVisibility();
         }
     };
-
     // Savedata
     document.getElementById('saveDataBtn').onclick = () => {
         saveDataToGitHub(appData);
