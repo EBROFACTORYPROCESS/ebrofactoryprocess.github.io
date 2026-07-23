@@ -1,0 +1,26 @@
+name: Update data.json from web
+
+on:
+  repository_dispatch:
+    types: [update-data]
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: Update data.json
+        run: |
+          echo '${{ github.event.client_payload.content }}' > data.json
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          git commit -m "Update data.json from web [skip ci]" || echo "No changes to commit"
+          git push
