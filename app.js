@@ -247,7 +247,7 @@ function getDefaultData() {
 }
 
 // ============================
-// Save data to GitHub
+// Save data to GitHub (send only diff)
 // ============================
 async function saveDataToGitHub(data) {
     if (isSaving) return;
@@ -255,15 +255,14 @@ async function saveDataToGitHub(data) {
 
     const saveBtn = document.getElementById('saveDataBtn');
     if (saveBtn) {
-        saveBtn.textContent = '⏳ Saving...';
+        saveBtn.textContent = '⏳ Checking changes...';
         saveBtn.disabled = true;
     }
 
     try {
-        // 🔑 Check for Token again when saving
+        // 🔑 Check for Token
         let token = getGitHubToken();
         if (!token) {
-            // No Token stored, prompt user
             token = prompt(
                 '🔑 A GitHub Token is required to save data\n\n' +
                 'Please enter your GitHub Token. It will be saved in your browser.'
@@ -276,14 +275,44 @@ async function saveDataToGitHub(data) {
             }
         }
 
-        // Call GitHub API to trigger Actions
+        // 📊 Generate diff
+        let diff = generateDiff(lastSnapshot, data);
+        
+        if (!diff) {
+            alert('ℹ️ No changes detected. Nothing to save.');
+            if (saveBtn) {
+                saveBtn.textContent = '💾 Save to GitHub';
+                saveBtn.disabled = false;
+            }
+            isSaving = false;
+            return;
+        }
+
+        // 📊 Calculate diff size
+        const diffStr = JSON.stringify(diff);
+        console.log(`📊 Diff size: ${diffStr.length} bytes (${(diffStr.length/1024).toFixed(1)} KB)`);
+
+        // Make sure diff is under 64KB
+        if (diffStr.length > 64000) {
+            console.warn('⚠️ Diff is large, falling back to full data');
+            // Fallback: send full data (will be compressed if needed)
+            diff = { _full: data };
+        }
+
         const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`;
         const payload = {
             event_type: 'update-data',
             client_payload: {
-                content: JSON.stringify(data, null, 2)
+                type: 'diff',  // Tell the action this is a diff
+                diff: diff,
+                snapshot_id: Date.now()
             }
         };
+
+        // Update button status
+        if (saveBtn) {
+            saveBtn.textContent = '⏳ Sending diff...';
+        }
 
         const response = await fetch(url, {
             method: 'POST',
@@ -297,7 +326,6 @@ async function saveDataToGitHub(data) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            // If Token is invalid, clear it so user can re-enter
             if (response.status === 401) {
                 localStorage.removeItem('github_token');
                 throw new Error('Token is invalid or expired. Please re-enter your Token.');
@@ -305,8 +333,19 @@ async function saveDataToGitHub(data) {
             throw new Error(errorData.message || `HTTP ${response.status}`);
         }
 
-        alert('✅ Data submitted for saving!\n\nGitHub Actions is processing. Please wait 10-30 seconds and refresh the page.');
-        setTimeout(() => location.reload(), 5000);
+        // ✅ Save successful - update snapshot
+        saveSnapshot(data);
+
+        alert('✅ Changes saved successfully!\n\n' +
+              `📊 Diff size: ${(diffStr.length/1024).toFixed(1)} KB\n` +
+              'GitHub Actions is applying the changes. Please wait a moment and refresh.');
+
+        // Optional: auto-refresh after 10 seconds
+        setTimeout(() => {
+            if (confirm('Refresh page to see the latest data?')) {
+                location.reload();
+            }
+        }, 8000);
 
     } catch (error) {
         console.error('Save failed:', error);
@@ -319,7 +358,6 @@ async function saveDataToGitHub(data) {
         }
     }
 }
-
 // ============================
 // 9. Token 设置
 // ============================
@@ -1820,6 +1858,87 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load data
     loadData();
 });
+
+// ============================
+// Snapshot management for diff
+// ============================
+
+// Store the last known good state
+let lastSnapshot = null;
+
+// Load snapshot from localStorage
+function loadSnapshot() {
+    try {
+        const saved = localStorage.getItem('bpo_snapshot');
+        if (saved) {
+            lastSnapshot = JSON.parse(saved);
+            return true;
+        }
+    } catch (e) {
+        console.warn('Failed to load snapshot:', e);
+    }
+    return false;
+}
+
+// Save snapshot to localStorage
+function saveSnapshot(data) {
+    try {
+        localStorage.setItem('bpo_snapshot', JSON.stringify(data));
+        lastSnapshot = JSON.parse(JSON.stringify(data)); // Deep copy
+        return true;
+    } catch (e) {
+        console.warn('Failed to save snapshot:', e);
+        return false;
+    }
+}
+
+// Compare two objects and generate a diff
+function generateDiff(oldData, newData) {
+    if (typeof jsondiffpatch !== 'undefined') {
+        // Use jsondiffpatch library
+        const delta = jsondiffpatch.diff(oldData, newData);
+        return delta || null;
+    } else {
+        // Fallback: simple custom diff (only detects top-level changes)
+        return generateSimpleDiff(oldData, newData);
+    }
+}
+
+// Simple custom diff (fallback)
+function generateSimpleDiff(oldData, newData) {
+    const diff = {};
+    let hasChanges = false;
+    
+    // Compare top-level keys
+    const allKeys = new Set([...Object.keys(oldData), ...Object.keys(newData)]);
+    for (const key of allKeys) {
+        const oldVal = JSON.stringify(oldData[key]);
+        const newVal = JSON.stringify(newData[key]);
+        if (oldVal !== newVal) {
+            diff[key] = newData[key];
+            hasChanges = true;
+        }
+    }
+    return hasChanges ? diff : null;
+}
+
+// Apply diff to restore full data
+function applyDiff(baseData, diff) {
+    if (typeof jsondiffpatch !== 'undefined') {
+        return jsondiffpatch.patch(baseData, diff);
+    } else {
+        // For simple diff, just merge
+        return { ...baseData, ...diff };
+    }
+}
+
+// Initialize snapshot on page load
+function initializeSnapshot(data) {
+    if (!loadSnapshot()) {
+        // No snapshot exists, create one
+        saveSnapshot(data);
+    }
+}
 
 // Expose global functions for HTML to call
 window.toggleCollapse = toggleCollapse;
