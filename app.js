@@ -199,6 +199,9 @@ async function loadData() {
             `;
         }
     }
+    if (appData) {
+        initializeSnapshot(appData);
+    }
 }
 
 // ============================
