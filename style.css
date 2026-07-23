@@ -1,1 +1,86 @@
+<style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+        body { min-height: 100vh; background: linear-gradient(145deg, #eef2f9 0%, #d9e2ef 100%); padding: 2rem; }
+        .glass-dashboard { max-width: 1500px; margin: 0 auto; background: rgba(255,255,255,0.92); border-radius: 2rem; border: 1px solid rgba(255,255,255,0.6); box-shadow: 0 25px 45px -12px rgba(0,0,0,0.25); padding: 1.8rem 2rem 2.2rem; overflow-x: auto; }
+        .top-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .title-section h1 { font-size: 1.9rem; font-weight: 700; background: linear-gradient(135deg, #1e3c72, #2a5298); background-clip: text; -webkit-background-clip: text; color: transparent; }
+        .mode-toggle-btn, .settings-btn, .save-html-btn { background: #ffffffdd; border: 1px solid #a0b8d4; border-radius: 60px; padding: 0.6rem 1.2rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; }
+        .scenario-panel { background: #f0f4fa; border-radius: 1.5rem; padding: 0.8rem 1.2rem; display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .scenario-label { color: #1e3c72; font-weight: 600; }
+        #scenarioSelect { background: white; border-radius: 2rem; padding: 0.5rem 1rem; min-width: 200px; }
+        .scenario-actions { display: inline-flex; gap: 0.5rem; }
+        .icon-btn, .icon-btn-small { background: #e2e8f0; border: none; border-radius: 2rem; padding: 0.4rem 1rem; color: #1e3c72; cursor: pointer; }
+        .danger-btn:hover { background: #f3b5b5; color: #a11; }
+        .action-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .search-wrapper { background: white; border-radius: 60px; padding: 0.4rem 1.2rem; border: 1px solid #cbd5e1; display: flex; align-items: center; gap: 0.5rem; }
+        #searchInput { background: transparent; border: none; outline: none; min-width: 240px; }
+        .btn-add { background: linear-gradient(105deg, #2a5298, #1e3c72); border: none; border-radius: 40px; padding: 0.5rem 1.2rem; font-weight: 500; color: white; cursor: pointer; }
+        .collapse-all-btn, .expand-all-btn { background: #e2e8f0; border: none; border-radius: 40px; padding: 0.5rem 1rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.3rem; }
+        .view-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 2px solid #cddae9; }
+        .tab-btn { background: transparent; border: none; padding: 0.6rem 1.4rem; border-radius: 2rem; font-weight: 500; color: #4a5b7a; cursor: pointer; }
+        .tab-btn.active { background: #e2e8f0; color: #1e3c72; }
+        .filter-panel { background: #f8fafc; border-radius: 1rem; padding: 1rem; margin-bottom: 1rem; border: 1px solid #e2e8f0; }
+        .filter-conditions { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; background: white; padding: 0.5rem; border-radius: 2rem; border: 1px solid #cbd5e1; }
+        .filter-row span { font-weight: bold; margin-right: 0.5rem; }
+        .filter-row input { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 2rem; padding: 0.3rem 0.7rem; }
+        .filter-row button { background: #fee2e2; border: none; border-radius: 30px; padding: 0.2rem 0.6rem; cursor: pointer; }
+        .filter-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+        .table-container { overflow-x: auto; border-radius: 1.2rem; background: white; border: 1px solid #e2e8f0; }
+        .flow-table { width: 100%; border-collapse: collapse; }
+        .flow-table th { text-align: left; padding: 0.8rem 1rem; background: #f8fafc; font-weight: 600; font-size: 0.8rem; border-bottom: 1px solid #e2e8f0; }
+        .flow-table td { padding: 0.7rem 1rem; border-bottom: 1px solid #edf2f7; vertical-align: middle; }
+        .clickable-name { cursor: pointer; font-weight: 600; color: #2a5298; border-bottom: 1px dashed #2a5298; }
+        .seq-input, .status-select, .sysname-select, .sysstatus-select { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 2rem; padding: 0.2rem 0.6rem; }
+        .delete-row-btn, .add-sub-btn { background: #fee2e2; border: none; border-radius: 30px; padding: 0.2rem 0.6rem; cursor: pointer; margin-left: 0.3rem; }
+        .add-sub-btn { background: #e0f2fe; color: #0369a1; }
+        .collapse-row-btn { background: none; border: none; cursor: pointer; font-size: 1rem; padding: 0 0.3rem; }
+        .sequence-fullview { background: #f8fafc; border-radius: 1.5rem; padding: 1rem; overflow-x: auto; border: 1px solid #e2e8f0; }
+        .main-card, .sub-card { background: white; border-radius: 1.2rem; border: 1px solid #cbd5e1; padding: 0.8rem 1rem; display: inline-block; box-shadow: 0 2px 5px rgba(0,0,0,0.03); min-width: 220px; margin: 0.4rem; position: relative; cursor: pointer; }
+        .main-card:hover, .sub-card:hover { background: #f1f5f9; border-color: #2a5298; }
+        .add-sub-icon { position: absolute; top: 6px; right: 8px; width: 22px; height: 22px; background: #2a5298; color: white; border-radius: 30px; text-align: center; line-height: 20px; font-size: 14px; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
+        .main-card:hover .add-sub-icon, .sub-card:hover .add-sub-icon { opacity: 1; }
+        .card-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+        .seq-badge { font-size: 0.7rem; font-weight: 700; background: #e2e8f0; padding: 0.2rem 0.7rem; border-radius: 30px; }
+        .status-badge { font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 30px; color: white; display: inline-flex; align-items: center; gap: 4px; }
+        .status-badge.red { background-color: #dc2626; }
+        .status-badge.yellow { background-color: #eab308; color: #1e293b; }
+        .status-badge.green { background-color: #16a34a; }
+        .status-badge.default { background-color: #6b7280; }
+        .sys-status-badge { font-size: 0.65rem; font-weight: 600; padding: 0.15rem 0.5rem; border-radius: 30px; margin-left: 0.5rem; color: white; display: inline-flex; align-items: center; gap: 4px; }
+        .sys-status-badge.red { background-color: #dc2626; }
+        .sys-status-badge.yellow { background-color: #eab308; color: #1e293b; }
+        .sys-status-badge.green { background-color: #16a34a; }
+        .sys-status-badge.default { background-color: #6b7280; }
+        .raci-tag { display: inline-block; background: #e2e8f0; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; margin: 0.1rem; }
+        .process-tree-children { display: flex; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; margin-top: 0.5rem; margin-left: 1rem; border-left: 2px solid #cbd5e1; padding-left: 1rem; }
+        .collapse-icon { cursor: pointer; font-size: 1rem; margin-right: 0.3rem; background: none; border: none; padding: 0 2px; color: #2a5298; }
+        .modal-overlay, .master-modal, .custom-modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; visibility: hidden; opacity: 0; transition: 0.2s; }
+        .modal-overlay.active, .master-modal.active, .custom-modal-overlay.active { visibility: visible; opacity: 1; }
+        .modal-container, .master-container, .custom-modal { background: white; border-radius: 2rem; width: 90%; max-width: 1100px; max-height: 85vh; overflow-y: auto; padding: 1.8rem; }
+        .custom-modal { max-width: 500px; }
+        .field-group { margin-bottom: 1rem; }
+        .field-group label { display: block; font-size: 0.7rem; text-transform: uppercase; font-weight: 600; margin-bottom: 0.2rem; }
+        .field-group input, .field-group select, .field-group textarea { width: 100%; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 1rem; padding: 0.5rem 0.8rem; }
+        .raci-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; margin: 1rem 0; }
+        .raci-section { border: 1px solid #e2e8f0; border-radius: 1rem; padding: 0.8rem; background: #fafcff; }
+        .checkbox-group { max-height: 200px; overflow-y: auto; }
+        .checkbox-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.2rem 0; }
+        .modal-buttons { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem; }
+        .save-btn { background: #2a5298; color: white; padding: 0.5rem 1.2rem; border-radius: 2rem; border: none; cursor: pointer; }
+        .cancel-btn { background: #e2e8f0; padding: 0.5rem 1.2rem; border-radius: 2rem; border: none; cursor: pointer; }
+        .preview-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+        .preview-table th, .preview-table td { padding: 0.4rem; border-bottom: 1px solid #e2e8f0; text-align: left; }
+        .display-mode .btn-add, .display-mode .scenario-actions button, .display-mode .delete-row-btn, .display-mode .add-sub-btn,
+        .display-mode .add-sub-icon, .display-mode #importProcessesBtn, .display-mode .save-html-btn,
+        .display-mode .filter-row button, .display-mode .master-del, .display-mode .add-item button { display: none !important; }
+        .display-mode .field-group input, .display-mode .field-group select { pointer-events: none; background: #f8fafc; }
+        .display-mode .clickable-name { cursor: default; border-bottom: none; }
+        .edit-mode .collapse-all-btn, .edit-mode .expand-all-btn { display: none !important; }
+        .link-icon { cursor: pointer; font-size: 1.2rem; color: #2a5298; margin-left: 0.3rem; vertical-align: middle; }
+        .field-group-with-icon { display: flex; align-items: center; gap: 0.5rem; }
+        .list-tag { background: #e2e8f0; padding: 0.2rem 0.6rem; border-radius: 20px; display: inline-flex; align-items: center; gap: 0.5rem; margin: 0.2rem; }
+        .master-section { border-top: 1px solid #e2e8f0; margin-top: 1rem; padding-top: 1rem; }
+        .add-item { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+    </style>
 
