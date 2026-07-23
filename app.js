@@ -1,10 +1,10 @@
 // ============================================================
-// app.js - 完整核心逻辑
-// 适配 ebrofactoryprocess.github.io
+// app.js - Complete Core Logic
+// Adapted for ebrofactoryprocess.github.io
 // ============================================================
 
 // ============================
-// 1. 常量与状态
+// 1. Constants & State
 // ============================
 
 const REPO_OWNER = 'ebrofactoryprocess';
@@ -23,8 +23,9 @@ let pendingDeleteCallback = null;
 let pendingAddSubCallback = null;
 let pendingImportCallback = null;
 let currentEditingProcess = null;
+let lastSnapshot = null;  // <-- Moved to top
 
-// 列路径映射
+// Column path mappings
 const columnPaths = {
     seq: p => p.seq,
     name: p => p.name,
@@ -60,7 +61,7 @@ const columnNames = {
 };
 
 // ============================
-// 2. 工具函数
+// 2. Utility Functions
 // ============================
 
 function genId() {
@@ -98,7 +99,7 @@ function isSeqUnique(scenario, seq, excludeId) {
 }
 
 // ============================
-// 3. 数据规范化
+// 3. Data Normalization
 // ============================
 
 function normalizeData(data) {
@@ -121,14 +122,16 @@ function normalizeData(data) {
 }
 
 // ============================
-// 4. 获取 Token
+// 4. Token Management
 // ============================
+
 function getGitHubToken() {
-    // 从浏览器本地存储读取 Token
+    // Read token from browser local storage
     return localStorage.getItem('github_token');
 }
+
 // ============================
-// 5. 获取当前文件 SHA
+// 5. Get Current File SHA
 // ============================
 
 async function fetchCurrentSha() {
@@ -146,13 +149,13 @@ async function fetchCurrentSha() {
         }
         return null;
     } catch (e) {
-        console.warn('获取 SHA 失败:', e);
+        console.warn('Failed to get SHA:', e);
         return null;
     }
 }
 
 // ============================
-// 6. 加载数据（强制不缓存）
+// 6. Load Data (Force no cache)
 // ============================
 
 async function loadData() {
@@ -184,38 +187,30 @@ async function loadData() {
 
         await fetchCurrentSha();
 
+        // Initialize snapshot after data is loaded
+        if (!loadSnapshot()) {
+            saveSnapshot(appData);
+        }
+
         if (loading) loading.style.display = 'none';
         if (root) root.style.display = 'block';
         renderApp();
 
     } catch (error) {
-        console.error('加载数据失败:', error);
+        console.error('Failed to load data:', error);
         if (loading) {
             loading.innerHTML = `
                 <div style="color:#dc2626;font-size:1.5rem;">❌</div>
-                <div>加载数据失败</div>
+                <div>Failed to load data</div>
                 <div style="font-size:0.8rem;color:#94a3b8;">${escapeHtml(error.message)}</div>
-                <button onclick="loadData()" style="margin-top:1rem;padding:0.5rem 1.5rem;border-radius:2rem;border:1px solid #2a5298;background:white;cursor:pointer;">重新加载</button>
+                <button onclick="loadData()" style="margin-top:1rem;padding:0.5rem 1.5rem;border-radius:2rem;border:1px solid #2a5298;background:white;cursor:pointer;">Retry</button>
             `;
         }
-    }
-    if (appData) {
-        initializeSnapshot(appData);
-    }
-    // After successfully loading and normalizing data
-    if (appData) {
-        // Initialize snapshot if not already done
-        if (!lastSnapshot) {
-            if (!loadSnapshot()) {
-                saveSnapshot(appData);
-            }
-        }
-        renderApp();
     }
 }
 
 // ============================
-// 7. 默认数据
+// 7. Default Data
 // ============================
 
 function getDefaultData() {
@@ -243,8 +238,8 @@ function getDefaultData() {
                     {
                         id: genId(),
                         seq: '10',
-                        name: '示例流程',
-                        description: '这是一个示例流程，请导入你的数据',
+                        name: 'Sample Process',
+                        description: 'This is a sample process. Please import your data.',
                         raci: { r: ['Sales'], a: [], c: [], i: [] },
                         businessStatus: 'Not Defined',
                         system: { name: 'To Be Determined', status: 'Offline', responsible: '' },
@@ -260,8 +255,89 @@ function getDefaultData() {
 }
 
 // ============================
-// Save data to GitHub (send only diff)
+// 8. Snapshot Management (Diff)
 // ============================
+
+function loadSnapshot() {
+    try {
+        const saved = localStorage.getItem('bpo_snapshot');
+        if (saved) {
+            lastSnapshot = JSON.parse(saved);
+            return true;
+        }
+    } catch (e) {
+        console.warn('Failed to load snapshot:', e);
+    }
+    return false;
+}
+
+function saveSnapshot(data) {
+    try {
+        localStorage.setItem('bpo_snapshot', JSON.stringify(data));
+        lastSnapshot = JSON.parse(JSON.stringify(data));
+        return true;
+    } catch (e) {
+        console.warn('Failed to save snapshot:', e);
+        return false;
+    }
+}
+
+function generateDiff(oldData, newData) {
+    // Check if jsondiffpatch is loaded
+    if (typeof jsondiffpatch !== 'undefined' && jsondiffpatch.diff) {
+        try {
+            const delta = jsondiffpatch.diff(oldData, newData);
+            return delta || null;
+        } catch (e) {
+            console.warn('jsondiffpatch diff failed, falling back to simple diff:', e);
+            return generateSimpleDiff(oldData, newData);
+        }
+    } else {
+        // Fallback: simple custom diff
+        console.warn('jsondiffpatch not loaded, using simple diff fallback');
+        return generateSimpleDiff(oldData, newData);
+    }
+}
+
+function generateSimpleDiff(oldData, newData) {
+    const diff = {};
+    let hasChanges = false;
+    
+    const allKeys = new Set([...Object.keys(oldData), ...Object.keys(newData)]);
+    for (const key of allKeys) {
+        const oldVal = JSON.stringify(oldData[key]);
+        const newVal = JSON.stringify(newData[key]);
+        if (oldVal !== newVal) {
+            diff[key] = newData[key];
+            hasChanges = true;
+        }
+    }
+    return hasChanges ? diff : null;
+}
+
+function applyDiff(baseData, diff) {
+    if (typeof jsondiffpatch !== 'undefined' && jsondiffpatch.patch) {
+        try {
+            return jsondiffpatch.patch(baseData, diff);
+        } catch (e) {
+            console.warn('jsondiffpatch patch failed, using merge fallback:', e);
+            return { ...baseData, ...diff };
+        }
+    } else {
+        return { ...baseData, ...diff };
+    }
+}
+
+function initializeSnapshot(data) {
+    if (!loadSnapshot()) {
+        saveSnapshot(data);
+    }
+}
+
+// ============================
+// 9. Save Data to GitHub (Send only diff)
+// ============================
+
 async function saveDataToGitHub(data) {
     if (isSaving) return;
     isSaving = true;
@@ -273,7 +349,6 @@ async function saveDataToGitHub(data) {
     }
 
     try {
-        // 🔑 Check for Token
         let token = getGitHubToken();
         if (!token) {
             token = prompt(
@@ -288,7 +363,7 @@ async function saveDataToGitHub(data) {
             }
         }
 
-        // 📊 Generate diff
+        // Generate diff
         let diff = generateDiff(lastSnapshot, data);
         
         if (!diff) {
@@ -301,14 +376,13 @@ async function saveDataToGitHub(data) {
             return;
         }
 
-        // 📊 Calculate diff size
+        // Calculate diff size
         const diffStr = JSON.stringify(diff);
         console.log(`📊 Diff size: ${diffStr.length} bytes (${(diffStr.length/1024).toFixed(1)} KB)`);
 
         // Make sure diff is under 64KB
         if (diffStr.length > 64000) {
             console.warn('⚠️ Diff is large, falling back to full data');
-            // Fallback: send full data (will be compressed if needed)
             diff = { _full: data };
         }
 
@@ -316,13 +390,12 @@ async function saveDataToGitHub(data) {
         const payload = {
             event_type: 'update-data',
             client_payload: {
-                type: 'diff',  // Tell the action this is a diff
+                type: 'diff',
                 diff: diff,
                 snapshot_id: Date.now()
             }
         };
 
-        // Update button status
         if (saveBtn) {
             saveBtn.textContent = '⏳ Sending diff...';
         }
@@ -346,14 +419,13 @@ async function saveDataToGitHub(data) {
             throw new Error(errorData.message || `HTTP ${response.status}`);
         }
 
-        // ✅ Save successful - update snapshot
+        // Save successful - update snapshot
         saveSnapshot(data);
 
         alert('✅ Changes saved successfully!\n\n' +
               `📊 Diff size: ${(diffStr.length/1024).toFixed(1)} KB\n` +
               'GitHub Actions is applying the changes. Please wait a moment and refresh.');
 
-        // Optional: auto-refresh after 10 seconds
         setTimeout(() => {
             if (confirm('Refresh page to see the latest data?')) {
                 location.reload();
@@ -371,28 +443,29 @@ async function saveDataToGitHub(data) {
         }
     }
 }
+
 // ============================
-// 9. Token 设置
+// 10. Token Setup
 // ============================
 
 function showTokenSetup() {
     const currentToken = getGitHubToken() || '';
     const newToken = prompt(
-        '🔑 请输入 GitHub Personal Access Token\n\n' +
-        '获取方式：\n' +
+        '🔑 Enter your GitHub Personal Access Token\n\n' +
+        'How to get one:\n' +
         '1. GitHub Settings → Developer settings\n' +
         '2. Personal access tokens → Tokens (classic)\n' +
-        '3. 勾选 repo (全部权限)\n\n' +
-        'Token 将保存在浏览器本地。',
+        '3. Check "repo" (all permissions)\n\n' +
+        'The token will be saved in your browser.',
         currentToken
     );
     if (newToken !== null && newToken.trim()) {
         localStorage.setItem('github_token', newToken.trim());
-        alert('✅ Token 已保存到浏览器本地');
+        alert('✅ Token saved to browser local storage');
         loadData();
     } else if (newToken === '') {
         localStorage.removeItem('github_token');
-        alert('Token 已清除');
+        alert('Token cleared');
     }
 }
 
@@ -401,7 +474,7 @@ window.loadData = loadData;
 window.saveDataToGitHub = saveDataToGitHub;
 
 // ============================
-// 10. 获取当前场景
+// 11. Get Current Scenario
 // ============================
 
 function getCurrentScenario() {
@@ -415,7 +488,7 @@ function getScenarioById(id) {
 }
 
 // ============================
-// 11. 过滤和搜索
+// 12. Filter and Search
 // ============================
 
 function matchesFilters(proc) {
@@ -513,7 +586,7 @@ function expandAllParents() {
 }
 
 // ============================
-// 12. 渲染：表格视图
+// 13. Render: Table View
 // ============================
 
 function renderTable() {
@@ -543,7 +616,7 @@ function renderTable() {
     for (let proc of processes) {
         let row = tbody.insertRow();
 
-        // 折叠按钮
+        // Collapse button
         let tdCollapse = row.insertCell();
         let isParent = !proc.seq.includes('.');
         let hasChildren = isParent && scenario.processes.some(p => p.seq.startsWith(proc.seq + '.'));
@@ -663,7 +736,7 @@ function renderTable() {
         }
     }
 
-    // 折叠隐藏
+    // Collapse hiding
     if (activeFilters.length === 0 && !searchKeyword && currentMode !== 'edit') {
         for (let proc of processes) {
             if (proc.seq.includes('.')) {
@@ -682,7 +755,7 @@ function renderTable() {
 }
 
 // ============================
-// 13. 渲染：树视图
+// 14. Render: Tree View
 // ============================
 
 function renderSequence() {
@@ -782,7 +855,7 @@ function renderSequence() {
 }
 
 // ============================
-// 14. 子流程操作
+// 15. Subprocess Operations
 // ============================
 
 function addSubprocessWithInsertion(parent, seq, name) {
@@ -866,7 +939,7 @@ function confirmDelete(proc, scenario) {
 }
 
 // ============================
-// 15. RACI 渲染
+// 16. RACI Rendering
 // ============================
 
 function renderRaciCheckboxes(proc) {
@@ -956,7 +1029,7 @@ function updateDocumentLinkIcon(inputId, linkIconId) {
 }
 
 // ============================
-// 16. 流程详情弹窗
+// 17. Process Detail Modal
 // ============================
 
 function openProcessDetail(procId) {
@@ -1061,7 +1134,7 @@ function saveModal() {
 }
 
 // ============================
-// 17. Master Data UI
+// 18. Master Data UI
 // ============================
 
 function refreshMasterUI() {
@@ -1080,7 +1153,7 @@ function refreshMasterUI() {
     document.getElementById('masterContent').innerHTML = html;
     if (!isEdit) return;
 
-    // 删除按钮
+    // Delete buttons
     document.querySelectorAll('.master-del').forEach(btn => {
         btn.onclick = () => {
             let type = btn.getAttribute('data-type');
@@ -1095,7 +1168,7 @@ function refreshMasterUI() {
         };
     });
 
-    // 颜色选择器
+    // Color pickers
     document.querySelectorAll('.sysstatus-color').forEach(sel => {
         sel.onchange = () => {
             let idx = parseInt(sel.getAttribute('data-idx'));
@@ -1117,7 +1190,7 @@ function refreshMasterUI() {
         };
     });
 
-    // 添加按钮
+    // Add buttons
     document.getElementById('addDeptBtn').onclick = () => {
         let v = document.getElementById('newDept').value.trim();
         if (v) { appData.departments.push(v);
@@ -1154,7 +1227,7 @@ function refreshMasterUI() {
 }
 
 // ============================
-// 18. CSV 导入导出
+// 19. CSV Import/Export
 // ============================
 
 const CSV_SEP = '|';
@@ -1352,7 +1425,7 @@ function closeImportPreview() {
 }
 
 // ============================
-// 19. 筛选功能
+// 20. Filter Functions
 // ============================
 
 function openFilterColumnsModal() {
@@ -1419,7 +1492,7 @@ function clearFilters() {
 }
 
 // ============================
-// 20. 场景管理
+// 21. Scenario Management
 // ============================
 
 function refreshScenarioDropdown() {
@@ -1436,26 +1509,21 @@ function refreshScenarioDropdown() {
 }
 
 // ============================
-// 21. 主渲染函数
+// 22. Main Render Function
 // ============================
 
 function renderApp() {
-    // 填充主布局
     const root = document.getElementById('app-root');
-    // After appData is successfully loaded
-    if (appData && !lastSnapshot) {
-        initializeSnapshot(appData);
-    }
     if (!root) return;
 
-    // 如果 root 为空，先构建整体 UI
+    // If root is empty, build the full UI
     if (!root.innerHTML) {
         root.innerHTML = `
             <div class="glass-dashboard edit-mode" id="appRoot">
                 <div class="top-header">
                     <div class="title-section"><h1>📊 Business Process Orchestrator</h1><p>EBRO Factory Repository for all business processes details</p></div>
                     <div>
-                        <button id="saveDataBtn" class="save-html-btn" style="display:inline-flex;">💾 保存到 GitHub</button>
+                        <button id="saveDataBtn" class="save-html-btn" style="display:inline-flex;">💾 Save to GitHub</button>
                         <button id="settingsBtn" class="settings-btn" style="display:inline-flex;">⚙️ Master Data</button>
                         <button id="modeToggleBtn" class="mode-toggle-btn">👁️ Display Mode</button>
                     </div>
@@ -1508,7 +1576,7 @@ function renderApp() {
                 </div>
             </div>
 
-            <!-- 模态框 -->
+            <!-- Modals -->
             <div id="deleteConfirmModal" class="custom-modal-overlay">
                 <div class="custom-modal"><h3>⚠️ Confirm Deletion</h3><p id="deleteModalMessage"></p>
                 <div class="modal-buttons"><button id="deleteAcceptBtn" class="save-btn">Accept</button><button id="deleteCancelBtn" class="cancel-btn">Cancel</button></div></div>
@@ -1556,24 +1624,24 @@ function renderApp() {
                 <div class="modal-buttons"><button id="importConfirmBtn" class="save-btn">Confirm</button><button id="importCancelBtn" class="cancel-btn">Cancel</button></div></div>
             </div>
             <input type="file" id="masterImportFile" accept=".csv" style="display:none">
-            <input type="file" id="processImportFile" accept=".csv" style="display:none">
+            <input type="file" id="processImportFile" accept=".csv" style="display:none>
         `;
     }
 
-    // 更新 UI 状态
+    // Update UI state
     updateUIVisibility();
     refreshScenarioDropdown();
     rebuildFilterUI();
 
-    // 绑定事件
+    // Bind events
     bindEvents();
 
-    // 渲染当前视图
+    // Render current view
     renderCurrentView();
 }
 
 // ============================
-// 22. 事件绑定
+// 23. Event Binding
 // ============================
 
 let eventsBound = false;
@@ -1582,14 +1650,14 @@ function bindEvents() {
     if (eventsBound) return;
     eventsBound = true;
 
-    // 场景选择
+    // Scenario selection
     document.getElementById('scenarioSelect').onchange = (e) => {
         appData.currentScenarioId = e.target.value;
         collapseState.clear();
         renderCurrentView();
     };
 
-    // 场景管理
+    // Scenario management
     document.getElementById('newScenarioBtn').onclick = () => {
         if (currentMode !== 'edit') return;
         let name = prompt('Scenario name:', 'New');
@@ -1649,24 +1717,20 @@ function bindEvents() {
         renderCurrentView();
     };
 
-    // Mode Switch
+    // Mode switch
     document.getElementById('modeToggleBtn').onclick = function() {
         if (currentMode === 'display') {
-            // Switch to edit mode
             const pwd = prompt('Enter edit password:');
             if (pwd !== 'admin') {
                 alert('Incorrect password');
                 return;
             }
         
-            // Password correct, enter edit mode
             currentMode = 'edit';
             collapseState.clear();
         
-            // 🔑 Check for existing Token
             const token = getGitHubToken();
             if (!token) {
-                // No Token stored, prompt user
                 const newToken = prompt(
                     '🔑 Enter your GitHub Token to enable saving\n\n' +
                     'The Token will be saved in your browser and you won\'t need to re-enter it next time.\n\n' +
@@ -1675,7 +1739,6 @@ function bindEvents() {
                 if (newToken && newToken.trim()) {
                     localStorage.setItem('github_token', newToken.trim());
                     alert('✅ Token saved to browser local storage');
-                    // Reload data to ensure connection is working
                     loadData();
                 } else {
                     alert('⚠️ No Token provided. You can still edit data, but saving to GitHub will not work.\n' +
@@ -1683,12 +1746,10 @@ function bindEvents() {
                 }
             }
         
-            // Update UI
             renderCurrentView();
             updateUIVisibility();
         
         } else {
-            // Switch to display mode
             currentMode = 'display';
             const sc = getCurrentScenario();
             if (sc) {
@@ -1700,7 +1761,8 @@ function bindEvents() {
             updateUIVisibility();
         }
     };
-    // Savedata
+
+    // Save data
     document.getElementById('saveDataBtn').onclick = () => {
         saveDataToGitHub(appData);
     };
@@ -1712,7 +1774,7 @@ function bindEvents() {
     };
     document.getElementById('closeMasterBtn').onclick = () => document.getElementById('masterModal').classList.remove('active');
 
-    // Switch view
+    // View switch
     document.getElementById('tableViewTab').onclick = () => setView('table');
     document.getElementById('sequenceViewTab').onclick = () => setView('sequence');
 
@@ -1732,11 +1794,11 @@ function bindEvents() {
     document.getElementById('filterColumnsConfirm').onclick = addFiltersFromSelection;
     document.getElementById('filterColumnsCancel').onclick = () => document.getElementById('filterColumnsModal').classList.remove('active');
 
-    // Exportimport
+    // Export/Import
     document.getElementById('exportProcessesBtn').onclick = exportProcesses;
     document.getElementById('importProcessesBtn').onclick = importProcesses;
 
-    // Modal
+    // Modal buttons
     document.getElementById('cancelModalBtn').onclick = closeModal;
     document.getElementById('saveModalBtn').onclick = saveModal;
     document.getElementById('deleteAcceptBtn').onclick = () => {
@@ -1761,17 +1823,17 @@ function bindEvents() {
     };
     document.getElementById('importCancelBtn').onclick = closeImportPreview;
 
-    // Document import
+    // File imports
     document.getElementById('masterImportFile').onchange = handleMasterImport;
     document.getElementById('processImportFile').onchange = handleProcessImport;
 
-    // Document link
+    // Document links
     document.getElementById('modalBusinessDoc').addEventListener('input', () => updateDocumentLinkIcon('modalBusinessDoc', 'businessDocLink'));
     document.getElementById('modalUserManual').addEventListener('input', () => updateDocumentLinkIcon('modalUserManual', 'userManualLink'));
 }
 
 // ============================
-// 23. View Control
+// 24. View Control
 // ============================
 
 function setView(view) {
@@ -1809,7 +1871,6 @@ function updateUIVisibility() {
     } else {
         root.classList.remove('edit-mode');
         root.classList.add('display-mode');
-        
     }
 
     let addBtn = document.getElementById('addRowBtn');
@@ -1822,11 +1883,11 @@ function updateUIVisibility() {
     if (saveBtn) saveBtn.style.display = isEdit ? 'inline-flex' : 'none';
     if (modeBtn) modeBtn.innerHTML = isEdit ? '👁️ Display Mode' : '✏️ Edit Mode';
 
+    // Token status indicator
     if (currentMode === 'edit') {
         const token = getGitHubToken();
         let statusDiv = document.getElementById('tokenStatus');
         
-        // Create status element if it doesn't exist
         if (!statusDiv) {
             statusDiv = document.createElement('div');
             statusDiv.id = 'tokenStatus';
@@ -1841,25 +1902,24 @@ function updateUIVisibility() {
         if (token) {
             statusDiv.innerHTML = '🟢 Token configured';
             statusDiv.style.color = '#16a34a';
-            } else {
+        } else {
             statusDiv.innerHTML = '🔴 No Token - Cannot save to GitHub';
             statusDiv.style.color = '#dc2626';
-            }
-        } else {
-            // Remove or hide status indicator in display mode
-            const statusDiv = document.getElementById('tokenStatus');
-            if (statusDiv) {
+        }
+        statusDiv.style.display = 'block';
+    } else {
+        const statusDiv = document.getElementById('tokenStatus');
+        if (statusDiv) {
             statusDiv.style.display = 'none';
         }
     }
 }
 
 // ============================
-// 24. 页面启动
+// 25. Page Startup
 // ============================
 
 document.addEventListener('DOMContentLoaded', function() {
-    // 检查 Token
     const token = getGitHubToken();
     if (!token) {
         const shouldSetup = confirm(
@@ -1872,92 +1932,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Load data
     loadData();
 });
 
 // ============================
-// Snapshot management for diff
+// 26. Expose Global Functions for HTML
 // ============================
 
-// Store the last known good state
-let lastSnapshot = null;
-
-// Load snapshot from localStorage
-function loadSnapshot() {
-    try {
-        const saved = localStorage.getItem('bpo_snapshot');
-        if (saved) {
-            lastSnapshot = JSON.parse(saved);
-            return true;
-        }
-    } catch (e) {
-        console.warn('Failed to load snapshot:', e);
-    }
-    return false;
-}
-
-// Save snapshot to localStorage
-function saveSnapshot(data) {
-    try {
-        localStorage.setItem('bpo_snapshot', JSON.stringify(data));
-        lastSnapshot = JSON.parse(JSON.stringify(data)); // Deep copy
-        return true;
-    } catch (e) {
-        console.warn('Failed to save snapshot:', e);
-        return false;
-    }
-}
-
-// Compare two objects and generate a diff
-function generateDiff(oldData, newData) {
-    if (typeof jsondiffpatch !== 'undefined') {
-        // Use jsondiffpatch library
-        const delta = jsondiffpatch.diff(oldData, newData);
-        return delta || null;
-    } else {
-        // Fallback: simple custom diff (only detects top-level changes)
-        return generateSimpleDiff(oldData, newData);
-    }
-}
-
-// Simple custom diff (fallback)
-function generateSimpleDiff(oldData, newData) {
-    const diff = {};
-    let hasChanges = false;
-    
-    // Compare top-level keys
-    const allKeys = new Set([...Object.keys(oldData), ...Object.keys(newData)]);
-    for (const key of allKeys) {
-        const oldVal = JSON.stringify(oldData[key]);
-        const newVal = JSON.stringify(newData[key]);
-        if (oldVal !== newVal) {
-            diff[key] = newData[key];
-            hasChanges = true;
-        }
-    }
-    return hasChanges ? diff : null;
-}
-
-// Apply diff to restore full data
-function applyDiff(baseData, diff) {
-    if (typeof jsondiffpatch !== 'undefined') {
-        return jsondiffpatch.patch(baseData, diff);
-    } else {
-        // For simple diff, just merge
-        return { ...baseData, ...diff };
-    }
-}
-
-// Initialize snapshot on page load
-function initializeSnapshot(data) {
-    if (!loadSnapshot()) {
-        // No snapshot exists, create one
-        saveSnapshot(data);
-    }
-}
-
-// Expose global functions for HTML to call
 window.toggleCollapse = toggleCollapse;
 window.openProcessDetail = openProcessDetail;
 window.saveDataToGitHub = saveDataToGitHub;
