@@ -1432,6 +1432,10 @@ function refreshScenarioDropdown() {
 function renderApp() {
     // 填充主布局
     const root = document.getElementById('app-root');
+    // After appData is successfully loaded
+    if (appData && !lastSnapshot) {
+        initializeSnapshot(appData);
+    }
     if (!root) return;
 
     // 如果 root 为空，先构建整体 UI
