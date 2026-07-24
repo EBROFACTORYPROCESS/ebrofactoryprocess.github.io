@@ -85,18 +85,36 @@ function escapeHtml(str) {
 }
 
 function compareSeq(a, b) {
-    let pa = a.split('.');
-    let pb = b.split('.');
+    // Guard against undefined or null
+    const strA = String(a || '0');
+    const strB = String(b || '0');
+    
+    let pa = strA.split('.');
+    let pb = strB.split('.');
     for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
         let na = i < pa.length ? parseInt(pa[i]) : 0;
         let nb = i < pb.length ? parseInt(pb[i]) : 0;
+        if (isNaN(na)) na = 0;
+        if (isNaN(nb)) nb = 0;
         if (na !== nb) return na - nb;
     }
     return 0;
 }
-
 function sortProcesses(procs) {
-    return [...procs].sort((a, b) => compareSeq(a.seq, b.seq));
+    // Guard against invalid input
+    if (!procs || !Array.isArray(procs)) {
+        console.warn('⚠️ sortProcesses: input is not an array, returning empty array');
+        return [];
+    }
+    
+    // Filter out invalid processes and sort
+    const validProcs = procs.filter(p => p && typeof p === 'object' && p.seq !== undefined);
+    return [...validProcs].sort((a, b) => {
+        // Guard against missing seq
+        const seqA = a.seq || '0';
+        const seqB = b.seq || '0';
+        return compareSeq(String(seqA), String(seqB));
+    });
 }
 
 function isSeqUnique(scenario, seq, excludeId) {
@@ -108,24 +126,133 @@ function isSeqUnique(scenario, seq, excludeId) {
 // ============================
 
 function normalizeData(data) {
+    console.log('📊 normalizeData called');
+    
+    // Ensure data is an object
+    if (!data || typeof data !== 'object') {
+        console.warn('⚠️ normalizeData: data is not an object, creating default');
+        return getDefaultData();
+    }
+    
+    // Ensure scenarios exists and is an array
+    if (!data.scenarios || !Array.isArray(data.scenarios)) {
+        console.warn('⚠️ normalizeData: scenarios is not an array, creating default');
+        data.scenarios = [{
+            id: 'default',
+            name: 'Manufacturing',
+            processes: []
+        }];
+        data.currentScenarioId = 'default';
+    }
+    
+    // Process each scenario
     for (let sc of data.scenarios) {
+        // Skip if scenario is invalid
+        if (!sc || typeof sc !== 'object') {
+            console.warn('⚠️ Skipping invalid scenario:', sc);
+            continue;
+        }
+        
+        // Ensure processes exists and is an array
+        if (!sc.processes || !Array.isArray(sc.processes)) {
+            console.warn('⚠️ Scenario missing processes array, creating empty:', sc.id || 'unknown');
+            sc.processes = [];
+        }
+        
+        // Normalize each process
         for (let p of sc.processes) {
-            if (!p.raci) p.raci = { r: [], a: [], c: [], i: [] };
-            if (typeof p.raci.r === 'string') p.raci.r = p.raci.r.split(',').filter(s => s.trim());
-            if (typeof p.raci.a === 'string') p.raci.a = p.raci.a.split(',').filter(s => s.trim());
-            if (typeof p.raci.c === 'string') p.raci.c = p.raci.c.split(',').filter(s => s.trim());
-            if (typeof p.raci.i === 'string') p.raci.i = p.raci.i.split(',').filter(s => s.trim());
-            if (!p.system) p.system = { name: '', status: '', responsible: '' };
+            if (!p || typeof p !== 'object') {
+                console.warn('⚠️ Skipping invalid process:', p);
+                continue;
+            }
+            
+            // Ensure raci exists
+            if (!p.raci || typeof p.raci !== 'object') {
+                p.raci = { r: [], a: [], c: [], i: [] };
+            }
+            
+            // Convert raci strings to arrays if needed
+            if (typeof p.raci.r === 'string') {
+                p.raci.r = p.raci.r.split(',').filter(s => s && s.trim());
+            }
+            if (typeof p.raci.a === 'string') {
+                p.raci.a = p.raci.a.split(',').filter(s => s && s.trim());
+            }
+            if (typeof p.raci.c === 'string') {
+                p.raci.c = p.raci.c.split(',').filter(s => s && s.trim());
+            }
+            if (typeof p.raci.i === 'string') {
+                p.raci.i = p.raci.i.split(',').filter(s => s && s.trim());
+            }
+            
+            // Ensure raci arrays exist
+            if (!Array.isArray(p.raci.r)) p.raci.r = [];
+            if (!Array.isArray(p.raci.a)) p.raci.a = [];
+            if (!Array.isArray(p.raci.c)) p.raci.c = [];
+            if (!Array.isArray(p.raci.i)) p.raci.i = [];
+            
+            // Ensure system exists
+            if (!p.system || typeof p.system !== 'object') {
+                p.system = { name: '', status: '', responsible: '' };
+            }
+            
+            // Ensure all required fields exist
             if (!p.businessDoc) p.businessDoc = '';
             if (!p.userManual) p.userManual = '';
             if (!p.notes) p.notes = '';
             if (!p.id) p.id = genId();
+            
+            // Ensure seq is a string
+            if (p.seq !== undefined && p.seq !== null) {
+                p.seq = String(p.seq);
+            } else {
+                p.seq = '0';
+            }
         }
+        
+        // Sort processes after normalization
         sc.processes = sortProcesses(sc.processes);
     }
+    
+    // Ensure currentScenarioId is valid
+    if (!data.currentScenarioId && data.scenarios.length > 0) {
+        data.currentScenarioId = data.scenarios[0].id || 'default';
+    }
+    
+    // Ensure master data exists
+    if (!data.departments || !Array.isArray(data.departments)) {
+        data.departments = ['Sales', 'Production Planning', 'Material Planning', 'Material Handling', 'Purchase', 'Production Execution', 'Parts Quality', 'Vehicle Quality', 'Finance', 'Trade & Compliance'];
+    }
+    
+    if (!data.sysNameList || !Array.isArray(data.sysNameList)) {
+        data.sysNameList = ['SAP', 'LES', 'MES', 'KAPTURE', 'WMS', 'To Be Determined'];
+    }
+    
+    if (!data.sysStatusList || !Array.isArray(data.sysStatusList)) {
+        data.sysStatusList = [
+            { value: 'Operational', color: 'green' },
+            { value: 'Completed', color: 'green' },
+            { value: 'Offline', color: 'red' },
+            { value: 'To Be Implemented', color: 'red' },
+            { value: 'Work in Progress', color: 'yellow' }
+        ];
+    }
+    
+    if (!data.businessStatuses || !Array.isArray(data.businessStatuses)) {
+        data.businessStatuses = [
+            { value: 'Not Defined', color: 'red' },
+            { value: 'In Progress', color: 'yellow' },
+            { value: 'Completed', color: 'green' }
+        ];
+    }
+    
+    if (!data.sysRespList || !Array.isArray(data.sysRespList)) {
+        data.sysRespList = [];
+    }
+    
+    console.log('✅ Data normalized successfully, scenarios:', data.scenarios.length);
     return data;
 }
-
 // ============================
 // 5. Token Management
 // ============================
