@@ -2,6 +2,8 @@
 // app.js - Complete Core Logic
 // ============================================================
 
+console.log('✅ app.js loaded');
+
 // ============================
 // 1. Constants & State
 // ============================
@@ -23,9 +25,48 @@ let pendingAddSubCallback = null;
 let pendingImportCallback = null;
 let currentEditingProcess = null;
 let lastSnapshot = null;
+let eventsBound = false;
 
 // ============================
-// 2. Utility Functions
+// 2. Column Definitions
+// ============================
+
+const columnPaths = {
+    seq: p => p.seq,
+    name: p => p.name,
+    description: p => p.description || '',
+    r: p => p.raci.r.join(', '),
+    a: p => p.raci.a.join(', '),
+    c: p => p.raci.c.join(', '),
+    i: p => p.raci.i.join(', '),
+    businessStatus: p => p.businessStatus,
+    sysName: p => p.system.name,
+    sysStatus: p => p.system.status,
+    sysResp: p => p.system.responsible,
+    businessDoc: p => p.businessDoc || '',
+    userManual: p => p.userManual || '',
+    notes: p => p.notes || ''
+};
+
+const columnNames = {
+    seq: 'Seq',
+    name: 'Process Name',
+    description: 'Description',
+    r: 'Responsible (R)',
+    a: 'Accountable (A)',
+    c: 'Consulted (C)',
+    i: 'Informed (I)',
+    businessStatus: 'Business Status',
+    sysName: 'System Name',
+    sysStatus: 'System Status',
+    sysResp: 'System Responsible',
+    businessDoc: 'Business Doc',
+    userManual: 'User Manual',
+    notes: 'Notes'
+};
+
+// ============================
+// 3. Utility Functions
 // ============================
 
 function genId() {
@@ -63,7 +104,7 @@ function isSeqUnique(scenario, seq, excludeId) {
 }
 
 // ============================
-// 3. Data Normalization
+// 4. Data Normalization
 // ============================
 
 function normalizeData(data) {
@@ -86,7 +127,7 @@ function normalizeData(data) {
 }
 
 // ============================
-// 4. Token Management
+// 5. Token Management
 // ============================
 
 function getGitHubToken() {
@@ -105,8 +146,29 @@ function clearGitHubToken() {
     localStorage.removeItem('github_token');
 }
 
+function showTokenSetup() {
+    const currentToken = getGitHubToken() || '';
+    const newToken = prompt(
+        '🔑 Enter your GitHub Personal Access Token\n\n' +
+        'How to get one:\n' +
+        '1. GitHub Settings → Developer settings\n' +
+        '2. Personal access tokens → Tokens (classic)\n' +
+        '3. Check "repo" (all permissions)\n\n' +
+        'The token will be saved in your browser.',
+        currentToken
+    );
+    if (newToken !== null && newToken.trim()) {
+        setGitHubToken(newToken);
+        alert('✅ Token saved to browser local storage');
+        loadData();
+    } else if (newToken === '') {
+        clearGitHubToken();
+        alert('Token cleared');
+    }
+}
+
 // ============================
-// 5. Snapshot Management (for diff)
+// 6. Snapshot Management
 // ============================
 
 function loadSnapshot() {
@@ -141,25 +203,21 @@ function initializeSnapshot(data) {
 }
 
 function generateDiff(oldData, newData) {
-    // Fallback: simple diff if jsondiffpatch is not available
-    if (typeof jsondiffpatch === 'undefined' || !jsondiffpatch.diff) {
-        console.warn('⚠️ jsondiffpatch not available, using simple diff fallback');
-        return generateSimpleDiff(oldData, newData);
+    if (typeof jsondiffpatch !== 'undefined' && jsondiffpatch.diff) {
+        try {
+            const delta = jsondiffpatch.diff(oldData, newData);
+            return delta || null;
+        } catch (e) {
+            console.warn('jsondiffpatch diff failed, using simple diff:', e.message);
+            return generateSimpleDiff(oldData, newData);
+        }
     }
-    
-    try {
-        const delta = jsondiffpatch.diff(oldData, newData);
-        return delta || null;
-    } catch (e) {
-        console.warn('⚠️ Diff generation failed, using simple diff fallback:', e.message);
-        return generateSimpleDiff(oldData, newData);
-    }
+    return generateSimpleDiff(oldData, newData);
 }
 
 function generateSimpleDiff(oldData, newData) {
     const diff = {};
     let hasChanges = false;
-    
     const allKeys = new Set([...Object.keys(oldData), ...Object.keys(newData)]);
     for (const key of allKeys) {
         const oldVal = JSON.stringify(oldData[key]);
@@ -173,10 +231,141 @@ function generateSimpleDiff(oldData, newData) {
 }
 
 // ============================
-// 6. Load Data
+// 7. Save Data to GitHub
+// ============================
+
+async function saveDataToGitHub(data) {
+    if (isSaving) return;
+    isSaving = true;
+
+    const saveBtn = document.getElementById('saveDataBtn');
+    if (saveBtn) {
+        saveBtn.textContent = '⏳ Saving...';
+        saveBtn.disabled = true;
+    }
+
+    try {
+        let token = getGitHubToken();
+        if (!token) {
+            token = prompt(
+                '🔑 A GitHub Token is required to save data\n\n' +
+                'Please enter your GitHub Token. It will be saved in your browser.'
+            );
+            if (token && token.trim()) {
+                setGitHubToken(token);
+                alert('✅ Token saved to browser local storage');
+            } else {
+                throw new Error('No Token provided, save cancelled');
+            }
+        }
+
+        const diff = generateDiff(lastSnapshot, data);
+        if (!diff) {
+            alert('ℹ️ No changes detected. Nothing to save.');
+            isSaving = false;
+            if (saveBtn) {
+                saveBtn.textContent = '💾 Save to GitHub';
+                saveBtn.disabled = false;
+            }
+            return;
+        }
+
+        const jsonStr = JSON.stringify(diff);
+        console.log(`📊 Diff size: ${jsonStr.length} bytes (${(jsonStr.length/1024).toFixed(1)} KB)`);
+
+        const useGist = jsonStr.length > 40000;
+        let gistId = null;
+        let payloadData = jsonStr;
+        let payloadType = 'diff';
+
+        if (useGist) {
+            console.log('📤 Data is large, uploading to Gist...');
+            const gistPayload = {
+                description: `BPO diff - ${new Date().toISOString()}`,
+                public: false,
+                files: { 'diff.json': { content: jsonStr } }
+            };
+
+            const gistResponse = await fetch('https://api.github.com/gists', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify(gistPayload)
+            });
+
+            if (!gistResponse.ok) {
+                const errorData = await gistResponse.json();
+                throw new Error(`Gist creation failed: ${errorData.message}`);
+            }
+
+            const gistData = await gistResponse.json();
+            gistId = gistData.id;
+            payloadType = 'gist';
+            payloadData = '';
+            console.log(`✅ Gist created: ${gistId}`);
+        }
+
+        const payload = {
+            event_type: 'update-data',
+            client_payload: {
+                type: payloadType,
+                gist_id: gistId,
+                data: payloadData,
+                snapshot_id: Date.now()
+            }
+        };
+
+        const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `token ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            if (response.status === 401) {
+                clearGitHubToken();
+                throw new Error('Token is invalid or expired. Please re-enter your Token.');
+            }
+            throw new Error(errorData.message || `HTTP ${response.status}`);
+        }
+
+        saveSnapshot(data);
+        const sizeMsg = useGist ? `📤 Uploaded to Gist (temporary)\n   Gist ID: ${gistId}` : `📊 Size: ${(jsonStr.length/1024).toFixed(1)} KB`;
+        alert(`✅ Changes saved successfully!\n\n${sizeMsg}\n\nGitHub Actions is applying the changes.`);
+
+        setTimeout(() => {
+            if (confirm('Refresh page to see the latest data?')) {
+                location.reload();
+            }
+        }, 10000);
+
+    } catch (error) {
+        console.error('Save failed:', error);
+        alert(`❌ Save failed: ${error.message}`);
+    } finally {
+        isSaving = false;
+        if (saveBtn) {
+            saveBtn.textContent = '💾 Save to GitHub';
+            saveBtn.disabled = false;
+        }
+    }
+}
+
+// ============================
+// 8. Load Data
 // ============================
 
 async function loadData() {
+    console.log('📊 loadData() called');
     const loading = document.getElementById('app-loading');
     const root = document.getElementById('app-root');
 
@@ -193,7 +382,7 @@ async function loadData() {
         if (!response.ok) {
             if (response.status === 404) {
                 appData = getDefaultData();
-                saveSnapshot(appData);
+                initializeSnapshot(appData);
                 renderApp();
                 if (loading) loading.style.display = 'none';
                 if (root) root.style.display = 'block';
@@ -205,8 +394,6 @@ async function loadData() {
         const text = await response.text();
         appData = JSON.parse(text);
         normalizeData(appData);
-
-        // Initialize snapshot after data is loaded
         initializeSnapshot(appData);
 
         if (loading) loading.style.display = 'none';
@@ -227,7 +414,7 @@ async function loadData() {
 }
 
 // ============================
-// 7. Default Data
+// 9. Default Data
 // ============================
 
 function getDefaultData() {
@@ -272,215 +459,7 @@ function getDefaultData() {
 }
 
 // ============================
-// 8. Column Definitions (for filters)
-// ============================
-
-const columnPaths = {
-    seq: p => p.seq,
-    name: p => p.name,
-    description: p => p.description || '',
-    r: p => p.raci.r.join(', '),
-    a: p => p.raci.a.join(', '),
-    c: p => p.raci.c.join(', '),
-    i: p => p.raci.i.join(', '),
-    businessStatus: p => p.businessStatus,
-    sysName: p => p.system.name,
-    sysStatus: p => p.system.status,
-    sysResp: p => p.system.responsible,
-    businessDoc: p => p.businessDoc || '',
-    userManual: p => p.userManual || '',
-    notes: p => p.notes || ''
-};
-
-const columnNames = {
-    seq: 'Seq',
-    name: 'Process Name',
-    description: 'Description',
-    r: 'Responsible (R)',
-    a: 'Accountable (A)',
-    c: 'Consulted (C)',
-    i: 'Informed (I)',
-    businessStatus: 'Business Status',
-    sysName: 'System Name',
-    sysStatus: 'System Status',
-    sysResp: 'System Responsible',
-    businessDoc: 'Business Doc',
-    userManual: 'User Manual',
-    notes: 'Notes'
-};
-
-// ============================
-// 9. Save Data to GitHub (with Gist for large data)
-// ============================
-
-async function saveDataToGitHub(data) {
-    if (isSaving) return;
-    isSaving = true;
-
-    const saveBtn = document.getElementById('saveDataBtn');
-    if (saveBtn) {
-        saveBtn.textContent = '⏳ Saving...';
-        saveBtn.disabled = true;
-    }
-
-    try {
-        // Get token
-        let token = getGitHubToken();
-        if (!token) {
-            token = prompt(
-                '🔑 A GitHub Token is required to save data\n\n' +
-                'Please enter your GitHub Token. It will be saved in your browser.'
-            );
-            if (token && token.trim()) {
-                setGitHubToken(token);
-                alert('✅ Token saved to browser local storage');
-            } else {
-                throw new Error('No Token provided, save cancelled');
-            }
-        }
-
-        // Generate diff
-        const diff = generateDiff(lastSnapshot, data);
-        
-        if (!diff) {
-            alert('ℹ️ No changes detected. Nothing to save.');
-            isSaving = false;
-            if (saveBtn) {
-                saveBtn.textContent = '💾 Save to GitHub';
-                saveBtn.disabled = false;
-            }
-            return;
-        }
-
-        const jsonStr = JSON.stringify(diff);
-        console.log(`📊 Diff size: ${jsonStr.length} bytes (${(jsonStr.length/1024).toFixed(1)} KB)`);
-
-        // Determine if we need Gist (data > 40KB)
-        const useGist = jsonStr.length > 40000;
-        let gistId = null;
-        let payloadData = jsonStr;
-        let payloadType = 'diff';
-
-        if (useGist) {
-            console.log('📤 Data is large, uploading to Gist...');
-            
-            const gistPayload = {
-                description: `BPO diff - ${new Date().toISOString()}`,
-                public: false,
-                files: {
-                    'diff.json': {
-                        content: jsonStr
-                    }
-                }
-            };
-
-            const gistResponse = await fetch('https://api.github.com/gists', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `token ${token}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/vnd.github.v3+json'
-                },
-                body: JSON.stringify(gistPayload)
-            });
-
-            if (!gistResponse.ok) {
-                const errorData = await gistResponse.json();
-                throw new Error(`Gist creation failed: ${errorData.message}`);
-            }
-
-            const gistData = await gistResponse.json();
-            gistId = gistData.id;
-            payloadType = 'gist';
-            payloadData = ''; // Don't send data directly
-            console.log(`✅ Gist created: ${gistId}`);
-        }
-
-        // Send payload
-        const payload = {
-            event_type: 'update-data',
-            client_payload: {
-                type: payloadType,
-                gist_id: gistId,
-                data: payloadData,
-                snapshot_id: Date.now()
-            }
-        };
-
-        const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`;
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Authorization': `token ${token}`,
-                'Content-Type': 'application/json',
-                'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            if (response.status === 401) {
-                clearGitHubToken();
-                throw new Error('Token is invalid or expired. Please re-enter your Token.');
-            }
-            throw new Error(errorData.message || `HTTP ${response.status}`);
-        }
-
-        // Save snapshot
-        saveSnapshot(data);
-
-        const sizeMsg = useGist 
-            ? `📤 Uploaded to Gist (temporary)\n   Gist ID: ${gistId}`
-            : `📊 Size: ${(jsonStr.length/1024).toFixed(1)} KB`;
-        
-        alert(`✅ Changes saved successfully!\n\n${sizeMsg}\n\nGitHub Actions is applying the changes.`);
-
-        setTimeout(() => {
-            if (confirm('Refresh page to see the latest data?')) {
-                location.reload();
-            }
-        }, 10000);
-
-    } catch (error) {
-        console.error('Save failed:', error);
-        alert(`❌ Save failed: ${error.message}`);
-    } finally {
-        isSaving = false;
-        if (saveBtn) {
-            saveBtn.textContent = '💾 Save to GitHub';
-            saveBtn.disabled = false;
-        }
-    }
-}
-
-// ============================
-// 10. Token Setup
-// ============================
-
-function showTokenSetup() {
-    const currentToken = getGitHubToken() || '';
-    const newToken = prompt(
-        '🔑 Enter your GitHub Personal Access Token\n\n' +
-        'How to get one:\n' +
-        '1. GitHub Settings → Developer settings\n' +
-        '2. Personal access tokens → Tokens (classic)\n' +
-        '3. Check "repo" (all permissions)\n\n' +
-        'The token will be saved in your browser.',
-        currentToken
-    );
-    if (newToken !== null && newToken.trim()) {
-        setGitHubToken(newToken);
-        alert('✅ Token saved to browser local storage');
-        loadData();
-    } else if (newToken === '') {
-        clearGitHubToken();
-        alert('Token cleared');
-    }
-}
-
-// ============================
-// 11. Get Current Scenario
+// 10. Get Current Scenario
 // ============================
 
 function getCurrentScenario() {
@@ -494,7 +473,7 @@ function getScenarioById(id) {
 }
 
 // ============================
-// 12. Filter and Search
+// 11. Filter and Search
 // ============================
 
 function matchesFilters(proc) {
@@ -592,22 +571,908 @@ function expandAllParents() {
 }
 
 // ============================
-// 13. Render Functions (Table, Tree, RACI, etc.)
+// 12. Render: Table View
 // ============================
 
-// ... [REST OF YOUR RENDER FUNCTIONS REMAIN THE SAME]
-// renderTable, renderSequence, renderRaciCheckboxes, etc.
-// These are unchanged from your existing code
+function renderTable() {
+    let tbody = document.getElementById('tableBody');
+    let noResult = document.getElementById('noResultMsg');
+    let scenario = getCurrentScenario();
+    if (!scenario) {
+        if (tbody) tbody.innerHTML = '<tr><td colspan="8">No scenario</td></tr>';
+        if (noResult) noResult.style.display = 'none';
+        return;
+    }
+    let processes = getProcessesForDisplay(scenario);
+    if (processes.length === 0) {
+        if (tbody) tbody.innerHTML = '';
+        if (noResult) noResult.style.display = 'block';
+        return;
+    }
+    if (noResult) noResult.style.display = 'none';
+
+    let isEdit = (currentMode === 'edit');
+    let actionsHeader = document.getElementById('actionsHeader');
+    if (actionsHeader) actionsHeader.style.display = isEdit ? 'table-cell' : 'none';
+
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    for (let proc of processes) {
+        let row = tbody.insertRow();
+
+        let tdCollapse = row.insertCell();
+        let isParent = !proc.seq.includes('.');
+        let hasChildren = isParent && scenario.processes.some(p => p.seq.startsWith(proc.seq + '.'));
+        if (isParent && hasChildren && activeFilters.length === 0 && !searchKeyword && currentMode !== 'edit') {
+            let collapsed = collapseState.get(proc.id) || false;
+            let btn = document.createElement('button');
+            btn.textContent = collapsed ? '▶' : '▼';
+            btn.className = 'collapse-row-btn';
+            btn.onclick = (e) => { e.stopPropagation(); toggleCollapse(proc.id); };
+            tdCollapse.appendChild(btn);
+        }
+
+        let tdSeq = row.insertCell();
+        if (isEdit) {
+            let inp = document.createElement('input');
+            inp.type = 'text';
+            inp.value = proc.seq;
+            inp.className = 'seq-input';
+            inp.addEventListener('change', (e) => {
+                let ns = e.target.value.trim();
+                if (ns && isSeqUnique(scenario, ns, proc.id)) {
+                    proc.seq = ns;
+                    renderCurrentView();
+                } else if (ns) alert('Sequence exists');
+            });
+            tdSeq.appendChild(inp);
+        } else {
+            tdSeq.innerText = proc.seq;
+        }
+
+        let tdName = row.insertCell();
+        let span = document.createElement('span');
+        span.className = 'clickable-name';
+        span.innerText = proc.name;
+        span.onclick = () => openProcessDetail(proc.id);
+        tdName.appendChild(span);
+
+        let tdR = row.insertCell();
+        tdR.innerHTML = proc.raci.r.map(d => `<span class="raci-tag">${escapeHtml(d)}</span>`).join('');
+
+        let tdStatus = row.insertCell();
+        if (isEdit) {
+            let sel = document.createElement('select');
+            sel.className = 'status-select';
+            appData.businessStatuses.forEach(s => {
+                let op = document.createElement('option');
+                op.value = s.value;
+                op.textContent = s.value;
+                if (s.value === proc.businessStatus) op.selected = true;
+                sel.appendChild(op);
+            });
+            sel.onchange = () => { proc.businessStatus = sel.value; renderCurrentView(); };
+            tdStatus.appendChild(sel);
+        } else {
+            let color = appData.businessStatuses.find(s => s.value === proc.businessStatus)?.color || 'default';
+            tdStatus.innerHTML = `<span class="status-badge ${color}">🏢 ${escapeHtml(proc.businessStatus)}</span>`;
+        }
+
+        let tdSysName = row.insertCell();
+        if (isEdit) {
+            let sel = document.createElement('select');
+            sel.className = 'sysname-select';
+            appData.sysNameList.forEach(opt => {
+                let op = document.createElement('option');
+                op.value = opt;
+                op.textContent = opt;
+                if (opt === proc.system.name) op.selected = true;
+                sel.appendChild(op);
+            });
+            sel.onchange = () => { proc.system.name = sel.value; renderCurrentView(); };
+            tdSysName.appendChild(sel);
+        } else {
+            tdSysName.innerText = proc.system.name;
+        }
+
+        let tdSysStat = row.insertCell();
+        if (isEdit) {
+            let sel = document.createElement('select');
+            sel.className = 'sysstatus-select';
+            appData.sysStatusList.forEach(opt => {
+                let op = document.createElement('option');
+                op.value = opt.value;
+                op.textContent = opt.value;
+                if (opt.value === proc.system.status) op.selected = true;
+                sel.appendChild(op);
+            });
+            sel.onchange = () => { proc.system.status = sel.value; renderCurrentView(); };
+            tdSysStat.appendChild(sel);
+        } else {
+            let color = appData.sysStatusList.find(s => s.value === proc.system.status)?.color || 'default';
+            tdSysStat.innerHTML = `<span class="sys-status-badge ${color}">${escapeHtml(proc.system.status)}</span>`;
+        }
+
+        let tdAction = row.insertCell();
+        if (isEdit) {
+            let delBtn = document.createElement('button');
+            delBtn.textContent = '✖';
+            delBtn.className = 'delete-row-btn';
+            delBtn.onclick = () => confirmDelete(proc, scenario);
+            let subBtn = document.createElement('button');
+            subBtn.textContent = '+ Sub';
+            subBtn.className = 'add-sub-btn';
+            subBtn.onclick = () => autoIncrementSubprocess(proc);
+            tdAction.appendChild(delBtn);
+            tdAction.appendChild(subBtn);
+        }
+    }
+
+    if (activeFilters.length === 0 && !searchKeyword && currentMode !== 'edit') {
+        for (let proc of processes) {
+            if (proc.seq.includes('.')) {
+                let parent = getParentProcess(proc, scenario);
+                if (parent && collapseState.get(parent.id) === true) {
+                    let rows = tbody.querySelectorAll('tr');
+                    for (let row of rows) {
+                        if (row.cells[1] && row.cells[1].innerText === proc.seq) {
+                            row.style.display = 'none';
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 // ============================
-// 14. Main Render App
+// 13. Render: Tree View
+// ============================
+
+function renderSequence() {
+    let container = document.getElementById('sequenceFullView');
+    let scenario = getCurrentScenario();
+    if (!scenario) {
+        if (container) container.innerHTML = '<div>No scenario</div>';
+        return;
+    }
+    let processes = getProcessesForDisplay(scenario);
+    if (processes.length === 0) {
+        if (container) container.innerHTML = '<div>🔍 No matches</div>';
+        return;
+    }
+    let { nodeMap, roots } = buildTree(processes);
+
+    function renderTree(node, level) {
+        let wrapper = document.createElement('div');
+        wrapper.className = 'process-tree-root';
+        let card = document.createElement('div');
+        card.className = level === 0 ? 'main-card' : 'sub-card';
+        let proc = node.process;
+        let businessColor = appData.businessStatuses.find(s => s.value === proc.businessStatus)?.color || 'default';
+        let sysColor = appData.sysStatusList.find(s => s.value === proc.system.status)?.color || 'default';
+        let hasChildren = node.children.length > 0;
+        let collapseBtn = '';
+        if (level === 0 && hasChildren && activeFilters.length === 0 && !searchKeyword && currentMode !== 'edit') {
+            let isCollapsed = collapseState.get(proc.id) || false;
+            collapseBtn = `<button class="collapse-icon" onclick="event.stopPropagation();toggleCollapse('${proc.id}')">${isCollapsed ? '▶' : '▼'}</button>`;
+        }
+        let addSubIcon = (currentMode === 'edit') ? `<div class="add-sub-icon" data-parent-id="${proc.id}" data-parent-seq="${proc.seq}">+</div>` : '';
+        let docIcon = (proc.businessDoc && proc.businessDoc.trim()) ? '<span class="doc-icon">📄</span>' : '';
+        let manualIcon = (proc.userManual && proc.userManual.trim()) ? '<span class="manual-icon">📘</span>' : '';
+
+        card.innerHTML = `${addSubIcon}
+            <div class="card-top-row"><span class="seq-badge">${level === 0 ? 'Step ' : ''}${escapeHtml(proc.seq)}</span><span class="status-badge ${businessColor}">🏢 ${escapeHtml(proc.businessStatus)}</span></div>
+            <div class="card-content"><div class="seq-name">${collapseBtn}<span>${escapeHtml(proc.name)} ${docIcon}</span></div>
+            <div class="seq-meta">👤 ${proc.raci.r.map(d => `<span class="raci-tag">${escapeHtml(d)}</span>`).join('')}</div>
+            <div class="seq-meta">🖥️ ${escapeHtml(proc.system.name)} ${manualIcon} <span class="sys-status-badge ${sysColor}">${escapeHtml(proc.system.status)}</span></div></div>`;
+
+        card.onclick = (e) => {
+            if (!e.target.classList.contains('add-sub-icon') && !e.target.classList.contains('collapse-icon')) {
+                openProcessDetail(proc.id);
+            }
+        };
+
+        let collapseIcon = card.querySelector('.collapse-icon');
+        if (collapseIcon) {
+            collapseIcon.onclick = (e) => { e.stopPropagation(); toggleCollapse(proc.id); };
+        }
+
+        wrapper.appendChild(card);
+
+        let isCollapsedParent = (level === 0 && collapseState.get(proc.id) === true);
+        if (node.children.length > 0 && !(isCollapsedParent && activeFilters.length === 0 && !searchKeyword && currentMode !== 'edit')) {
+            let childrenDiv = document.createElement('div');
+            childrenDiv.className = 'process-tree-children';
+            for (let child of node.children) {
+                let childNode = nodeMap.get(child.seq);
+                if (childNode) childrenDiv.appendChild(renderTree(childNode, level + 1));
+            }
+            wrapper.appendChild(childrenDiv);
+        }
+        return wrapper;
+    }
+
+    if (container) {
+        container.innerHTML = '';
+        for (let root of roots) {
+            container.appendChild(renderTree(root, 0));
+        }
+    }
+
+    if (currentMode === 'edit') {
+        document.querySelectorAll('.add-sub-icon').forEach(icon => {
+            icon.onclick = (e) => {
+                e.stopPropagation();
+                let parentId = icon.getAttribute('data-parent-id');
+                let parentProc = scenario.processes.find(p => p.id === parentId);
+                if (!parentProc) return;
+                document.getElementById('newSubSeq').value = '';
+                document.getElementById('newSubName').value = '';
+                document.getElementById('addSubModal').classList.add('active');
+                pendingAddSubCallback = (seq, name) => {
+                    if (seq && seq.trim()) {
+                        addSubprocessWithInsertion(parentProc, seq.trim(), name.trim() || 'New Sub');
+                    } else {
+                        autoIncrementSubprocess(parentProc);
+                    }
+                    document.getElementById('addSubModal').classList.remove('active');
+                    pendingAddSubCallback = null;
+                };
+            };
+        });
+    }
+}
+
+// ============================
+// 14. Subprocess Operations
+// ============================
+
+function addSubprocessWithInsertion(parent, seq, name) {
+    let sc = getCurrentScenario();
+    if (!sc) return false;
+    if (!seq.startsWith(parent.seq + '.')) {
+        alert(`Must start with ${parent.seq}.`);
+        return false;
+    }
+    let existing = sc.processes.find(p => p.seq === seq);
+    if (existing) {
+        let siblings = sc.processes.filter(p => p.seq.startsWith(parent.seq + '.') && p.seq !== parent.seq);
+        let childNum = parseInt(seq.split('.')[1]);
+        let toShift = siblings.filter(p => {
+            let n = parseInt(p.seq.split('.')[1]);
+            return n >= childNum;
+        }).sort((a, b) => parseFloat(b.seq.split('.')[1]) - parseFloat(a.seq.split('.')[1]));
+        for (let s of toShift) {
+            let old = parseInt(s.seq.split('.')[1]);
+            s.seq = parent.seq + '.' + (old + 1);
+        }
+    }
+    let newProc = {
+        id: genId(),
+        seq: seq,
+        name: name || 'New Sub',
+        description: '',
+        raci: { r: [...parent.raci.r], a: [], c: [], i: [] },
+        businessStatus: 'Not Started',
+        system: { name: parent.system.name, status: parent.system.status, responsible: parent.system.responsible },
+        notes: '',
+        businessDoc: '',
+        userManual: ''
+    };
+    sc.processes.push(newProc);
+    sc.processes = sortProcesses(sc.processes);
+    renderCurrentView();
+    return true;
+}
+
+function autoIncrementSubprocess(parent) {
+    let sc = getCurrentScenario();
+    let children = sc.processes.filter(p => p.seq.startsWith(parent.seq + '.'));
+    let max = 0;
+    children.forEach(c => {
+        let parts = c.seq.split('.');
+        if (parts.length === 2 && parts[0] === parent.seq) {
+            max = Math.max(max, parseInt(parts[1]));
+        }
+    });
+    let newSeq = parent.seq + '.' + (max + 1);
+    let newProc = {
+        id: genId(),
+        seq: newSeq,
+        name: parent.name + ' (sub)',
+        description: '',
+        raci: { r: [...parent.raci.r], a: [], c: [], i: [] },
+        businessStatus: 'Not Started',
+        system: { name: parent.system.name, status: parent.system.status, responsible: parent.system.responsible },
+        notes: '',
+        businessDoc: '',
+        userManual: ''
+    };
+    sc.processes.push(newProc);
+    sc.processes = sortProcesses(sc.processes);
+    renderCurrentView();
+}
+
+function confirmDelete(proc, scenario) {
+    let sub = scenario.processes.filter(p => p.seq.startsWith(proc.seq + '.') && p.id !== proc.id);
+    document.getElementById('deleteModalMessage').innerText = `Delete "${proc.name}" (${proc.seq})?` + (sub.length ? `\nAlso ${sub.length} subprocess(es).` : '');
+    document.getElementById('deleteConfirmModal').classList.add('active');
+    pendingDeleteCallback = () => {
+        scenario.processes = scenario.processes.filter(p => p.id !== proc.id && !sub.map(s => s.id).includes(p.id));
+        scenario.processes = sortProcesses(scenario.processes);
+        if (!proc.seq.includes('.')) collapseState.delete(proc.id);
+        renderCurrentView();
+        document.getElementById('deleteConfirmModal').classList.remove('active');
+        pendingDeleteCallback = null;
+    };
+}
+
+// ============================
+// 15. RACI Rendering
+// ============================
+
+function renderRaciCheckboxes(proc) {
+    let container = document.getElementById('raciCheckboxGrid');
+    if (!container) return;
+    let raciTypes = [
+        { key: 'r', label: 'Responsible (R)' },
+        { key: 'a', label: 'Accountable (A)' },
+        { key: 'c', label: 'Consulted (C)' },
+        { key: 'i', label: 'Informed (I)' }
+    ];
+    container.innerHTML = '';
+    let isEdit = (currentMode === 'edit');
+
+    for (let rt of raciTypes) {
+        let section = document.createElement('div');
+        section.className = 'raci-section';
+        section.innerHTML = `<h4>${rt.label}</h4>`;
+        let displayDiv = document.createElement('div');
+        displayDiv.className = 'raci-display-section';
+        displayDiv.id = `raci-display-${rt.key}`;
+        let checkboxDiv = document.createElement('div');
+        checkboxDiv.className = 'checkbox-group';
+        checkboxDiv.id = `raci-checkbox-${rt.key}`;
+        section.appendChild(displayDiv);
+        section.appendChild(checkboxDiv);
+        container.appendChild(section);
+
+        for (let dept of appData.departments) {
+            let chk = document.createElement('input');
+            chk.type = 'checkbox';
+            chk.value = dept;
+            chk.checked = proc.raci[rt.key].includes(dept);
+            let label = document.createElement('label');
+            label.textContent = dept;
+            let item = document.createElement('div');
+            item.className = 'checkbox-item';
+            item.appendChild(chk);
+            item.appendChild(label);
+            checkboxDiv.appendChild(item);
+            if (isEdit) {
+                chk.onchange = () => {
+                    if (chk.checked) {
+                        if (!proc.raci[rt.key].includes(dept)) proc.raci[rt.key].push(dept);
+                    } else {
+                        proc.raci[rt.key] = proc.raci[rt.key].filter(d => d !== dept);
+                    }
+                    updateRaciDisplay(proc);
+                };
+            }
+        }
+        if (isEdit) {
+            displayDiv.style.display = 'none';
+            checkboxDiv.style.display = 'block';
+        } else {
+            displayDiv.style.display = 'block';
+            checkboxDiv.style.display = 'none';
+        }
+    }
+    updateRaciDisplay(proc);
+}
+
+function updateRaciDisplay(proc) {
+    for (let key of ['r', 'a', 'c', 'i']) {
+        let div = document.getElementById(`raci-display-${key}`);
+        if (div) {
+            div.innerHTML = proc.raci[key].length ?
+                proc.raci[key].map(d => `<span class="raci-tag">${escapeHtml(d)}</span>`).join('') :
+                '<div style="color:#94a3b8;">No selections</div>';
+        }
+    }
+}
+
+function updateDocumentLinkIcon(inputId, linkIconId) {
+    let input = document.getElementById(inputId);
+    let icon = document.getElementById(linkIconId);
+    if (!input || !icon) return;
+    let url = input.value.trim();
+    if (url) {
+        icon.style.display = 'inline-block';
+        icon.onclick = (e) => { e.stopPropagation(); window.open(url, '_blank'); };
+    } else {
+        icon.style.display = 'none';
+        icon.onclick = null;
+    }
+}
+
+// ============================
+// 16. Process Detail Modal
+// ============================
+
+function openProcessDetail(procId) {
+    let scenario = getCurrentScenario();
+    let proc = scenario.processes.find(p => p.id === procId);
+    if (!proc) return;
+    currentEditingProcess = { scenarioId: scenario.id, processId: proc.id };
+
+    document.getElementById('modalSeq').value = proc.seq;
+    document.getElementById('modalName').value = proc.name;
+    document.getElementById('modalDescription').value = proc.description || '';
+    renderRaciCheckboxes(proc);
+
+    let statusSel = document.getElementById('modalStatus');
+    statusSel.innerHTML = '';
+    appData.businessStatuses.forEach(s => {
+        let op = document.createElement('option');
+        op.value = s.value;
+        op.textContent = s.value;
+        if (s.value === proc.businessStatus) op.selected = true;
+        statusSel.appendChild(op);
+    });
+
+    let sysNameSel = document.getElementById('modalSysName');
+    sysNameSel.innerHTML = '';
+    appData.sysNameList.forEach(opt => {
+        let op = document.createElement('option');
+        op.value = opt;
+        op.textContent = opt;
+        if (opt === proc.system.name) op.selected = true;
+        sysNameSel.appendChild(op);
+    });
+
+    let sysStatSel = document.getElementById('modalSysStatus');
+    sysStatSel.innerHTML = '';
+    appData.sysStatusList.forEach(opt => {
+        let op = document.createElement('option');
+        op.value = opt.value;
+        op.textContent = opt.value;
+        if (opt.value === proc.system.status) op.selected = true;
+        sysStatSel.appendChild(op);
+    });
+
+    let sysRespSel = document.getElementById('modalSysResp');
+    sysRespSel.innerHTML = '';
+    appData.sysRespList.forEach(opt => {
+        let op = document.createElement('option');
+        op.value = opt;
+        op.textContent = opt;
+        if (opt === proc.system.responsible) op.selected = true;
+        sysRespSel.appendChild(op);
+    });
+
+    document.getElementById('modalBusinessDoc').value = proc.businessDoc || '';
+    document.getElementById('modalUserManual').value = proc.userManual || '';
+    document.getElementById('modalNotes').value = proc.notes || '';
+
+    updateDocumentLinkIcon('modalBusinessDoc', 'businessDocLink');
+    updateDocumentLinkIcon('modalUserManual', 'userManualLink');
+
+    let isEdit = (currentMode === 'edit');
+    ['modalSeq', 'modalName', 'modalDescription', 'modalStatus', 'modalSysName', 'modalSysStatus', 'modalSysResp', 'modalBusinessDoc', 'modalUserManual', 'modalNotes'].forEach(id => {
+        let el = document.getElementById(id);
+        if (el) el.disabled = !isEdit;
+    });
+
+    document.getElementById('processDetailModal').classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('processDetailModal').classList.remove('active');
+    currentEditingProcess = null;
+}
+
+function saveModal() {
+    if (currentMode !== 'edit' || !currentEditingProcess) return;
+    let scenario = getScenarioById(currentEditingProcess.scenarioId);
+    let proc = scenario.processes.find(p => p.id === currentEditingProcess.processId);
+    if (!proc) return;
+
+    let newSeq = document.getElementById('modalSeq').value.trim();
+    if (newSeq !== proc.seq && !isSeqUnique(scenario, newSeq, proc.id)) {
+        alert('Sequence exists');
+        return;
+    }
+    proc.seq = newSeq || '0';
+    proc.name = document.getElementById('modalName').value;
+    proc.description = document.getElementById('modalDescription').value;
+    proc.businessStatus = document.getElementById('modalStatus').value;
+    proc.system = {
+        name: document.getElementById('modalSysName').value,
+        status: document.getElementById('modalSysStatus').value,
+        responsible: document.getElementById('modalSysResp').value
+    };
+    proc.businessDoc = document.getElementById('modalBusinessDoc').value;
+    proc.userManual = document.getElementById('modalUserManual').value;
+    proc.notes = document.getElementById('modalNotes').value;
+
+    scenario.processes = sortProcesses(scenario.processes);
+    renderCurrentView();
+    closeModal();
+}
+
+// ============================
+// 17. Master Data UI
+// ============================
+
+function refreshMasterUI() {
+    let isEdit = (currentMode === 'edit');
+    let html = `
+        <div class="master-section"><h3>🏢 Departments / Roles</h3><div>${appData.departments.map((d, i) => `<div class="list-tag">${escapeHtml(d)} ${isEdit ? `<button data-type="dept" data-idx="${i}" class="master-del">✖</button>` : ''}</div>`).join('')}</div>${isEdit ? `<div class="add-item"><input type="text" id="newDept" placeholder="New department"><button id="addDeptBtn" class="icon-btn-small">+ Add</button></div>` : ''}</div>
+        <div class="master-section"><h3>🖥️ System Name</h3><div>${appData.sysNameList.map((v, i) => `<div class="list-tag">${escapeHtml(v)} ${isEdit ? `<button data-type="sysname" data-idx="${i}" class="master-del">✖</button>` : ''}</div>`).join('')}</div>${isEdit ? `<div class="add-item"><input type="text" id="newSysName" placeholder="New system"><button id="addSysNameBtn" class="icon-btn-small">+ Add</button></div>` : ''}</div>
+        <div class="master-section"><h3>📊 System Status</h3><div>${appData.sysStatusList.map((item, idx) => `<div class="list-tag">${escapeHtml(item.value)} ${isEdit ? `<select class="sysstatus-color" data-idx="${idx}"><option value="default">default</option><option value="red">red</option><option value="yellow">yellow</option><option value="green" ${item.color === 'green' ? 'selected' : ''}>green</option></select> <button data-type="sysstatus" data-idx="${idx}" class="master-del">✖</button>` : ''}</div>`).join('')}</div>${isEdit ? `<div class="add-item"><input type="text" id="newSysStatus" placeholder="New status"><button id="addSysStatusBtn" class="icon-btn-small">+ Add</button></div>` : ''}</div>
+        <div class="master-section"><h3>👤 System Responsible</h3><div>${appData.sysRespList.map((v, i) => `<div class="list-tag">${escapeHtml(v)} ${isEdit ? `<button data-type="sysresp" data-idx="${i}" class="master-del">✖</button>` : ''}</div>`).join('')}</div>${isEdit ? `<div class="add-item"><input type="text" id="newSysResp" placeholder="New responsible"><button id="addSysRespBtn" class="icon-btn-small">+ Add</button></div>` : ''}</div>
+        <div class="master-section"><h3>📌 Business Status</h3><div>${appData.businessStatuses.map((item, idx) => `<div class="list-tag">${escapeHtml(item.value)} ${isEdit ? `<select class="busstatus-color" data-idx="${idx}"><option value="default">default</option><option value="red">red</option><option value="yellow">yellow</option><option value="green" ${item.color === 'green' ? 'selected' : ''}>green</option></select> <button data-type="busstatus" data-idx="${idx}" class="master-del">✖</button>` : ''}</div>`).join('')}</div>${isEdit ? `<div class="add-item"><input type="text" id="newBusinessStatus" placeholder="New status"><button id="addBusinessStatusBtn" class="icon-btn-small">+ Add</button></div>` : ''}</div>`;
+
+    if (isEdit) {
+        html += `<div class="modal-buttons" style="justify-content: space-between; margin-top:1rem;"><div><button id="exportMasterBtn" class="icon-btn">📤 Export CSV</button><button id="importMasterBtn" class="icon-btn">📥 Import CSV</button></div></div>`;
+    }
+
+    document.getElementById('masterContent').innerHTML = html;
+    if (!isEdit) return;
+
+    document.querySelectorAll('.master-del').forEach(btn => {
+        btn.onclick = () => {
+            let type = btn.getAttribute('data-type');
+            let idx = parseInt(btn.getAttribute('data-idx'));
+            if (type === 'dept') appData.departments.splice(idx, 1);
+            else if (type === 'sysname') appData.sysNameList.splice(idx, 1);
+            else if (type === 'sysstatus') appData.sysStatusList.splice(idx, 1);
+            else if (type === 'sysresp') appData.sysRespList.splice(idx, 1);
+            else if (type === 'busstatus') appData.businessStatuses.splice(idx, 1);
+            refreshMasterUI();
+            renderCurrentView();
+        };
+    });
+
+    document.querySelectorAll('.sysstatus-color').forEach(sel => {
+        sel.onchange = () => {
+            let idx = parseInt(sel.getAttribute('data-idx'));
+            if (appData.sysStatusList[idx]) {
+                appData.sysStatusList[idx].color = sel.value;
+                refreshMasterUI();
+                renderCurrentView();
+            }
+        };
+    });
+    document.querySelectorAll('.busstatus-color').forEach(sel => {
+        sel.onchange = () => {
+            let idx = parseInt(sel.getAttribute('data-idx'));
+            if (appData.businessStatuses[idx]) {
+                appData.businessStatuses[idx].color = sel.value;
+                refreshMasterUI();
+                renderCurrentView();
+            }
+        };
+    });
+
+    document.getElementById('addDeptBtn').onclick = () => {
+        let v = document.getElementById('newDept').value.trim();
+        if (v) { appData.departments.push(v); refreshMasterUI(); renderCurrentView(); }
+    };
+    document.getElementById('addSysNameBtn').onclick = () => {
+        let v = document.getElementById('newSysName').value.trim();
+        if (v) { appData.sysNameList.push(v); refreshMasterUI(); renderCurrentView(); }
+    };
+    document.getElementById('addSysStatusBtn').onclick = () => {
+        let v = document.getElementById('newSysStatus').value.trim();
+        if (v) { appData.sysStatusList.push({ value: v, color: 'default' }); refreshMasterUI(); renderCurrentView(); }
+    };
+    document.getElementById('addSysRespBtn').onclick = () => {
+        let v = document.getElementById('newSysResp').value.trim();
+        if (v) { appData.sysRespList.push(v); refreshMasterUI(); renderCurrentView(); }
+    };
+    document.getElementById('addBusinessStatusBtn').onclick = () => {
+        let v = document.getElementById('newBusinessStatus').value.trim();
+        if (v) { appData.businessStatuses.push({ value: v, color: 'default' }); refreshMasterUI(); renderCurrentView(); }
+    };
+
+    document.getElementById('exportMasterBtn').onclick = exportMasterCSV;
+    document.getElementById('importMasterBtn').onclick = () => document.getElementById('masterImportFile').click();
+}
+
+// ============================
+// 18. CSV Import/Export
+// ============================
+
+const CSV_SEP = '|';
+
+function csvEscape(s) {
+    if (s === null || s === undefined) return '';
+    s = String(s);
+    if (s.includes(CSV_SEP) || s.includes('"') || s.includes('\n') || s.includes('=')) {
+        return '"' + s.replace(/"/g, '""') + '"';
+    }
+    return s;
+}
+
+async function saveFilePicker(content, name) {
+    if (window.showSaveFilePicker) {
+        try {
+            const h = await window.showSaveFilePicker({
+                suggestedName: name,
+                types: [{ description: 'CSV', accept: { 'text/csv': ['.csv'] } }]
+            });
+            const w = await h.createWritable();
+            await w.write(content);
+            await w.close();
+            return;
+        } catch (e) {
+            if (e.name === 'AbortError') return;
+        }
+    }
+    let a = document.createElement('a');
+    let url = URL.createObjectURL(new Blob([content], { type: 'text/csv' }));
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function exportMasterCSV() {
+    let lines = [];
+    appData.departments.forEach(d => lines.push(['dept', d].map(csvEscape).join(CSV_SEP)));
+    appData.sysNameList.forEach(v => lines.push(['sysname', v].map(csvEscape).join(CSV_SEP)));
+    appData.sysStatusList.forEach(s => lines.push(['sysstatus', s.value, s.color].map(csvEscape).join(CSV_SEP)));
+    appData.sysRespList.forEach(v => lines.push(['sysresp', v].map(csvEscape).join(CSV_SEP)));
+    appData.businessStatuses.forEach(b => lines.push(['busstatus', b.value, b.color].map(csvEscape).join(CSV_SEP)));
+    saveFilePicker(lines.join('\n'), `master_${new Date().toISOString().slice(0, 10)}.csv`);
+}
+
+function handleMasterImport(e) {
+    let file = e.target.files[0];
+    if (!file) return;
+    let reader = new FileReader();
+    reader.onload = ev => {
+        let lines = ev.target.result.split(/\r?\n/);
+        let newDepts = [], newSysNames = [], newSysStatuses = [], newSysResps = [], newBusStatuses = [];
+        for (let line of lines) {
+            let parts = line.split(CSV_SEP);
+            if (parts[0] === 'dept' && parts[1]) newDepts.push(parts[1]);
+            else if (parts[0] === 'sysname' && parts[1]) newSysNames.push(parts[1]);
+            else if (parts[0] === 'sysstatus' && parts[1] && parts[2]) newSysStatuses.push({ value: parts[1], color: parts[2] });
+            else if (parts[0] === 'sysresp' && parts[1]) newSysResps.push(parts[1]);
+            else if (parts[0] === 'busstatus' && parts[1] && parts[2]) newBusStatuses.push({ value: parts[1], color: parts[2] });
+        }
+        if (newDepts.length) appData.departments = newDepts;
+        if (newSysNames.length) appData.sysNameList = newSysNames;
+        if (newSysStatuses.length) appData.sysStatusList = newSysStatuses;
+        if (newSysResps.length) appData.sysRespList = newSysResps;
+        if (newBusStatuses.length) appData.businessStatuses = newBusStatuses;
+        refreshMasterUI();
+        renderCurrentView();
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+}
+
+async function exportProcesses() {
+    let sc = getCurrentScenario();
+    if (!sc) { alert('No scenario selected'); return; }
+    let headers = ['Seq', 'Name', 'Description', 'R_Responsible', 'A_Accountable', 'C_Consulted', 'I_Informed', 'BusinessStatus', 'SystemName', 'SystemStatus', 'SystemResponsible', 'BusinessDoc', 'UserManual', 'Notes'];
+    let lines = [headers.map(csvEscape).join(CSV_SEP)];
+    for (let p of sortProcesses(sc.processes)) {
+        const makeHyperlink = (url) => url && url.trim() ? `=HYPERLINK("${url.replace(/"/g, '""')}","${url}")` : '';
+        let row = [
+            p.seq, p.name, p.description || '',
+            p.raci.r.join(';'), p.raci.a.join(';'), p.raci.c.join(';'), p.raci.i.join(';'),
+            p.businessStatus, p.system.name || '', p.system.status || '', p.system.responsible || '',
+            makeHyperlink(p.businessDoc), makeHyperlink(p.userManual), p.notes || ''
+        ];
+        lines.push(row.map(csvEscape).join(CSV_SEP));
+    }
+    saveFilePicker(lines.join('\n'), `${sc.name.replace(/\s+/g, '_')}_processes_${new Date().toISOString().slice(0, 10)}.csv`);
+}
+
+function importProcesses() {
+    if (currentMode !== 'edit') return;
+    document.getElementById('processImportFile').click();
+}
+
+function handleProcessImport(e) {
+    let file = e.target.files[0];
+    if (!file) return;
+    let reader = new FileReader();
+    reader.onload = ev => {
+        let lines = ev.target.result.split(/\r?\n/).filter(l => l.trim());
+        if (lines.length < 2) return;
+        let headers = lines[0].split(CSV_SEP).map(h => h.replace(/^"|"$/g, '').trim());
+        let processes = [];
+        for (let i = 1; i < lines.length; i++) {
+            let parts = lines[i].split(CSV_SEP);
+            let obj = {};
+            headers.forEach((h, idx) => {
+                obj[h] = parts[idx] ? parts[idx].replace(/^"|"$/g, '').trim() : '';
+            });
+            if (!obj.Seq) continue;
+            processes.push({
+                id: genId(),
+                seq: obj.Seq,
+                name: obj.Name || 'Unnamed',
+                description: obj.Description || '',
+                raci: {
+                    r: obj.R_Responsible ? obj.R_Responsible.split(';') : [],
+                    a: obj.A_Accountable ? obj.A_Accountable.split(';') : [],
+                    c: obj.C_Consulted ? obj.C_Consulted.split(';') : [],
+                    i: obj.I_Informed ? obj.I_Informed.split(';') : []
+                },
+                businessStatus: obj.BusinessStatus || appData.businessStatuses[0]?.value || 'Not Defined',
+                system: { name: obj.SystemName || '', status: obj.SystemStatus || '', responsible: obj.SystemResponsible || '' },
+                businessDoc: obj.BusinessDoc || '',
+                userManual: obj.UserManual || '',
+                notes: obj.Notes || ''
+            });
+        }
+        showImportPreview('Processes', `Found ${processes.length} valid processes.`, headers, processes.map(p => [
+            p.seq, p.name, p.description,
+            p.raci.r.join(';'), p.raci.a.join(';'), p.raci.c.join(';'), p.raci.i.join(';'),
+            p.businessStatus, p.system.name, p.system.status, p.system.responsible,
+            p.businessDoc, p.userManual, p.notes
+        ]), () => {
+            let sc = getCurrentScenario();
+            if (sc) {
+                sc.processes = processes;
+                sc.processes = sortProcesses(sc.processes);
+                renderCurrentView();
+            }
+            closeImportPreview();
+        });
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+}
+
+function showImportPreview(title, summary, headers, rows, cb) {
+    let modal = document.getElementById('importPreviewModal');
+    document.getElementById('previewSummary').innerText = summary;
+    let container = document.getElementById('previewTableContainer');
+    container.innerHTML = '';
+    if (rows.length) {
+        let table = document.createElement('table');
+        table.className = 'preview-table';
+        let thead = document.createElement('thead');
+        let headerRow = document.createElement('tr');
+        headers.forEach(h => {
+            let th = document.createElement('th');
+            th.textContent = h;
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+        let tbody = document.createElement('tbody');
+        rows.forEach(row => {
+            let tr = document.createElement('tr');
+            row.forEach(cell => {
+                let td = document.createElement('td');
+                td.textContent = cell || '';
+                tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        container.appendChild(table);
+    } else {
+        container.innerHTML = '<p>No data</p>';
+    }
+    pendingImportCallback = cb;
+    modal.classList.add('active');
+}
+
+function closeImportPreview() {
+    document.getElementById('importPreviewModal').classList.remove('active');
+    pendingImportCallback = null;
+}
+
+// ============================
+// 19. Filter Functions
+// ============================
+
+function openFilterColumnsModal() {
+    let container = document.getElementById('filterColumnsList');
+    container.innerHTML = '';
+    for (let [key, label] of Object.entries(columnNames)) {
+        container.innerHTML += `<div class="checkbox-item"><input type="checkbox" value="${key}" id="col_${key}"> <label for="col_${key}">${label}</label></div>`;
+    }
+    document.getElementById('filterColumnsModal').classList.add('active');
+}
+
+function addFiltersFromSelection() {
+    let selected = Array.from(document.querySelectorAll('#filterColumnsList input:checked')).map(cb => cb.value);
+    if (selected.length === 0) return;
+    for (let col of selected) {
+        if (!activeFilters.some(f => f.column === col)) {
+            activeFilters.push({ column: col, values: [] });
+        }
+    }
+    rebuildFilterUI();
+    applyFiltersAndRender();
+    document.getElementById('filterColumnsModal').classList.remove('active');
+}
+
+function rebuildFilterUI() {
+    let container = document.getElementById('filterConditions');
+    container.innerHTML = '';
+    activeFilters.forEach((f, idx) => {
+        let div = document.createElement('div');
+        div.className = 'filter-row';
+        let span = document.createElement('span');
+        span.textContent = columnNames[f.column] || f.column;
+        let input = document.createElement('input');
+        input.placeholder = 'Values (comma separated)';
+        input.value = f.values.join(',');
+        input.onchange = () => {
+            f.values = input.value.split(',').map(v => v.trim()).filter(v => v);
+            applyFiltersAndRender();
+        };
+        let delBtn = document.createElement('button');
+        delBtn.textContent = '✖';
+        delBtn.onclick = () => {
+            activeFilters.splice(idx, 1);
+            rebuildFilterUI();
+            applyFiltersAndRender();
+        };
+        div.appendChild(span);
+        div.appendChild(input);
+        div.appendChild(delBtn);
+        container.appendChild(div);
+    });
+}
+
+function applyFiltersAndRender() {
+    renderCurrentView();
+}
+
+function clearFilters() {
+    activeFilters = [];
+    rebuildFilterUI();
+    document.getElementById('searchInput').value = '';
+    searchKeyword = '';
+    renderCurrentView();
+}
+
+// ============================
+// 20. Scenario Management
+// ============================
+
+function refreshScenarioDropdown() {
+    let sel = document.getElementById('scenarioSelect');
+    if (!sel) return;
+    sel.innerHTML = '';
+    appData.scenarios.forEach(sc => {
+        let opt = document.createElement('option');
+        opt.value = sc.id;
+        opt.textContent = sc.name;
+        if (sc.id === appData.currentScenarioId) opt.selected = true;
+        sel.appendChild(opt);
+    });
+}
+
+// ============================
+// 21. Main Render Function
 // ============================
 
 function renderApp() {
+    console.log('🎨 renderApp() called');
     const root = document.getElementById('app-root');
-    if (!root) return;
+    if (!root) {
+        console.error('❌ app-root not found');
+        return;
+    }
 
-    // Build UI if empty
     if (!root.innerHTML) {
         root.innerHTML = `
             <div class="glass-dashboard edit-mode" id="appRoot">
@@ -666,8 +1531,6 @@ function renderApp() {
                     <div class="sequence-fullview" id="sequenceFullView">Loading sequence...</div>
                 </div>
             </div>
-
-            <!-- Modals -->
             <div id="deleteConfirmModal" class="custom-modal-overlay">
                 <div class="custom-modal"><h3>⚠️ Confirm Deletion</h3><p id="deleteModalMessage"></p>
                 <div class="modal-buttons"><button id="deleteAcceptBtn" class="save-btn">Accept</button><button id="deleteCancelBtn" class="cancel-btn">Cancel</button></div></div>
@@ -719,19 +1582,17 @@ function renderApp() {
         `;
     }
 
-    // Update UI state
     updateUIVisibility();
     refreshScenarioDropdown();
     rebuildFilterUI();
     bindEvents();
     renderCurrentView();
+    console.log('✅ renderApp() completed');
 }
 
 // ============================
-// 15. Event Binding
+// 22. Event Binding
 // ============================
-
-let eventsBound = false;
 
 function bindEvents() {
     if (eventsBound) return;
@@ -812,7 +1673,6 @@ function bindEvents() {
             }
             currentMode = 'edit';
             collapseState.clear();
-            
             const token = getGitHubToken();
             if (!token) {
                 const newToken = prompt(
@@ -827,7 +1687,6 @@ function bindEvents() {
                     alert('⚠️ No Token provided. You can still edit data, but saving to GitHub will not work.');
                 }
             }
-            
             renderCurrentView();
             updateUIVisibility();
         } else {
@@ -851,7 +1710,6 @@ function bindEvents() {
         refreshMasterUI();
         document.getElementById('masterModal').classList.add('active');
     };
-
     document.getElementById('closeMasterBtn').onclick = () => document.getElementById('masterModal').classList.remove('active');
 
     document.getElementById('tableViewTab').onclick = () => setView('table');
@@ -867,6 +1725,8 @@ function bindEvents() {
 
     document.getElementById('addFilterBtn').onclick = openFilterColumnsModal;
     document.getElementById('clearFiltersBtn').onclick = clearFilters;
+    document.getElementById('filterColumnsConfirm').onclick = addFiltersFromSelection;
+    document.getElementById('filterColumnsCancel').onclick = () => document.getElementById('filterColumnsModal').classList.remove('active');
 
     document.getElementById('exportProcessesBtn').onclick = exportProcesses;
     document.getElementById('importProcessesBtn').onclick = importProcesses;
@@ -898,9 +1758,6 @@ function bindEvents() {
     };
     document.getElementById('importCancelBtn').onclick = closeImportPreview;
 
-    document.getElementById('filterColumnsConfirm').onclick = addFiltersFromSelection;
-    document.getElementById('filterColumnsCancel').onclick = () => document.getElementById('filterColumnsModal').classList.remove('active');
-
     document.getElementById('masterImportFile').onchange = handleMasterImport;
     document.getElementById('processImportFile').onchange = handleProcessImport;
 
@@ -909,7 +1766,7 @@ function bindEvents() {
 }
 
 // ============================
-// 16. View Control
+// 23. View Control
 // ============================
 
 function setView(view) {
@@ -938,15 +1795,16 @@ function updateUIVisibility() {
     root.classList.toggle('display-mode', !isEdit);
     root.classList.toggle('edit-mode', isEdit);
 
-    ['addRowBtn', 'importProcessesBtn', 'saveDataBtn'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = isEdit ? 'inline-flex' : 'none';
-    });
-
+    const addBtn = document.getElementById('addRowBtn');
+    const importBtn = document.getElementById('importProcessesBtn');
+    const saveBtn = document.getElementById('saveDataBtn');
     const modeBtn = document.getElementById('modeToggleBtn');
+
+    if (addBtn) addBtn.style.display = isEdit ? 'inline-flex' : 'none';
+    if (importBtn) importBtn.style.display = isEdit ? 'inline-flex' : 'none';
+    if (saveBtn) saveBtn.style.display = isEdit ? 'inline-flex' : 'none';
     if (modeBtn) modeBtn.innerHTML = isEdit ? '👁️ Display Mode' : '✏️ Edit Mode';
 
-    // Token status
     const token = getGitHubToken();
     let statusDiv = document.getElementById('tokenStatus');
     
@@ -973,10 +1831,13 @@ function updateUIVisibility() {
 }
 
 // ============================
-// 17. Page Startup
+// 24. Page Startup
 // ============================
 
+console.log('🚀 Starting app...');
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('📄 DOMContentLoaded event');
     const token = getGitHubToken();
     if (!token) {
         if (confirm('🔑 GitHub Token Required\n\nClick "OK" to enter your token, or "Cancel" to proceed in read-only mode.')) {
@@ -987,7 +1848,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ============================
-// 18. Expose Global Functions
+// 25. Expose Global Functions
 // ============================
 
 window.toggleCollapse = toggleCollapse;
@@ -995,141 +1856,6 @@ window.openProcessDetail = openProcessDetail;
 window.saveDataToGitHub = saveDataToGitHub;
 window.setupToken = showTokenSetup;
 window.loadData = loadData;
+window.renderApp = renderApp;
 
-// ============================
-// 19. Placeholder functions for missing render functions
-// (These should be replaced with your actual implementations)
-// ============================
-
-function renderTable() {
-    // Your existing renderTable implementation
-    console.log('renderTable called - implement with your code');
-}
-
-function renderSequence() {
-    // Your existing renderSequence implementation
-    console.log('renderSequence called - implement with your code');
-}
-
-function renderRaciCheckboxes(proc) {
-    // Your existing renderRaciCheckboxes implementation
-    console.log('renderRaciCheckboxes called - implement with your code');
-}
-
-function updateRaciDisplay(proc) {
-    // Your existing updateRaciDisplay implementation
-    console.log('updateRaciDisplay called - implement with your code');
-}
-
-function updateDocumentLinkIcon(inputId, linkIconId) {
-    // Your existing updateDocumentLinkIcon implementation
-    console.log('updateDocumentLinkIcon called - implement with your code');
-}
-
-function openProcessDetail(procId) {
-    // Your existing openProcessDetail implementation
-    console.log('openProcessDetail called - implement with your code');
-}
-
-function closeModal() {
-    document.getElementById('processDetailModal').classList.remove('active');
-}
-
-function saveModal() {
-    // Your existing saveModal implementation
-    console.log('saveModal called - implement with your code');
-}
-
-function refreshMasterUI() {
-    // Your existing refreshMasterUI implementation
-    console.log('refreshMasterUI called - implement with your code');
-}
-
-function exportMasterCSV() {
-    // Your existing exportMasterCSV implementation
-    console.log('exportMasterCSV called - implement with your code');
-}
-
-function handleMasterImport(e) {
-    // Your existing handleMasterImport implementation
-    console.log('handleMasterImport called - implement with your code');
-}
-
-function exportProcesses() {
-    // Your existing exportProcesses implementation
-    console.log('exportProcesses called - implement with your code');
-}
-
-function importProcesses() {
-    // Your existing importProcesses implementation
-    console.log('importProcesses called - implement with your code');
-}
-
-function handleProcessImport(e) {
-    // Your existing handleProcessImport implementation
-    console.log('handleProcessImport called - implement with your code');
-}
-
-function showImportPreview(title, summary, headers, rows, cb) {
-    // Your existing showImportPreview implementation
-    console.log('showImportPreview called - implement with your code');
-}
-
-function closeImportPreview() {
-    document.getElementById('importPreviewModal').classList.remove('active');
-}
-
-function openFilterColumnsModal() {
-    // Your existing openFilterColumnsModal implementation
-    console.log('openFilterColumnsModal called - implement with your code');
-}
-
-function addFiltersFromSelection() {
-    // Your existing addFiltersFromSelection implementation
-    console.log('addFiltersFromSelection called - implement with your code');
-}
-
-function rebuildFilterUI() {
-    // Your existing rebuildFilterUI implementation
-    console.log('rebuildFilterUI called - implement with your code');
-}
-
-function applyFiltersAndRender() {
-    renderCurrentView();
-}
-
-function clearFilters() {
-    activeFilters = [];
-    rebuildFilterUI();
-    document.getElementById('searchInput').value = '';
-    searchKeyword = '';
-    renderCurrentView();
-}
-
-function refreshScenarioDropdown() {
-    const sel = document.getElementById('scenarioSelect');
-    if (!sel) return;
-    sel.innerHTML = '';
-    appData.scenarios.forEach(sc => {
-        const opt = document.createElement('option');
-        opt.value = sc.id;
-        opt.textContent = sc.name;
-        if (sc.id === appData.currentScenarioId) opt.selected = true;
-        sel.appendChild(opt);
-    });
-}
-
-function addSubprocessWithInsertion(parent, seq, name) {
-    // Your existing addSubprocessWithInsertion implementation
-    console.log('addSubprocessWithInsertion called - implement with your code');
-}
-
-function autoIncrementSubprocess(parent) {
-    // Your existing autoIncrementSubprocess implementation
-    console.log('autoIncrementSubprocess called - implement with your code');
-}
-
-function confirmDelete(proc, scenario) {
-    // Your existing confirmDelete implementation
-    console.log('confirmDelete called - implement with your code');
-}
+console.log('✅ app.js initialization complete');
