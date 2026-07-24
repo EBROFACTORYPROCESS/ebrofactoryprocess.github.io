@@ -36,20 +36,20 @@ jobs:
             try {
               const content = fs.readFileSync('data.json', 'utf8');
               currentData = JSON.parse(content);
-              console.log('✅ Current data loaded, scenarios:', currentData.scenarios?.length || 0);
+              console.log('Current data loaded, scenarios:', currentData.scenarios?.length || 0);
             } catch (e) {
               console.log('No existing data.json, creating new one');
             }
             
             // Read payload
             const payloadContent = fs.readFileSync('payload.json', 'utf8');
-            console.log('📥 Payload content length:', payloadContent.length);
+            console.log('Payload content length:', payloadContent.length);
             
             let payload;
             try {
               payload = JSON.parse(payloadContent);
-              console.log('✅ Payload parsed successfully');
-              console.log('📋 Payload keys:', Object.keys(payload));
+              console.log('Payload parsed successfully');
+              console.log('Payload keys:', Object.keys(payload));
             } catch (e) {
               console.error('Failed to parse payload.json:', e.message);
               process.exit(1);
@@ -59,217 +59,131 @@ jobs:
             const gistId = payload.gist_id || '';
             let fullData = null;
             
-            console.log('📋 Payload type:', payloadType);
-            console.log('📋 Gist ID:', gistId || '(none)');
+            console.log('Payload type:', payloadType);
+            console.log('Gist ID:', gistId || '(none)');
             
             // ============================================================
-            // FUNCTION: Properly apply jsondiffpatch-style diff
+            // FUNCTION: Apply diff using simple merge
             // ============================================================
-            function applyDiff(current, diff) {
-              // Create a deep copy of current data
-              const result = JSON.parse(JSON.stringify(current));
+            function deepMerge(target, source) {
+              if (!source) return target;
+              const result = JSON.parse(JSON.stringify(target || {}));
               
-              // Handle array diffs (marked with _t: 'a')
-              if (diff._t === 'a') {
-                return applyArrayDiff(result, diff);
-              }
-              
-              // Handle object diffs
-              for (const key in diff) {
+              for (const key in source) {
                 if (key === '_t') continue;
-                const diffValue = diff[key];
+                const sourceVal = source[key];
+                const targetVal = result[key];
                 
-                // If the diff value is an object with _t: 'a', it's an array diff
-                if (diffValue && typeof diffValue === 'object' && diffValue._t === 'a') {
-                  result[key] = applyArrayDiff(result[key] || [], diffValue);
-                }
-                // If the diff value is an object and not an array, recursively merge
-                else if (diffValue && typeof diffValue === 'object' && !Array.isArray(diffValue)) {
-                  if (!result[key] || typeof result[key] !== 'object' || Array.isArray(result[key])) {
+                if (sourceVal && typeof sourceVal === 'object' && !Array.isArray(sourceVal)) {
+                  if (!targetVal || typeof targetVal !== 'object' || Array.isArray(targetVal)) {
                     result[key] = {};
                   }
-                  result[key] = applyDiff(result[key], diffValue);
-                }
-                // Otherwise, assign the value directly
-                else {
-                  result[key] = diffValue;
+                  result[key] = deepMerge(result[key], sourceVal);
+                } else {
+                  result[key] = sourceVal;
                 }
               }
-              
               return result;
             }
             
             // ============================================================
-            // FUNCTION: Apply array diff (with _t: 'a')
+            // FUNCTION: Apply array diff properly
             // ============================================================
             function applyArrayDiff(currentArray, diff) {
-              // Create a copy of the current array
-              const result = Array.isArray(currentArray) ? [...currentArray] : [];
+              if (!currentArray) currentArray = [];
+              if (!Array.isArray(currentArray)) currentArray = [];
+              
+              const result = [...currentArray];
               
               // Track items to insert
-              const itemsToInsert = [];
+              const insertions = [];
               
               for (const key in diff) {
                 if (key === '_t') continue;
                 const value = diff[key];
                 
-                // Handle indices with _ prefix (e.g., _0, _1)
+                // Handle _ prefix (existing index with changes)
                 if (key.startsWith('_')) {
                   const index = parseInt(key.substring(1));
                   
-                  // If value is an array, it's a removal or move
                   if (Array.isArray(value)) {
-                    // Check if it's a move (has 3 elements)
-                    if (value.length === 3 && value[2] === 3) {
-                      // This is a move: [oldValue, newIndex, 3]
-                      // We'll handle this by tracking it
-                      itemsToInsert.push({ oldIndex: index, newIndex: value[1], value: result[index] });
-                    }
-                    // If it's a removal (2 elements, second is 0)
-                    else if (value.length === 2 && value[1] === 0) {
-                      // Mark for removal - we'll handle by not including it
-                      // But we need to track the index carefully
+                    // Removal: [oldValue, 0, 0]
+                    if (value.length === 3 && value[2] === 0 && value[1] === 0) {
+                      // Mark for removal
                       if (index < result.length) {
                         result[index] = null;
                       }
                     }
-                    // If it's a replacement with 3 elements and last is 0
-                    else if (value.length === 3 && value[2] === 0) {
-                      result[index] = value[0];
+                    // Replacement: [newValue, 0, 0] - same as removal but with new value
+                    else if (value.length === 2 && value[1] === 0) {
+                      if (index < result.length) {
+                        result[index] = null;
+                      }
+                    }
+                    // Move: [oldValue, newIndex, 3]
+                    else if (value.length === 3 && value[2] === 3) {
+                      // Track this item for moving
+                      if (index < result.length) {
+                        insertions.push({ oldIndex: index, newIndex: value[1], value: result[index] });
+                        result[index] = null;
+                      }
+                    }
+                  } else if (value && typeof value === 'object') {
+                    // Nested diff on this index
+                    if (index < result.length && result[index] && typeof result[index] === 'object') {
+                      result[index] = deepMerge(result[index], value);
                     }
                   }
-                  // If value is an object, it's a nested diff
-                  else if (value && typeof value === 'object') {
-                    if (result[index] && typeof result[index] === 'object') {
-                      result[index] = applyDiff(result[index], value);
-                    } else {
-                      result[index] = value;
-                    }
-                  }
-                }
-                // Handle new items at specific indices (no _ prefix)
-                else {
+                } else {
+                  // Handle numeric keys (insertions)
                   const index = parseInt(key);
                   if (!isNaN(index) && index >= 0) {
-                    // This is a new item or replacement
                     if (Array.isArray(value) && value.length === 1) {
-                      // Single value insertion
+                      // Insert at this index
+                      const item = value[0];
                       if (index < result.length) {
-                        result[index] = value[0];
+                        result.splice(index, 0, item);
                       } else {
-                        result[index] = value[0];
+                        result.push(item);
                       }
                     } else if (value && typeof value === 'object' && !Array.isArray(value)) {
-                      // Nested object diff
-                      if (result[index] && typeof result[index] === 'object') {
-                        result[index] = applyDiff(result[index], value);
-                      } else {
-                        result[index] = value;
+                      // Nested object diff at this index
+                      if (index < result.length && result[index] && typeof result[index] === 'object') {
+                        result[index] = deepMerge(result[index], value);
                       }
                     }
                   }
                 }
               }
               
-              // Handle moves: reorder the array
-              if (itemsToInsert.length > 0) {
-                // Sort by new index
-                itemsToInsert.sort((a, b) => a.newIndex - b.newIndex);
-                
-                // Remove nulls and apply moves
-                const cleanArray = result.filter(item => item !== null);
-                const finalArray = [];
-                const movedItems = {};
-                
-                // Process items to insert
-                for (const item of itemsToInsert) {
-                  // Remove from original position
-                  // We'll rebuild the array
+              // Apply insertions (moves)
+              if (insertions.length > 0) {
+                // Sort by newIndex (descending to avoid index shifting issues)
+                insertions.sort((a, b) => b.newIndex - a.newIndex);
+                for (const ins of insertions) {
+                  if (ins.newIndex < result.length) {
+                    result.splice(ins.newIndex, 0, ins.value);
+                  } else {
+                    result.push(ins.value);
+                  }
                 }
-                
-                // Rebuild the array with moves applied
-                // This is complex - for simplicity, just merge the results
-                return result.filter(item => item !== null);
               }
               
-              // Clean up null values
-              return result.filter(item => item !== null);
+              // Filter out null values
+              return result.filter(item => item !== null && item !== undefined);
             }
             
             // ============================================================
-            // FUNCTION: Simple but effective diff application
+            // FUNCTION: Main diff application
             // ============================================================
-            function applyDiffSimple(current, diff) {
-              const result = JSON.parse(JSON.stringify(current));
+            function applyDiff(current, diff) {
+              const result = JSON.parse(JSON.stringify(current || {}));
               
-              // Handle array diffs with _t: 'a'
+              // Handle array diff at root level
               if (diff._t === 'a') {
-                // This is an array diff - we need to handle it specially
-                // For simplicity, we'll process each element
-                const arrayDiff = diff;
-                const currentArray = Array.isArray(current) ? [...current] : [];
-                const newArray = [];
-                
-                // Keep track of which indices have been processed
-                const processedIndices = new Set();
-                
-                // First, process all index entries (both _0 and 0)
-                for (const key in arrayDiff) {
-                  if (key === '_t') continue;
-                  const value = arrayDiff[key];
-                  
-                  if (key.startsWith('_')) {
-                    // This is an existing index with changes
-                    const index = parseInt(key.substring(1));
-                    processedIndices.add(index);
-                    
-                    if (Array.isArray(value)) {
-                      // Check if it's a move or removal
-                      if (value.length === 3 && value[2] === 3) {
-                        // Move: [oldValue, newIndex, 3]
-                        // This means we need to move this item
-                        // We'll handle this after all items are processed
-                      } else if (value.length === 2 && value[1] === 0) {
-                        // Removal: [oldValue, 0, 0] - skip this item
-                        // Don't add it to the new array
-                      } else if (value.length === 3 && value[2] === 0) {
-                        // Replacement: [newValue, 0, 0] - replace the item
-                        if (index < currentArray.length) {
-                          newArray[index] = value[0];
-                        }
-                      }
-                    } else if (value && typeof value === 'object') {
-                      // Nested diff on this index
-                      if (index < currentArray.length) {
-                        newArray[index] = applyDiff(currentArray[index], value);
-                      }
-                    }
-                  } else {
-                    // This is a new index (insertion)
-                    const index = parseInt(key);
-                    if (!isNaN(index)) {
-                      processedIndices.add(index);
-                      if (Array.isArray(value) && value.length === 1) {
-                        newArray[index] = value[0];
-                      } else if (value && typeof value === 'object') {
-                        newArray[index] = value;
-                      }
-                    }
-                  }
-                }
-                
-                // Fill in remaining items from the current array
-                for (let i = 0; i < currentArray.length; i++) {
-                  if (!processedIndices.has(i) && newArray[i] === undefined) {
-                    newArray[i] = currentArray[i];
-                  }
-                }
-                
-                // Return the new array, filtering out undefined items
-                return newArray.filter(item => item !== undefined);
+                return applyArrayDiff(current, diff);
               }
               
-              // Handle regular object diffs
               for (const key in diff) {
                 if (key === '_t') continue;
                 const diffValue = diff[key];
@@ -277,12 +191,13 @@ jobs:
                 if (diffValue && typeof diffValue === 'object' && !Array.isArray(diffValue)) {
                   if (diffValue._t === 'a') {
                     // This is an array diff for this property
-                    result[key] = applyDiffSimple(result[key] || [], diffValue);
+                    result[key] = applyArrayDiff(result[key] || [], diffValue);
                   } else {
+                    // Regular object diff
                     if (!result[key] || typeof result[key] !== 'object' || Array.isArray(result[key])) {
                       result[key] = {};
                     }
-                    result[key] = applyDiffSimple(result[key], diffValue);
+                    result[key] = applyDiff(result[key], diffValue);
                   }
                 } else {
                   result[key] = diffValue;
@@ -296,7 +211,7 @@ jobs:
             // CASE 1: Gist payload
             // ============================================================
             if (payloadType === 'gist' && gistId && gistId.length > 0) {
-              console.log('📥 Downloading data from Gist:', gistId);
+              console.log('Downloading data from Gist:', gistId);
               
               const token = process.env.GITHUB_TOKEN;
               if (!token) {
@@ -306,21 +221,24 @@ jobs:
               
               const gistUrl = 'https://api.github.com/gists/' + gistId;
               
-              (async function() {
-                try {
-                  const response = await fetch(gistUrl, {
+              // Use synchronous approach with fetch
+              Promise.resolve()
+                .then(function() {
+                  return fetch(gistUrl, {
                     headers: {
                       'Authorization': 'token ' + token,
                       'Accept': 'application/vnd.github.v3+json',
                       'User-Agent': 'BPO-Workflow'
                     }
                   });
-                  
+                })
+                .then(function(response) {
                   if (!response.ok) {
                     throw new Error('Gist API returned ' + response.status);
                   }
-                  
-                  const gistData = await response.json();
+                  return response.json();
+                })
+                .then(function(gistData) {
                   const files = gistData.files;
                   const fileNames = Object.keys(files);
                   if (fileNames.length === 0) {
@@ -328,12 +246,11 @@ jobs:
                   }
                   
                   const fileContent = files[fileNames[0]].content;
-                  console.log('📥 Downloaded data length:', fileContent.length);
+                  console.log('Downloaded data length:', fileContent.length);
                   const diffData = JSON.parse(fileContent);
-                  console.log('✅ Diff parsed successfully');
+                  console.log('Diff parsed successfully');
                   
-                  // Apply diff
-                  fullData = applyDiffSimple(currentData, diffData);
+                  fullData = applyDiff(currentData, diffData);
                   
                   if (!fullData.scenarios || !Array.isArray(fullData.scenarios)) {
                     console.error('Invalid merged data: missing scenarios array');
@@ -341,31 +258,36 @@ jobs:
                   }
                   
                   fs.writeFileSync('data.json', JSON.stringify(fullData, null, 2));
-                  console.log('✅ data.json updated successfully');
+                  console.log('data.json updated successfully');
                   
+                  // Clean up - delete the gist
                   if (token && gistId) {
-                    console.log('🗑️ Deleting temporary Gist...');
-                    try {
-                      const deleteResponse = await fetch('https://api.github.com/gists/' + gistId, {
-                        method: 'DELETE',
-                        headers: {
-                          'Authorization': 'token ' + token,
-                          'Accept': 'application/vnd.github.v3+json'
-                        }
-                      });
-                      if (deleteResponse.ok) {
-                        console.log('✅ Gist deleted');
+                    console.log('Deleting temporary Gist...');
+                    return fetch('https://api.github.com/gists/' + gistId, {
+                      method: 'DELETE',
+                      headers: {
+                        'Authorization': 'token ' + token,
+                        'Accept': 'application/vnd.github.v3+json'
                       }
-                    } catch (e) {
+                    })
+                    .then(function() {
+                      console.log('Gist deleted');
+                    })
+                    .catch(function(e) {
                       console.log('Could not delete Gist:', e.message);
-                    }
+                    });
                   }
-                } catch (e) {
+                })
+                .catch(function(e) {
                   console.error('Failed to process gist:', e.message);
                   process.exit(1);
-                }
-              })();
+                })
+                .finally(function() {
+                  // Keep the process alive
+                  setTimeout(function() {}, 1000);
+                });
               
+              // Keep process alive
               setTimeout(function() {}, 30000);
               return;
             }
@@ -373,45 +295,41 @@ jobs:
             // ============================================================
             // CASE 2: Direct diff payload
             // ============================================================
-            else {
-              console.log('Processing direct payload...');
-              let payloadData = payload.data || '';
-              console.log('📥 Payload data length:', payloadData.length);
-              
-              if (payloadData && payloadData.length > 0) {
-                try {
-                  const parsedData = JSON.parse(payloadData);
-                  console.log('✅ Payload parsed successfully');
-                  console.log('📋 Parsed data keys:', Object.keys(parsedData));
-                  
-                  // Check if this is already FULL data
-                  if (parsedData.scenarios && Array.isArray(parsedData.scenarios)) {
-                    fullData = parsedData;
-                    console.log('✅ Full data detected, saving directly');
-                  } else {
-                    // This is a DIFF - apply it
-                    console.log('🔄 Diff detected, applying to current data...');
-                    fullData = applyDiffSimple(currentData, parsedData);
-                    console.log('✅ Diff applied successfully');
-                  }
-                } catch (e) {
-                  console.error('Failed to parse payload data:', e.message);
-                  console.log('Payload data preview:', payloadData.substring(0, 200));
-                  process.exit(1);
+            console.log('Processing direct payload...');
+            let payloadData = payload.data || '';
+            console.log('Payload data length:', payloadData.length);
+            
+            if (payloadData && payloadData.length > 0) {
+              try {
+                const parsedData = JSON.parse(payloadData);
+                console.log('Payload parsed successfully');
+                console.log('Parsed data keys:', Object.keys(parsedData));
+                
+                if (parsedData.scenarios && Array.isArray(parsedData.scenarios)) {
+                  fullData = parsedData;
+                  console.log('Full data detected, saving directly');
+                } else {
+                  console.log('Diff detected, applying to current data...');
+                  fullData = applyDiff(currentData, parsedData);
+                  console.log('Diff applied successfully');
                 }
-              } else {
-                console.error('No data found in payload');
+              } catch (e) {
+                console.error('Failed to parse payload data:', e.message);
+                console.log('Payload data preview:', payloadData.substring(0, 200));
                 process.exit(1);
               }
+            } else {
+              console.error('No data found in payload');
+              process.exit(1);
             }
             
             // ============================================================
             // VALIDATE AND SAVE
             // ============================================================
             if (fullData) {
-              // Fix: Ensure currentScenarioId is a string, not an array
+              // Fix: Ensure currentScenarioId is a string
               if (Array.isArray(fullData.currentScenarioId)) {
-                console.log('⚠️ currentScenarioId is an array, converting to string');
+                console.log('currentScenarioId is an array, converting to string');
                 fullData.currentScenarioId = fullData.currentScenarioId[0] || 'default';
               }
               
@@ -427,20 +345,19 @@ jobs:
               }
               
               // Fix: Ensure each scenario has valid processes
-              for (let i = 0; i < fullData.scenarios.length; i++) {
-                const sc = fullData.scenarios[i];
+              for (var i = 0; i < fullData.scenarios.length; i++) {
+                var sc = fullData.scenarios[i];
                 if (!sc) continue;
                 
-                // Fix: Ensure processes is an array
                 if (!sc.processes || !Array.isArray(sc.processes)) {
-                  console.log(`⚠️ Scenario ${i} has invalid processes, creating empty array`);
+                  console.log('Scenario ' + i + ' has invalid processes, creating empty array');
                   sc.processes = [];
                 }
                 
-                // Remove any invalid entries in processes
-                sc.processes = sc.processes.filter(p => p && typeof p === 'object' && p.id);
+                sc.processes = sc.processes.filter(function(p) {
+                  return p && typeof p === 'object' && p.id;
+                });
                 
-                // Ensure id exists
                 if (!sc.id) {
                   sc.id = 'scenario_' + Date.now() + '_' + i;
                 }
@@ -478,8 +395,8 @@ jobs:
               }
               
               fs.writeFileSync('data.json', JSON.stringify(fullData, null, 2));
-              console.log('✅ data.json updated successfully');
-              console.log('Final scenarios count:', fullData.scenarios?.length || 0);
+              console.log('data.json updated successfully');
+              console.log('Final scenarios count:', fullData.scenarios.length);
               console.log('Final currentScenarioId:', fullData.currentScenarioId);
             } else {
               console.log('No data to save');
@@ -491,11 +408,11 @@ jobs:
         run: |
           if [ -f data.json ] && [ -s data.json ]; then
             if ! jq empty data.json 2>/dev/null; then
-              echo "❌ Invalid JSON in data.json"
+              echo "Invalid JSON in data.json"
               cat data.json | head -100
               exit 1
             fi
-            echo "✅ JSON validation passed"
+            echo "JSON validation passed"
           fi
 
       - name: Commit and push
@@ -504,7 +421,7 @@ jobs:
             echo "No changes to commit"
           else
             git config user.name "github-actions[bot]"
-            git config.user.email "github-actions[bot]@users.noreply.github.com"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
             git add data.json
             git commit -m "Apply changes from web [skip ci]" || echo "No changes to commit"
             git push
