@@ -63,7 +63,7 @@ jobs:
             console.log('Gist ID:', gistId || '(none)');
             
             // ============================================================
-            // FUNCTION: Apply diff using simple merge
+            // FUNCTION: Deep merge for objects
             // ============================================================
             function deepMerge(target, source) {
               if (!source) return target;
@@ -87,118 +87,20 @@ jobs:
             }
             
             // ============================================================
-            // FUNCTION: Apply array diff properly
-            // ============================================================
-            function applyArrayDiff(currentArray, diff) {
-              if (!currentArray) currentArray = [];
-              if (!Array.isArray(currentArray)) currentArray = [];
-              
-              const result = [...currentArray];
-              
-              // Track items to insert
-              const insertions = [];
-              
-              for (const key in diff) {
-                if (key === '_t') continue;
-                const value = diff[key];
-                
-                // Handle _ prefix (existing index with changes)
-                if (key.startsWith('_')) {
-                  const index = parseInt(key.substring(1));
-                  
-                  if (Array.isArray(value)) {
-                    // Removal: [oldValue, 0, 0]
-                    if (value.length === 3 && value[2] === 0 && value[1] === 0) {
-                      // Mark for removal
-                      if (index < result.length) {
-                        result[index] = null;
-                      }
-                    }
-                    // Replacement: [newValue, 0, 0] - same as removal but with new value
-                    else if (value.length === 2 && value[1] === 0) {
-                      if (index < result.length) {
-                        result[index] = null;
-                      }
-                    }
-                    // Move: [oldValue, newIndex, 3]
-                    else if (value.length === 3 && value[2] === 3) {
-                      // Track this item for moving
-                      if (index < result.length) {
-                        insertions.push({ oldIndex: index, newIndex: value[1], value: result[index] });
-                        result[index] = null;
-                      }
-                    }
-                  } else if (value && typeof value === 'object') {
-                    // Nested diff on this index
-                    if (index < result.length && result[index] && typeof result[index] === 'object') {
-                      result[index] = deepMerge(result[index], value);
-                    }
-                  }
-                } else {
-                  // Handle numeric keys (insertions)
-                  const index = parseInt(key);
-                  if (!isNaN(index) && index >= 0) {
-                    if (Array.isArray(value) && value.length === 1) {
-                      // Insert at this index
-                      const item = value[0];
-                      if (index < result.length) {
-                        result.splice(index, 0, item);
-                      } else {
-                        result.push(item);
-                      }
-                    } else if (value && typeof value === 'object' && !Array.isArray(value)) {
-                      // Nested object diff at this index
-                      if (index < result.length && result[index] && typeof result[index] === 'object') {
-                        result[index] = deepMerge(result[index], value);
-                      }
-                    }
-                  }
-                }
-              }
-              
-              // Apply insertions (moves)
-              if (insertions.length > 0) {
-                // Sort by newIndex (descending to avoid index shifting issues)
-                insertions.sort((a, b) => b.newIndex - a.newIndex);
-                for (const ins of insertions) {
-                  if (ins.newIndex < result.length) {
-                    result.splice(ins.newIndex, 0, ins.value);
-                  } else {
-                    result.push(ins.value);
-                  }
-                }
-              }
-              
-              // Filter out null values
-              return result.filter(item => item !== null && item !== undefined);
-            }
-            
-            // ============================================================
-            // FUNCTION: Main diff application
+            // FUNCTION: Apply diff
             // ============================================================
             function applyDiff(current, diff) {
               const result = JSON.parse(JSON.stringify(current || {}));
-              
-              // Handle array diff at root level
-              if (diff._t === 'a') {
-                return applyArrayDiff(current, diff);
-              }
               
               for (const key in diff) {
                 if (key === '_t') continue;
                 const diffValue = diff[key];
                 
                 if (diffValue && typeof diffValue === 'object' && !Array.isArray(diffValue)) {
-                  if (diffValue._t === 'a') {
-                    // This is an array diff for this property
-                    result[key] = applyArrayDiff(result[key] || [], diffValue);
-                  } else {
-                    // Regular object diff
-                    if (!result[key] || typeof result[key] !== 'object' || Array.isArray(result[key])) {
-                      result[key] = {};
-                    }
-                    result[key] = applyDiff(result[key], diffValue);
+                  if (!result[key] || typeof result[key] !== 'object' || Array.isArray(result[key])) {
+                    result[key] = {};
                   }
+                  result[key] = applyDiff(result[key], diffValue);
                 } else {
                   result[key] = diffValue;
                 }
@@ -208,7 +110,88 @@ jobs:
             }
             
             // ============================================================
-            // CASE 1: Gist payload
+            // FUNCTION: Process the diff and save
+            // ============================================================
+            function processAndSave(dataToApply, isFullData) {
+              let dataToSave = null;
+              
+              if (isFullData) {
+                dataToSave = dataToApply;
+                console.log('Full data detected, saving directly');
+              } else {
+                console.log('Diff detected, applying to current data...');
+                dataToSave = applyDiff(currentData, dataToApply);
+                console.log('Diff applied successfully');
+              }
+              
+              // Validate
+              if (!dataToSave || !dataToSave.scenarios || !Array.isArray(dataToSave.scenarios)) {
+                console.error('Invalid data: scenarios is missing or not an array');
+                if (dataToSave && dataToSave.scenarios) {
+                  console.log('scenarios type:', typeof dataToSave.scenarios);
+                }
+                return false;
+              }
+              
+              // Fix currentScenarioId
+              if (Array.isArray(dataToSave.currentScenarioId)) {
+                console.log('currentScenarioId is an array, converting to string');
+                dataToSave.currentScenarioId = dataToSave.currentScenarioId[0] || 'default';
+              }
+              
+              // Ensure each scenario has valid processes
+              for (let i = 0; i < dataToSave.scenarios.length; i++) {
+                const sc = dataToSave.scenarios[i];
+                if (!sc) continue;
+                if (!sc.processes || !Array.isArray(sc.processes)) {
+                  console.log('Scenario ' + i + ' has invalid processes, creating empty array');
+                  sc.processes = [];
+                }
+                if (!sc.id) {
+                  sc.id = 'scenario_' + Date.now() + '_' + i;
+                }
+              }
+              
+              // Ensure master data exists
+              if (!dataToSave.departments || !Array.isArray(dataToSave.departments)) {
+                dataToSave.departments = ['Sales', 'Production Planning', 'Material Planning', 'Material Handling', 'Purchase', 'Production Execution', 'Parts Quality', 'Vehicle Quality', 'Finance', 'Trade & Compliance'];
+              }
+              
+              if (!dataToSave.sysNameList || !Array.isArray(dataToSave.sysNameList)) {
+                dataToSave.sysNameList = ['SAP', 'LES', 'MES', 'KAPTURE', 'WMS', 'To Be Determined'];
+              }
+              
+              if (!dataToSave.businessStatuses || !Array.isArray(dataToSave.businessStatuses)) {
+                dataToSave.businessStatuses = [
+                  { value: 'Not Defined', color: 'red' },
+                  { value: 'In Progress', color: 'yellow' },
+                  { value: 'Completed', color: 'green' }
+                ];
+              }
+              
+              if (!dataToSave.sysStatusList || !Array.isArray(dataToSave.sysStatusList)) {
+                dataToSave.sysStatusList = [
+                  { value: 'Operational', color: 'green' },
+                  { value: 'Completed', color: 'green' },
+                  { value: 'Offline', color: 'red' },
+                  { value: 'To Be Implemented', color: 'red' },
+                  { value: 'Work in Progress', color: 'yellow' }
+                ];
+              }
+              
+              if (!dataToSave.sysRespList || !Array.isArray(dataToSave.sysRespList)) {
+                dataToSave.sysRespList = [];
+              }
+              
+              fs.writeFileSync('data.json', JSON.stringify(dataToSave, null, 2));
+              console.log('data.json updated successfully');
+              console.log('Final scenarios count:', dataToSave.scenarios.length);
+              console.log('Final currentScenarioId:', dataToSave.currentScenarioId);
+              return true;
+            }
+            
+            // ============================================================
+            // PROCESS PAYLOAD
             // ============================================================
             if (payloadType === 'gist' && gistId && gistId.length > 0) {
               console.log('Downloading data from Gist:', gistId);
@@ -221,186 +204,90 @@ jobs:
               
               const gistUrl = 'https://api.github.com/gists/' + gistId;
               
-              // Use synchronous approach with fetch
-              Promise.resolve()
-                .then(function() {
-                  return fetch(gistUrl, {
+              // Use fetch to download the gist content
+              fetch(gistUrl, {
+                headers: {
+                  'Authorization': 'token ' + token,
+                  'Accept': 'application/vnd.github.v3+json',
+                  'User-Agent': 'BPO-Workflow'
+                }
+              })
+              .then(function(response) {
+                if (!response.ok) {
+                  throw new Error('Gist API returned ' + response.status);
+                }
+                return response.json();
+              })
+              .then(function(gistData) {
+                const files = gistData.files;
+                const fileNames = Object.keys(files);
+                if (fileNames.length === 0) {
+                  throw new Error('No files found in gist');
+                }
+                
+                const fileContent = files[fileNames[0]].content;
+                console.log('Downloaded data length:', fileContent.length);
+                const diffData = JSON.parse(fileContent);
+                console.log('Diff parsed successfully');
+                
+                // Check if it's full data or diff
+                const isFullData = diffData.scenarios && Array.isArray(diffData.scenarios);
+                const success = processAndSave(diffData, isFullData);
+                
+                if (!success) {
+                  process.exit(1);
+                }
+                
+                // Clean up - delete the gist
+                if (token && gistId) {
+                  console.log('Deleting temporary Gist...');
+                  return fetch('https://api.github.com/gists/' + gistId, {
+                    method: 'DELETE',
                     headers: {
                       'Authorization': 'token ' + token,
-                      'Accept': 'application/vnd.github.v3+json',
-                      'User-Agent': 'BPO-Workflow'
+                      'Accept': 'application/vnd.github.v3+json'
                     }
                   });
-                })
-                .then(function(response) {
-                  if (!response.ok) {
-                    throw new Error('Gist API returned ' + response.status);
-                  }
-                  return response.json();
-                })
-                .then(function(gistData) {
-                  const files = gistData.files;
-                  const fileNames = Object.keys(files);
-                  if (fileNames.length === 0) {
-                    throw new Error('No files found in gist');
-                  }
+                }
+              })
+              .then(function() {
+                console.log('Gist deleted');
+              })
+              .catch(function(e) {
+                console.error('Failed to process gist:', e.message);
+                process.exit(1);
+              });
+              
+              // Keep process alive for async operations
+              setTimeout(function() {}, 30000);
+              
+            } else {
+              // Direct diff payload
+              console.log('Processing direct payload...');
+              let payloadData = payload.data || '';
+              console.log('Payload data length:', payloadData.length);
+              
+              if (payloadData && payloadData.length > 0) {
+                try {
+                  const parsedData = JSON.parse(payloadData);
+                  console.log('Payload parsed successfully');
+                  console.log('Parsed data keys:', Object.keys(parsedData));
                   
-                  const fileContent = files[fileNames[0]].content;
-                  console.log('Downloaded data length:', fileContent.length);
-                  const diffData = JSON.parse(fileContent);
-                  console.log('Diff parsed successfully');
+                  const isFullData = parsedData.scenarios && Array.isArray(parsedData.scenarios);
+                  const success = processAndSave(parsedData, isFullData);
                   
-                  fullData = applyDiff(currentData, diffData);
-                  
-                  if (!fullData.scenarios || !Array.isArray(fullData.scenarios)) {
-                    console.error('Invalid merged data: missing scenarios array');
+                  if (!success) {
                     process.exit(1);
                   }
-                  
-                  fs.writeFileSync('data.json', JSON.stringify(fullData, null, 2));
-                  console.log('data.json updated successfully');
-                  
-                  // Clean up - delete the gist
-                  if (token && gistId) {
-                    console.log('Deleting temporary Gist...');
-                    return fetch('https://api.github.com/gists/' + gistId, {
-                      method: 'DELETE',
-                      headers: {
-                        'Authorization': 'token ' + token,
-                        'Accept': 'application/vnd.github.v3+json'
-                      }
-                    })
-                    .then(function() {
-                      console.log('Gist deleted');
-                    })
-                    .catch(function(e) {
-                      console.log('Could not delete Gist:', e.message);
-                    });
-                  }
-                })
-                .catch(function(e) {
-                  console.error('Failed to process gist:', e.message);
+                } catch (e) {
+                  console.error('Failed to parse payload data:', e.message);
+                  console.log('Payload data preview:', payloadData.substring(0, 200));
                   process.exit(1);
-                })
-                .finally(function() {
-                  // Keep the process alive
-                  setTimeout(function() {}, 1000);
-                });
-              
-              // Keep process alive
-              setTimeout(function() {}, 30000);
-              return;
-            }
-            
-            // ============================================================
-            // CASE 2: Direct diff payload
-            // ============================================================
-            console.log('Processing direct payload...');
-            let payloadData = payload.data || '';
-            console.log('Payload data length:', payloadData.length);
-            
-            if (payloadData && payloadData.length > 0) {
-              try {
-                const parsedData = JSON.parse(payloadData);
-                console.log('Payload parsed successfully');
-                console.log('Parsed data keys:', Object.keys(parsedData));
-                
-                if (parsedData.scenarios && Array.isArray(parsedData.scenarios)) {
-                  fullData = parsedData;
-                  console.log('Full data detected, saving directly');
-                } else {
-                  console.log('Diff detected, applying to current data...');
-                  fullData = applyDiff(currentData, parsedData);
-                  console.log('Diff applied successfully');
                 }
-              } catch (e) {
-                console.error('Failed to parse payload data:', e.message);
-                console.log('Payload data preview:', payloadData.substring(0, 200));
+              } else {
+                console.error('No data found in payload');
                 process.exit(1);
               }
-            } else {
-              console.error('No data found in payload');
-              process.exit(1);
-            }
-            
-            // ============================================================
-            // VALIDATE AND SAVE
-            // ============================================================
-            if (fullData) {
-              // Fix: Ensure currentScenarioId is a string
-              if (Array.isArray(fullData.currentScenarioId)) {
-                console.log('currentScenarioId is an array, converting to string');
-                fullData.currentScenarioId = fullData.currentScenarioId[0] || 'default';
-              }
-              
-              // Fix: Ensure scenarios is an array
-              if (!fullData.scenarios || !Array.isArray(fullData.scenarios)) {
-                console.error('Invalid data: scenarios is not an array');
-                fullData.scenarios = [{
-                  id: 'default',
-                  name: 'Manufacturing',
-                  processes: []
-                }];
-                console.log('Created default scenario');
-              }
-              
-              // Fix: Ensure each scenario has valid processes
-              for (var i = 0; i < fullData.scenarios.length; i++) {
-                var sc = fullData.scenarios[i];
-                if (!sc) continue;
-                
-                if (!sc.processes || !Array.isArray(sc.processes)) {
-                  console.log('Scenario ' + i + ' has invalid processes, creating empty array');
-                  sc.processes = [];
-                }
-                
-                sc.processes = sc.processes.filter(function(p) {
-                  return p && typeof p === 'object' && p.id;
-                });
-                
-                if (!sc.id) {
-                  sc.id = 'scenario_' + Date.now() + '_' + i;
-                }
-              }
-              
-              // Ensure master data exists
-              if (!fullData.departments || !Array.isArray(fullData.departments)) {
-                fullData.departments = ['Sales', 'Production Planning', 'Material Planning', 'Material Handling', 'Purchase', 'Production Execution', 'Parts Quality', 'Vehicle Quality', 'Finance', 'Trade & Compliance'];
-              }
-              
-              if (!fullData.sysNameList || !Array.isArray(fullData.sysNameList)) {
-                fullData.sysNameList = ['SAP', 'LES', 'MES', 'KAPTURE', 'WMS', 'To Be Determined'];
-              }
-              
-              if (!fullData.businessStatuses || !Array.isArray(fullData.businessStatuses)) {
-                fullData.businessStatuses = [
-                  { value: 'Not Defined', color: 'red' },
-                  { value: 'In Progress', color: 'yellow' },
-                  { value: 'Completed', color: 'green' }
-                ];
-              }
-              
-              if (!fullData.sysStatusList || !Array.isArray(fullData.sysStatusList)) {
-                fullData.sysStatusList = [
-                  { value: 'Operational', color: 'green' },
-                  { value: 'Completed', color: 'green' },
-                  { value: 'Offline', color: 'red' },
-                  { value: 'To Be Implemented', color: 'red' },
-                  { value: 'Work in Progress', color: 'yellow' }
-                ];
-              }
-              
-              if (!fullData.sysRespList || !Array.isArray(fullData.sysRespList)) {
-                fullData.sysRespList = [];
-              }
-              
-              fs.writeFileSync('data.json', JSON.stringify(fullData, null, 2));
-              console.log('data.json updated successfully');
-              console.log('Final scenarios count:', fullData.scenarios.length);
-              console.log('Final currentScenarioId:', fullData.currentScenarioId);
-            } else {
-              console.log('No data to save');
-              process.exit(1);
             }
           "
 
@@ -421,7 +308,7 @@ jobs:
             echo "No changes to commit"
           else
             git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git config.user.email "github-actions[bot]@users.noreply.github.com"
             git add data.json
             git commit -m "Apply changes from web [skip ci]" || echo "No changes to commit"
             git push
