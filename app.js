@@ -587,6 +587,7 @@ async function loadData() {
 
         if (!response.ok) {
             if (response.status === 404) {
+                console.log('📄 data.json not found, creating default');
                 appData = getDefaultData();
                 normalizeData(appData);
                 initializeSnapshot(appData);
@@ -599,16 +600,22 @@ async function loadData() {
         }
 
         const text = await response.text();
-        appData = JSON.parse(text);
-        normalizeData(appData);
+        console.log('📄 Data loaded, length:', text.length);
         
-        // ✅ Initialize snapshot after data is loaded
+        // Parse and normalize
+        let rawData = JSON.parse(text);
+        console.log('📊 Raw data parsed, scenarios:', rawData.scenarios?.length || 0);
+        
+        // ✅ Normalize with robust function
+        appData = normalizeData(rawData);
+        
+        // ✅ Initialize snapshot
         initializeSnapshot(appData);
 
         if (loading) loading.style.display = 'none';
         if (root) root.style.display = 'block';
         renderApp();
-        console.log('✅ Data loaded successfully');
+        console.log('✅ Data loaded and rendered successfully');
 
     } catch (error) {
         console.error('Failed to load data:', error);
