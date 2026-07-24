@@ -674,7 +674,6 @@ function getDefaultData() {
         currentScenarioId: 'default'
     };
 }
-
 // ============================
 // 10. Get Current Scenario
 // ============================
