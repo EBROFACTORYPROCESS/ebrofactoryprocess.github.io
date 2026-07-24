@@ -38,13 +38,16 @@
 
     <div id="app-root" style="display:none;"></div>
 
-    <!-- CDN Libraries - Load once, in correct order -->
-    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/lz-string.min.js"></script>
-    <!-- jsondiffpatch - Alternative stable version -->
-    <script src="https://cdn.jsdelivr.net/npm/jsondiffpatch@0.4.1/dist/jsondiffpatch.umd.min.js"></script>
-    <!-- Optional config -->
-    <script src="config.js?v=1"></script>
+    <!-- ============================================================
+         CDN Libraries - Correct URLs
+         ============================================================ -->
+    <!-- LZString - CORRECT URL -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+    
+    <!-- jsondiffpatch - Using a reliable CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsondiffpatch/0.4.1/jsondiffpatch.umd.min.js"></script>
+    
     <!-- Core app -->
-    <script src="app.js?v=1"></script>
+    <script src="app.js?v=2"></script>
 </body>
 </html>
