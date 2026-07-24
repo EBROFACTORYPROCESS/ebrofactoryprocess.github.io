@@ -245,6 +245,7 @@ async function saveDataToGitHub(data) {
     }
 
     try {
+        // Get token
         let token = getGitHubToken();
         if (!token) {
             token = prompt(
@@ -259,8 +260,42 @@ async function saveDataToGitHub(data) {
             }
         }
 
-        // Generate diff
-        const diff = generateDiff(lastSnapshot, data);
+        // Clean token
+        token = token.trim();
+
+        // ✅ IMPORTANT: Generate diff correctly
+        let diff = null;
+        
+        // If lastSnapshot is null or empty, use a deep clone of current data as baseline
+        if (!lastSnapshot) {
+            console.log('📸 No snapshot found, creating baseline...');
+            lastSnapshot = JSON.parse(JSON.stringify(data));
+            saveSnapshot(lastSnapshot);
+            alert('ℹ️ Baseline snapshot created. Please make another change to save.');
+            isSaving = false;
+            if (saveBtn) {
+                saveBtn.textContent = '💾 Save to GitHub';
+                saveBtn.disabled = false;
+            }
+            return;
+        }
+
+        // Generate diff using jsondiffpatch
+        try {
+            if (typeof jsondiffpatch !== 'undefined' && jsondiffpatch.diff) {
+                diff = jsondiffpatch.diff(lastSnapshot, data);
+                console.log('📊 Diff generated with jsondiffpatch');
+            } else {
+                // Fallback: simple diff
+                diff = generateSimpleDiff(lastSnapshot, data);
+                console.log('📊 Diff generated with simple fallback');
+            }
+        } catch (e) {
+            console.error('Diff generation failed:', e);
+            diff = generateSimpleDiff(lastSnapshot, data);
+        }
+
+        // If no changes detected
         if (!diff) {
             alert('ℹ️ No changes detected. Nothing to save.');
             isSaving = false;
@@ -274,17 +309,14 @@ async function saveDataToGitHub(data) {
         const jsonStr = JSON.stringify(diff);
         console.log(`📊 Diff size: ${jsonStr.length} bytes (${(jsonStr.length/1024).toFixed(1)} KB)`);
 
-        // Determine if we need Gist (data > 40KB)
-        const useGist = jsonStr.length > 40000;
+        // Determine if we need Gist (data > 30KB for safety, under 64KB limit)
+        const useGist = jsonStr.length > 30000;
         let gistId = null;
         let payloadData = jsonStr;
         let payloadType = 'diff';
 
         if (useGist) {
             console.log('📤 Data is large, uploading to Gist...');
-            
-            // Clean the token - ensure no extra whitespace
-            const cleanToken = token.trim();
             
             const gistPayload = {
                 description: `BPO diff - ${new Date().toISOString()}`,
@@ -300,7 +332,7 @@ async function saveDataToGitHub(data) {
                 const gistResponse = await fetch('https://api.github.com/gists', {
                     method: 'POST',
                     headers: {
-                        'Authorization': `token ${cleanToken}`,
+                        'Authorization': `token ${token}`,
                         'Content-Type': 'application/json',
                         'Accept': 'application/vnd.github.v3+json'
                     },
@@ -310,38 +342,37 @@ async function saveDataToGitHub(data) {
                 if (!gistResponse.ok) {
                     const errorData = await gistResponse.json();
                     console.error('Gist API error:', errorData);
-                    throw new Error(`Gist creation failed: ${errorData.message || gistResponse.statusText}`);
-                }
-
-                const gistData = await gistResponse.json();
-                gistId = gistData.id;
-                payloadType = 'gist';
-                payloadData = ''; // Don't send data directly
-                console.log(`✅ Gist created: ${gistId}`);
-                
-                // Verify the Gist was created successfully
-                const verifyResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
-                    headers: {
-                        'Authorization': `token ${cleanToken}`,
-                        'Accept': 'application/vnd.github.v3+json'
+                    // If Gist fails, fallback to direct payload (might be too large)
+                    console.log('⚠️ Gist creation failed, falling back to direct payload');
+                } else {
+                    const gistData = await gistResponse.json();
+                    gistId = gistData.id;
+                    payloadType = 'gist';
+                    payloadData = ''; // Don't send data directly
+                    console.log(`✅ Gist created: ${gistId}`);
+                    
+                    // Verify the Gist was created successfully
+                    const verifyResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    if (!verifyResponse.ok) {
+                        console.warn('⚠️ Gist verification failed, but continuing...');
                     }
-                });
-                if (!verifyResponse.ok) {
-                    throw new Error(`Gist verification failed: ${verifyResponse.statusText}`);
                 }
-                console.log('✅ Gist verified successfully');
-
             } catch (gistError) {
                 console.error('Gist creation failed:', gistError);
-                // Fallback: send data directly (might exceed size limit)
-                alert(`⚠️ Gist creation failed: ${gistError.message}\n\nFalling back to direct save (may fail if data is too large).`);
+                // Fallback: send data directly
+                console.log('⚠️ Falling back to direct payload');
                 payloadType = 'diff';
                 payloadData = jsonStr;
                 gistId = null;
             }
         }
 
-        // Build payload
+        // ✅ Build payload correctly
         const payload = {
             event_type: 'update-data',
             client_payload: {
@@ -353,12 +384,13 @@ async function saveDataToGitHub(data) {
         };
 
         console.log(`📤 Sending payload with type: ${payloadType}, gist_id: ${gistId || 'none'}`);
+        console.log(`📤 Payload data length: ${payloadData.length} bytes`);
 
         const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`;
         const response = await fetch(url, {
             method: 'POST',
             headers: {
-                'Authorization': `token ${token.trim()}`,
+                'Authorization': `token ${token}`,
                 'Content-Type': 'application/json',
                 'Accept': 'application/vnd.github.v3+json'
             },
@@ -367,6 +399,7 @@ async function saveDataToGitHub(data) {
 
         if (!response.ok) {
             const errorData = await response.json();
+            console.error('Dispatch API error:', errorData);
             if (response.status === 401) {
                 clearGitHubToken();
                 throw new Error('Token is invalid or expired. Please re-enter your Token.');
@@ -374,7 +407,9 @@ async function saveDataToGitHub(data) {
             throw new Error(errorData.message || `HTTP ${response.status}`);
         }
 
+        // ✅ Save snapshot only after successful save
         saveSnapshot(data);
+        console.log('✅ Snapshot updated');
 
         const sizeMsg = useGist && gistId 
             ? `📤 Uploaded to Gist (temporary)\n   Gist ID: ${gistId}`
