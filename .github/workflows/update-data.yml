@@ -87,7 +87,6 @@ jobs:
                 }
               }
               
-              // Validate and fix the data
               return validateAndSave(dataToSave);
             }
             
@@ -104,76 +103,15 @@ jobs:
                 const targetVal = result[key];
                 
                 if (sourceVal && typeof sourceVal === 'object' && !Array.isArray(sourceVal)) {
-                  if (sourceVal._t === 'a') {
-                    // Handle array diff manually
-                    result[key] = manualArrayMerge(targetVal || [], sourceVal);
-                  } else if (!targetVal || typeof targetVal !== 'object' || Array.isArray(targetVal)) {
+                  if (!targetVal || typeof targetVal !== 'object' || Array.isArray(targetVal)) {
                     result[key] = {};
-                    result[key] = manualMerge(result[key], sourceVal);
-                  } else {
-                    result[key] = manualMerge(targetVal, sourceVal);
                   }
+                  result[key] = manualMerge(result[key], sourceVal);
                 } else {
                   result[key] = sourceVal;
                 }
               }
               return result;
-            }
-            
-            function manualArrayMerge(targetArray, diff) {
-              if (!Array.isArray(targetArray)) targetArray = [];
-              const result = [...targetArray];
-              
-              // Process each key in the diff
-              for (const key in diff) {
-                if (key === '_t') continue;
-                const value = diff[key];
-                
-                if (key.startsWith('_')) {
-                  // Existing index with changes
-                  const index = parseInt(key.substring(1));
-                  if (Array.isArray(value) && value.length === 3 && value[2] === 0) {
-                    // Replacement
-                    if (index < result.length) {
-                      result[index] = value[0];
-                    }
-                  } else if (Array.isArray(value) && value.length === 2 && value[1] === 0) {
-                    // Removal - mark as null to filter later
-                    if (index < result.length) {
-                      result[index] = null;
-                    }
-                  } else if (value && typeof value === 'object' && !Array.isArray(value)) {
-                    // Nested diff
-                    if (index < result.length && result[index] && typeof result[index] === 'object') {
-                      result[index] = manualMerge(result[index], value);
-                    }
-                  }
-                } else {
-                  // New index (insertion)
-                  const index = parseInt(key);
-                  if (!isNaN(index) && index >= 0) {
-                    if (Array.isArray(value) && value.length === 1) {
-                      // Insert at this position
-                      const item = value[0];
-                      if (index < result.length) {
-                        result.splice(index, 0, item);
-                      } else {
-                        result.push(item);
-                      }
-                    } else if (value && typeof value === 'object' && !Array.isArray(value)) {
-                      // Nested object diff at this index
-                      if (index < result.length && result[index] && typeof result[index] === 'object') {
-                        result[index] = manualMerge(result[index], value);
-                      } else {
-                        result[index] = value;
-                      }
-                    }
-                  }
-                }
-              }
-              
-              // Remove nulls and return
-              return result.filter(item => item !== null && item !== undefined);
             }
             
             // ============================================================
@@ -190,7 +128,6 @@ jobs:
                 console.error('Invalid data: scenarios is not an array');
                 console.log('scenarios type:', typeof data.scenarios);
                 
-                // Try to fix: convert object to array if possible
                 if (data.scenarios && typeof data.scenarios === 'object') {
                   const scenarioObj = data.scenarios;
                   const scenarioArray = [];
@@ -201,15 +138,12 @@ jobs:
                     if (value && typeof value === 'object') {
                       const scenario = { id: 'default', name: 'Manufacturing', processes: [] };
                       
-                      // Extract id
                       if (value.id) {
                         scenario.id = Array.isArray(value.id) ? value.id[0] : value.id;
                       }
-                      // Extract name
                       if (value.name) {
                         scenario.name = Array.isArray(value.name) ? value.name[0] : value.name;
                       }
-                      // Extract processes
                       if (value.processes && typeof value.processes === 'object') {
                         const processArray = [];
                         for (const pKey in value.processes) {
@@ -424,7 +358,7 @@ jobs:
             echo "No changes to commit"
           else
             git config user.name "github-actions[bot]"
-            git config.user.email "github-actions[bot]@users.noreply.github.com"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
             git add data.json
             git commit -m "Apply changes from web [skip ci]" || echo "No changes to commit"
             git push
