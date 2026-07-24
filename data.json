@@ -76,71 +76,896 @@
   ],
   "scenarios": [
     {
-      "id": "1784889853519-qras0hkj",
-      "name": "adfsgdfg",
+      "id": "default",
+      "name": "Manufacturing",
       "processes": [
         {
-          "id": [
-            "1784889854711-74yyxlnx",
-            "1784891650552-esyohlc4"
-          ]
+          "id": "1781161866074-ccs1x0d0",
+          "seq": "10",
+          "name": "Sales Forecast",
+          "description": "Sales forecast agreed in S&OP meeting",
+          "raci": {
+            "r": ["Sales"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
         },
         {
-          "id": [
-            "1784889854861-v1ohu50p",
-            "1784891650704-70gmscx1"
-          ]
+          "id": "1781161866074-0gtup2ma",
+          "seq": "10.1",
+          "name": "Anual Sales Forecast",
+          "description": "Maintain anual sales forecast agreed in S&OP meeting",
+          "raci": {
+            "r": ["Sales"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
         },
         {
-          "id": [
-            "1784889855014-bsw87oxy",
-            "1784891650856-y7rqbtds"
-          ]
+          "id": "1781161866074-dr66nph6",
+          "seq": "10.2",
+          "name": "Validate M+3 Sales plan",
+          "description": "Validate & consolidate M+3 Sales plan",
+          "raci": {
+            "r": ["Sales"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
         },
         {
-          "id": [
-            "1784889855158-wtkc8npd",
-            "1784891651006-jfn6qwrh"
-          ]
+          "id": "1781161866074-rtnv4m3f",
+          "seq": "10.3",
+          "name": "Create M+3 Subcontract STO",
+          "description": "Create M+3 subcontract STO",
+          "raci": {
+            "r": ["Sales"],
+            "a": ["Production Planning"],
+            "c": ["Material Planning"],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
         },
         {
-          "id": [
-            "1784889855294-bfgjfhl4",
-            "1784891651391-nual2sgr"
-          ]
+          "id": "1781161866074-uqioisf3",
+          "seq": "10.4",
+          "name": "Maintain M+3 Subcontract STO",
+          "description": "Maintain M+3 Subcontract STO",
+          "raci": {
+            "r": ["Sales"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
         },
         {
-          "id": [
-            "1784889855447-yf8vcdg1",
-            "1784891651592-e9btcqox"
-          ]
+          "id": "1781161866074-ylnldwbk",
+          "seq": "20",
+          "name": "Material Requirement Planning",
+          "description": "Procurement of Production parts to support the M+3 production plan",
+          "raci": {
+            "r": ["Material Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "SAP",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/:b:/s/BUSINESSPROCESSCONTROL/IQB_NI9omgquQp368CDytAQfAbyUwZh6gBlP-x4FPGOOma8?email=ybai%40ebrofactory.com&e=re6z81",
+          "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/PP/MD02%20MRP%20Operation%20and%20Viewing%20Operation.docx?d=wf18516ea22764ee286a7559f2ac46d6c&csf=1&web=1&e=uGT0Zl",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
         },
         {
-          "id": "1784889855597-2ly1341d",
+          "id": "1781161866074-xo9ftqqz",
+          "seq": "20.1",
+          "name": "Purchase Requirement Creation",
+          "description": "Purchase requirement of parts to ensure the material availability to cover production demands taking into consideration the inventory  stock in transit  safety stock and production consumption.",
+          "raci": {
+            "r": ["Material Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "SAP",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/:b:/s/BUSINESSPROCESSCONTROL/IQB_NI9omgquQp368CDytAQfAbyUwZh6gBlP-x4FPGOOma8?email=ybai%40ebrofactory.com&e=re6z81",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-2ny3mo1h",
+          "seq": "20.2",
+          "name": "Purchase Requirement Maintenance",
+          "description": "Modify the generated Purchase requirement to cover out of mrp demands.",
+          "raci": {
+            "r": ["Material Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "SAP",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/:b:/s/BUSINESSPROCESSCONTROL/IQB_NI9omgquQp368CDytAQfAbyUwZh6gBlP-x4FPGOOma8?email=ybai%40ebrofactory.com&e=re6z81",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-19ispykb",
+          "seq": "30",
+          "name": "Purchase Execution",
+          "description": "From purchase requirement to Purchase Order submit to supplier",
+          "raci": {
+            "r": ["Purchase"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "SAP",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/MM/Local%20Purchasing%20Order%20PO%20Maintenance.docx?d=w1267b5edf7ad457eb16e2675c8f89658&csf=1&web=1&e=JzqkcF",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-3m91iyan",
+          "seq": "30.1",
+          "name": "PR to PO Creation",
+          "description": "Convert All Purchase Requirement to Purchase order agains supplier",
+          "raci": {
+            "r": ["Material Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "SAP",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-183enc0h",
+          "seq": "30.2",
+          "name": "Consumption PO Creation",
+          "description": "Create PO for consumption materials to support the production.",
+          "raci": {
+            "r": ["Material Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "SAP",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/MM/CostCenter%20Consumption.docx?d=w92cb1ace39d64a70b55db1e6137e7af0&csf=1&web=1&e=3knyO3",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-h1s2acz7",
+          "seq": "30.3",
+          "name": "PO complaince validation",
+          "description": "Purchase order trade and complaincen validation",
+          "raci": {
+            "r": ["Trade & Complaince"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-qldukury",
+          "seq": "30.4",
+          "name": "PO Approval",
+          "description": "Approval of Purcahse orer release",
+          "raci": {
+            "r": ["Material Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "SAP",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-venywrtc",
+          "seq": "30.5",
+          "name": "PO Execution",
+          "description": "Execution of released PO to supplier",
+          "raci": {
+            "r": ["Purchase"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "SAP",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/MM/Local%20Purchasing%20Order%20PO%20Maintenance.docx?d=w1267b5edf7ad457eb16e2675c8f89658&csf=1&web=1&e=6cEICd",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-ychqnhqu",
+          "seq": "30.6",
+          "name": "Invoice Payment",
+          "description": "Payment of Purchase Invoice",
+          "raci": {
+            "r": ["Trade & Complaince"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "SAP",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/FICO/Procurement%20Settlement%20Process.pdf?csf=1&web=1&e=dw8KEj",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-jidhcv90",
+          "seq": "40",
+          "name": "Inbound Delivery Management",
+          "description": "Monitoring shipment status from supplier dispach until goods arrival to the factory canopy.",
+          "raci": {
+            "r": ["Inbound Logistic"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-qeb4gql9",
+          "seq": "40.1",
+          "name": "Inbound Delivery Note Tracking",
+          "description": "Tracking of status, packing list and all key indicators related to inbound delivery like Providor dispach date, shipment tracking number, estimated arrival date, custom clearance status, goods reception date.",
+          "raci": {
+            "r": ["Inbound Logistic"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-mjpctt7i",
+          "seq": "40.2",
+          "name": "Inb DN Custom Cleaning",
+          "description": "Custom Clearance procedure for EU Import goods",
+          "raci": {
+            "r": ["Trade & Complaince"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-4ssftnw0",
+          "seq": "40.3",
+          "name": "Goods Receive DJV",
+          "description": "Goods Receive posting in System as reception of goods after custom clearance",
+          "raci": {
+            "r": ["Inbound Logistic"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "SAP",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/SD/Assembling%20Service%20GR%20for%20DJV.docx?d=wf3ec5a8e96594e8688a96a32b049693e&csf=1&web=1&e=HzSsqy",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-p7mbj38j",
+          "seq": "40.4",
+          "name": "Factory supply transport",
+          "description": "Plan and track Factory goods supply from warehouse",
+          "raci": {
+            "r": ["Material Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-f014ecwp",
+          "seq": "50",
+          "name": "Factory Goods Reception",
+          "description": "Factory goods reception procedure from canopy to storage unit",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "LES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-pw6wt8gg",
+          "seq": "50.1",
+          "name": "Container Reception",
+          "description": "Check container number and condition check, reception confirmation",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "LES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-tqm2lpwp",
+          "seq": "50.2",
+          "name": "Contianer Devaning",
+          "description": "Take out pallte from container, validate handling unit number  and move to processing area.",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "LES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-ezvsmhsb",
+          "seq": "50.3",
+          "name": "Mix Pallet processing",
+          "description": "Split mix pallet to serval unmix pallets and reprint the label",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "LES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-eh1x1u78",
+          "seq": "50.4",
+          "name": "Check Handling Unit",
+          "description": "Check if goods can store with carton box or need to repack.",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "LES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-od5je90c",
+          "seq": "50.5",
+          "name": "Decanting Handling Unit",
+          "description": "Move goods to corresponding Handling unit and reprint the label.",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "LES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-wmqiq029",
+          "seq": "50.6",
+          "name": "Put Away Handling Unit",
+          "description": "Place processed handling unit to buffer warehouse.",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "LES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-ylgz713e",
+          "seq": "60",
+          "name": "Intralogistic Replenishment",
+          "description": "Intra factory material replenishment in all storage areas, from buffer warehouse to edgeline.",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "WMS",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-9bqb366k",
+          "seq": "60.1",
+          "name": "Kitting Area replenishment",
+          "description": "Transfer handling unit of goods from Bulk warehouse to Kitting area triggered by stock level.",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "WMS",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-ya5fyt4v",
+          "seq": "60.2",
+          "name": "SPS Area replenishment",
+          "description": "Transfer handling unit of goods from Bulk warehouse to SPS area triggered by stock level.",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "WMS",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-dd1l1q0b",
+          "seq": "60.3",
+          "name": "Edgeline Repelnishment",
+          "description": "Transfer handling unit of goods from Kitting, SPS or Bulk warehouse to Edge line according to defined supply path for each material.",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "WMS",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-7370a3rs",
           "seq": "70",
-          "name": "New Step",
-          "description": "",
+          "name": "Production Planning",
+          "description": "Planning of model and quantity of vehicles to be produced in each production line",
           "raci": {
-            "r": [],
+            "r": ["Production Planning"],
             "a": [],
             "c": [],
             "i": []
           },
-          "businessStatus": "Not Defined",
+          "businessStatus": "Completed",
           "system": {
             "name": "SAP",
-            "status": "Operational",
+            "status": "Work in Porgress",
             "responsible": ""
           },
-          "notes": "",
-          "businessDoc": "",
-          "userManual": ""
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
+          "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP027-MPS-Batch%20management%20data%20for%20MES.pdf?csf=1&web=1&e=HgEvqm",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
         },
         {
-          "id": "1784889855734-mxu2fvet",
+          "id": "1781161866074-uh0vy6ju",
+          "seq": "70.1",
+          "name": "M+3 Production Planning",
+          "description": "Rolling sales planning for current month + next 3 month.",
+          "raci": {
+            "r": ["Sales"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-057dxciv",
+          "seq": "70.2",
+          "name": "Monthlyh production plannig",
+          "description": "Rolling monthly planning acording to releaed Subcontract order",
+          "raci": {
+            "r": ["Production Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "SAP",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
+          "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP024-MPS-ATP%20Check.pdf?csf=1&web=1&e=Q8bF7d",
+          "notes": ""
+        },
+        {
+          "id": "1781161866074-urq02d7v",
+          "seq": "70.3",
+          "name": "Weekly production validation",
+          "description": "Validate, freeze and release weekly production plan",
+          "raci": {
+            "r": ["Production Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "SAP",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
+          "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP027-MPS-Batch%20management%20data%20for%20MES.pdf?csf=1&web=1&e=HgEvqm",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-mceygk7n",
+          "seq": "70.4",
+          "name": "Daily production monitoring",
+          "description": "Monitor daily production progress, adjust planning forecast base on real production result",
+          "raci": {
+            "r": ["Production Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "SAP",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
+          "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP027-MPS-Batch%20management%20data%20for%20MES.pdf?csf=1&web=1&e=HgEvqm",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-015hc4l6",
           "seq": "80",
-          "name": "New Step",
-          "description": "",
+          "name": "Body Shop Production",
+          "description": "Production Execution of Body In White generated by CKP production order",
+          "raci": {
+            "r": ["Production Execution"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "MES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-8srcfxg5",
+          "seq": "80.1",
+          "name": "Body In White Production",
+          "description": "When MES receive CKP production vehicle planning, generate BIW production order insde MES system.",
+          "raci": {
+            "r": ["Production Execution"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "MES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-fy2plun1",
+          "seq": "80.2",
+          "name": "BIW Quality Check",
+          "description": "Quality check for produced BIW before store in WBS",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-42bn3t5d",
+          "seq": "90",
+          "name": "Paint Shop Production",
+          "description": "Production Execution of Body In White generated by CKP production order",
+          "raci": {
+            "r": ["Production Execution"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "MES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-gx9zcvvy",
+          "seq": "90.1",
+          "name": "Body In Paint Production",
+          "description": "When MES receive CKP production, paint shop production order will be generated automatically",
+          "raci": {
+            "r": ["Production Execution"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "MES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-m8ktkpai",
+          "seq": "90.2",
+          "name": "BIP Quality Check",
+          "description": "Quality check for produced BIP beofre store in PBS",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-pqb1qxoq",
+          "seq": "100",
+          "name": "Trim Shop Production",
+          "description": "Production Execution of Trim line",
           "raci": {
             "r": [],
             "a": [],
@@ -149,16 +974,1387 @@
           },
           "businessStatus": "Not Defined",
           "system": {
-            "name": "SAP",
+            "name": "MES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-7lt340lo",
+          "seq": "100.1",
+          "name": "Vehicle Production",
+          "description": "Execution of planned production order released by production planning team",
+          "raci": {
+            "r": ["Production Execution"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "MES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-kyf9mp1b",
+          "seq": "100.2",
+          "name": "Traceibility of important parts",
+          "description": "Tracebility control for specific key parts assembled in the vehicle  (POWERTRAIN, MUFFLER, AIGBAG)",
+          "raci": {
+            "r": ["Vehicle Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
             "status": "Operational",
             "responsible": ""
           },
-          "notes": "",
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-7lyat8xk",
+          "seq": "110",
+          "name": "Offline vehicle Test",
+          "description": "Serval test for offline vehicle to assure the vehicle quality",
+          "raci": {
+            "r": ["Vehicle Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-oxsqboru",
+          "seq": "110.1",
+          "name": "Overall inspection",
+          "description": "Overall offline vehicle inspection",
+          "raci": {
+            "r": ["Vehicle Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-ow11wmiq",
+          "seq": "110.2",
+          "name": "Test Line Validation",
+          "description": "Power, Break? Light, Suspension inspection and test",
+          "raci": {
+            "r": ["Vehicle Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-54qe2k6f",
+          "seq": "110.3",
+          "name": "SPT Validation",
+          "description": "ADAS, 360 Camara test",
+          "raci": {
+            "r": ["Vehicle Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-v1qot6jf",
+          "seq": "110.4",
+          "name": "Dec validation",
+          "description": "Dynamic performance check",
+          "raci": {
+            "r": ["Vehicle Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-5o7fcu8s",
+          "seq": "110.5",
+          "name": "OK line validation",
+          "description": "Paint inspection ^ Validation",
+          "raci": {
+            "r": ["Vehicle Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-zmri3msl",
+          "seq": "110.6",
+          "name": "Buy-off validation",
+          "description": "Final buy off validation",
+          "raci": {
+            "r": ["Vehicle Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-r0kz9ug7",
+          "seq": "120",
+          "name": "Buy off vehicle invoice",
+          "description": "Invoice of Buy off vehicle against their corresponding Subcontract order at the end of each month",
+          "raci": {
+            "r": ["Finance"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "SAP",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
           "businessDoc": "",
-          "userManual": ""
+          "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/SD/Assembling%20Service%20Billing%20Process.docx?d=wba8a49ecaa3e4c44bca7cf76e2f6ca93&csf=1&web=1&e=sJwNgz",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-t5kzzvwz",
+          "seq": "130",
+          "name": "Vehicle Management",
+          "description": "Buy-Off vehicle management",
+          "raci": {
+            "r": ["Vehicle Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-3u1u9c2h",
+          "seq": "130.1",
+          "name": "vehicle buy off",
+          "description": "Buy-off vehicle movement to canopy B confirmation",
+          "raci": {
+            "r": ["Vehicle Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-1d0xkjej",
+          "seq": "130.2",
+          "name": "Plant Gate In",
+          "description": "Vehicle moved to loading point, ready for dispach",
+          "raci": {
+            "r": ["Vehicle Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-iaxn2051",
+          "seq": "130.3",
+          "name": "Plant Gate out",
+          "description": "Vehicle moved out of factory.",
+          "raci": {
+            "r": ["Vehicle Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-6tlgun3c",
+          "seq": "130.4",
+          "name": "Stage 162",
+          "description": "Vehicle arrived CAMPA, pending confirmation",
+          "raci": {
+            "r": ["Vehicle Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-2ndgfj1w",
+          "seq": "130.5",
+          "name": "Compound In",
+          "description": "Compound operator confirm reception of vehicle parked in CAMPA",
+          "raci": {
+            "r": ["Production Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-qnnkix0r",
+          "seq": "130.6",
+          "name": "Outbound plan",
+          "description": "Compound manager receive outbound plan from DJV",
+          "raci": {
+            "r": ["Production Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-tuxvfocc",
+          "seq": "130.7",
+          "name": "Compound Out",
+          "description": "Compound operator confirm outbound of vehicle outbound by track",
+          "raci": {
+            "r": ["Production Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        },
+        {
+          "id": "1781161866074-bkpt60ro",
+          "seq": "130.8",
+          "name": "Outbound plan confirmation",
+          "description": "Compound manager update outbound plan according to real outbound",
+          "raci": {
+            "r": ["Production Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+        }
+      ]
+    },
+    {
+      "id": "1777474499044-2n4tvjmh",
+      "name": "No qualified parts",
+      "processes": [
+        {
+          "id": "1777892930381-2jxdhgoe",
+          "seq": "10",
+          "name": "No Qualified Parts Detection",
+          "description": "Detection of No Qualifed Parts in different points of Operation",
+          "raci": {
+            "r": ["Production Exucution"],
+            "a": ["Parts Quality"],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "Two travel cards: Green (Factory Scrap, no validation needed.) Orange ( Providor Claim, need double check from PQA)"
+        },
+        {
+          "id": "1777892930381-0r87cv63",
+          "seq": "10.1",
+          "name": "NG Parts Detection (Body Shop )",
+          "description": "No Qualified Parts identified during Body Line Production",
+          "raci": {
+            "r": ["Production Execution (Body)"],
+            "a": ["Parts Quality"],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "Two travel cards: Green (Factory Scrap, no validation needed.) Orange ( Providor Claim, need double check from PQA)"
+        },
+        {
+          "id": "1777892930381-9968643y",
+          "seq": "10.2",
+          "name": "NG Parts Detection (Trim Shop)",
+          "description": "No Qualified Parts identified during Trim Line Production",
+          "raci": {
+            "r": ["Production Execution (Trim)"],
+            "a": ["Parts Quality"],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "Two travel cards: Green (Factory Scrap, no validation needed.) Orange ( Providor Claim, need double check from PQA)"
+        },
+        {
+          "id": "1777892930381-6574gw40",
+          "seq": "10.3",
+          "name": "NG Parts Detection( Reception  Area)",
+          "description": "No Qualified Parts identified during logistic operations (Reception, Conrainer Devannig, Handling Unit management)",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": ["Parts Quality"],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-bnazlq0u",
+          "seq": "10.4",
+          "name": "NG Parts Detection(Intralogistic Area)",
+          "description": "No Qualified Parts identified during intralosgitic operations (Replenishment, picking, kitting)",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": ["Parts Quality"],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-s440br9f",
+          "seq": "20",
+          "name": "NG Parts Movement",
+          "description": "Move Green Travel Card Parts to Scrap, Orange travel card Parts to Quarantine zone.",
+          "raci": {
+            "r": ["Environment"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "In case of Quarantine zone is not available, PQA tours across line site scrap area to perform the validation (once a shift). Under demand on logistic areas."
+        },
+        {
+          "id": "1777892930381-x6soigi1",
+          "seq": "30",
+          "name": "Quarantine Zone management",
+          "description": "Quarantine area non qualified parts management.",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-durgpoip",
+          "seq": "30.1",
+          "name": "Goods Reception",
+          "description": "Reception of no qualified parts from different areas. Check for consistency of pyshical goods with travel card information.",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-xnp8haej",
+          "seq": "30.2",
+          "name": "Providor Claim or Process Scrap",
+          "description": "Determine if is providor issue, or it is scrap during the factory process.",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-84ftk3qj",
+          "seq": "40",
+          "name": "Process Scrap management",
+          "description": "How to manage damanage generated by factory process.",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-kx4tpztx",
+          "seq": "40.1",
+          "name": "Damange level validation",
+          "description": "Check if the damange can be repaied or need to proced to scrap.",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-k6m72xcu",
+          "seq": "40.2",
+          "name": "Repair List",
+          "description": "List of parts from Quarantine zone able to repair to be used again for production.",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-a87q6v6q",
+          "seq": "40.3",
+          "name": "Scrap List",
+          "description": "List of parts from Quarantine zone to be scraped",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": "The Enviroment team will separate the travel card from the parts to be scrapped and sent to logistic mail box (one for M0 and one for M1).  Logistic team builds up the scrap list base on the travel card input."
+        },
+        {
+          "id": "1777892930381-niedtiof",
+          "seq": "50",
+          "name": "Scrap Execution",
+          "description": "Process from Scrap list until Scrap execution",
+          "raci": {
+            "r": ["Environment"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-7tjd4jic",
+          "seq": "50.1",
+          "name": "Sales Order from DJV to MJV",
+          "description": "Create Sales order from DJV to MJV for parts and quantity listed in scrap list,",
+          "raci": {
+            "r": ["Finance"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "SAP",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-lxehhv2w",
+          "seq": "50.2",
+          "name": "Pay Invoice",
+          "description": "Pay the invoice order to DJV for the parts to be scrapped",
+          "raci": {
+            "r": ["Finace"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "SAP",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-fekf15o4",
+          "seq": "50.3",
+          "name": "Goods Receive MJV",
+          "description": "Reception of to be scrapped goods form DJV to MJV.",
+          "raci": {
+            "r": ["Environment"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "SAP",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-dk3wtgqi",
+          "seq": "50.4",
+          "name": "Inform Scrap 3rd Party",
+          "description": "Inform 3rd Party to collect scrap materials",
+          "raci": {
+            "r": ["Environment"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-z1dmsd0o",
+          "seq": "50.5",
+          "name": "Receive Scrap Evidence",
+          "description": "Receive 3rd Party Scrap execution evidence",
+          "raci": {
+            "r": ["Environment"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-gt5o0iit",
+          "seq": "50.6",
+          "name": "Goods Issue Parts",
+          "description": "Approval of Purcahse orer release",
+          "raci": {
+            "r": ["Material Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "SAP",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-s3e3ck8f",
+          "seq": "60",
+          "name": "Rework Order",
+          "description": "Rework execution of no qualified parts that can be repaired to be used again for production",
+          "raci": {
+            "r": ["Production Execution"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-1hswlpsb",
+          "seq": "60.1",
+          "name": "Rework order planning",
+          "description": "Rework order planning for to be rework parts with estimated work date,",
+          "raci": {
+            "r": ["Production Execution"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-7u1r9fw1",
+          "seq": "60.2",
+          "name": "Transfer request to rework area",
+          "description": "Transfer Request of No Qualied Parts from Quarantine zone to Repair Area",
+          "raci": {
+            "r": ["Production Execution"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-r65rosta",
+          "seq": "60.3",
+          "name": "Transfer Exceution",
+          "description": "Execution the Transfer form Qarantine zone to Repair Area",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "WMS",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-d5hr8vot",
+          "seq": "60.4",
+          "name": "Rework Execution",
+          "description": "Execution of Repair order",
+          "raci": {
+            "r": ["Production Execution"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-32swv6bi",
+          "seq": "60.5",
+          "name": "Transfer Request to validate area",
+          "description": "Transfer request of Recover parts to PQA area for Quality Validation",
+          "raci": {
+            "r": ["Production Execution"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-rxrwt4xb",
+          "seq": "60.6",
+          "name": "Trasnfer Execution",
+          "description": "Transfer Execution to Validation Area",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-xvxg1zn4",
+          "seq": "70",
+          "name": "Recovered Parts Validation",
+          "description": "Validate if the recovered parts qualified or not.",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "LES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-dj4rer1m",
+          "seq": "70.1",
+          "name": "Move to scrap",
+          "description": "The recovered parts still not exceed quality standard. Add into scrap list",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "LES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-eadywhwb",
+          "seq": "70.2",
+          "name": "Transfer Qualified Parts",
+          "description": "Transfer Request of Qualified Parts to Buffer stock",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "LES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-b3aymt9n",
+          "seq": "70.3",
+          "name": "Transfer Execution",
+          "description": "Move Parts to buffer stock",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "LES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-d56lkpbn",
+          "seq": "70.4",
+          "name": "Reception of recover stock",
+          "description": "Reception of Recover stock into buffer stock",
+          "raci": {
+            "r": ["Material Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "LES",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-3fjpl6o3",
+          "seq": "80",
+          "name": "Claim Request Processing",
+          "description": "Claim Request management for Provider claim list parts",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-0a6ffog7",
+          "seq": "80.1",
+          "name": "Open Claim Request to Provider",
+          "description": "Raise Claim Request to Providor from claim list",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-6u65za7e",
+          "seq": "80.2",
+          "name": "Scrap or Return of Old Part",
+          "description": "Scrap withinin the factory or return the part back to provider.",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-2kfhu3yi",
+          "seq": "80.3",
+          "name": "New Part Request",
+          "description": "Request of replacement parts shipment",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-mo5m1pxg",
+          "seq": "80.4",
+          "name": "Operation Cost Charge Request",
+          "description": "Request charge for operation cost.",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-maphkt6c",
+          "seq": "90",
+          "name": "Providor Return Execution",
+          "description": "Execution of Return Parts to Provider",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-03pr179q",
+          "seq": "90.1",
+          "name": "Transfer Request of Return Parts",
+          "description": "Request the transfer of Return parts for issue out of factory",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-bakxxc5f",
+          "seq": "90.2",
+          "name": "Transfer Execution of Return Parts",
+          "description": "Move the Return parts to Loading area.",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930381-aqthml4k",
+          "seq": "90.3",
+          "name": "Goods Issue of Return Parts",
+          "description": "Post Goods Issue for Return Parts when the tgoods are loaded and leaved factory",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930382-0hmcdiwd",
+          "seq": "100",
+          "name": "Replacement Parts Reception",
+          "description": "Tracking of replacement parts from Provider to Factory",
+          "raci": {
+            "r": ["Parts Quality"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930382-zoep0a35",
+          "seq": "100.1",
+          "name": "Shipment tracking",
+          "description": "Receive shipment notification of provider replacement parts with key indicators: Shipment List, ETA",
+          "raci": {
+            "r": ["Material Planning"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930382-g439uawc",
+          "seq": "100.2",
+          "name": "Goods Reception in Factory",
+          "description": "Validate the material and quantity reception from Provider",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930382-pwy6hn8f",
+          "seq": "100.3",
+          "name": "Customs Clearance",
+          "description": "Customs Clearance from 3rd Countries.",
+          "raci": {
+            "r": ["Trade & Complaince"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1777892930382-9vrrfuvw",
+          "seq": "100.4",
+          "name": "Transfer to Safety Stock",
+          "description": "Transfer goods from reception are into Safety stock.",
+          "raci": {
+            "r": ["Material Handling"],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
         }
       ]
     }
   ],
-  "currentScenarioId": "1784889853519-qras0hkj"
+  "currentScenarioId": "default"
 }
