@@ -61,54 +61,210 @@ jobs:
             
             const payloadType = payload.type || 'diff';
             const gistId = payload.gist_id || '';
-            let fullData = null;
+            let finalData = null;
             
             console.log('Payload type:', payloadType);
             console.log('Gist ID:', gistId || '(none)');
             
             // ============================================================
-            // FUNCTION: Process and save data
+            // FUNCTION: Apply diff to current data
             // ============================================================
-            function processAndSave(dataToApply, isFullData) {
-              let dataToSave = null;
+            function applyDiffToCurrent(diffData) {
+              console.log('Applying diff to current data...');
               
-              if (isFullData) {
-                dataToSave = dataToApply;
-                console.log('Full data detected, saving directly');
-              } else {
-                console.log('Diff detected, applying to current data using jsondiffpatch...');
-                try {
-                  dataToSave = jsondiffpatch.patch(currentData, dataToApply);
-                  console.log('Diff applied successfully using jsondiffpatch');
-                } catch (e) {
-                  console.error('jsondiffpatch failed:', e.message);
-                  console.log('Falling back to manual merge...');
-                  dataToSave = manualMerge(currentData, dataToApply);
-                }
+              // Use jsondiffpatch to apply the diff
+              try {
+                const result = jsondiffpatch.patch(currentData, diffData);
+                console.log('jsondiffpatch.patch succeeded');
+                return result;
+              } catch (e) {
+                console.error('jsondiffpatch.patch failed:', e.message);
+                console.log('Falling back to manual merge...');
+                return manualMerge(currentData, diffData);
               }
-              
-              return validateAndSave(dataToSave);
             }
             
             // ============================================================
             // FUNCTION: Manual merge (fallback)
             // ============================================================
             function manualMerge(target, source) {
-              if (!source) return target;
-              const result = JSON.parse(JSON.stringify(target || {}));
+              // Create a deep copy of the target
+              const result = JSON.parse(JSON.stringify(target));
               
+              // Process each key in the source (diff)
               for (const key in source) {
                 if (key === '_t') continue;
                 const sourceVal = source[key];
-                const targetVal = result[key];
                 
-                if (sourceVal && typeof sourceVal === 'object' && !Array.isArray(sourceVal)) {
-                  if (!targetVal || typeof targetVal !== 'object' || Array.isArray(targetVal)) {
+                if (key === 'scenarios' && sourceVal && typeof sourceVal === 'object') {
+                  // Handle scenarios array diff
+                  if (sourceVal._t === 'a') {
+                    // This is an array diff
+                    result.scenarios = mergeArrayDiff(result.scenarios || [], sourceVal);
+                  } else if (Array.isArray(sourceVal)) {
+                    // Source is an array - replace the whole scenarios array
+                    // But we need to merge, not replace
+                    result.scenarios = mergeArrayWithNew(result.scenarios || [], sourceVal);
+                  } else {
+                    // Source is an object with numeric keys (diff format)
+                    result.scenarios = mergeScenariosObject(result.scenarios || [], sourceVal);
+                  }
+                } else if (sourceVal && typeof sourceVal === 'object' && !Array.isArray(sourceVal)) {
+                  // Recursive merge for nested objects
+                  if (!result[key] || typeof result[key] !== 'object') {
                     result[key] = {};
                   }
                   result[key] = manualMerge(result[key], sourceVal);
                 } else {
+                  // Primitive value - direct assignment
                   result[key] = sourceVal;
+                }
+              }
+              
+              return result;
+            }
+            
+            // ============================================================
+            // FUNCTION: Merge array diff (with _t: 'a')
+            // ============================================================
+            function mergeArrayDiff(currentArray, diff) {
+              if (!Array.isArray(currentArray)) currentArray = [];
+              const result = [...currentArray];
+              const removals = [];
+              const insertions = [];
+              const updates = [];
+              
+              for (const key in diff) {
+                if (key === '_t') continue;
+                const value = diff[key];
+                
+                if (key.startsWith('_')) {
+                  const index = parseInt(key.substring(1));
+                  
+                  if (Array.isArray(value)) {
+                    if (value.length === 2 && value[1] === 0) {
+                      // Removal: [oldValue, 0]
+                      removals.push(index);
+                    } else if (value.length === 3 && value[2] === 3) {
+                      // Move: [oldValue, newIndex, 3]
+                      if (index < result.length) {
+                        insertions.push({ index: value[1], value: result[index] });
+                        removals.push(index);
+                      }
+                    } else if (value.length === 3 && value[2] === 0) {
+                      // Replacement: [newValue, 0, 0]
+                      if (index < result.length) {
+                        updates.push({ index: index, value: value[0] });
+                      }
+                    }
+                  } else if (value && typeof value === 'object') {
+                    // Nested diff on this index
+                    if (index < result.length && result[index] && typeof result[index] === 'object') {
+                      result[index] = manualMerge(result[index], value);
+                    }
+                  }
+                } else {
+                  const index = parseInt(key);
+                  if (!isNaN(index) && index >= 0) {
+                    if (Array.isArray(value) && value.length === 1) {
+                      // Insert new item
+                      insertions.push({ index: index, value: value[0] });
+                    } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+                      // New item as object
+                      if (index < result.length) {
+                        result[index] = value;
+                      } else {
+                        insertions.push({ index: index, value: value });
+                      }
+                    }
+                  }
+                }
+              }
+              
+              // Process removals (from highest index to lowest to avoid shifting)
+              removals.sort((a, b) => b - a);
+              for (const idx of removals) {
+                if (idx < result.length) {
+                  result.splice(idx, 1);
+                }
+              }
+              
+              // Process updates
+              for (const update of updates) {
+                if (update.index < result.length) {
+                  result[update.index] = update.value;
+                }
+              }
+              
+              // Process insertions (from highest index to lowest to avoid shifting)
+              insertions.sort((a, b) => b.index - a.index);
+              for (const ins of insertions) {
+                if (ins.index < result.length) {
+                  result.splice(ins.index, 0, ins.value);
+                } else {
+                  result.push(ins.value);
+                }
+              }
+              
+              return result;
+            }
+            
+            // ============================================================
+            // FUNCTION: Merge scenarios object (with numeric keys)
+            // ============================================================
+            function mergeScenariosObject(currentArray, sourceObj) {
+              const result = [...currentArray];
+              
+              for (const key in sourceObj) {
+                if (key === '_t') continue;
+                const value = sourceObj[key];
+                
+                if (key.startsWith('_')) {
+                  const index = parseInt(key.substring(1));
+                  if (Array.isArray(value) && value.length === 2 && value[1] === 0) {
+                    // Removal
+                    if (index < result.length) {
+                      result.splice(index, 1);
+                    }
+                  } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+                    // Nested diff on this scenario
+                    if (index < result.length && result[index] && typeof result[index] === 'object') {
+                      result[index] = manualMerge(result[index], value);
+                    }
+                  }
+                } else {
+                  const index = parseInt(key);
+                  if (!isNaN(index) && index >= 0) {
+                    if (Array.isArray(value) && value.length === 1) {
+                      // New scenario
+                      result.push(value[0]);
+                    } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+                      if (index < result.length) {
+                        result[index] = value;
+                      } else {
+                        result.push(value);
+                      }
+                    }
+                  }
+                }
+              }
+              
+              return result;
+            }
+            
+            // ============================================================
+            // FUNCTION: Merge array with new items (simple replace)
+            // ============================================================
+            function mergeArrayWithNew(currentArray, newArray) {
+              // If the new array has valid items, merge them
+              const result = [...currentArray];
+              for (const item of newArray) {
+                if (item && typeof item === 'object' && item.id) {
+                  // Check if this item already exists
+                  const exists = result.some(existing => existing && existing.id === item.id);
+                  if (!exists) {
+                    result.push(item);
+                  }
                 }
               }
               return result;
@@ -123,75 +279,35 @@ jobs:
                 return false;
               }
               
-              // Fix: Ensure scenarios is an array
+              // Ensure scenarios is an array
               if (!data.scenarios || !Array.isArray(data.scenarios)) {
                 console.error('Invalid data: scenarios is not an array');
                 console.log('scenarios type:', typeof data.scenarios);
-                
                 if (data.scenarios && typeof data.scenarios === 'object') {
-                  const scenarioObj = data.scenarios;
+                  // Try to convert object to array
                   const scenarioArray = [];
-                  
-                  for (const key in scenarioObj) {
+                  for (const key in data.scenarios) {
                     if (key === '_t') continue;
-                    const value = scenarioObj[key];
+                    const value = data.scenarios[key];
                     if (value && typeof value === 'object') {
                       const scenario = { id: 'default', name: 'Manufacturing', processes: [] };
-                      
-                      if (value.id) {
-                        scenario.id = Array.isArray(value.id) ? value.id[0] : value.id;
+                      if (value.id) scenario.id = Array.isArray(value.id) ? value.id[0] : value.id;
+                      if (value.name) scenario.name = Array.isArray(value.name) ? value.name[0] : value.name;
+                      if (value.processes) {
+                        scenario.processes = Array.isArray(value.processes) ? value.processes : [];
                       }
-                      if (value.name) {
-                        scenario.name = Array.isArray(value.name) ? value.name[0] : value.name;
-                      }
-                      if (value.processes && typeof value.processes === 'object') {
-                        const processArray = [];
-                        for (const pKey in value.processes) {
-                          if (pKey === '_t') continue;
-                          const pVal = value.processes[pKey];
-                          if (Array.isArray(pVal) && pVal.length > 0) {
-                            processArray.push(pVal[0]);
-                          } else if (pVal && typeof pVal === 'object' && pVal.id) {
-                            processArray.push(pVal);
-                          }
-                        }
-                        scenario.processes = processArray;
-                      }
-                      
-                      if (scenario.id || scenario.processes.length > 0) {
-                        scenarioArray.push(scenario);
-                      }
+                      scenarioArray.push(scenario);
                     }
                   }
-                  
                   if (scenarioArray.length > 0) {
                     data.scenarios = scenarioArray;
                     console.log('Converted scenarios from object to array, count:', scenarioArray.length);
                   } else {
-                    data.scenarios = [{
-                      id: 'default',
-                      name: 'Manufacturing',
-                      processes: []
-                    }];
-                    console.log('Created default scenario');
+                    data.scenarios = [];
                   }
                 } else {
-                  data.scenarios = [{
-                    id: 'default',
-                    name: 'Manufacturing',
-                    processes: []
-                  }];
-                  console.log('Created default scenario');
+                  data.scenarios = [];
                 }
-              }
-              
-              // Fix currentScenarioId
-              if (Array.isArray(data.currentScenarioId)) {
-                console.log('currentScenarioId is an array, converting to string');
-                data.currentScenarioId = data.currentScenarioId[0] || 'default';
-              }
-              if (!data.currentScenarioId) {
-                data.currentScenarioId = data.scenarios[0]?.id || 'default';
               }
               
               // Ensure each scenario has valid processes
@@ -199,12 +315,21 @@ jobs:
                 const sc = data.scenarios[i];
                 if (!sc) continue;
                 if (!sc.processes || !Array.isArray(sc.processes)) {
-                  console.log('Scenario ' + i + ' has invalid processes, creating empty array');
                   sc.processes = [];
                 }
+                // Filter out invalid processes
+                sc.processes = sc.processes.filter(p => p && typeof p === 'object' && p.id);
                 if (!sc.id) {
                   sc.id = 'scenario_' + Date.now() + '_' + i;
                 }
+              }
+              
+              // Fix currentScenarioId
+              if (Array.isArray(data.currentScenarioId)) {
+                data.currentScenarioId = data.currentScenarioId[0] || 'default';
+              }
+              if (!data.currentScenarioId && data.scenarios.length > 0) {
+                data.currentScenarioId = data.scenarios[0].id || 'default';
               }
               
               // Ensure master data exists
@@ -238,10 +363,11 @@ jobs:
                 data.sysRespList = [];
               }
               
-              fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
-              console.log('data.json updated successfully');
               console.log('Final scenarios count:', data.scenarios.length);
               console.log('Final currentScenarioId:', data.currentScenarioId);
+              
+              fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
+              console.log('data.json updated successfully');
               return true;
             }
             
@@ -284,12 +410,22 @@ jobs:
                 const diffData = JSON.parse(fileContent);
                 console.log('Diff parsed successfully');
                 
-                const isFullData = diffData.scenarios && Array.isArray(diffData.scenarios);
-                const success = processAndSave(diffData, isFullData);
+                // Determine if this is a diff or full data
+                const isFullData = diffData.scenarios && Array.isArray(diffData.scenarios) && diffData.scenarios.length > 0;
+                let finalData;
                 
-                if (!success) {
-                  process.exit(1);
+                if (isFullData) {
+                  // If it's full data, use it directly
+                  finalData = diffData;
+                  console.log('Full data detected, using directly');
+                } else {
+                  // Apply the diff to current data
+                  finalData = applyDiffToCurrent(diffData);
+                  console.log('Diff applied to current data');
                 }
+                
+                const success = validateAndSave(finalData);
+                if (!success) process.exit(1);
                 
                 if (token && gistId) {
                   console.log('Deleting temporary Gist...');
@@ -313,6 +449,7 @@ jobs:
               setTimeout(function() {}, 30000);
               
             } else {
+              // Direct diff payload
               console.log('Processing direct payload...');
               let payloadData = payload.data || '';
               console.log('Payload data length:', payloadData.length);
@@ -323,12 +460,22 @@ jobs:
                   console.log('Payload parsed successfully');
                   console.log('Parsed data keys:', Object.keys(parsedData));
                   
-                  const isFullData = parsedData.scenarios && Array.isArray(parsedData.scenarios);
-                  const success = processAndSave(parsedData, isFullData);
+                  // Determine if this is a diff or full data
+                  const isFullData = parsedData.scenarios && Array.isArray(parsedData.scenarios) && parsedData.scenarios.length > 0;
+                  let finalData;
                   
-                  if (!success) {
-                    process.exit(1);
+                  if (isFullData) {
+                    finalData = parsedData;
+                    console.log('Full data detected, using directly');
+                  } else {
+                    // Apply the diff to current data
+                    finalData = applyDiffToCurrent(parsedData);
+                    console.log('Diff applied to current data');
                   }
+                  
+                  const success = validateAndSave(finalData);
+                  if (!success) process.exit(1);
+                  
                 } catch (e) {
                   console.error('Failed to parse payload data:', e.message);
                   console.log('Payload data preview:', payloadData.substring(0, 200));
