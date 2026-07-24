@@ -231,7 +231,7 @@ function generateSimpleDiff(oldData, newData) {
 }
 
 // ============================
-// 7. Save Data to GitHub
+// Save data to GitHub (with Gist for large data)
 // ============================
 
 async function saveDataToGitHub(data) {
@@ -259,6 +259,7 @@ async function saveDataToGitHub(data) {
             }
         }
 
+        // Generate diff
         const diff = generateDiff(lastSnapshot, data);
         if (!diff) {
             alert('ℹ️ No changes detected. Nothing to save.');
@@ -273,6 +274,7 @@ async function saveDataToGitHub(data) {
         const jsonStr = JSON.stringify(diff);
         console.log(`📊 Diff size: ${jsonStr.length} bytes (${(jsonStr.length/1024).toFixed(1)} KB)`);
 
+        // Determine if we need Gist (data > 40KB)
         const useGist = jsonStr.length > 40000;
         let gistId = null;
         let payloadData = jsonStr;
@@ -280,49 +282,83 @@ async function saveDataToGitHub(data) {
 
         if (useGist) {
             console.log('📤 Data is large, uploading to Gist...');
+            
+            // Clean the token - ensure no extra whitespace
+            const cleanToken = token.trim();
+            
             const gistPayload = {
                 description: `BPO diff - ${new Date().toISOString()}`,
                 public: false,
-                files: { 'diff.json': { content: jsonStr } }
+                files: {
+                    'diff.json': {
+                        content: jsonStr
+                    }
+                }
             };
 
-            const gistResponse = await fetch('https://api.github.com/gists', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `token ${token}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/vnd.github.v3+json'
-                },
-                body: JSON.stringify(gistPayload)
-            });
+            try {
+                const gistResponse = await fetch('https://api.github.com/gists', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `token ${cleanToken}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify(gistPayload)
+                });
 
-            if (!gistResponse.ok) {
-                const errorData = await gistResponse.json();
-                throw new Error(`Gist creation failed: ${errorData.message}`);
+                if (!gistResponse.ok) {
+                    const errorData = await gistResponse.json();
+                    console.error('Gist API error:', errorData);
+                    throw new Error(`Gist creation failed: ${errorData.message || gistResponse.statusText}`);
+                }
+
+                const gistData = await gistResponse.json();
+                gistId = gistData.id;
+                payloadType = 'gist';
+                payloadData = ''; // Don't send data directly
+                console.log(`✅ Gist created: ${gistId}`);
+                
+                // Verify the Gist was created successfully
+                const verifyResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
+                    headers: {
+                        'Authorization': `token ${cleanToken}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                if (!verifyResponse.ok) {
+                    throw new Error(`Gist verification failed: ${verifyResponse.statusText}`);
+                }
+                console.log('✅ Gist verified successfully');
+
+            } catch (gistError) {
+                console.error('Gist creation failed:', gistError);
+                // Fallback: send data directly (might exceed size limit)
+                alert(`⚠️ Gist creation failed: ${gistError.message}\n\nFalling back to direct save (may fail if data is too large).`);
+                payloadType = 'diff';
+                payloadData = jsonStr;
+                gistId = null;
             }
-
-            const gistData = await gistResponse.json();
-            gistId = gistData.id;
-            payloadType = 'gist';
-            payloadData = '';
-            console.log(`✅ Gist created: ${gistId}`);
         }
 
+        // Build payload
         const payload = {
             event_type: 'update-data',
             client_payload: {
                 type: payloadType,
-                gist_id: gistId,
+                gist_id: gistId || '',
                 data: payloadData,
                 snapshot_id: Date.now()
             }
         };
 
+        console.log(`📤 Sending payload with type: ${payloadType}, gist_id: ${gistId || 'none'}`);
+
         const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`;
         const response = await fetch(url, {
             method: 'POST',
             headers: {
-                'Authorization': `token ${token}`,
+                'Authorization': `token ${token.trim()}`,
                 'Content-Type': 'application/json',
                 'Accept': 'application/vnd.github.v3+json'
             },
@@ -339,7 +375,11 @@ async function saveDataToGitHub(data) {
         }
 
         saveSnapshot(data);
-        const sizeMsg = useGist ? `📤 Uploaded to Gist (temporary)\n   Gist ID: ${gistId}` : `📊 Size: ${(jsonStr.length/1024).toFixed(1)} KB`;
+
+        const sizeMsg = useGist && gistId 
+            ? `📤 Uploaded to Gist (temporary)\n   Gist ID: ${gistId}`
+            : `📊 Size: ${(jsonStr.length/1024).toFixed(1)} KB`;
+        
         alert(`✅ Changes saved successfully!\n\n${sizeMsg}\n\nGitHub Actions is applying the changes.`);
 
         setTimeout(() => {
@@ -359,7 +399,6 @@ async function saveDataToGitHub(data) {
         }
     }
 }
-
 // ============================
 // 8. Load Data
 // ============================
