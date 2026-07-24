@@ -1,6 +1,4 @@
-// .github/scripts/update-data.js
 const fs = require('fs');
-const { diffJson, applyPatch } = require('diff');
 
 console.log('=== Starting apply changes ===');
 
@@ -41,18 +39,14 @@ console.log('Gist ID:', gistId || '(none)');
 if (payloadType === 'gist' && gistId && gistId.length > 0) {
   console.log('📥 Downloading data from Gist:', gistId);
   
-  // Use the GitHub token from environment
   const token = process.env.GITHUB_TOKEN;
   if (!token) {
     console.error('GITHUB_TOKEN not found in environment');
     process.exit(1);
   }
   
-  // Use Node.js fetch to get the gist
   const gistUrl = `https://api.github.com/gists/${gistId}`;
-  console.log('Fetching from:', gistUrl);
   
-  // Execute the async function
   (async function() {
     try {
       const response = await fetch(gistUrl, {
@@ -64,7 +58,7 @@ if (payloadType === 'gist' && gistId && gistId.length > 0) {
       });
       
       if (!response.ok) {
-        throw new Error(`Gist API returned ${response.status}: ${response.statusText}`);
+        throw new Error(`Gist API returned ${response.status}`);
       }
       
       const gistData = await response.json();
@@ -79,22 +73,9 @@ if (payloadType === 'gist' && gistId && gistId.length > 0) {
       fullData = JSON.parse(fileContent);
       console.log('Data parsed successfully');
       
-      // Apply changes
-      let newData;
-      try {
-        const patch = diffJson(currentData, fullData);
-        newData = applyPatch(currentData, patch);
-        console.log('Diff applied successfully');
-      } catch (e) {
-        console.error('Failed to apply diff:', e.message);
-        newData = fullData;
-        console.log('Using direct merge as fallback');
-      }
-      
-      if (newData) {
-        fs.writeFileSync('data.json', JSON.stringify(newData, null, 2));
-        console.log('✅ data.json updated successfully');
-      }
+      // ✅ Save the FULL data directly (not a diff)
+      fs.writeFileSync('data.json', JSON.stringify(fullData, null, 2));
+      console.log('✅ data.json updated successfully (full data from Gist)');
       
       // Clean up - delete the gist
       if (token && gistId) {
@@ -109,21 +90,17 @@ if (payloadType === 'gist' && gistId && gistId.length > 0) {
           });
           if (deleteResponse.ok) {
             console.log('✅ Gist deleted');
-          } else {
-            console.log('⚠️ Could not delete Gist (may need manual cleanup)');
           }
         } catch (e) {
           console.log('⚠️ Could not delete Gist:', e.message);
         }
       }
-      
     } catch (e) {
       console.error('Failed to process gist:', e.message);
       process.exit(1);
     }
   })();
   
-  // Keep the process alive for async operations
   setTimeout(() => {}, 30000);
   
 } else {
@@ -135,8 +112,24 @@ if (payloadType === 'gist' && gistId && gistId.length > 0) {
   
   if (payloadData && payloadData.length > 0) {
     try {
-      fullData = JSON.parse(payloadData);
-      console.log('Payload parsed successfully');
+      const parsedDiff = JSON.parse(payloadData);
+      console.log('Diff parsed successfully');
+      
+      // ✅ IMPORTANT: Check if this is a FULL data or a DIFF
+      // If it has 'scenarios' and 'departments', it's likely full data
+      if (parsedDiff.scenarios && parsedDiff.departments) {
+        // This is FULL data - save it directly
+        fullData = parsedDiff;
+        console.log('✅ Full data detected, saving directly');
+      } else {
+        // This is a DIFF - apply it to current data
+        console.log('✅ Diff detected, applying to current data');
+        // Use the diff package to apply changes
+        const { diffJson, applyPatch } = require('diff');
+        const patch = diffJson(currentData, parsedDiff);
+        fullData = applyPatch(currentData, patch);
+        console.log('Diff applied successfully');
+      }
     } catch (e) {
       console.error('Failed to parse payload data:', e.message);
       process.exit(1);
@@ -146,20 +139,15 @@ if (payloadType === 'gist' && gistId && gistId.length > 0) {
     process.exit(1);
   }
   
-  // Apply changes
-  let newData;
-  try {
-    const patch = diffJson(currentData, fullData);
-    newData = applyPatch(currentData, patch);
-    console.log('Diff applied successfully');
-  } catch (e) {
-    console.error('Failed to apply diff:', e.message);
-    newData = fullData;
-    console.log('Using direct merge as fallback');
-  }
-  
-  if (newData) {
-    fs.writeFileSync('data.json', JSON.stringify(newData, null, 2));
+  if (fullData) {
+    // ✅ Validate the data has the required structure
+    if (!fullData.scenarios || !Array.isArray(fullData.scenarios)) {
+      console.error('❌ Invalid data: missing scenarios array');
+      console.log('Data keys:', Object.keys(fullData));
+      process.exit(1);
+    }
+    
+    fs.writeFileSync('data.json', JSON.stringify(fullData, null, 2));
     console.log('✅ data.json updated successfully');
   }
 }
