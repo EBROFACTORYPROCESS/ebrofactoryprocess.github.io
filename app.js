@@ -197,10 +197,15 @@ function saveSnapshot(data) {
 
 function initializeSnapshot(data) {
     if (!loadSnapshot()) {
-        saveSnapshot(data);
+        // Create a deep clone of the data as baseline
+        lastSnapshot = JSON.parse(JSON.stringify(data));
+        saveSnapshot(lastSnapshot);
         console.log('📸 Initial snapshot created');
+        return true;
     }
+    return true;
 }
+
 
 function generateDiff(oldData, newData) {
     if (typeof jsondiffpatch !== 'undefined' && jsondiffpatch.diff) {
@@ -456,6 +461,7 @@ async function loadData() {
         if (!response.ok) {
             if (response.status === 404) {
                 appData = getDefaultData();
+                normalizeData(appData);
                 initializeSnapshot(appData);
                 renderApp();
                 if (loading) loading.style.display = 'none';
@@ -468,11 +474,14 @@ async function loadData() {
         const text = await response.text();
         appData = JSON.parse(text);
         normalizeData(appData);
+        
+        // ✅ Initialize snapshot after data is loaded
         initializeSnapshot(appData);
 
         if (loading) loading.style.display = 'none';
         if (root) root.style.display = 'block';
         renderApp();
+        console.log('✅ Data loaded successfully');
 
     } catch (error) {
         console.error('Failed to load data:', error);
