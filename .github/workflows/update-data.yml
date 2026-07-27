@@ -19,7 +19,7 @@ jobs:
           node-version: '18'
 
       - name: Install jsondiffpatch
-        run: npm install jsondiffpatch
+        run: npm install jsondiffpatch@0.4.1
 
       - name: Write payload to file
         run: |
