@@ -18,16 +18,20 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Install jsondiffpatch
+        run: npm install jsondiffpatch@0.4.1
+
       - name: Write payload to file
         run: |
           cat > payload.json << 'EOF'
           ${{ toJSON(github.event.client_payload) }}
           EOF
 
-      - name: Apply changes
+      - name: Apply diff using jsondiffpatch
         run: |
           node -e "
             const fs = require('fs');
+            const jsondiffpatch = require('jsondiffpatch');
             
             console.log('=== Starting apply changes ===');
             
@@ -37,7 +41,6 @@ jobs:
               const content = fs.readFileSync('data.json', 'utf8');
               currentData = JSON.parse(content);
               console.log('Current data loaded, scenarios:', currentData.scenarios?.length || 0);
-              console.log('Current scenario IDs:', currentData.scenarios?.map(s => s.id).join(', '));
             } catch (e) {
               console.log('No existing data.json, creating new one');
             }
@@ -58,340 +61,6 @@ jobs:
             
             let diffData = null;
             const payloadType = payload.type || 'diff';
-            
-            // ============================================================
-            // FUNCTION: Recursively extract string from nested arrays
-            // ============================================================
-            function extractStringFromNestedArray(value) {
-              if (!value) return null;
-              if (typeof value === 'string') return value;
-              if (typeof value === 'number') return String(value);
-              if (Array.isArray(value)) {
-                for (const item of value) {
-                  const result = extractStringFromNestedArray(item);
-                  if (result) return result;
-                }
-              }
-              if (value && typeof value === 'object') {
-                if (value.id) {
-                  const idResult = extractStringFromNestedArray(value.id);
-                  if (idResult) return idResult;
-                }
-                if (value.name) {
-                  const nameResult = extractStringFromNestedArray(value.name);
-                  if (nameResult) return nameResult;
-                }
-                for (const key in value) {
-                  const result = extractStringFromNestedArray(value[key]);
-                  if (result) return result;
-                }
-              }
-              return null;
-            }
-            
-            // ============================================================
-            // FUNCTION: Extract a complete process object from diff
-            // ============================================================
-            function extractProcessFromDiff(diffObj) {
-              if (!diffObj || typeof diffObj !== 'object') return null;
-              
-              // If it's already a complete process object
-              if (diffObj.id && typeof diffObj.id === 'string' && diffObj.name) {
-                return {
-                  id: diffObj.id,
-                  seq: diffObj.seq || '0',
-                  name: diffObj.name || 'Unnamed Process',
-                  description: diffObj.description || '',
-                  raci: diffObj.raci || { r: [], a: [], c: [], i: [] },
-                  businessStatus: diffObj.businessStatus || 'Not Defined',
-                  system: diffObj.system || { name: 'To Be Determined', status: 'Offline', responsible: '' },
-                  businessDoc: diffObj.businessDoc || '',
-                  userManual: diffObj.userManual || '',
-                  notes: diffObj.notes || ''
-                };
-              }
-              
-              // If id is an array, the process is in diff format
-              if (Array.isArray(diffObj.id) && diffObj.id.length > 0) {
-                // Try to extract the first element as the ID
-                const id = extractStringFromNestedArray(diffObj.id);
-                if (id) {
-                  // Try to find the full process data in the diff
-                  // Look for other fields that might be arrays
-                  const seq = diffObj.seq ? extractStringFromNestedArray(diffObj.seq) : '0';
-                  const name = diffObj.name ? extractStringFromNestedArray(diffObj.name) : 'Unnamed Process';
-                  const description = diffObj.description ? extractStringFromNestedArray(diffObj.description) : '';
-                  
-                  // If there's no name and no other fields, this might be a partial diff
-                  // Try to find the process in the current data by ID
-                  if (name === 'Unnamed Process' && !diffObj.name) {
-                    // Search in current data
-                    for (const scenario of currentData.scenarios || []) {
-                      const found = (scenario.processes || []).find(p => p.id === id);
-                      if (found) {
-                        return { ...found };
-                      }
-                    }
-                  }
-                  
-                  return {
-                    id: id,
-                    seq: seq,
-                    name: name,
-                    description: description,
-                    raci: { r: [], a: [], c: [], i: [] },
-                    businessStatus: 'Not Defined',
-                    system: { name: 'To Be Determined', status: 'Offline', responsible: '' },
-                    businessDoc: '',
-                    userManual: '',
-                    notes: ''
-                  };
-                }
-              }
-              
-              // If it has an id as a string but no name, try to find it in current data
-              if (diffObj.id && typeof diffObj.id === 'string') {
-                for (const scenario of currentData.scenarios || []) {
-                  const found = (scenario.processes || []).find(p => p.id === diffObj.id);
-                  if (found) {
-                    return { ...found };
-                  }
-                }
-              }
-              
-              return null;
-            }
-            
-            // ============================================================
-            // FUNCTION: Extract scenario data from diff object
-            // ============================================================
-            function extractScenarioFromDiff(diffObj) {
-              if (!diffObj || typeof diffObj !== 'object') return null;
-              
-              let id = null;
-              let name = null;
-              let processes = [];
-              
-              // Extract id using recursive extraction
-              if (diffObj.id) {
-                id = extractStringFromNestedArray(diffObj.id);
-              }
-              
-              // Extract name using recursive extraction
-              if (diffObj.name) {
-                name = extractStringFromNestedArray(diffObj.name);
-              }
-              
-              // If we still don't have a name but have an id, use 'Scenario' as default
-              if (!name && id) {
-                name = 'Scenario';
-              }
-              
-              // Extract processes - look for processes in the diff
-              if (diffObj.processes) {
-                if (Array.isArray(diffObj.processes)) {
-                  // If it's an array of process objects
-                  for (const proc of diffObj.processes) {
-                    const extracted = extractProcessFromDiff(proc);
-                    if (extracted) processes.push(extracted);
-                  }
-                } else if (typeof diffObj.processes === 'object') {
-                  // If it's an object with _t: 'a' (array diff format)
-                  if (diffObj.processes._t === 'a') {
-                    for (const key in diffObj.processes) {
-                      if (key === '_t') continue;
-                      const val = diffObj.processes[key];
-                      
-                      // Handle different diff formats
-                      if (Array.isArray(val)) {
-                        // val could be [oldValue, newValue] or [processObject]
-                        for (const item of val) {
-                          const extracted = extractProcessFromDiff(item);
-                          if (extracted) processes.push(extracted);
-                        }
-                      } else if (val && typeof val === 'object') {
-                        const extracted = extractProcessFromDiff(val);
-                        if (extracted) processes.push(extracted);
-                      }
-                    }
-                  } else {
-                    // Regular object with numeric keys
-                    for (const key in diffObj.processes) {
-                      if (key === '_t') continue;
-                      const val = diffObj.processes[key];
-                      if (Array.isArray(val) && val.length > 0) {
-                        // Check if val[0] is a process object or an ID
-                        const extracted = extractProcessFromDiff(val[0]);
-                        if (extracted) processes.push(extracted);
-                      } else if (val && typeof val === 'object') {
-                        const extracted = extractProcessFromDiff(val);
-                        if (extracted) processes.push(extracted);
-                      }
-                    }
-                  }
-                }
-              }
-              
-              // If we still have no processes, try to find them from current data by ID
-              if (processes.length === 0 && id) {
-                for (const scenario of currentData.scenarios || []) {
-                  if (scenario.id === id) {
-                    processes = [...scenario.processes];
-                    break;
-                  }
-                }
-              }
-              
-              if (id || processes.length > 0) {
-                return { 
-                  id: id || 'scenario_' + Date.now(), 
-                  name: name || 'Unnamed Scenario', 
-                  processes: processes 
-                };
-              }
-              
-              return null;
-            }
-            
-            // ============================================================
-            // FUNCTION: Merge a new scenario into existing scenarios
-            // ============================================================
-            function mergeScenarioIntoArray(existingScenarios, newScenario) {
-              if (!Array.isArray(existingScenarios)) existingScenarios = [];
-              if (!newScenario) return existingScenarios;
-              
-              console.log('Merging scenario:', newScenario.id, '->', newScenario.name);
-              console.log('New scenario has', newScenario.processes?.length || 0, 'processes');
-              
-              // Try to find by ID first (if we have one)
-              let existingIndex = -1;
-              if (newScenario.id) {
-                existingIndex = existingScenarios.findIndex(s => s && s.id === newScenario.id);
-              }
-              
-              // If not found by ID, try to find by name
-              if (existingIndex === -1 && newScenario.name && typeof newScenario.name === 'string') {
-                const normalizedName = newScenario.name.toLowerCase().trim();
-                existingIndex = existingScenarios.findIndex(s => 
-                  s && s.name && typeof s.name === 'string' && s.name.toLowerCase().trim() === normalizedName
-                );
-              }
-              
-              if (existingIndex >= 0) {
-                console.log('Found existing scenario at index:', existingIndex);
-                const existing = existingScenarios[existingIndex];
-                
-                // Merge processes - avoid duplicates by id
-                const existingIds = new Set(existing.processes.map(p => p && p.id));
-                const newProcesses = (newScenario.processes || []).filter(p => p && p.id && !existingIds.has(p.id));
-                
-                if (newProcesses.length > 0) {
-                  console.log('Adding', newProcesses.length, 'new processes');
-                  existing.processes = [...existing.processes, ...newProcesses];
-                }
-                
-                if (newScenario.name && typeof newScenario.name === 'string') {
-                  existing.name = newScenario.name;
-                }
-                
-                console.log('Updated scenario, processes now:', existing.processes.length);
-                return existingScenarios;
-              } else {
-                console.log('Adding new scenario:', newScenario.id || 'new');
-                const newEntry = {
-                  id: newScenario.id || 'scenario_' + Date.now() + '_' + existingScenarios.length,
-                  name: (typeof newScenario.name === 'string' ? newScenario.name : 'Scenario ' + (existingScenarios.length + 1)),
-                  processes: Array.isArray(newScenario.processes) ? newScenario.processes : []
-                };
-                existingScenarios.push(newEntry);
-                console.log('New scenario added with', newEntry.processes.length, 'processes');
-                return existingScenarios;
-              }
-            }
-            
-            // ============================================================
-            // FUNCTION: Extract scenarios from diff
-            // ============================================================
-            function extractScenariosFromDiff(diff) {
-              const extracted = [];
-              
-              // Case 1: diff.scenarios is an array
-              if (diff.scenarios && Array.isArray(diff.scenarios)) {
-                for (const item of diff.scenarios) {
-                  const scenario = extractScenarioFromDiff(item);
-                  if (scenario) extracted.push(scenario);
-                }
-                return extracted;
-              }
-              
-              // Case 2: diff.scenarios is an object with _t: 'a' (array diff)
-              if (diff.scenarios && typeof diff.scenarios === 'object' && diff.scenarios._t === 'a') {
-                for (const key in diff.scenarios) {
-                  if (key === '_t') continue;
-                  const value = diff.scenarios[key];
-                  
-                  let scenarioData = null;
-                  
-                  if (Array.isArray(value) && value.length > 0) {
-                    for (const element of value) {
-                      if (element && typeof element === 'object') {
-                        const extracted = extractScenarioFromDiff(element);
-                        if (extracted) {
-                          scenarioData = extracted;
-                          break;
-                        }
-                      }
-                    }
-                    if (!scenarioData && typeof value[0] === 'object') {
-                      scenarioData = extractScenarioFromDiff(value[0]);
-                    }
-                  } else if (value && typeof value === 'object') {
-                    scenarioData = extractScenarioFromDiff(value);
-                  }
-                  
-                  if (scenarioData) {
-                    extracted.push(scenarioData);
-                  }
-                }
-                return extracted;
-              }
-              
-              // Case 3: diff.scenarios is an object with numeric keys
-              if (diff.scenarios && typeof diff.scenarios === 'object') {
-                for (const key in diff.scenarios) {
-                  if (key === '_t') continue;
-                  const value = diff.scenarios[key];
-                  if (value && typeof value === 'object') {
-                    const scenario = extractScenarioFromDiff(value);
-                    if (scenario) {
-                      extracted.push(scenario);
-                    }
-                  }
-                }
-                return extracted;
-              }
-              
-              // Case 4: diff itself is a scenario
-              const selfScenario = extractScenarioFromDiff(diff);
-              if (selfScenario) {
-                extracted.push(selfScenario);
-                return extracted;
-              }
-              
-              // Case 5: Try to find any scenario-like object in the diff
-              for (const key in diff) {
-                if (key === '_t' || key === 'scenarios') continue;
-                const value = diff[key];
-                if (value && typeof value === 'object') {
-                  const scenario = extractScenarioFromDiff(value);
-                  if (scenario) {
-                    extracted.push(scenario);
-                  }
-                }
-              }
-              
-              return extracted;
-            }
             
             // ============================================================
             // FUNCTION: Process Gist
@@ -428,10 +97,9 @@ jobs:
                 console.log('Gist file content length:', fileContent.length);
                 
                 try {
-                  const parsedData = JSON.parse(fileContent);
+                  diffData = JSON.parse(fileContent);
                   console.log('Gist data parsed successfully');
-                  console.log('Parsed data keys:', Object.keys(parsedData));
-                  applyChanges(parsedData);
+                  applyDiff();
                 } catch (e) {
                   console.error('Failed to parse Gist content:', e.message);
                   process.exit(1);
@@ -452,70 +120,115 @@ jobs:
             }
             
             // ============================================================
-            // FUNCTION: Apply changes to data
+            // FUNCTION: Apply diff and validate
             // ============================================================
-            function applyChanges(parsedData) {
-              let resultData = JSON.parse(JSON.stringify(currentData));
-              console.log('Current data scenarios before any changes:', resultData.scenarios?.length || 0);
+            function applyDiff() {
+              if (!diffData) {
+                console.error('No diff data to apply');
+                process.exit(1);
+              }
+              
+              console.log('Applying diff to current data using jsondiffpatch...');
+              console.log('Diff keys:', Object.keys(diffData));
+              
+              let resultData = null;
+              
+              try {
+                // ✅ Use jsondiffpatch to apply the diff
+                resultData = jsondiffpatch.patch(currentData, diffData);
+                console.log('jsondiffpatch.patch executed successfully');
+              } catch (e) {
+                console.error('jsondiffpatch.patch failed:', e.message);
+                console.log('Diff data preview:', JSON.stringify(diffData).substring(0, 500));
+                process.exit(1);
+              }
+              
+              // Validate the result
+              if (!resultData) {
+                console.error('jsondiffpatch returned null/undefined');
+                process.exit(1);
+              }
               
               if (!resultData.scenarios || !Array.isArray(resultData.scenarios)) {
-                resultData.scenarios = [];
+                console.error('Invalid result: scenarios is not an array');
+                console.log('Result keys:', Object.keys(resultData));
+                process.exit(1);
               }
               
-              // Extract scenarios from the parsed data
-              const extractedScenarios = extractScenariosFromDiff(parsedData);
-              console.log('Extracted scenarios from diff:', extractedScenarios.length);
-              
-              if (extractedScenarios.length === 0) {
-                console.log('No scenarios extracted, checking if parsedData itself is a scenario...');
-                const directScenario = extractScenarioFromDiff(parsedData);
-                if (directScenario) {
-                  extractedScenarios.push(directScenario);
-                  console.log('Added direct scenario from parsedData');
+              // ✅ Clean up the result - ensure all processes have proper data
+              for (let i = 0; i < resultData.scenarios.length; i++) {
+                const sc = resultData.scenarios[i];
+                if (!sc) continue;
+                
+                // Ensure processes is an array
+                if (!sc.processes || !Array.isArray(sc.processes)) {
+                  sc.processes = [];
+                }
+                
+                // ✅ Clean each process
+                for (let j = 0; j < sc.processes.length; j++) {
+                  const p = sc.processes[j];
+                  if (!p || typeof p !== 'object') {
+                    sc.processes.splice(j, 1);
+                    j--;
+                    continue;
+                  }
+                  
+                  // ✅ Ensure all required fields exist with proper values
+                  if (!p.id) {
+                    sc.processes.splice(j, 1);
+                    j--;
+                    continue;
+                  }
+                  
+                  // Ensure seq is a string
+                  if (!p.seq) p.seq = '0';
+                  if (typeof p.seq !== 'string') p.seq = String(p.seq);
+                  
+                  // Ensure name exists
+                  if (!p.name) p.name = 'Unnamed Process';
+                  if (typeof p.name !== 'string') p.name = String(p.name);
+                  
+                  // Ensure description exists
+                  if (!p.description) p.description = '';
+                  if (typeof p.description !== 'string') p.description = String(p.description);
+                  
+                  // Ensure raci exists
+                  if (!p.raci || typeof p.raci !== 'object') {
+                    p.raci = { r: [], a: [], c: [], i: [] };
+                  }
+                  if (!Array.isArray(p.raci.r)) p.raci.r = [];
+                  if (!Array.isArray(p.raci.a)) p.raci.a = [];
+                  if (!Array.isArray(p.raci.c)) p.raci.c = [];
+                  if (!Array.isArray(p.raci.i)) p.raci.i = [];
+                  
+                  // Ensure system exists
+                  if (!p.system || typeof p.system !== 'object') {
+                    p.system = { name: 'To Be Determined', status: 'Offline', responsible: '' };
+                  }
+                  if (!p.system.name) p.system.name = 'To Be Determined';
+                  if (!p.system.status) p.system.status = 'Offline';
+                  if (!p.system.responsible) p.system.responsible = '';
+                  
+                  // Ensure businessStatus exists
+                  if (!p.businessStatus) p.businessStatus = 'Not Defined';
+                  
+                  // Ensure other fields exist
+                  if (!p.businessDoc) p.businessDoc = '';
+                  if (!p.userManual) p.userManual = '';
+                  if (!p.notes) p.notes = '';
                 }
               }
               
-              // Log extracted scenarios for debugging
-              for (const scenario of extractedScenarios) {
-                const processCount = scenario.processes?.length || 0;
-                console.log('  Scenario extracted:', scenario.id, '|', scenario.name, '| processes:', processCount);
-                if (processCount > 0 && scenario.processes[0]) {
-                  console.log('    First process:', scenario.processes[0].id, scenario.processes[0].name);
-                }
+              // ✅ Fix currentScenarioId
+              if (Array.isArray(resultData.currentScenarioId)) {
+                resultData.currentScenarioId = resultData.currentScenarioId[0] || 'default';
+              }
+              if (!resultData.currentScenarioId && resultData.scenarios.length > 0) {
+                resultData.currentScenarioId = resultData.scenarios[0].id || 'default';
               }
               
-              // Merge each extracted scenario into the result
-              for (const scenario of extractedScenarios) {
-                if (scenario) {
-                  resultData.scenarios = mergeScenarioIntoArray(resultData.scenarios, scenario);
-                }
-              }
-              
-              // Handle currentScenarioId
-              let newCurrentId = parsedData.currentScenarioId;
-              if (newCurrentId) {
-                newCurrentId = extractStringFromNestedArray(newCurrentId);
-              }
-              
-              if (newCurrentId) {
-                const exists = resultData.scenarios.some(s => s && s.id === newCurrentId);
-                if (exists) {
-                  resultData.currentScenarioId = newCurrentId;
-                  console.log('Set currentScenarioId to:', newCurrentId);
-                } else {
-                  console.log('New currentScenarioId not found in scenarios');
-                }
-              }
-              
-              // Ensure currentScenarioId is valid
-              if (!resultData.currentScenarioId || !resultData.scenarios.some(s => s && s.id === resultData.currentScenarioId)) {
-                if (resultData.scenarios.length > 0) {
-                  resultData.currentScenarioId = resultData.scenarios[0].id;
-                  console.log('Set currentScenarioId to first scenario:', resultData.currentScenarioId);
-                }
-              }
-              
-              // Ensure master data exists
+              // ✅ Ensure master data exists
               if (!resultData.departments || !Array.isArray(resultData.departments)) {
                 resultData.departments = ['Sales', 'Production Planning', 'Material Planning', 'Material Handling', 'Purchase', 'Production Execution', 'Parts Quality', 'Vehicle Quality', 'Finance', 'Trade & Compliance'];
               }
@@ -546,11 +259,10 @@ jobs:
                 resultData.sysRespList = [];
               }
               
+              fs.writeFileSync('data.json', JSON.stringify(resultData, null, 2));
+              console.log('✅ data.json updated successfully');
               console.log('Final scenarios count:', resultData.scenarios.length);
               console.log('Final currentScenarioId:', resultData.currentScenarioId);
-              
-              fs.writeFileSync('data.json', JSON.stringify(resultData, null, 2));
-              console.log('data.json updated successfully');
             }
             
             // ============================================================
@@ -566,10 +278,10 @@ jobs:
               
               if (payloadData && payloadData.length > 0) {
                 try {
-                  const parsedData = JSON.parse(payloadData);
+                  diffData = JSON.parse(payloadData);
                   console.log('Direct payload parsed successfully');
-                  console.log('Parsed data keys:', Object.keys(parsedData));
-                  applyChanges(parsedData);
+                  console.log('Diff keys:', Object.keys(diffData));
+                  applyDiff();
                 } catch (e) {
                   console.error('Failed to parse payload data:', e.message);
                   console.log('Payload data preview:', payloadData.substring(0, 200));
