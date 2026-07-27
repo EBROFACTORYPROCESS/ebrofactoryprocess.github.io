@@ -31,7 +31,6 @@ jobs:
         run: |
           node -e "
             const fs = require('fs');
-            const jsondiffpatch = require('jsondiffpatch');
             
             console.log('=== Starting apply changes ===');
             
@@ -52,7 +51,7 @@ jobs:
             let payload;
             try {
               payload = JSON.parse(payloadContent);
-              console.log('Payload parsed successfully');
+              console.log('✅ Payload parsed successfully');
               console.log('Payload keys:', Object.keys(payload));
             } catch (e) {
               console.error('Failed to parse payload.json:', e.message);
@@ -67,12 +66,36 @@ jobs:
             console.log('Gist ID:', gistId || '(none)');
             
             // ============================================================
+            // FUNCTION: Clean a process object
+            // ============================================================
+            function cleanProcess(process) {
+              if (!process || typeof process !== 'object') return null;
+              const cleaned = { ...process };
+              // Ensure all required fields exist
+              if (!cleaned.id) return null;
+              if (!cleaned.seq) cleaned.seq = '0';
+              if (!cleaned.name) cleaned.name = 'Unnamed Process';
+              if (!cleaned.description) cleaned.description = '';
+              if (!cleaned.raci) cleaned.raci = { r: [], a: [], c: [], i: [] };
+              if (!cleaned.businessStatus) cleaned.businessStatus = 'Not Defined';
+              if (!cleaned.system) cleaned.system = { name: 'To Be Determined', status: 'Offline', responsible: '' };
+              if (!cleaned.notes) cleaned.notes = '';
+              if (!cleaned.businessDoc) cleaned.businessDoc = '';
+              if (!cleaned.userManual) cleaned.userManual = '';
+              return cleaned;
+            }
+            
+            // ============================================================
             // FUNCTION: Clean a scenario object
             // ============================================================
             function cleanScenario(scenario) {
               if (!scenario || typeof scenario !== 'object') return null;
               
-              const cleaned = { id: 'default', name: 'Manufacturing', processes: [] };
+              const cleaned = { 
+                id: 'scenario_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+                name: 'Unnamed Scenario',
+                processes: []
+              };
               
               // Handle id - can be string or array
               if (scenario.id) {
@@ -87,103 +110,114 @@ jobs:
               // Handle processes - can be array or object
               if (scenario.processes) {
                 if (Array.isArray(scenario.processes)) {
-                  cleaned.processes = scenario.processes.filter(p => p && typeof p === 'object' && p.id);
+                  cleaned.processes = scenario.processes
+                    .map(p => cleanProcess(p))
+                    .filter(p => p !== null);
                 } else if (typeof scenario.processes === 'object') {
                   // Convert object with numeric keys to array
                   const procArray = [];
                   for (const key in scenario.processes) {
                     if (key === '_t') continue;
                     const val = scenario.processes[key];
-                    if (Array.isArray(val) && val.length > 0) {
+                    if (Array.isArray(val)) {
                       // Take the first valid process from the array
                       const firstValid = val.find(p => p && typeof p === 'object' && p.id);
-                      if (firstValid) procArray.push(firstValid);
-                    } else if (val && typeof val === 'object' && val.id) {
-                      procArray.push(val);
+                      if (firstValid) procArray.push(cleanProcess(firstValid));
+                    } else if (val && typeof val === 'object') {
+                      // Direct process object or nested diff
+                      if (val.id) {
+                        // Direct process object
+                        procArray.push(cleanProcess(val));
+                      } else {
+                        // Possibly a nested diff - try to extract a process
+                        const extracted = extractProcessFromDiff(val);
+                        if (extracted) procArray.push(extracted);
+                      }
                     }
                   }
-                  cleaned.processes = procArray;
+                  cleaned.processes = procArray.filter(p => p !== null);
                 }
               }
+              
+              // Ensure processes are sorted by seq
+              cleaned.processes.sort((a, b) => {
+                const seqA = parseFloat(a.seq) || 0;
+                const seqB = parseFloat(b.seq) || 0;
+                return seqA - seqB;
+              });
               
               return cleaned;
             }
             
             // ============================================================
-            // FUNCTION: Apply diff and preserve existing data
+            // FUNCTION: Extract process from nested diff
             // ============================================================
-            function applyDiffAndMerge(current, diff) {
-              console.log('Applying diff to current data...');
+            function extractProcessFromDiff(diff) {
+              if (!diff || typeof diff !== 'object') return null;
+              const process = { id: null };
               
-              // Deep clone current data to avoid mutation
-              let result = JSON.parse(JSON.stringify(current));
-              
-              // Handle scenarios specially
-              if (diff.scenarios) {
-                if (Array.isArray(diff.scenarios)) {
-                  // Diff scenarios is an array - merge it
-                  console.log('Merging scenarios array...');
-                  result.scenarios = mergeScenarios(result.scenarios || [], diff.scenarios);
-                } else if (diff.scenarios._t === 'a') {
-                  // Diff scenarios is an array diff with _t: 'a'
-                  console.log('Processing array diff for scenarios...');
-                  result.scenarios = mergeScenarioArrayDiff(result.scenarios || [], diff.scenarios);
-                } else if (typeof diff.scenarios === 'object') {
-                  // Diff scenarios is an object with numeric keys
-                  console.log('Merging scenarios object...');
-                  result.scenarios = mergeScenarioObject(result.scenarios || [], diff.scenarios);
-                }
-                
-                // Clean and validate all scenarios
-                result.scenarios = result.scenarios
-                  .map(s => cleanScenario(s))
-                  .filter(s => s !== null);
-              }
-              
-              // Handle other top-level keys
+              // Try to find id in the diff
               for (const key in diff) {
-                if (key === '_t' || key === 'scenarios') continue;
-                
-                // For array diffs
-                if (diff[key] && typeof diff[key] === 'object' && diff[key]._t === 'a') {
-                  // This is an array diff - need to merge it
-                  result[key] = mergeArrayDiff(result[key] || [], diff[key]);
-                } else if (diff[key] && typeof diff[key] === 'object' && !Array.isArray(diff[key])) {
-                  // Recursively merge objects
-                  if (!result[key] || typeof result[key] !== 'object') {
-                    result[key] = {};
+                if (key === '_t') continue;
+                const value = diff[key];
+                if (key === 'id' && Array.isArray(value) && value.length > 0) {
+                  process.id = value[0];
+                } else if (key === 'seq' && Array.isArray(value) && value.length > 0) {
+                  process.seq = value[0];
+                } else if (key === 'name' && Array.isArray(value) && value.length > 0) {
+                  process.name = value[0];
+                } else if (key === 'description' && Array.isArray(value) && value.length > 0) {
+                  process.description = value[0];
+                } else if (key === 'businessStatus' && Array.isArray(value) && value.length > 0) {
+                  process.businessStatus = value[0];
+                } else if (key === 'raci' && typeof value === 'object') {
+                  process.raci = {};
+                  for (const raciKey in value) {
+                    if (raciKey === '_t') continue;
+                    process.raci[raciKey] = Array.isArray(value[raciKey]) ? value[raciKey] : [];
                   }
-                  result[key] = applyDiffAndMerge(result[key], diff[key]);
-                } else {
-                  // Primitive value
-                  result[key] = diff[key];
+                } else if (key === 'system' && typeof value === 'object') {
+                  process.system = {};
+                  for (const sysKey in value) {
+                    if (sysKey === '_t') continue;
+                    process.system[sysKey] = Array.isArray(value[sysKey]) ? value[sysKey][0] : value[sysKey];
+                  }
+                } else if (!process[key] && !Array.isArray(value)) {
+                  process[key] = value;
                 }
               }
               
-              return result;
+              return process.id ? cleanProcess(process) : null;
             }
             
             // ============================================================
-            // FUNCTION: Merge scenarios from array
+            // FUNCTION: Merge scenarios from a full array
             // ============================================================
-            function mergeScenarios(current, newScenarios) {
+            function mergeFullScenarios(current, newScenarios) {
               const result = [...current];
               
               for (const newScenario of newScenarios) {
                 if (!newScenario || typeof newScenario !== 'object') continue;
-                
-                // Check if scenario already exists by id
-                const existingIndex = result.findIndex(s => s && s.id === newScenario.id);
                 const cleaned = cleanScenario(newScenario);
+                if (!cleaned) continue;
                 
-                if (cleaned) {
-                  if (existingIndex >= 0) {
-                    // Merge with existing
-                    result[existingIndex] = { ...result[existingIndex], ...cleaned };
-                  } else {
-                    // Add new scenario
-                    result.push(cleaned);
-                  }
+                // Check if scenario already exists by name (case-insensitive) or id
+                const existingIndex = result.findIndex(s => 
+                  s && (s.id === cleaned.id || s.name.toLowerCase() === cleaned.name.toLowerCase())
+                );
+                
+                if (existingIndex >= 0) {
+                  // Merge with existing scenario
+                  const existing = result[existingIndex];
+                  // Merge processes - avoid duplicates by id
+                  const existingIds = new Set(existing.processes.map(p => p.id));
+                  const newProcesses = cleaned.processes.filter(p => !existingIds.has(p.id));
+                  existing.processes = [...existing.processes, ...newProcesses];
+                  existing.name = cleaned.name; // Update name in case it changed
+                  result[existingIndex] = existing;
+                } else {
+                  // Add new scenario
+                  result.push(cleaned);
                 }
               }
               
@@ -205,8 +239,10 @@ jobs:
                 
                 if (key.startsWith('_')) {
                   const index = parseInt(key.substring(1));
+                  if (index >= result.length) continue;
                   
                   if (Array.isArray(value)) {
+                    // Handle different array diff operations
                     if (value.length === 2 && value[1] === 0) {
                       // Removal: [oldValue, 0]
                       removals.push(index);
@@ -218,31 +254,29 @@ jobs:
                       }
                     } else if (value.length === 3 && value[2] === 0) {
                       // Replacement: [newValue, 0, 0]
-                      if (index < result.length) {
-                        const cleaned = cleanScenario(value[0]);
-                        if (cleaned) updates.push({ index: index, value: cleaned });
-                      }
+                      const cleaned = cleanScenario(value[0]);
+                      if (cleaned) updates.push({ index: index, value: cleaned });
                     } else if (value.length === 1) {
-                      // Single value - treat as insertion
+                      // Single value - treat as insertion of a scenario
                       const cleaned = cleanScenario(value[0]);
                       if (cleaned) insertions.push({ index: index, value: cleaned });
                     }
                   } else if (value && typeof value === 'object') {
                     // Nested diff on this scenario
                     if (index < result.length && result[index]) {
-                      result[index] = applyDiffAndMerge(result[index], { scenarios: value });
+                      const updatedScenario = applyDiffToScenario(result[index], value);
+                      if (updatedScenario) updates.push({ index: index, value: updatedScenario });
                     }
                   }
-                } else {
+                } else if (!isNaN(key) && parseInt(key) >= 0) {
+                  // Numeric key: insertion of a new scenario
                   const index = parseInt(key);
-                  if (!isNaN(index) && index >= 0) {
-                    if (Array.isArray(value) && value.length === 1) {
-                      const cleaned = cleanScenario(value[0]);
-                      if (cleaned) insertions.push({ index: index, value: cleaned });
-                    } else if (value && typeof value === 'object') {
-                      const cleaned = cleanScenario(value);
-                      if (cleaned) insertions.push({ index: index, value: cleaned });
-                    }
+                  if (Array.isArray(value) && value.length === 1) {
+                    const cleaned = cleanScenario(value[0]);
+                    if (cleaned) insertions.push({ index: index, value: cleaned });
+                  } else if (value && typeof value === 'object') {
+                    const cleaned = cleanScenario(value);
+                    if (cleaned) insertions.push({ index: index, value: cleaned });
                   }
                 }
               }
@@ -258,7 +292,7 @@ jobs:
               // Process updates
               for (const update of updates) {
                 if (update.index < result.length) {
-                  result[update.index] = { ...result[update.index], ...update.value };
+                  result[update.index] = update.value;
                 }
               }
               
@@ -276,9 +310,148 @@ jobs:
             }
             
             // ============================================================
-            // FUNCTION: Merge scenario object (with numeric keys)
+            // FUNCTION: Apply diff to a single scenario
             // ============================================================
-            function mergeScenarioObject(current, obj) {
+            function applyDiffToScenario(scenario, diff) {
+              if (!scenario || !diff) return null;
+              const result = { ...scenario };
+              
+              for (const key in diff) {
+                if (key === '_t') continue;
+                const value = diff[key];
+                
+                if (key === 'processes' && value && typeof value === 'object') {
+                  if (value._t === 'a') {
+                    // Apply array diff to processes
+                    result.processes = mergeProcessArrayDiff(result.processes || [], value);
+                  } else if (Array.isArray(value)) {
+                    // Merge full processes array
+                    result.processes = mergeFullProcesses(result.processes || [], value);
+                  } else if (typeof value === 'object') {
+                    // Process diff as object with numeric keys
+                    result.processes = mergeProcessObject(result.processes || [], value);
+                  }
+                } else if (Array.isArray(value) && value.length === 1) {
+                  result[key] = value[0];
+                } else if (!Array.isArray(value) && typeof value !== 'object') {
+                  result[key] = value;
+                }
+              }
+              
+              return cleanScenario(result);
+            }
+            
+            // ============================================================
+            // FUNCTION: Merge full processes array
+            // ============================================================
+            function mergeFullProcesses(current, newProcesses) {
+              const result = [...current];
+              const existingIds = new Set(result.map(p => p.id));
+              
+              for (const newProc of newProcesses) {
+                if (!newProc || typeof newProc !== 'object') continue;
+                const cleaned = cleanProcess(newProc);
+                if (!cleaned) continue;
+                
+                // Check if process already exists by id
+                const existingIndex = result.findIndex(p => p && p.id === cleaned.id);
+                if (existingIndex >= 0) {
+                  // Merge with existing process
+                  result[existingIndex] = { ...result[existingIndex], ...cleaned };
+                } else if (!existingIds.has(cleaned.id)) {
+                  // Add new process
+                  result.push(cleaned);
+                  existingIds.add(cleaned.id);
+                }
+              }
+              
+              return result;
+            }
+            
+            // ============================================================
+            // FUNCTION: Merge process array diff (_t: 'a')
+            // ============================================================
+            function mergeProcessArrayDiff(current, diff) {
+              const result = [...current];
+              const removals = [];
+              const insertions = [];
+              const updates = [];
+              
+              for (const key in diff) {
+                if (key === '_t') continue;
+                const value = diff[key];
+                
+                if (key.startsWith('_')) {
+                  const index = parseInt(key.substring(1));
+                  if (index >= result.length) continue;
+                  
+                  if (Array.isArray(value)) {
+                    if (value.length === 2 && value[1] === 0) {
+                      removals.push(index);
+                    } else if (value.length === 3 && value[2] === 3) {
+                      if (index < result.length && result[index]) {
+                        insertions.push({ index: value[1], value: result[index] });
+                        removals.push(index);
+                      }
+                    } else if (value.length === 3 && value[2] === 0) {
+                      const cleaned = cleanProcess(value[0]);
+                      if (cleaned) updates.push({ index: index, value: cleaned });
+                    } else if (value.length === 1) {
+                      const cleaned = cleanProcess(value[0]);
+                      if (cleaned) insertions.push({ index: index, value: cleaned });
+                    }
+                  } else if (value && typeof value === 'object') {
+                    // Nested diff on this process
+                    if (index < result.length && result[index]) {
+                      result[index] = { ...result[index], ...value };
+                      const cleaned = cleanProcess(result[index]);
+                      if (cleaned) updates.push({ index: index, value: cleaned });
+                    }
+                  }
+                } else if (!isNaN(key) && parseInt(key) >= 0) {
+                  const index = parseInt(key);
+                  if (Array.isArray(value) && value.length === 1) {
+                    const cleaned = cleanProcess(value[0]);
+                    if (cleaned) insertions.push({ index: index, value: cleaned });
+                  } else if (value && typeof value === 'object') {
+                    const cleaned = cleanProcess(value);
+                    if (cleaned) insertions.push({ index: index, value: cleaned });
+                  }
+                }
+              }
+              
+              // Process removals (highest to lowest)
+              removals.sort((a, b) => b - a);
+              for (const idx of removals) {
+                if (idx < result.length) {
+                  result.splice(idx, 1);
+                }
+              }
+              
+              // Process updates
+              for (const update of updates) {
+                if (update.index < result.length) {
+                  result[update.index] = update.value;
+                }
+              }
+              
+              // Process insertions (highest to lowest)
+              insertions.sort((a, b) => b.index - a.index);
+              for (const ins of insertions) {
+                if (ins.index < result.length) {
+                  result.splice(ins.index, 0, ins.value);
+                } else {
+                  result.push(ins.value);
+                }
+              }
+              
+              return result;
+            }
+            
+            // ============================================================
+            // FUNCTION: Merge process object (with numeric keys)
+            // ============================================================
+            function mergeProcessObject(current, obj) {
               const result = [...current];
               
               for (const key in obj) {
@@ -287,6 +460,8 @@ jobs:
                 
                 if (key.startsWith('_')) {
                   const index = parseInt(key.substring(1));
+                  if (index >= result.length) continue;
+                  
                   if (Array.isArray(value) && value.length === 2 && value[1] === 0) {
                     // Removal
                     if (index < result.length) {
@@ -295,32 +470,89 @@ jobs:
                   } else if (value && typeof value === 'object') {
                     // Nested diff
                     if (index < result.length && result[index]) {
-                      result[index] = applyDiffAndMerge(result[index], { scenarios: value });
+                      result[index] = { ...result[index], ...value };
+                      const cleaned = cleanProcess(result[index]);
+                      if (cleaned) result[index] = cleaned;
                     }
                   }
-                } else {
+                } else if (!isNaN(key) && parseInt(key) >= 0) {
                   const index = parseInt(key);
-                  if (!isNaN(index) && index >= 0) {
-                    if (Array.isArray(value) && value.length === 1) {
-                      const cleaned = cleanScenario(value[0]);
-                      if (cleaned) {
-                        if (index < result.length) {
-                          result[index] = cleaned;
-                        } else {
-                          result.push(cleaned);
-                        }
+                  if (Array.isArray(value) && value.length === 1) {
+                    const cleaned = cleanProcess(value[0]);
+                    if (cleaned) {
+                      if (index < result.length) {
+                        result[index] = cleaned;
+                      } else {
+                        result.push(cleaned);
                       }
-                    } else if (value && typeof value === 'object') {
-                      const cleaned = cleanScenario(value);
-                      if (cleaned) {
-                        if (index < result.length) {
-                          result[index] = cleaned;
-                        } else {
-                          result.push(cleaned);
-                        }
+                    }
+                  } else if (value && typeof value === 'object') {
+                    const cleaned = cleanProcess(value);
+                    if (cleaned) {
+                      if (index < result.length) {
+                        result[index] = cleaned;
+                      } else {
+                        result.push(cleaned);
                       }
                     }
                   }
+                }
+              }
+              
+              return result.filter(p => p !== null);
+            }
+            
+            // ============================================================
+            // FUNCTION: Main diff application and merge
+            // ============================================================
+            function applyDiffAndMerge(current, diff) {
+              console.log('Applying diff to current data...');
+              let result = JSON.parse(JSON.stringify(current));
+              
+              // Handle scenarios
+              if (diff.scenarios) {
+                if (Array.isArray(diff.scenarios)) {
+                  // Full scenarios array - merge it
+                  console.log('Merging full scenarios array...');
+                  result.scenarios = mergeFullScenarios(result.scenarios || [], diff.scenarios);
+                } else if (diff.scenarios._t === 'a') {
+                  // Array diff for scenarios
+                  console.log('Processing array diff for scenarios...');
+                  result.scenarios = mergeScenarioArrayDiff(result.scenarios || [], diff.scenarios);
+                } else if (typeof diff.scenarios === 'object') {
+                  // Scenarios as object with numeric keys
+                  console.log('Processing scenarios object...');
+                  const scenarioArray = [];
+                  for (const key in diff.scenarios) {
+                    if (key === '_t') continue;
+                    const value = diff.scenarios[key];
+                    if (value && typeof value === 'object') {
+                      const cleaned = cleanScenario(value);
+                      if (cleaned) scenarioArray.push(cleaned);
+                    }
+                  }
+                  if (scenarioArray.length > 0) {
+                    result.scenarios = mergeFullScenarios(result.scenarios || [], scenarioArray);
+                  }
+                }
+              }
+              
+              // Handle other top-level keys
+              for (const key in diff) {
+                if (key === '_t' || key === 'scenarios') continue;
+                
+                if (diff[key] && typeof diff[key] === 'object' && diff[key]._t === 'a') {
+                  // This is an array diff - need to merge it
+                  result[key] = mergeArrayDiff(result[key] || [], diff[key]);
+                } else if (diff[key] && typeof diff[key] === 'object' && !Array.isArray(diff[key])) {
+                  // Recursively merge objects
+                  if (!result[key] || typeof result[key] !== 'object') {
+                    result[key] = {};
+                  }
+                  result[key] = applyDiffAndMerge(result[key], diff[key]);
+                } else {
+                  // Primitive value
+                  result[key] = diff[key];
                 }
               }
               
@@ -328,7 +560,7 @@ jobs:
             }
             
             // ============================================================
-            // FUNCTION: Merge array diff
+            // FUNCTION: Generic array diff merge (fallback)
             // ============================================================
             function mergeArrayDiff(current, diff) {
               const result = [...current];
@@ -419,6 +651,20 @@ jobs:
                 .map(s => cleanScenario(s))
                 .filter(s => s !== null);
               
+              // Remove duplicate scenario names (keep first occurrence)
+              const seenNames = new Set();
+              const uniqueScenarios = [];
+              for (const scenario of data.scenarios) {
+                const nameKey = scenario.name.toLowerCase().trim();
+                if (!seenNames.has(nameKey)) {
+                  seenNames.add(nameKey);
+                  uniqueScenarios.push(scenario);
+                } else {
+                  console.log(`Removing duplicate scenario: "${scenario.name}"`);
+                }
+              }
+              data.scenarios = uniqueScenarios;
+              
               // Fix currentScenarioId
               if (Array.isArray(data.currentScenarioId)) {
                 data.currentScenarioId = data.currentScenarioId[0] || 'default';
@@ -470,25 +716,26 @@ jobs:
             // FUNCTION: Determine if data is a diff or full data
             // ============================================================
             function isDiffData(data) {
-              // If it has scenarios as an array with valid data, it might be full data
-              if (data.scenarios && Array.isArray(data.scenarios) && data.scenarios.length > 0) {
-                // Check if any scenario has valid processes
-                const hasValidProcess = data.scenarios.some(s => 
-                  s && s.processes && Array.isArray(s.processes) && s.processes.length > 0
+              // Check if data has a scenarios array with full process objects
+              if (data.scenarios && Array.isArray(data.scenarios)) {
+                // If any scenario has a full process with a name, it's likely full data
+                const hasFullProcess = data.scenarios.some(s => 
+                  s && s.processes && Array.isArray(s.processes) && 
+                  s.processes.some(p => p && p.name && p.name.length > 0)
                 );
-                if (hasValidProcess) {
-                  return false; // This is likely full data
-                }
+                if (hasFullProcess) return false;
               }
               
-              // Check for diff markers like _t: 'a' or numeric keys in scenarios
+              // Check for diff markers
               if (data.scenarios && typeof data.scenarios === 'object') {
-                if (data.scenarios._t === 'a' || Object.keys(data.scenarios).some(k => !isNaN(k) && k !== '_t')) {
-                  return true; // This is a diff
+                if (data.scenarios._t === 'a' || 
+                    Object.keys(data.scenarios).some(k => !isNaN(k) && k !== '_t')) {
+                  return true;
                 }
               }
               
-              return true; // Default to treating as diff
+              // If no clear full data indicators, treat as diff
+              return true;
             }
             
             // ============================================================
