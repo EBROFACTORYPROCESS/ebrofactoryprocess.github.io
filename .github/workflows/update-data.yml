@@ -73,7 +73,6 @@ jobs:
                 }
               }
               if (value && typeof value === 'object') {
-                // If it's an object with an id or name, try to extract that
                 if (value.id) {
                   const idResult = extractStringFromNestedArray(value.id);
                   if (idResult) return idResult;
@@ -82,12 +81,84 @@ jobs:
                   const nameResult = extractStringFromNestedArray(value.name);
                   if (nameResult) return nameResult;
                 }
-                // Otherwise, look for any string property
                 for (const key in value) {
                   const result = extractStringFromNestedArray(value[key]);
                   if (result) return result;
                 }
               }
+              return null;
+            }
+            
+            // ============================================================
+            // FUNCTION: Extract a complete process object from diff
+            // ============================================================
+            function extractProcessFromDiff(diffObj) {
+              if (!diffObj || typeof diffObj !== 'object') return null;
+              
+              // If it's already a complete process object
+              if (diffObj.id && typeof diffObj.id === 'string' && diffObj.name) {
+                return {
+                  id: diffObj.id,
+                  seq: diffObj.seq || '0',
+                  name: diffObj.name || 'Unnamed Process',
+                  description: diffObj.description || '',
+                  raci: diffObj.raci || { r: [], a: [], c: [], i: [] },
+                  businessStatus: diffObj.businessStatus || 'Not Defined',
+                  system: diffObj.system || { name: 'To Be Determined', status: 'Offline', responsible: '' },
+                  businessDoc: diffObj.businessDoc || '',
+                  userManual: diffObj.userManual || '',
+                  notes: diffObj.notes || ''
+                };
+              }
+              
+              // If id is an array, the process is in diff format
+              if (Array.isArray(diffObj.id) && diffObj.id.length > 0) {
+                // Try to extract the first element as the ID
+                const id = extractStringFromNestedArray(diffObj.id);
+                if (id) {
+                  // Try to find the full process data in the diff
+                  // Look for other fields that might be arrays
+                  const seq = diffObj.seq ? extractStringFromNestedArray(diffObj.seq) : '0';
+                  const name = diffObj.name ? extractStringFromNestedArray(diffObj.name) : 'Unnamed Process';
+                  const description = diffObj.description ? extractStringFromNestedArray(diffObj.description) : '';
+                  
+                  // If there's no name and no other fields, this might be a partial diff
+                  // Try to find the process in the current data by ID
+                  if (name === 'Unnamed Process' && !diffObj.name) {
+                    // Search in current data
+                    for (const scenario of currentData.scenarios || []) {
+                      const found = (scenario.processes || []).find(p => p.id === id);
+                      if (found) {
+                        return { ...found };
+                      }
+                    }
+                  }
+                  
+                  return {
+                    id: id,
+                    seq: seq,
+                    name: name,
+                    description: description,
+                    raci: { r: [], a: [], c: [], i: [] },
+                    businessStatus: 'Not Defined',
+                    system: { name: 'To Be Determined', status: 'Offline', responsible: '' },
+                    businessDoc: '',
+                    userManual: '',
+                    notes: ''
+                  };
+                }
+              }
+              
+              // If it has an id as a string but no name, try to find it in current data
+              if (diffObj.id && typeof diffObj.id === 'string') {
+                for (const scenario of currentData.scenarios || []) {
+                  const found = (scenario.processes || []).find(p => p.id === diffObj.id);
+                  if (found) {
+                    return { ...found };
+                  }
+                }
+              }
+              
               return null;
             }
             
@@ -111,36 +182,66 @@ jobs:
                 name = extractStringFromNestedArray(diffObj.name);
               }
               
-              // If we still don't have a name but have an id, try to find a name
+              // If we still don't have a name but have an id, use 'Scenario' as default
               if (!name && id) {
-                // Look for name in the object
-                if (diffObj.name) {
-                  name = extractStringFromNestedArray(diffObj.name);
-                }
-                // If still no name, use 'Scenario' as default
-                if (!name) {
-                  name = 'Scenario';
-                }
+                name = 'Scenario';
               }
               
-              // Extract processes
+              // Extract processes - look for processes in the diff
               if (diffObj.processes) {
                 if (Array.isArray(diffObj.processes)) {
-                  processes = diffObj.processes;
+                  // If it's an array of process objects
+                  for (const proc of diffObj.processes) {
+                    const extracted = extractProcessFromDiff(proc);
+                    if (extracted) processes.push(extracted);
+                  }
                 } else if (typeof diffObj.processes === 'object') {
-                  for (const key in diffObj.processes) {
-                    if (key === '_t') continue;
-                    const val = diffObj.processes[key];
-                    if (Array.isArray(val) && val.length > 0) {
-                      processes.push(val[0]);
-                    } else if (val && typeof val === 'object' && val.id) {
-                      processes.push(val);
+                  // If it's an object with _t: 'a' (array diff format)
+                  if (diffObj.processes._t === 'a') {
+                    for (const key in diffObj.processes) {
+                      if (key === '_t') continue;
+                      const val = diffObj.processes[key];
+                      
+                      // Handle different diff formats
+                      if (Array.isArray(val)) {
+                        // val could be [oldValue, newValue] or [processObject]
+                        for (const item of val) {
+                          const extracted = extractProcessFromDiff(item);
+                          if (extracted) processes.push(extracted);
+                        }
+                      } else if (val && typeof val === 'object') {
+                        const extracted = extractProcessFromDiff(val);
+                        if (extracted) processes.push(extracted);
+                      }
+                    }
+                  } else {
+                    // Regular object with numeric keys
+                    for (const key in diffObj.processes) {
+                      if (key === '_t') continue;
+                      const val = diffObj.processes[key];
+                      if (Array.isArray(val) && val.length > 0) {
+                        // Check if val[0] is a process object or an ID
+                        const extracted = extractProcessFromDiff(val[0]);
+                        if (extracted) processes.push(extracted);
+                      } else if (val && typeof val === 'object') {
+                        const extracted = extractProcessFromDiff(val);
+                        if (extracted) processes.push(extracted);
+                      }
                     }
                   }
                 }
               }
               
-              // Only return if we have an id or some processes
+              // If we still have no processes, try to find them from current data by ID
+              if (processes.length === 0 && id) {
+                for (const scenario of currentData.scenarios || []) {
+                  if (scenario.id === id) {
+                    processes = [...scenario.processes];
+                    break;
+                  }
+                }
+              }
+              
               if (id || processes.length > 0) {
                 return { 
                   id: id || 'scenario_' + Date.now(), 
@@ -160,6 +261,7 @@ jobs:
               if (!newScenario) return existingScenarios;
               
               console.log('Merging scenario:', newScenario.id, '->', newScenario.name);
+              console.log('New scenario has', newScenario.processes?.length || 0, 'processes');
               
               // Try to find by ID first (if we have one)
               let existingIndex = -1;
@@ -167,7 +269,7 @@ jobs:
                 existingIndex = existingScenarios.findIndex(s => s && s.id === newScenario.id);
               }
               
-              // If not found by ID, try to find by name (case-insensitive)
+              // If not found by ID, try to find by name
               if (existingIndex === -1 && newScenario.name && typeof newScenario.name === 'string') {
                 const normalizedName = newScenario.name.toLowerCase().trim();
                 existingIndex = existingScenarios.findIndex(s => 
@@ -182,7 +284,11 @@ jobs:
                 // Merge processes - avoid duplicates by id
                 const existingIds = new Set(existing.processes.map(p => p && p.id));
                 const newProcesses = (newScenario.processes || []).filter(p => p && p.id && !existingIds.has(p.id));
-                existing.processes = [...existing.processes, ...newProcesses];
+                
+                if (newProcesses.length > 0) {
+                  console.log('Adding', newProcesses.length, 'new processes');
+                  existing.processes = [...existing.processes, ...newProcesses];
+                }
                 
                 if (newScenario.name && typeof newScenario.name === 'string') {
                   existing.name = newScenario.name;
@@ -198,6 +304,7 @@ jobs:
                   processes: Array.isArray(newScenario.processes) ? newScenario.processes : []
                 };
                 existingScenarios.push(newEntry);
+                console.log('New scenario added with', newEntry.processes.length, 'processes');
                 return existingScenarios;
               }
             }
@@ -225,11 +332,9 @@ jobs:
                   
                   let scenarioData = null;
                   
-                  // Try to extract scenario from various structures
                   if (Array.isArray(value) && value.length > 0) {
-                    // Check if any element in the array is a scenario object
                     for (const element of value) {
-                      if (element && typeof element === 'object' && (element.id || element.name || element.processes)) {
+                      if (element && typeof element === 'object') {
                         const extracted = extractScenarioFromDiff(element);
                         if (extracted) {
                           scenarioData = extracted;
@@ -237,7 +342,6 @@ jobs:
                         }
                       }
                     }
-                    // If not found, try the first element
                     if (!scenarioData && typeof value[0] === 'object') {
                       scenarioData = extractScenarioFromDiff(value[0]);
                     }
@@ -375,6 +479,9 @@ jobs:
               for (const scenario of extractedScenarios) {
                 const processCount = scenario.processes?.length || 0;
                 console.log('  Scenario extracted:', scenario.id, '|', scenario.name, '| processes:', processCount);
+                if (processCount > 0 && scenario.processes[0]) {
+                  console.log('    First process:', scenario.processes[0].id, scenario.processes[0].name);
+                }
               }
               
               // Merge each extracted scenario into the result
@@ -387,7 +494,6 @@ jobs:
               // Handle currentScenarioId
               let newCurrentId = parsedData.currentScenarioId;
               if (newCurrentId) {
-                // Extract string from nested arrays
                 newCurrentId = extractStringFromNestedArray(newCurrentId);
               }
               
@@ -397,15 +503,7 @@ jobs:
                   resultData.currentScenarioId = newCurrentId;
                   console.log('Set currentScenarioId to:', newCurrentId);
                 } else {
-                  console.log('New currentScenarioId not found in scenarios, checking by name...');
-                  // Try to find by name
-                  const byName = resultData.scenarios.find(s => s && s.name === newCurrentId);
-                  if (byName) {
-                    resultData.currentScenarioId = byName.id;
-                    console.log('Set currentScenarioId to:', byName.id);
-                  } else {
-                    console.log('New currentScenarioId not found, keeping existing');
-                  }
+                  console.log('New currentScenarioId not found in scenarios');
                 }
               }
               
