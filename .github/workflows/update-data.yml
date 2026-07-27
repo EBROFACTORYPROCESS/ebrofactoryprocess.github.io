@@ -24,31 +24,12 @@ jobs:
           ${{ toJSON(github.event.client_payload) }}
           EOF
 
-      - name: Debug payload
-        run: |
-          echo "=== Payload Type ==="
-          cat payload.json | grep -o '"type":"[^"]*"' || echo "type not found"
-          echo "=== Payload Size ==="
-          wc -c < payload.json
-          echo "=== First 500 chars ==="
-          head -c 500 payload.json
-
-      - name: Apply changes
+      - name: Apply changes (direct full data)
         run: |
           node -e "
             const fs = require('fs');
             
-            console.log('=== Starting apply changes ===');
-            
-            // Read current data.json
-            let currentData = {};
-            try {
-              const content = fs.readFileSync('data.json', 'utf8');
-              currentData = JSON.parse(content);
-              console.log('Current data loaded, scenarios:', currentData.scenarios?.length || 0);
-            } catch (e) {
-              console.log('No existing data.json, creating new one');
-            }
+            console.log('=== Starting direct save ===');
             
             // Read payload
             const payloadContent = fs.readFileSync('payload.json', 'utf8');
@@ -64,152 +45,85 @@ jobs:
               process.exit(1);
             }
             
-            // Extract the data from the payload
-            // The frontend sends either 'data' or 'diff' in the payload
-            let incomingData = null;
-            let isFullData = false;
+            let finalData = null;
+            const payloadType = payload.type || 'full';
             
+            // Handle Gist payload
+            if (payloadType === 'gist' && payload.gist_id) {
+              console.log('Fetching data from Gist:', payload.gist_id);
+              const token = process.env.GITHUB_TOKEN;
+              if (!token) {
+                console.error('GITHUB_TOKEN not found');
+                process.exit(1);
+              }
+              
+              const gistUrl = 'https://api.github.com/gists/' + payload.gist_id;
+              
+              fetch(gistUrl, {
+                headers: {
+                  'Authorization': 'token ' + token,
+                  'Accept': 'application/vnd.github.v3+json'
+                }
+              })
+              .then(response => {
+                if (!response.ok) throw new Error('Gist API returned ' + response.status);
+                return response.json();
+              })
+              .then(gistData => {
+                const files = gistData.files;
+                const fileNames = Object.keys(files);
+                if (fileNames.length === 0) throw new Error('No files in gist');
+                const fileContent = files[fileNames[0]].content;
+                finalData = JSON.parse(fileContent);
+                console.log('Gist data parsed successfully');
+                saveData();
+                
+                // Delete the gist
+                return fetch('https://api.github.com/gists/' + payload.gist_id, {
+                  method: 'DELETE',
+                  headers: { 'Authorization': 'token ' + token }
+                });
+              })
+              .then(() => console.log('Gist deleted'))
+              .catch(e => {
+                console.error('Gist processing failed:', e.message);
+                process.exit(1);
+              });
+              
+              setTimeout(() => {}, 30000);
+              return;
+            }
+            
+            // Handle direct full data payload
             if (payload.data && payload.data.length > 0) {
               try {
-                incomingData = JSON.parse(payload.data);
-                console.log('Payload data parsed successfully');
-                console.log('Incoming data keys:', Object.keys(incomingData));
-                
-                // Check if this is full data (has scenarios array with processes)
-                if (incomingData.scenarios && Array.isArray(incomingData.scenarios)) {
-                  // Check if any scenario has a process with a name
-                  const hasProcess = incomingData.scenarios.some(s => 
-                    s && s.processes && Array.isArray(s.processes) && s.processes.length > 0
-                  );
-                  if (hasProcess) {
-                    isFullData = true;
-                    console.log('This appears to be FULL data with processes');
-                  } else {
-                    console.log('This appears to be a DIFF (scenarios exist but no full processes)');
-                  }
-                }
+                finalData = JSON.parse(payload.data);
+                console.log('Direct data parsed successfully');
+                console.log('Data keys:', Object.keys(finalData));
+                saveData();
               } catch (e) {
                 console.error('Failed to parse payload data:', e.message);
-              }
-            }
-            
-            // If we have a Gist ID, fetch from Gist
-            if (payload.gist_id && payload.gist_id.length > 0) {
-              console.log('Gist ID found:', payload.gist_id);
-              // In a real scenario, we would fetch from Gist here
-              // For now, we'll use the data from the payload
-            }
-            
-            // If we have valid incoming data, use it
-            let finalData = null;
-            
-            if (incomingData) {
-              if (isFullData) {
-                // This is full data - use it directly
-                finalData = incomingData;
-                console.log('Using full data directly');
-              } else if (incomingData.scenarios) {
-                // This is a diff - we need to merge it
-                console.log('Merging diff with current data...');
-                finalData = JSON.parse(JSON.stringify(currentData));
-                
-                // Ensure scenarios array exists
-                if (!finalData.scenarios) finalData.scenarios = [];
-                
-                // If the diff has scenarios as an array, merge it
-                if (Array.isArray(incomingData.scenarios)) {
-                  for (const newScenario of incomingData.scenarios) {
-                    if (!newScenario || typeof newScenario !== 'object') continue;
-                    
-                    // Try to find existing scenario by id or name
-                    const existingIndex = finalData.scenarios.findIndex(s => 
-                      s && (s.id === newScenario.id || s.name === newScenario.name)
-                    );
-                    
-                    if (existingIndex >= 0) {
-                      // Merge with existing
-                      const existing = finalData.scenarios[existingIndex];
-                      // If new scenario has processes, add them
-                      if (newScenario.processes && Array.isArray(newScenario.processes)) {
-                        const existingIds = new Set(existing.processes.map(p => p.id));
-                        for (const newProc of newScenario.processes) {
-                          if (newProc && newProc.id && !existingIds.has(newProc.id)) {
-                            existing.processes.push(newProc);
-                          }
-                        }
-                      }
-                      // Update name if changed
-                      if (newScenario.name) existing.name = newScenario.name;
-                    } else {
-                      // Add new scenario
-                      finalData.scenarios.push(newScenario);
-                    }
-                  }
-                } else if (typeof incomingData.scenarios === 'object') {
-                  // Handle object with numeric keys (diff format)
-                  for (const key in incomingData.scenarios) {
-                    if (key === '_t') continue;
-                    const value = incomingData.scenarios[key];
-                    if (value && typeof value === 'object') {
-                      // Try to extract a scenario
-                      const scenario = { 
-                        id: value.id || 'scenario_' + Date.now() + '_' + key,
-                        name: value.name || 'Scenario ' + key,
-                        processes: []
-                      };
-                      
-                      if (value.processes) {
-                        if (Array.isArray(value.processes)) {
-                          scenario.processes = value.processes;
-                        } else if (typeof value.processes === 'object') {
-                          // Extract processes from object
-                          for (const pKey in value.processes) {
-                            if (pKey === '_t') continue;
-                            const pVal = value.processes[pKey];
-                            if (Array.isArray(pVal) && pVal.length > 0) {
-                              scenario.processes.push(pVal[0]);
-                            } else if (pVal && typeof pVal === 'object' && pVal.id) {
-                              scenario.processes.push(pVal);
-                            }
-                          }
-                        }
-                      }
-                      
-                      // Add or merge scenario
-                      const existingIndex = finalData.scenarios.findIndex(s => 
-                        s && (s.id === scenario.id || s.name === scenario.name)
-                      );
-                      if (existingIndex >= 0) {
-                        finalData.scenarios[existingIndex] = { ...finalData.scenarios[existingIndex], ...scenario };
-                      } else {
-                        finalData.scenarios.push(scenario);
-                      }
-                    }
-                  }
-                }
-                
-                console.log('Diff merged successfully');
-              } else {
-                // Unknown data format - try to use as-is
-                console.log('Unknown data format, using as-is');
-                finalData = incomingData;
+                console.log('Payload preview:', payload.data.substring(0, 200));
+                process.exit(1);
               }
             } else {
-              console.error('No valid data found in payload');
+              console.error('No data found in payload');
               process.exit(1);
             }
             
-            // ============================================================
-            // VALIDATE AND SAVE
-            // ============================================================
-            if (finalData) {
-              // Ensure scenarios is an array
+            function saveData() {
+              if (!finalData) {
+                console.error('No data to save');
+                process.exit(1);
+              }
+              
+              // Validate and clean the data
               if (!finalData.scenarios || !Array.isArray(finalData.scenarios)) {
-                console.error('Invalid data: scenarios is not an array, creating empty');
+                console.error('Invalid data: scenarios is not an array');
                 finalData.scenarios = [];
               }
               
-              // Clean up scenarios
+              // Ensure each scenario has valid processes
               for (let i = 0; i < finalData.scenarios.length; i++) {
                 const sc = finalData.scenarios[i];
                 if (!sc || typeof sc !== 'object') {
@@ -217,30 +131,10 @@ jobs:
                   i--;
                   continue;
                 }
-                
-                // Ensure id and name
                 if (!sc.id) sc.id = 'scenario_' + Date.now() + '_' + i;
                 if (!sc.name) sc.name = 'Scenario ' + (i + 1);
-                
-                // Ensure processes is an array
                 if (!sc.processes || !Array.isArray(sc.processes)) {
                   sc.processes = [];
-                }
-                
-                // Clean processes
-                for (let j = 0; j < sc.processes.length; j++) {
-                  const p = sc.processes[j];
-                  if (!p || typeof p !== 'object') {
-                    sc.processes.splice(j, 1);
-                    j--;
-                    continue;
-                  }
-                  if (!p.id) p.id = 'proc_' + Date.now() + '_' + j;
-                  if (!p.name) p.name = 'Unnamed Process';
-                  if (!p.seq) p.seq = String((j + 1) * 10);
-                  if (!p.raci) p.raci = { r: [], a: [], c: [], i: [] };
-                  if (!p.system) p.system = { name: 'To Be Determined', status: 'Offline', responsible: '' };
-                  if (!p.businessStatus) p.businessStatus = 'Not Defined';
                 }
               }
               
@@ -283,14 +177,9 @@ jobs:
                 finalData.sysRespList = [];
               }
               
-              // Write the file
               fs.writeFileSync('data.json', JSON.stringify(finalData, null, 2));
               console.log('✅ data.json updated successfully');
               console.log('Final scenarios count:', finalData.scenarios.length);
-              console.log('Final currentScenarioId:', finalData.currentScenarioId);
-            } else {
-              console.error('No data to save');
-              process.exit(1);
             }
           "
 
