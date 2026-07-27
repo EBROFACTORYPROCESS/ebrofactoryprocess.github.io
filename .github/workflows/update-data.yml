@@ -18,23 +18,35 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Install jsondiffpatch
+        run: npm install jsondiffpatch
+
       - name: Write payload to file
         run: |
           cat > payload.json << 'EOF'
           ${{ toJSON(github.event.client_payload) }}
           EOF
 
-      - name: Apply changes (direct full data)
+      - name: Apply diff
         run: |
           node -e "
             const fs = require('fs');
+            const jsondiffpatch = require('jsondiffpatch');
             
-            console.log('=== Starting direct save ===');
+            console.log('=== Starting diff application ===');
+            
+            // Read current data.json
+            let currentData = {};
+            try {
+              const content = fs.readFileSync('data.json', 'utf8');
+              currentData = JSON.parse(content);
+              console.log('Current data loaded, scenarios:', currentData.scenarios?.length || 0);
+            } catch (e) {
+              console.log('No existing data.json, creating new one');
+            }
             
             // Read payload
             const payloadContent = fs.readFileSync('payload.json', 'utf8');
-            console.log('Payload content length:', payloadContent.length);
-            
             let payload;
             try {
               payload = JSON.parse(payloadContent);
@@ -45,12 +57,12 @@ jobs:
               process.exit(1);
             }
             
-            let finalData = null;
-            const payloadType = payload.type || 'full';
+            let diffData = null;
+            const payloadType = payload.type || 'diff';
             
-            // Handle Gist payload
+            // Handle Gist payload (large data)
             if (payloadType === 'gist' && payload.gist_id) {
-              console.log('Fetching data from Gist:', payload.gist_id);
+              console.log('Fetching diff from Gist:', payload.gist_id);
               const token = process.env.GITHUB_TOKEN;
               if (!token) {
                 console.error('GITHUB_TOKEN not found');
@@ -74,9 +86,9 @@ jobs:
                 const fileNames = Object.keys(files);
                 if (fileNames.length === 0) throw new Error('No files in gist');
                 const fileContent = files[fileNames[0]].content;
-                finalData = JSON.parse(fileContent);
-                console.log('Gist data parsed successfully');
-                saveData();
+                diffData = JSON.parse(fileContent);
+                console.log('Gist diff parsed successfully');
+                applyDiffToData();
                 
                 // Delete the gist
                 return fetch('https://api.github.com/gists/' + payload.gist_id, {
@@ -94,16 +106,14 @@ jobs:
               return;
             }
             
-            // Handle direct full data payload
+            // Handle direct diff payload
             if (payload.data && payload.data.length > 0) {
               try {
-                finalData = JSON.parse(payload.data);
-                console.log('Direct data parsed successfully');
-                console.log('Data keys:', Object.keys(finalData));
-                saveData();
+                diffData = JSON.parse(payload.data);
+                console.log('Direct diff parsed successfully');
+                applyDiffToData();
               } catch (e) {
                 console.error('Failed to parse payload data:', e.message);
-                console.log('Payload preview:', payload.data.substring(0, 200));
                 process.exit(1);
               }
             } else {
@@ -111,75 +121,38 @@ jobs:
               process.exit(1);
             }
             
-            function saveData() {
-              if (!finalData) {
-                console.error('No data to save');
+            function applyDiffToData() {
+              if (!diffData) {
+                console.error('No diff data to apply');
                 process.exit(1);
               }
               
-              // Validate and clean the data
-              if (!finalData.scenarios || !Array.isArray(finalData.scenarios)) {
-                console.error('Invalid data: scenarios is not an array');
-                finalData.scenarios = [];
-              }
-              
-              // Ensure each scenario has valid processes
-              for (let i = 0; i < finalData.scenarios.length; i++) {
-                const sc = finalData.scenarios[i];
-                if (!sc || typeof sc !== 'object') {
-                  finalData.scenarios.splice(i, 1);
-                  i--;
-                  continue;
+              console.log('Applying diff to current data...');
+              try {
+                // Use jsondiffpatch to apply the diff
+                const patchedData = jsondiffpatch.patch(currentData, diffData);
+                console.log('Diff applied successfully');
+                
+                // Validate the patched data
+                if (!patchedData.scenarios || !Array.isArray(patchedData.scenarios)) {
+                  console.error('Invalid data after patching: scenarios is not an array');
+                  process.exit(1);
                 }
-                if (!sc.id) sc.id = 'scenario_' + Date.now() + '_' + i;
-                if (!sc.name) sc.name = 'Scenario ' + (i + 1);
-                if (!sc.processes || !Array.isArray(sc.processes)) {
-                  sc.processes = [];
+                
+                // Ensure currentScenarioId is a string
+                if (Array.isArray(patchedData.currentScenarioId)) {
+                  patchedData.currentScenarioId = patchedData.currentScenarioId[0] || 'default';
                 }
+                
+                // Write the updated data
+                fs.writeFileSync('data.json', JSON.stringify(patchedData, null, 2));
+                console.log('data.json updated successfully');
+                console.log('Final scenarios count:', patchedData.scenarios.length);
+                console.log('Final currentScenarioId:', patchedData.currentScenarioId);
+              } catch (e) {
+                console.error('Failed to apply diff:', e.message);
+                process.exit(1);
               }
-              
-              // Fix currentScenarioId
-              if (Array.isArray(finalData.currentScenarioId)) {
-                finalData.currentScenarioId = finalData.currentScenarioId[0] || 'default';
-              }
-              if (!finalData.currentScenarioId && finalData.scenarios.length > 0) {
-                finalData.currentScenarioId = finalData.scenarios[0].id || 'default';
-              }
-              
-              // Ensure master data exists
-              if (!finalData.departments || !Array.isArray(finalData.departments)) {
-                finalData.departments = ['Sales', 'Production Planning', 'Material Planning', 'Material Handling', 'Purchase', 'Production Execution', 'Parts Quality', 'Vehicle Quality', 'Finance', 'Trade & Compliance'];
-              }
-              
-              if (!finalData.sysNameList || !Array.isArray(finalData.sysNameList)) {
-                finalData.sysNameList = ['SAP', 'LES', 'MES', 'KAPTURE', 'WMS', 'To Be Determined'];
-              }
-              
-              if (!finalData.businessStatuses || !Array.isArray(finalData.businessStatuses)) {
-                finalData.businessStatuses = [
-                  { value: 'Not Defined', color: 'red' },
-                  { value: 'In Progress', color: 'yellow' },
-                  { value: 'Completed', color: 'green' }
-                ];
-              }
-              
-              if (!finalData.sysStatusList || !Array.isArray(finalData.sysStatusList)) {
-                finalData.sysStatusList = [
-                  { value: 'Operational', color: 'green' },
-                  { value: 'Completed', color: 'green' },
-                  { value: 'Offline', color: 'red' },
-                  { value: 'To Be Implemented', color: 'red' },
-                  { value: 'Work in Progress', color: 'yellow' }
-                ];
-              }
-              
-              if (!finalData.sysRespList || !Array.isArray(finalData.sysRespList)) {
-                finalData.sysRespList = [];
-              }
-              
-              fs.writeFileSync('data.json', JSON.stringify(finalData, null, 2));
-              console.log('✅ data.json updated successfully');
-              console.log('Final scenarios count:', finalData.scenarios.length);
             }
           "
 
@@ -200,7 +173,7 @@ jobs:
             echo "No changes to commit"
           else
             git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git config.user.email "github-actions[bot]@users.noreply.github.com"
             git add data.json
             git commit -m "Apply changes from web [skip ci]" || echo "No changes to commit"
             git push
