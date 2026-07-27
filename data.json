@@ -2584,6 +2584,1555 @@
       ]
     },
     {
+      "id": "1785147124788-bkaz9mzz",
+      "name": "sadasd",
+      "processes": [
+        {
+          "id": [
+            "1785147128980-zz4jwphq",
+            "1785147303235-dbyvupqg"
+          ],
+          "name": [
+            "New Step",
+            "Sales Forecast"
+          ],
+          "description": [
+            "",
+            "Sales forecast agreed in S&OP meeting"
+          ],
+          "raci": {
+            "r": {
+              "0": [
+                "EUB_SALES"
+              ],
+              "_t": "a"
+            },
+            "c": {
+              "0": [
+                "MJV_PRODUCTION PLANNING"
+              ],
+              "_t": "a"
+            }
+          },
+          "businessStatus": [
+            "Not Defined",
+            "Completed"
+          ],
+          "system": {
+            "name": [
+              "SAP",
+              "To Be Determined"
+            ],
+            "status": [
+              "Operational",
+              "Offline"
+            ]
+          }
+        },
+        {
+          "id": [
+            "1785147129138-ydb616kh",
+            "1785147303235-1o7cu7jc"
+          ],
+          "seq": [
+            "20",
+            "10.1"
+          ],
+          "name": [
+            "New Step",
+            "Anual Sales Forecast"
+          ],
+          "description": [
+            "",
+            "Maintain anual sales forecast agreed in S&OP meeting"
+          ],
+          "raci": {
+            "r": {
+              "0": [
+                "EUB_SALES"
+              ],
+              "_t": "a"
+            },
+            "c": {
+              "0": [
+                "MJV_PRODUCTION PLANNING"
+              ],
+              "_t": "a"
+            }
+          },
+          "businessStatus": [
+            "Not Defined",
+            "Completed"
+          ],
+          "system": {
+            "name": [
+              "SAP",
+              "To Be Determined"
+            ],
+            "status": [
+              "Operational",
+              "Offline"
+            ]
+          }
+        },
+        {
+          "id": [
+            "1785147129306-wnf2f0ae",
+            "1785147303235-7h8y9wq4"
+          ],
+          "seq": [
+            "30",
+            "10.2"
+          ],
+          "name": [
+            "New Step",
+            "Validate M+3 Sales plan"
+          ],
+          "description": [
+            "",
+            "Validate & consolidate M+3 Sales plan"
+          ],
+          "raci": {
+            "r": {
+              "0": [
+                "EUB_SALES"
+              ],
+              "_t": "a"
+            },
+            "c": {
+              "0": [
+                "MJV_PRODUCTION PLANNING"
+              ],
+              "_t": "a"
+            }
+          },
+          "businessStatus": [
+            "Not Defined",
+            "Completed"
+          ],
+          "system": {
+            "name": [
+              "SAP",
+              "To Be Determined"
+            ],
+            "status": [
+              "Operational",
+              "Offline"
+            ]
+          }
+        },
+        {
+          "id": [
+            "1785147129471-5tkknlry",
+            "1785147303235-gwu39lci"
+          ],
+          "seq": [
+            "40",
+            "10.3"
+          ],
+          "name": [
+            "New Step",
+            "Create M+3 Subcontract STO"
+          ],
+          "description": [
+            "",
+            "Create M+3 subcontract STO"
+          ],
+          "raci": {
+            "r": {
+              "0": [
+                "EUB_SALES"
+              ],
+              "_t": "a"
+            },
+            "c": {
+              "0": [
+                "MJV_PRODUCTION PLANNING"
+              ],
+              "_t": "a"
+            }
+          },
+          "businessStatus": [
+            "Not Defined",
+            "Completed"
+          ],
+          "system": {
+            "name": [
+              "SAP",
+              "To Be Determined"
+            ],
+            "status": [
+              "Operational",
+              "Offline"
+            ]
+          }
+        },
+        {
+          "id": [
+            "1785147129633-4ixzg3ys",
+            "1785147303235-nvt5f88y"
+          ],
+          "seq": [
+            "50",
+            "10.4"
+          ],
+          "name": [
+            "New Step",
+            "Maintain M+3 Subcontract STO"
+          ],
+          "description": [
+            "",
+            "Maintain M+3 Subcontract STO"
+          ],
+          "raci": {
+            "r": {
+              "0": [
+                "EUB_SALES"
+              ],
+              "_t": "a"
+            },
+            "c": {
+              "0": [
+                "MJV_PRODUCTION PLANNING"
+              ],
+              "_t": "a"
+            }
+          },
+          "businessStatus": [
+            "Not Defined",
+            "Completed"
+          ],
+          "system": {
+            "name": [
+              "SAP",
+              "To Be Determined"
+            ],
+            "status": [
+              "Operational",
+              "Offline"
+            ]
+          }
+        },
+        {
+          "id": [
+            "1785147129776-m95n11cz",
+            "1785147303235-qbzp4fwd"
+          ],
+          "seq": [
+            "60",
+            "20"
+          ],
+          "name": [
+            "New Step",
+            "Material Requirement Planning"
+          ],
+          "description": [
+            "",
+            "Procurement of parts to cover Production needs"
+          ],
+          "raci": {
+            "r": {
+              "0": [
+                "EUB_PURCHASE"
+              ],
+              "_t": "a"
+            },
+            "c": {
+              "0": [
+                "MJV_MATERIAL FLOW"
+              ],
+              "_t": "a"
+            },
+            "i": {
+              "0": [
+                "MJV_MATERIAL FLOW"
+              ],
+              "_t": "a"
+            }
+          },
+          "businessStatus": [
+            "Not Defined",
+            "Completed"
+          ],
+          "system": {
+            "name": [
+              "SAP",
+              "To Be Determined"
+            ],
+            "status": [
+              "Operational",
+              "Offline"
+            ]
+          }
+        },
+        {
+          "id": [
+            "1785147129990-gql7zeu8",
+            "1785147303236-0urk753u"
+          ],
+          "seq": [
+            "70",
+            "20.1"
+          ],
+          "name": [
+            "New Step",
+            "Purchase Requirement Creation"
+          ],
+          "description": [
+            "",
+            "Purchase Requirement for Safety stock for cheap parts and subcontracting order materials"
+          ],
+          "raci": {
+            "r": {
+              "0": [
+                "EUB_PURCHASE"
+              ],
+              "_t": "a"
+            },
+            "c": {
+              "0": [
+                "MJV_MATERIAL FLOW"
+              ],
+              "_t": "a"
+            },
+            "i": {
+              "0": [
+                "MJV_MATERIAL FLOW"
+              ],
+              "_t": "a"
+            }
+          },
+          "businessStatus": [
+            "Not Defined",
+            "Completed"
+          ],
+          "system": {
+            "name": [
+              "SAP",
+              "To Be Determined"
+            ],
+            "status": [
+              "Operational",
+              "Offline"
+            ]
+          }
+        },
+        {
+          "id": [
+            "1785147130380-k82a0bjx",
+            "1785147303236-55zpj6s0"
+          ],
+          "seq": [
+            "80",
+            "20.2"
+          ],
+          "name": [
+            "New Step",
+            "Purchase Requirement Maintenance"
+          ],
+          "description": [
+            "",
+            "Modify if needed to adapt the requirement to reality."
+          ],
+          "raci": {
+            "r": {
+              "0": [
+                "EUB_PURCHASE"
+              ],
+              "_t": "a"
+            },
+            "c": {
+              "0": [
+                "MJV_MATERIAL FLOW"
+              ],
+              "_t": "a"
+            },
+            "i": {
+              "0": [
+                "MJV_MATERIAL FLOW"
+              ],
+              "_t": "a"
+            }
+          },
+          "businessStatus": [
+            "Not Defined",
+            "In Progress"
+          ],
+          "system": {
+            "name": [
+              "SAP",
+              "To Be Determined"
+            ],
+            "status": [
+              "Operational",
+              "Offline"
+            ]
+          }
+        },
+        {
+          "id": [
+            "1785147130603-ezhl3cz6",
+            "1785147303236-6ypetl3f"
+          ],
+          "seq": [
+            "90",
+            "30"
+          ],
+          "name": [
+            "New Step",
+            "Purchase Execution"
+          ],
+          "description": [
+            "",
+            "Generate Bacth Production PO and Spare Parts PO"
+          ],
+          "raci": {
+            "r": {
+              "0": [
+                "EUB_PURCHASE"
+              ],
+              "_t": "a"
+            },
+            "c": {
+              "0": [
+                "MJV_MATERIAL FLOW"
+              ],
+              "_t": "a"
+            },
+            "i": {
+              "0": [
+                "MJV_MATERIAL FLOW"
+              ],
+              "_t": "a"
+            }
+          },
+          "businessStatus": [
+            "Not Defined",
+            "In Progress"
+          ],
+          "system": {
+            "name": [
+              "SAP",
+              "To Be Determined"
+            ],
+            "status": [
+              "Operational",
+              "Offline"
+            ]
+          }
+        },
+        {
+          "id": "1785147303236-d6fyq3bs",
+          "seq": "30.1",
+          "name": "Batch PO Creation",
+          "description": "Purchase Order for batches according to subcontract model  quantity agains EUB warehosue.",
+          "raci": {
+            "r": [
+              "EUB_PURCHASE"
+            ],
+            "a": [],
+            "c": [
+              "MJV_MATERIAL FLOW"
+            ],
+            "i": [
+              "MJV_MATERIAL FLOW"
+            ]
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-wfgsqoqy",
+          "seq": "30.2",
+          "name": "Safety Stock PO Creation",
+          "description": "Purchase Order for safety stock build up to avoid line stop due to material shorateg EUB warehouse.",
+          "raci": {
+            "r": [
+              "EUB_PURCHASE"
+            ],
+            "a": [],
+            "c": [
+              "MJV_MATERIAL FLOW"
+            ],
+            "i": [
+              "MJV_MATERIAL FLOW"
+            ]
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-mfq2ymuw",
+          "seq": "30.3",
+          "name": "Purchase Execution",
+          "description": "Execution of released PO to supplier",
+          "raci": {
+            "r": [
+              "EUB_PURCHASE"
+            ],
+            "a": [],
+            "c": [
+              "MJV_MATERIAL FLOW"
+            ],
+            "i": [
+              "MJV_MATERIAL FLOW"
+            ]
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-u1fg5ue6",
+          "seq": "30.4",
+          "name": "Invoice Payment",
+          "description": "Payment of Purchase Order Invoice",
+          "raci": {
+            "r": [
+              "EUB_FINANCE"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-nhgpg75q",
+          "seq": "40",
+          "name": "INB DN Management",
+          "description": "Monitor Shipment status from Supplier to EUB Warehouse reception",
+          "raci": {
+            "r": [
+              "EUB_LOGISTIC"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "MJV_MATERIAL FLOW"
+            ]
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-urzbeh6n",
+          "seq": "40.1",
+          "name": "INB DN Tracking",
+          "description": "Tracking of status, packing list and all key indicators related to inbound delivery like Providor dispach date, shipment tracking number, estimated arrival date, custom clearance status, goods reception date.",
+          "raci": {
+            "r": [
+              "EUB_LOGISTIC"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "MJV_MATERIAL FLOW"
+            ]
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-i8euxc3y",
+          "seq": "40.2",
+          "name": "INB DN Custom Cleaning",
+          "description": "Custom Clearance procedure for EU Import goods",
+          "raci": {
+            "r": [
+              "EUB_LOGISTIC"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "MJV_MATERIAL FLOW"
+            ]
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-ic5p9nrw",
+          "seq": "40.3",
+          "name": "INB DN Devanning",
+          "description": "Devanning of cases out of sea container, place in buffer area to be processed.",
+          "raci": {
+            "r": [
+              "EUB_LOGISTIC"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "MJV_MATERIAL FLOW"
+            ]
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-wbct7z9b",
+          "seq": "40.4",
+          "name": "INB DN Decantting",
+          "description": "Decannting of packaging units out of cases, validate quantity & Inspection of Quality",
+          "raci": {
+            "r": [
+              "EUB_LOGISTIC"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "MJV_MATERIAL FLOW"
+            ]
+          },
+          "businessStatus": "Not Defined",
+          "system": {
+            "name": "",
+            "status": "",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-68snyy71",
+          "seq": "40.5",
+          "name": "INB DN Goods Reception",
+          "description": "Goods reception confirmation into EUB WH  after quality and quantity validations.",
+          "raci": {
+            "r": [
+              "EUB_LOGISTIC"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "MJV_MATERIAL FLOW"
+            ]
+          },
+          "businessStatus": "Not Defined",
+          "system": {
+            "name": "",
+            "status": "",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-ue0u3tkf",
+          "seq": "50",
+          "name": "Call Off Supply Management",
+          "description": "Prepare and ship goods to Factory",
+          "raci": {
+            "r": [
+              "EUB_LOGISTIC"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "MJV_MATERIAL FLOW"
+            ]
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-gksfecbq",
+          "seq": "50.1",
+          "name": "Call Off Supply Validation",
+          "description": "Week before production start, EUB WH will receive Demand Supply to full fill the production by bacthes. EUB WH need to reveiw the demand and confirm the availability",
+          "raci": {
+            "r": [
+              "EUB_LOGISTIC"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "MJV_MATERIAL FLOW"
+            ]
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-xv2z3t6k",
+          "seq": "50.2",
+          "name": "Call Off Supply  Preparation",
+          "description": "Pallelization of goods according to the demand list days before the pickage",
+          "raci": {
+            "r": [
+              "EUB_LOGISTIC"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-7rwhu22b",
+          "seq": "50.3",
+          "name": "Call Off Supply Execution",
+          "description": "Load pallets of goods into the milkrun track towards EBRO factory and release ASN to EBRO FACTORY.",
+          "raci": {
+            "r": [
+              "EUB_LOGISTIC"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-yht4vfyi",
+          "seq": "60",
+          "name": "Call Off  Reception Management",
+          "description": "Reception of Demaned goods from EUB WH to EBRO Factory",
+          "raci": {
+            "r": [
+              "MJV_MATERIAL FLOW"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-7h20d766",
+          "seq": "60.1",
+          "name": "Call Off Reception Planning",
+          "description": "Cross check reception plannnig of O&J Parts with ASN from EUB WH.",
+          "raci": {
+            "r": [
+              "MJV_MATERIAL FLOW"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-ocvufcch",
+          "seq": "60.2",
+          "name": "Call Off Reception Validation",
+          "description": "Reception of requested parts agains ASN",
+          "raci": {
+            "r": [
+              "MJV_MATERIAL HANDLING"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-x9q227z9",
+          "seq": "60.3",
+          "name": "Call Off Reception Execution",
+          "description": "Confirmation and put away of OJ goods into EBRO factory logistic buffer area ready to supply for production.",
+          "raci": {
+            "r": [
+              "MJV_MATERIAL HANDLING"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-tlr47tmj",
+          "seq": "70",
+          "name": "Intrafactory Goods Management",
+          "description": "Support",
+          "raci": {
+            "r": [
+              "MJV_MATERIAL HANDLING"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Defined",
+          "system": {
+            "name": "",
+            "status": "",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-h0m4fmpe",
+          "seq": "70.1",
+          "name": "Kitting Area replenishment",
+          "description": "Transfer handling unit of goods from Bulk warehouse to Kitting area triggered by stock level.",
+          "raci": {
+            "r": [
+              "MJV_MATERIAL HANDLING"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-qz72g576",
+          "seq": "70.2",
+          "name": "SPS Area replenishment",
+          "description": "Transfer handling unit of goods from Bulk warehouse to SPS area triggered by stock level.",
+          "raci": {
+            "r": [
+              "MJV_MATERIAL HANDLING"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-z1r4aldw",
+          "seq": "70.3",
+          "name": "Edgeline Repelnishment",
+          "description": "Transfer handling unit of goods from Kitting, SPS or Bulk warehouse to Edge line according to defined supply path for each material.",
+          "raci": {
+            "r": [
+              "MJV_MATERIAL HANDLING"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-5njc7ps9",
+          "seq": "80",
+          "name": "Production Planning",
+          "description": "Planning of model and quantity of vehicles to be produced in each production line",
+          "raci": {
+            "r": [
+              "MJV_PRODUCTION PLANNING"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-f0y1v071",
+          "seq": "80.1",
+          "name": "M+3 Production Planning",
+          "description": "Rolling sales planning for current month + next 3 month.",
+          "raci": {
+            "r": [
+              "EUB_SALES"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-r1y47ivx",
+          "seq": "80.2",
+          "name": "Monthlyh production plannig",
+          "description": "Rolling monthly planning acording to releaed Subcontract order",
+          "raci": {
+            "r": [
+              "MJV_PRODUCTION PLANNING"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-3vcndch0",
+          "seq": "80.3",
+          "name": "Weekly production validation",
+          "description": "Validate, freeze and release weekly production plan",
+          "raci": {
+            "r": [
+              "MJV_PRODUCTION PLANNING"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-1shoshqa",
+          "seq": "80.4",
+          "name": "Daily production monitoring",
+          "description": "Monitor daily production progress, adjust planning forecast base on real production result",
+          "raci": {
+            "r": [
+              "MJV_PRODUCTION PLANNING"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-bn3d81j0",
+          "seq": "90",
+          "name": "Trim Shop Production",
+          "description": "Production Execution of Trim line",
+          "raci": {
+            "r": [
+              "MJV_PRODUCTION EXECUTION"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Defined",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-ehf9bbfj",
+          "seq": "90.1",
+          "name": "Vehicle Production",
+          "description": "Execution of planned production order released by production planning team",
+          "raci": {
+            "r": [
+              "MJV_PRODUCTION EXECUTION"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-pijl6f9j",
+          "seq": "90.2",
+          "name": "Traceibility of important parts",
+          "description": "Tracebility control for specific key parts assembled in the vehicle",
+          "raci": {
+            "r": [
+              "MJV_QUALITY ASSURANCE"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-z7jf7jpk",
+          "seq": "100",
+          "name": "Offline vehicle Test",
+          "description": "Serval test for offline vehicle to assure the vehicle quality",
+          "raci": {
+            "r": [
+              "MJV_QUALITY ASSURANCE"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-t8k4lsjw",
+          "seq": "100.1",
+          "name": "Overall inspection",
+          "description": "Overall offline vehicle inspection",
+          "raci": {
+            "r": [
+              "MJV_QUALITY ASSURANCE"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-wj0mqugv",
+          "seq": "100.2",
+          "name": "Test Line Validation",
+          "description": "Power, Break， Light, Suspension inspection and test",
+          "raci": {
+            "r": [
+              "MJV_QUALITY ASSURANCE"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-cj69qce0",
+          "seq": "100.3",
+          "name": "SPT Validat+B21+B36:B49",
+          "description": "ADAS, 360 Camara test",
+          "raci": {
+            "r": [
+              "MJV_QUALITY ASSURANCE"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-p90brg2x",
+          "seq": "100.4",
+          "name": "Dec validation",
+          "description": "Dynamic performance check",
+          "raci": {
+            "r": [
+              "MJV_QUALITY ASSURANCE"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-nxnhmpmc",
+          "seq": "100.5",
+          "name": "OK line validation",
+          "description": "Paint inspection ^ Validation",
+          "raci": {
+            "r": [
+              "MJV_QUALITY ASSURANCE"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-5j0c9n93",
+          "seq": "100.6",
+          "name": "Buy-off validation",
+          "description": "Final buy off validation",
+          "raci": {
+            "r": [
+              "MJV_QUALITY ASSURANCE"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-3ofm7k8a",
+          "seq": "110",
+          "name": "Buy off vehicle invoice",
+          "description": "Invoice of Buy off vehicle against their corresponding Subcontract order at the end of each month",
+          "raci": {
+            "r": [
+              "MJV_FINANCE"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-rpqhyjf0",
+          "seq": "120",
+          "name": "Vehicle Management",
+          "description": "Buy-Off vehicle management",
+          "raci": {
+            "r": [
+              "MJV_QUALITY ASSURANCE"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-k75lg3x0",
+          "seq": "120.1",
+          "name": "vehicle buy off",
+          "description": "Buy-off vehicle movement to canopy B confirmation",
+          "raci": {
+            "r": [
+              "MJV_QUALITY ASSURANCE"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-ymgdgq1z",
+          "seq": "120.2",
+          "name": "Plant Gate In",
+          "description": "Vehicle moved to loading point, ready for dispach",
+          "raci": {
+            "r": [
+              "MJV_QUALITY ASSURANCE"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-qspajrap",
+          "seq": "120.3",
+          "name": "Plant Gate out",
+          "description": "Vehicle moved out of factory.",
+          "raci": {
+            "r": [
+              "MJV_QUALITY ASSURANCE"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-ct7zdyez",
+          "seq": "120.4",
+          "name": "Stage 162",
+          "description": "Vehicle arrived CAMPA, pending confirmation",
+          "raci": {
+            "r": [
+              "MJV_QUALITY ASSURANCE"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-xuohrixz",
+          "seq": "120.5",
+          "name": "Compound In",
+          "description": "Compound operator confirm reception of vehicle parked in CAMPA",
+          "raci": {
+            "r": [
+              "MJV_PRODUCTION PLANNING"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-o6qd92rp",
+          "seq": "120.6",
+          "name": "Outbound plan",
+          "description": "Compound manager receive outbound plan from O&J",
+          "raci": {
+            "r": [
+              "MJV_PRODUCTION PLANNING"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-7oc4td6o",
+          "seq": "120.7",
+          "name": "Compound Out",
+          "description": "Compound operator confirm outbound of vehicle outbound by track",
+          "raci": {
+            "r": [
+              "MJV_PRODUCTION PLANNING"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1785147303236-ei9u88z4",
+          "seq": "120.8",
+          "name": "Outbound plan confirmation",
+          "description": "Compound manager update outbound plan according to real outbound",
+          "raci": {
+            "r": [
+              "MJV_PRODUCTION PLANNING"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        }
+      ]
+    },
+    {
       "id": "1784893105817-ihu92bay",
       "name": "dfzbvxzvb",
       "processes": [
@@ -2689,5 +4238,5 @@
       ]
     }
   ],
-  "currentScenarioId": "1784893105817-ihu92bay"
+  "currentScenarioId": "1785147124788-bkaz9mzz"
 }
