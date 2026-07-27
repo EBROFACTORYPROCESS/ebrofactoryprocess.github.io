@@ -33,7 +33,7 @@ jobs:
             const fs = require('fs');
             const jsondiffpatch = require('jsondiffpatch');
             
-            console.log('=== Starting diff application ===');
+            console.log('=== Starting apply changes ===');
             
             // Read current data.json
             let currentData = {};
@@ -47,6 +47,8 @@ jobs:
             
             // Read payload
             const payloadContent = fs.readFileSync('payload.json', 'utf8');
+            console.log('Payload content length:', payloadContent.length);
+            
             let payload;
             try {
               payload = JSON.parse(payloadContent);
@@ -54,13 +56,68 @@ jobs:
               console.log('Payload keys:', Object.keys(payload));
             } catch (e) {
               console.error('Failed to parse payload.json:', e.message);
+              console.log('Payload preview:', payloadContent.substring(0, 200));
               process.exit(1);
             }
             
             let diffData = null;
             const payloadType = payload.type || 'diff';
             
-            // Handle Gist payload (large data)
+            // ============================================================
+            // FUNCTION: Apply the diff
+            // ============================================================
+            function applyDiffToData() {
+              if (!diffData) {
+                console.error('No diff data to apply');
+                process.exit(1);
+              }
+              
+              console.log('Applying diff to current data...');
+              console.log('Diff data keys:', Object.keys(diffData));
+              
+              try {
+                // Use jsondiffpatch to apply the diff
+                const result = jsondiffpatch.patch(currentData, diffData);
+                console.log('Diff applied successfully');
+                
+                // Validate the result
+                if (!result.scenarios || !Array.isArray(result.scenarios)) {
+                  console.error('Invalid result: scenarios is not an array');
+                  console.log('Result keys:', Object.keys(result));
+                  process.exit(1);
+                }
+                
+                // Fix currentScenarioId if it became an array
+                if (Array.isArray(result.currentScenarioId)) {
+                  result.currentScenarioId = result.currentScenarioId[0] || 'default';
+                }
+                
+                // Ensure each scenario has valid data
+                for (let i = 0; i < result.scenarios.length; i++) {
+                  const sc = result.scenarios[i];
+                  if (!sc) continue;
+                  if (!sc.id) sc.id = 'scenario_' + Date.now() + '_' + i;
+                  if (!sc.name) sc.name = 'Scenario ' + (i + 1);
+                  if (!sc.processes || !Array.isArray(sc.processes)) {
+                    sc.processes = [];
+                  }
+                }
+                
+                fs.writeFileSync('data.json', JSON.stringify(result, null, 2));
+                console.log('✅ data.json updated successfully');
+                console.log('Final scenarios count:', result.scenarios.length);
+                console.log('Final currentScenarioId:', result.currentScenarioId);
+                
+              } catch (e) {
+                console.error('Failed to apply diff:', e.message);
+                console.log('Diff data preview:', JSON.stringify(diffData).substring(0, 200));
+                process.exit(1);
+              }
+            }
+            
+            // ============================================================
+            // CASE 1: Gist payload (large data)
+            // ============================================================
             if (payloadType === 'gist' && payload.gist_id) {
               console.log('Fetching diff from Gist:', payload.gist_id);
               const token = process.env.GITHUB_TOKEN;
@@ -77,18 +134,30 @@ jobs:
                   'Accept': 'application/vnd.github.v3+json'
                 }
               })
-              .then(response => {
-                if (!response.ok) throw new Error('Gist API returned ' + response.status);
+              .then(function(response) {
+                if (!response.ok) {
+                  throw new Error('Gist API returned ' + response.status);
+                }
                 return response.json();
               })
-              .then(gistData => {
+              .then(function(gistData) {
                 const files = gistData.files;
                 const fileNames = Object.keys(files);
-                if (fileNames.length === 0) throw new Error('No files in gist');
+                if (fileNames.length === 0) {
+                  throw new Error('No files in gist');
+                }
                 const fileContent = files[fileNames[0]].content;
-                diffData = JSON.parse(fileContent);
-                console.log('Gist diff parsed successfully');
-                applyDiffToData();
+                console.log('Gist file content length:', fileContent.length);
+                
+                try {
+                  diffData = JSON.parse(fileContent);
+                  console.log('Diff parsed from Gist successfully');
+                  applyDiffToData();
+                } catch (e) {
+                  console.error('Failed to parse Gist content:', e.message);
+                  console.log('Content preview:', fileContent.substring(0, 200));
+                  process.exit(1);
+                }
                 
                 // Delete the gist
                 return fetch('https://api.github.com/gists/' + payload.gist_id, {
@@ -96,63 +165,39 @@ jobs:
                   headers: { 'Authorization': 'token ' + token }
                 });
               })
-              .then(() => console.log('Gist deleted'))
-              .catch(e => {
+              .then(function() {
+                console.log('Gist deleted');
+              })
+              .catch(function(e) {
                 console.error('Gist processing failed:', e.message);
                 process.exit(1);
               });
               
-              setTimeout(() => {}, 30000);
+              setTimeout(function() {}, 30000);
               return;
             }
             
-            // Handle direct diff payload
-            if (payload.data && payload.data.length > 0) {
+            // ============================================================
+            // CASE 2: Direct diff payload
+            // ============================================================
+            console.log('Processing direct payload...');
+            let payloadData = payload.data || '';
+            console.log('Payload data length:', payloadData.length);
+            
+            if (payloadData && payloadData.length > 0) {
               try {
-                diffData = JSON.parse(payload.data);
+                diffData = JSON.parse(payloadData);
                 console.log('Direct diff parsed successfully');
+                console.log('Diff data keys:', Object.keys(diffData));
                 applyDiffToData();
               } catch (e) {
                 console.error('Failed to parse payload data:', e.message);
+                console.log('Payload data preview:', payloadData.substring(0, 200));
                 process.exit(1);
               }
             } else {
               console.error('No data found in payload');
               process.exit(1);
-            }
-            
-            function applyDiffToData() {
-              if (!diffData) {
-                console.error('No diff data to apply');
-                process.exit(1);
-              }
-              
-              console.log('Applying diff to current data...');
-              try {
-                // Use jsondiffpatch to apply the diff
-                const patchedData = jsondiffpatch.patch(currentData, diffData);
-                console.log('Diff applied successfully');
-                
-                // Validate the patched data
-                if (!patchedData.scenarios || !Array.isArray(patchedData.scenarios)) {
-                  console.error('Invalid data after patching: scenarios is not an array');
-                  process.exit(1);
-                }
-                
-                // Ensure currentScenarioId is a string
-                if (Array.isArray(patchedData.currentScenarioId)) {
-                  patchedData.currentScenarioId = patchedData.currentScenarioId[0] || 'default';
-                }
-                
-                // Write the updated data
-                fs.writeFileSync('data.json', JSON.stringify(patchedData, null, 2));
-                console.log('data.json updated successfully');
-                console.log('Final scenarios count:', patchedData.scenarios.length);
-                console.log('Final currentScenarioId:', patchedData.currentScenarioId);
-              } catch (e) {
-                console.error('Failed to apply diff:', e.message);
-                process.exit(1);
-              }
             }
           "
 
