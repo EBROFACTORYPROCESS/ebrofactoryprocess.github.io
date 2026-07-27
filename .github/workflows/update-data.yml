@@ -67,57 +67,96 @@ jobs:
             console.log('Gist ID:', gistId || '(none)');
             
             // ============================================================
-            // FUNCTION: Apply diff to current data
+            // FUNCTION: Clean a scenario object
             // ============================================================
-            function applyDiffToCurrent(diffData) {
-              console.log('Applying diff to current data...');
+            function cleanScenario(scenario) {
+              if (!scenario || typeof scenario !== 'object') return null;
               
-              // Use jsondiffpatch to apply the diff
-              try {
-                const result = jsondiffpatch.patch(currentData, diffData);
-                console.log('jsondiffpatch.patch succeeded');
-                return result;
-              } catch (e) {
-                console.error('jsondiffpatch.patch failed:', e.message);
-                console.log('Falling back to manual merge...');
-                return manualMerge(currentData, diffData);
+              const cleaned = { id: 'default', name: 'Manufacturing', processes: [] };
+              
+              // Handle id - can be string or array
+              if (scenario.id) {
+                cleaned.id = Array.isArray(scenario.id) ? scenario.id[0] : scenario.id;
               }
+              
+              // Handle name - can be string or array
+              if (scenario.name) {
+                cleaned.name = Array.isArray(scenario.name) ? scenario.name[0] : scenario.name;
+              }
+              
+              // Handle processes - can be array or object
+              if (scenario.processes) {
+                if (Array.isArray(scenario.processes)) {
+                  cleaned.processes = scenario.processes.filter(p => p && typeof p === 'object' && p.id);
+                } else if (typeof scenario.processes === 'object') {
+                  // Convert object with numeric keys to array
+                  const procArray = [];
+                  for (const key in scenario.processes) {
+                    if (key === '_t') continue;
+                    const val = scenario.processes[key];
+                    if (Array.isArray(val) && val.length > 0) {
+                      // Take the first valid process from the array
+                      const firstValid = val.find(p => p && typeof p === 'object' && p.id);
+                      if (firstValid) procArray.push(firstValid);
+                    } else if (val && typeof val === 'object' && val.id) {
+                      procArray.push(val);
+                    }
+                  }
+                  cleaned.processes = procArray;
+                }
+              }
+              
+              return cleaned;
             }
             
             // ============================================================
-            // FUNCTION: Manual merge (fallback)
+            // FUNCTION: Apply diff and preserve existing data
             // ============================================================
-            function manualMerge(target, source) {
-              // Create a deep copy of the target
-              const result = JSON.parse(JSON.stringify(target));
+            function applyDiffAndMerge(current, diff) {
+              console.log('Applying diff to current data...');
               
-              // Process each key in the source (diff)
-              for (const key in source) {
-                if (key === '_t') continue;
-                const sourceVal = source[key];
+              // Deep clone current data to avoid mutation
+              let result = JSON.parse(JSON.stringify(current));
+              
+              // Handle scenarios specially
+              if (diff.scenarios) {
+                if (Array.isArray(diff.scenarios)) {
+                  // Diff scenarios is an array - merge it
+                  console.log('Merging scenarios array...');
+                  result.scenarios = mergeScenarios(result.scenarios || [], diff.scenarios);
+                } else if (diff.scenarios._t === 'a') {
+                  // Diff scenarios is an array diff with _t: 'a'
+                  console.log('Processing array diff for scenarios...');
+                  result.scenarios = mergeScenarioArrayDiff(result.scenarios || [], diff.scenarios);
+                } else if (typeof diff.scenarios === 'object') {
+                  // Diff scenarios is an object with numeric keys
+                  console.log('Merging scenarios object...');
+                  result.scenarios = mergeScenarioObject(result.scenarios || [], diff.scenarios);
+                }
                 
-                if (key === 'scenarios' && sourceVal && typeof sourceVal === 'object') {
-                  // Handle scenarios array diff
-                  if (sourceVal._t === 'a') {
-                    // This is an array diff
-                    result.scenarios = mergeArrayDiff(result.scenarios || [], sourceVal);
-                  } else if (Array.isArray(sourceVal)) {
-                    // Source is an array - replace the whole scenarios array
-                    // But we need to merge, not replace
-                    result.scenarios = mergeArrayWithNew(result.scenarios || [], sourceVal);
-                  } else {
-                    // Source is an object with numeric keys (diff format)
-                    result.scenarios = mergeScenariosObject(result.scenarios || [], sourceVal);
-                  }
-                } else if (sourceVal && typeof sourceVal === 'object' && !Array.isArray(sourceVal)) {
-                  // Recursive merge for nested objects
+                // Clean and validate all scenarios
+                result.scenarios = result.scenarios
+                  .map(s => cleanScenario(s))
+                  .filter(s => s !== null);
+              }
+              
+              // Handle other top-level keys
+              for (const key in diff) {
+                if (key === '_t' || key === 'scenarios') continue;
+                
+                // For array diffs
+                if (diff[key] && typeof diff[key] === 'object' && diff[key]._t === 'a') {
+                  // This is an array diff - need to merge it
+                  result[key] = mergeArrayDiff(result[key] || [], diff[key]);
+                } else if (diff[key] && typeof diff[key] === 'object' && !Array.isArray(diff[key])) {
+                  // Recursively merge objects
                   if (!result[key] || typeof result[key] !== 'object') {
                     result[key] = {};
                   }
-                  result[key] = manualMerge(result[key], sourceVal);
+                  result[key] = applyDiffAndMerge(result[key], diff[key]);
                 } else {
-                  // Primitive value - direct assignment
-                  result[key] = sourceVal;
+                  // Primitive value
+                  result[key] = diff[key];
                 }
               }
               
@@ -125,11 +164,37 @@ jobs:
             }
             
             // ============================================================
-            // FUNCTION: Merge array diff (with _t: 'a')
+            // FUNCTION: Merge scenarios from array
             // ============================================================
-            function mergeArrayDiff(currentArray, diff) {
-              if (!Array.isArray(currentArray)) currentArray = [];
-              const result = [...currentArray];
+            function mergeScenarios(current, newScenarios) {
+              const result = [...current];
+              
+              for (const newScenario of newScenarios) {
+                if (!newScenario || typeof newScenario !== 'object') continue;
+                
+                // Check if scenario already exists by id
+                const existingIndex = result.findIndex(s => s && s.id === newScenario.id);
+                const cleaned = cleanScenario(newScenario);
+                
+                if (cleaned) {
+                  if (existingIndex >= 0) {
+                    // Merge with existing
+                    result[existingIndex] = { ...result[existingIndex], ...cleaned };
+                  } else {
+                    // Add new scenario
+                    result.push(cleaned);
+                  }
+                }
+              }
+              
+              return result;
+            }
+            
+            // ============================================================
+            // FUNCTION: Merge scenario array diff (_t: 'a')
+            // ============================================================
+            function mergeScenarioArrayDiff(current, diff) {
+              const result = [...current];
               const removals = [];
               const insertions = [];
               const updates = [];
@@ -147,41 +212,42 @@ jobs:
                       removals.push(index);
                     } else if (value.length === 3 && value[2] === 3) {
                       // Move: [oldValue, newIndex, 3]
-                      if (index < result.length) {
+                      if (index < result.length && result[index]) {
                         insertions.push({ index: value[1], value: result[index] });
                         removals.push(index);
                       }
                     } else if (value.length === 3 && value[2] === 0) {
                       // Replacement: [newValue, 0, 0]
                       if (index < result.length) {
-                        updates.push({ index: index, value: value[0] });
+                        const cleaned = cleanScenario(value[0]);
+                        if (cleaned) updates.push({ index: index, value: cleaned });
                       }
+                    } else if (value.length === 1) {
+                      // Single value - treat as insertion
+                      const cleaned = cleanScenario(value[0]);
+                      if (cleaned) insertions.push({ index: index, value: cleaned });
                     }
                   } else if (value && typeof value === 'object') {
-                    // Nested diff on this index
-                    if (index < result.length && result[index] && typeof result[index] === 'object') {
-                      result[index] = manualMerge(result[index], value);
+                    // Nested diff on this scenario
+                    if (index < result.length && result[index]) {
+                      result[index] = applyDiffAndMerge(result[index], { scenarios: value });
                     }
                   }
                 } else {
                   const index = parseInt(key);
                   if (!isNaN(index) && index >= 0) {
                     if (Array.isArray(value) && value.length === 1) {
-                      // Insert new item
-                      insertions.push({ index: index, value: value[0] });
-                    } else if (value && typeof value === 'object' && !Array.isArray(value)) {
-                      // New item as object
-                      if (index < result.length) {
-                        result[index] = value;
-                      } else {
-                        insertions.push({ index: index, value: value });
-                      }
+                      const cleaned = cleanScenario(value[0]);
+                      if (cleaned) insertions.push({ index: index, value: cleaned });
+                    } else if (value && typeof value === 'object') {
+                      const cleaned = cleanScenario(value);
+                      if (cleaned) insertions.push({ index: index, value: cleaned });
                     }
                   }
                 }
               }
               
-              // Process removals (from highest index to lowest to avoid shifting)
+              // Process removals (highest to lowest)
               removals.sort((a, b) => b - a);
               for (const idx of removals) {
                 if (idx < result.length) {
@@ -192,11 +258,11 @@ jobs:
               // Process updates
               for (const update of updates) {
                 if (update.index < result.length) {
-                  result[update.index] = update.value;
+                  result[update.index] = { ...result[update.index], ...update.value };
                 }
               }
               
-              // Process insertions (from highest index to lowest to avoid shifting)
+              // Process insertions (highest to lowest)
               insertions.sort((a, b) => b.index - a.index);
               for (const ins of insertions) {
                 if (ins.index < result.length) {
@@ -210,14 +276,14 @@ jobs:
             }
             
             // ============================================================
-            // FUNCTION: Merge scenarios object (with numeric keys)
+            // FUNCTION: Merge scenario object (with numeric keys)
             // ============================================================
-            function mergeScenariosObject(currentArray, sourceObj) {
-              const result = [...currentArray];
+            function mergeScenarioObject(current, obj) {
+              const result = [...current];
               
-              for (const key in sourceObj) {
+              for (const key in obj) {
                 if (key === '_t') continue;
-                const value = sourceObj[key];
+                const value = obj[key];
                 
                 if (key.startsWith('_')) {
                   const index = parseInt(key.substring(1));
@@ -226,23 +292,32 @@ jobs:
                     if (index < result.length) {
                       result.splice(index, 1);
                     }
-                  } else if (value && typeof value === 'object' && !Array.isArray(value)) {
-                    // Nested diff on this scenario
-                    if (index < result.length && result[index] && typeof result[index] === 'object') {
-                      result[index] = manualMerge(result[index], value);
+                  } else if (value && typeof value === 'object') {
+                    // Nested diff
+                    if (index < result.length && result[index]) {
+                      result[index] = applyDiffAndMerge(result[index], { scenarios: value });
                     }
                   }
                 } else {
                   const index = parseInt(key);
                   if (!isNaN(index) && index >= 0) {
                     if (Array.isArray(value) && value.length === 1) {
-                      // New scenario
-                      result.push(value[0]);
-                    } else if (value && typeof value === 'object' && !Array.isArray(value)) {
-                      if (index < result.length) {
-                        result[index] = value;
-                      } else {
-                        result.push(value);
+                      const cleaned = cleanScenario(value[0]);
+                      if (cleaned) {
+                        if (index < result.length) {
+                          result[index] = cleaned;
+                        } else {
+                          result.push(cleaned);
+                        }
+                      }
+                    } else if (value && typeof value === 'object') {
+                      const cleaned = cleanScenario(value);
+                      if (cleaned) {
+                        if (index < result.length) {
+                          result[index] = cleaned;
+                        } else {
+                          result.push(cleaned);
+                        }
                       }
                     }
                   }
@@ -253,20 +328,74 @@ jobs:
             }
             
             // ============================================================
-            // FUNCTION: Merge array with new items (simple replace)
+            // FUNCTION: Merge array diff
             // ============================================================
-            function mergeArrayWithNew(currentArray, newArray) {
-              // If the new array has valid items, merge them
-              const result = [...currentArray];
-              for (const item of newArray) {
-                if (item && typeof item === 'object' && item.id) {
-                  // Check if this item already exists
-                  const exists = result.some(existing => existing && existing.id === item.id);
-                  if (!exists) {
-                    result.push(item);
+            function mergeArrayDiff(current, diff) {
+              const result = [...current];
+              const removals = [];
+              const insertions = [];
+              const updates = [];
+              
+              for (const key in diff) {
+                if (key === '_t') continue;
+                const value = diff[key];
+                
+                if (key.startsWith('_')) {
+                  const index = parseInt(key.substring(1));
+                  if (Array.isArray(value)) {
+                    if (value.length === 2 && value[1] === 0) {
+                      removals.push(index);
+                    } else if (value.length === 3 && value[2] === 3) {
+                      if (index < result.length) {
+                        insertions.push({ index: value[1], value: result[index] });
+                        removals.push(index);
+                      }
+                    } else if (value.length === 3 && value[2] === 0) {
+                      if (index < result.length) {
+                        updates.push({ index: index, value: value[0] });
+                      }
+                    }
+                  } else if (value && typeof value === 'object') {
+                    if (index < result.length && result[index] && typeof result[index] === 'object') {
+                      result[index] = applyDiffAndMerge(result[index], value);
+                    }
+                  }
+                } else {
+                  const index = parseInt(key);
+                  if (!isNaN(index) && index >= 0) {
+                    if (Array.isArray(value) && value.length === 1) {
+                      insertions.push({ index: index, value: value[0] });
+                    } else if (value && typeof value === 'object') {
+                      if (index < result.length) {
+                        result[index] = value;
+                      } else {
+                        insertions.push({ index: index, value: value });
+                      }
+                    }
                   }
                 }
               }
+              
+              removals.sort((a, b) => b - a);
+              for (const idx of removals) {
+                if (idx < result.length) result.splice(idx, 1);
+              }
+              
+              for (const update of updates) {
+                if (update.index < result.length) {
+                  result[update.index] = update.value;
+                }
+              }
+              
+              insertions.sort((a, b) => b.index - a.index);
+              for (const ins of insertions) {
+                if (ins.index < result.length) {
+                  result.splice(ins.index, 0, ins.value);
+                } else {
+                  result.push(ins.value);
+                }
+              }
+              
               return result;
             }
             
@@ -282,47 +411,13 @@ jobs:
               // Ensure scenarios is an array
               if (!data.scenarios || !Array.isArray(data.scenarios)) {
                 console.error('Invalid data: scenarios is not an array');
-                console.log('scenarios type:', typeof data.scenarios);
-                if (data.scenarios && typeof data.scenarios === 'object') {
-                  // Try to convert object to array
-                  const scenarioArray = [];
-                  for (const key in data.scenarios) {
-                    if (key === '_t') continue;
-                    const value = data.scenarios[key];
-                    if (value && typeof value === 'object') {
-                      const scenario = { id: 'default', name: 'Manufacturing', processes: [] };
-                      if (value.id) scenario.id = Array.isArray(value.id) ? value.id[0] : value.id;
-                      if (value.name) scenario.name = Array.isArray(value.name) ? value.name[0] : value.name;
-                      if (value.processes) {
-                        scenario.processes = Array.isArray(value.processes) ? value.processes : [];
-                      }
-                      scenarioArray.push(scenario);
-                    }
-                  }
-                  if (scenarioArray.length > 0) {
-                    data.scenarios = scenarioArray;
-                    console.log('Converted scenarios from object to array, count:', scenarioArray.length);
-                  } else {
-                    data.scenarios = [];
-                  }
-                } else {
-                  data.scenarios = [];
-                }
+                data.scenarios = [];
               }
               
-              // Ensure each scenario has valid processes
-              for (let i = 0; i < data.scenarios.length; i++) {
-                const sc = data.scenarios[i];
-                if (!sc) continue;
-                if (!sc.processes || !Array.isArray(sc.processes)) {
-                  sc.processes = [];
-                }
-                // Filter out invalid processes
-                sc.processes = sc.processes.filter(p => p && typeof p === 'object' && p.id);
-                if (!sc.id) {
-                  sc.id = 'scenario_' + Date.now() + '_' + i;
-                }
-              }
+              // Clean all scenarios
+              data.scenarios = data.scenarios
+                .map(s => cleanScenario(s))
+                .filter(s => s !== null);
               
               // Fix currentScenarioId
               if (Array.isArray(data.currentScenarioId)) {
@@ -372,6 +467,31 @@ jobs:
             }
             
             // ============================================================
+            // FUNCTION: Determine if data is a diff or full data
+            // ============================================================
+            function isDiffData(data) {
+              // If it has scenarios as an array with valid data, it might be full data
+              if (data.scenarios && Array.isArray(data.scenarios) && data.scenarios.length > 0) {
+                // Check if any scenario has valid processes
+                const hasValidProcess = data.scenarios.some(s => 
+                  s && s.processes && Array.isArray(s.processes) && s.processes.length > 0
+                );
+                if (hasValidProcess) {
+                  return false; // This is likely full data
+                }
+              }
+              
+              // Check for diff markers like _t: 'a' or numeric keys in scenarios
+              if (data.scenarios && typeof data.scenarios === 'object') {
+                if (data.scenarios._t === 'a' || Object.keys(data.scenarios).some(k => !isNaN(k) && k !== '_t')) {
+                  return true; // This is a diff
+                }
+              }
+              
+              return true; // Default to treating as diff
+            }
+            
+            // ============================================================
             // PROCESS PAYLOAD
             // ============================================================
             if (payloadType === 'gist' && gistId && gistId.length > 0) {
@@ -407,21 +527,15 @@ jobs:
                 
                 const fileContent = files[fileNames[0]].content;
                 console.log('Downloaded data length:', fileContent.length);
-                const diffData = JSON.parse(fileContent);
-                console.log('Diff parsed successfully');
+                const parsedData = JSON.parse(fileContent);
+                console.log('Parsed successfully');
                 
-                // Determine if this is a diff or full data
-                const isFullData = diffData.scenarios && Array.isArray(diffData.scenarios) && diffData.scenarios.length > 0;
-                let finalData;
-                
-                if (isFullData) {
-                  // If it's full data, use it directly
-                  finalData = diffData;
-                  console.log('Full data detected, using directly');
+                if (isDiffData(parsedData)) {
+                  console.log('Detected as diff, applying to current data...');
+                  finalData = applyDiffAndMerge(currentData, parsedData);
                 } else {
-                  // Apply the diff to current data
-                  finalData = applyDiffToCurrent(diffData);
-                  console.log('Diff applied to current data');
+                  console.log('Detected as full data, using directly...');
+                  finalData = parsedData;
                 }
                 
                 const success = validateAndSave(finalData);
@@ -460,17 +574,12 @@ jobs:
                   console.log('Payload parsed successfully');
                   console.log('Parsed data keys:', Object.keys(parsedData));
                   
-                  // Determine if this is a diff or full data
-                  const isFullData = parsedData.scenarios && Array.isArray(parsedData.scenarios) && parsedData.scenarios.length > 0;
-                  let finalData;
-                  
-                  if (isFullData) {
-                    finalData = parsedData;
-                    console.log('Full data detected, using directly');
+                  if (isDiffData(parsedData)) {
+                    console.log('Detected as diff, applying to current data...');
+                    finalData = applyDiffAndMerge(currentData, parsedData);
                   } else {
-                    // Apply the diff to current data
-                    finalData = applyDiffToCurrent(parsedData);
-                    console.log('Diff applied to current data');
+                    console.log('Detected as full data, using directly...');
+                    finalData = parsedData;
                   }
                   
                   const success = validateAndSave(finalData);
