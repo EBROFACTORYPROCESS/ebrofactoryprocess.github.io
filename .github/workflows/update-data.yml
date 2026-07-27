@@ -69,7 +69,6 @@ jobs:
               if (typeof value === 'number') return String(value);
               if (typeof value === 'boolean') return value;
               
-              // If it's an array, recursively extract the last element
               if (Array.isArray(value)) {
                 // For arrays like [\"new\", [\"old\", \"new\"]], take the last element
                 const last = value[value.length - 1];
@@ -80,7 +79,6 @@ jobs:
               }
               
               if (value && typeof value === 'object') {
-                // If it's an object, process all its keys
                 const result = {};
                 for (const key in value) {
                   if (key === '_t') continue;
@@ -90,150 +88,6 @@ jobs:
               }
               
               return value;
-            }
-            
-            // ============================================================
-            // FUNCTION: Extract scenario from diff
-            // ============================================================
-            function extractScenarioFromDiff(diffObj) {
-              if (!diffObj || typeof diffObj !== 'object') return null;
-              
-              // Extract using recursive value extraction
-              const extracted = extractValue(diffObj);
-              
-              // If we got an object with id and name, it's a scenario
-              if (extracted && typeof extracted === 'object') {
-                if (extracted.id && extracted.name) {
-                  return {
-                    id: extracted.id,
-                    name: extracted.name,
-                    processes: Array.isArray(extracted.processes) ? extracted.processes : []
-                  };
-                }
-                // If it has processes but no name, create a scenario
-                if (extracted.processes && Array.isArray(extracted.processes)) {
-                  return {
-                    id: extracted.id || 'scenario_' + Date.now(),
-                    name: extracted.name || 'Scenario',
-                    processes: extracted.processes
-                  };
-                }
-              }
-              
-              return null;
-            }
-            
-            // ============================================================
-            // FUNCTION: Extract scenarios from diff
-            // ============================================================
-            function extractScenariosFromDiff(diff) {
-              const extracted = [];
-              
-              // Case 1: diff.scenarios is an array
-              if (diff.scenarios && Array.isArray(diff.scenarios)) {
-                for (const item of diff.scenarios) {
-                  const scenario = extractScenarioFromDiff(item);
-                  if (scenario) extracted.push(scenario);
-                }
-                return extracted;
-              }
-              
-              // Case 2: diff.scenarios is an object with _t: 'a'
-              if (diff.scenarios && typeof diff.scenarios === 'object') {
-                // Extract values from the diff
-                const extractedScenarios = extractValue(diff.scenarios);
-                
-                // If we got an array, use it
-                if (Array.isArray(extractedScenarios)) {
-                  for (const item of extractedScenarios) {
-                    if (item && typeof item === 'object' && item.id) {
-                      extracted.push({
-                        id: item.id,
-                        name: item.name || 'Scenario',
-                        processes: Array.isArray(item.processes) ? item.processes : []
-                      });
-                    }
-                  }
-                }
-                // If we got an object with numeric keys, convert to array
-                else if (extractedScenarios && typeof extractedScenarios === 'object') {
-                  for (const key in extractedScenarios) {
-                    if (key === '_t' || key === '0') continue;
-                    const value = extractedScenarios[key];
-                    if (value && typeof value === 'object' && value.id) {
-                      extracted.push({
-                        id: value.id,
-                        name: value.name || 'Scenario',
-                        processes: Array.isArray(value.processes) ? value.processes : []
-                      });
-                    }
-                  }
-                }
-                
-                // If we have an object with id at the top level, it's a scenario
-                if (extractedScenarios && extractedScenarios.id) {
-                  extracted.push({
-                    id: extractedScenarios.id,
-                    name: extractedScenarios.name || 'Scenario',
-                    processes: Array.isArray(extractedScenarios.processes) ? extractedScenarios.processes : []
-                  });
-                }
-              }
-              
-              // Case 3: diff itself is a scenario
-              const selfScenario = extractScenarioFromDiff(diff);
-              if (selfScenario) {
-                extracted.push(selfScenario);
-              }
-              
-              return extracted;
-            }
-            
-            // ============================================================
-            // FUNCTION: Merge scenario into existing scenarios
-            // ============================================================
-            function mergeScenarioIntoArray(existingScenarios, newScenario) {
-              if (!Array.isArray(existingScenarios)) existingScenarios = [];
-              if (!newScenario || !newScenario.id) return existingScenarios;
-              
-              console.log('Merging scenario:', newScenario.id, newScenario.name);
-              console.log('Processes count:', newScenario.processes?.length || 0);
-              
-              // Try to find by ID
-              let existingIndex = existingScenarios.findIndex(s => s && s.id === newScenario.id);
-              
-              // If not found by ID, try by name
-              if (existingIndex === -1 && newScenario.name) {
-                const normalizedName = newScenario.name.toLowerCase().trim();
-                existingIndex = existingScenarios.findIndex(s => 
-                  s && s.name && s.name.toLowerCase().trim() === normalizedName
-                );
-              }
-              
-              if (existingIndex >= 0) {
-                console.log('Found existing scenario');
-                const existing = existingScenarios[existingIndex];
-                
-                // Merge processes - avoid duplicates by id
-                const existingIds = new Set(existing.processes.map(p => p && p.id));
-                const newProcesses = (newScenario.processes || []).filter(p => p && p.id && !existingIds.has(p.id));
-                
-                if (newProcesses.length > 0) {
-                  console.log('Adding', newProcesses.length, 'new processes');
-                  existing.processes = [...existing.processes, ...newProcesses];
-                }
-                
-                if (newScenario.name) existing.name = newScenario.name;
-                return existingScenarios;
-              } else {
-                console.log('Adding new scenario');
-                existingScenarios.push({
-                  id: newScenario.id,
-                  name: newScenario.name || 'Scenario ' + (existingScenarios.length + 1),
-                  processes: Array.isArray(newScenario.processes) ? newScenario.processes : []
-                });
-                return existingScenarios;
-              }
             }
             
             // ============================================================
@@ -273,6 +127,103 @@ jobs:
                 name: sc.name || 'Scenario',
                 processes: processes
               };
+            }
+            
+            // ============================================================
+            // FUNCTION: Merge scenario into existing scenarios
+            // ============================================================
+            function mergeScenarioIntoArray(existingScenarios, newScenario) {
+              if (!Array.isArray(existingScenarios)) existingScenarios = [];
+              if (!newScenario || !newScenario.id) return existingScenarios;
+              
+              console.log('Merging scenario:', newScenario.id, newScenario.name);
+              console.log('Processes count:', newScenario.processes?.length || 0);
+              
+              let existingIndex = existingScenarios.findIndex(s => s && s.id === newScenario.id);
+              
+              if (existingIndex === -1 && newScenario.name) {
+                const normalizedName = newScenario.name.toLowerCase().trim();
+                existingIndex = existingScenarios.findIndex(s => 
+                  s && s.name && s.name.toLowerCase().trim() === normalizedName
+                );
+              }
+              
+              if (existingIndex >= 0) {
+                console.log('Found existing scenario');
+                const existing = existingScenarios[existingIndex];
+                
+                const existingIds = new Set(existing.processes.map(p => p && p.id));
+                const newProcesses = (newScenario.processes || []).filter(p => p && p.id && !existingIds.has(p.id));
+                
+                if (newProcesses.length > 0) {
+                  console.log('Adding', newProcesses.length, 'new processes');
+                  existing.processes = [...existing.processes, ...newProcesses];
+                }
+                
+                if (newScenario.name) existing.name = newScenario.name;
+                return existingScenarios;
+              } else {
+                console.log('Adding new scenario');
+                existingScenarios.push({
+                  id: newScenario.id,
+                  name: newScenario.name || 'Scenario ' + (existingScenarios.length + 1),
+                  processes: Array.isArray(newScenario.processes) ? newScenario.processes : []
+                });
+                return existingScenarios;
+              }
+            }
+            
+            // ============================================================
+            // FUNCTION: Extract scenarios from diff
+            // ============================================================
+            function extractScenariosFromDiff(diff) {
+              const extracted = [];
+              
+              // Case 1: diff.scenarios is an array
+              if (diff.scenarios && Array.isArray(diff.scenarios)) {
+                for (const item of diff.scenarios) {
+                  const extractedValue = extractValue(item);
+                  const scenario = cleanScenario(extractedValue);
+                  if (scenario) extracted.push(scenario);
+                }
+                return extracted;
+              }
+              
+              // Case 2: diff.scenarios is an object
+              if (diff.scenarios && typeof diff.scenarios === 'object') {
+                const extractedValue = extractValue(diff.scenarios);
+                
+                if (Array.isArray(extractedValue)) {
+                  for (const item of extractedValue) {
+                    const scenario = cleanScenario(item);
+                    if (scenario) extracted.push(scenario);
+                  }
+                } else if (extractedValue && typeof extractedValue === 'object') {
+                  // Check if it's a single scenario
+                  if (extractedValue.id) {
+                    const scenario = cleanScenario(extractedValue);
+                    if (scenario) extracted.push(scenario);
+                  } else {
+                    // It might be an object with numeric keys
+                    for (const key in extractedValue) {
+                      if (key === '_t') continue;
+                      const value = extractedValue[key];
+                      if (value && typeof value === 'object' && value.id) {
+                        const scenario = cleanScenario(value);
+                        if (scenario) extracted.push(scenario);
+                      }
+                    }
+                  }
+                }
+              }
+              
+              // Case 3: diff itself is a scenario
+              const selfScenario = cleanScenario(extractValue(diff));
+              if (selfScenario) {
+                extracted.push(selfScenario);
+              }
+              
+              return extracted;
             }
             
             // ============================================================
@@ -337,7 +288,6 @@ jobs:
             // FUNCTION: Apply changes to data
             // ============================================================
             function applyChanges(parsedData) {
-              // Start with current data
               let resultData = JSON.parse(JSON.stringify(currentData));
               console.log('Current data scenarios:', resultData.scenarios?.length || 0);
               
@@ -345,11 +295,10 @@ jobs:
                 resultData.scenarios = [];
               }
               
-              // Extract scenarios from the parsed data using the value extraction
+              // Extract scenarios from the parsed data
               const extractedScenarios = extractScenariosFromDiff(parsedData);
               console.log('Extracted scenarios from diff:', extractedScenarios.length);
               
-              // Log extracted scenarios
               for (const scenario of extractedScenarios) {
                 console.log('  Scenario:', scenario.id, scenario.name, 'processes:', scenario.processes?.length || 0);
               }
@@ -357,19 +306,14 @@ jobs:
               // Merge each extracted scenario
               for (const scenario of extractedScenarios) {
                 if (scenario) {
-                  const cleaned = cleanScenario(scenario);
-                  if (cleaned) {
-                    resultData.scenarios = mergeScenarioIntoArray(resultData.scenarios, cleaned);
-                  }
+                  resultData.scenarios = mergeScenarioIntoArray(resultData.scenarios, scenario);
                 }
               }
               
               // Handle currentScenarioId
               let newCurrentId = parsedData.currentScenarioId;
               if (newCurrentId) {
-                // Extract the actual value from the diff format
                 newCurrentId = extractValue(newCurrentId);
-                // If it's an array, take the first string
                 if (Array.isArray(newCurrentId)) {
                   newCurrentId = newCurrentId.find(item => typeof item === 'string') || null;
                 }
@@ -380,8 +324,6 @@ jobs:
                 if (exists) {
                   resultData.currentScenarioId = newCurrentId;
                   console.log('Set currentScenarioId to:', newCurrentId);
-                } else {
-                  console.log('New currentScenarioId not found, keeping existing');
                 }
               }
               
