@@ -63,7 +63,107 @@ jobs:
             const payloadType = payload.type || 'diff';
             
             // ============================================================
-            // FUNCTION: Apply the diff
+            // FUNCTION: Deep merge (fallback when jsondiffpatch fails)
+            // ============================================================
+            function deepMerge(target, source) {
+              if (!source) return target;
+              const result = JSON.parse(JSON.stringify(target || {}));
+              
+              for (const key in source) {
+                if (key === '_t') continue;
+                const sourceVal = source[key];
+                const targetVal = result[key];
+                
+                if (sourceVal && typeof sourceVal === 'object' && !Array.isArray(sourceVal)) {
+                  if (!targetVal || typeof targetVal !== 'object' || Array.isArray(targetVal)) {
+                    result[key] = {};
+                  }
+                  result[key] = deepMerge(result[key], sourceVal);
+                } else {
+                  result[key] = sourceVal;
+                }
+              }
+              return result;
+            }
+            
+            // ============================================================
+            // FUNCTION: Validate and save data
+            // ============================================================
+            function validateAndSave(data) {
+              if (!data) {
+                console.error('No data to save');
+                return false;
+              }
+              
+              // Ensure scenarios is an array
+              if (!data.scenarios || !Array.isArray(data.scenarios)) {
+                console.error('Invalid data: scenarios is not an array');
+                data.scenarios = [];
+              }
+              
+              // Ensure each scenario has valid data
+              for (let i = 0; i < data.scenarios.length; i++) {
+                const sc = data.scenarios[i];
+                if (!sc || typeof sc !== 'object') {
+                  data.scenarios.splice(i, 1);
+                  i--;
+                  continue;
+                }
+                if (!sc.id) sc.id = 'scenario_' + Date.now() + '_' + i;
+                if (!sc.name) sc.name = 'Scenario ' + (i + 1);
+                if (!sc.processes || !Array.isArray(sc.processes)) {
+                  sc.processes = [];
+                }
+              }
+              
+              // Fix currentScenarioId
+              if (Array.isArray(data.currentScenarioId)) {
+                data.currentScenarioId = data.currentScenarioId[0] || 'default';
+              }
+              if (!data.currentScenarioId && data.scenarios.length > 0) {
+                data.currentScenarioId = data.scenarios[0].id || 'default';
+              }
+              
+              // Ensure master data exists
+              if (!data.departments || !Array.isArray(data.departments)) {
+                data.departments = ['Sales', 'Production Planning', 'Material Planning', 'Material Handling', 'Purchase', 'Production Execution', 'Parts Quality', 'Vehicle Quality', 'Finance', 'Trade & Compliance'];
+              }
+              
+              if (!data.sysNameList || !Array.isArray(data.sysNameList)) {
+                data.sysNameList = ['SAP', 'LES', 'MES', 'KAPTURE', 'WMS', 'To Be Determined'];
+              }
+              
+              if (!data.businessStatuses || !Array.isArray(data.businessStatuses)) {
+                data.businessStatuses = [
+                  { value: 'Not Defined', color: 'red' },
+                  { value: 'In Progress', color: 'yellow' },
+                  { value: 'Completed', color: 'green' }
+                ];
+              }
+              
+              if (!data.sysStatusList || !Array.isArray(data.sysStatusList)) {
+                data.sysStatusList = [
+                  { value: 'Operational', color: 'green' },
+                  { value: 'Completed', color: 'green' },
+                  { value: 'Offline', color: 'red' },
+                  { value: 'To Be Implemented', color: 'red' },
+                  { value: 'Work in Progress', color: 'yellow' }
+                ];
+              }
+              
+              if (!data.sysRespList || !Array.isArray(data.sysRespList)) {
+                data.sysRespList = [];
+              }
+              
+              fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
+              console.log('data.json updated successfully');
+              console.log('Final scenarios count:', data.scenarios.length);
+              console.log('Final currentScenarioId:', data.currentScenarioId);
+              return true;
+            }
+            
+            // ============================================================
+            // FUNCTION: Apply the diff using jsondiffpatch or fallback
             // ============================================================
             function applyDiffToData() {
               if (!diffData) {
@@ -73,39 +173,34 @@ jobs:
               
               console.log('Applying diff to current data...');
               console.log('Diff data keys:', Object.keys(diffData));
+              console.log('Current data keys:', Object.keys(currentData));
               
+              let result = null;
+              
+              // Try using jsondiffpatch first
               try {
-                const result = jsondiffpatch.patch(currentData, diffData);
-                console.log('Diff applied successfully');
-                
-                if (!result.scenarios || !Array.isArray(result.scenarios)) {
-                  console.error('Invalid result: scenarios is not an array');
-                  process.exit(1);
-                }
-                
-                if (Array.isArray(result.currentScenarioId)) {
-                  result.currentScenarioId = result.currentScenarioId[0] || 'default';
-                }
-                
-                for (let i = 0; i < result.scenarios.length; i++) {
-                  const sc = result.scenarios[i];
-                  if (!sc) continue;
-                  if (!sc.id) sc.id = 'scenario_' + Date.now() + '_' + i;
-                  if (!sc.name) sc.name = 'Scenario ' + (i + 1);
-                  if (!sc.processes || !Array.isArray(sc.processes)) {
-                    sc.processes = [];
-                  }
-                }
-                
-                fs.writeFileSync('data.json', JSON.stringify(result, null, 2));
-                console.log('data.json updated successfully');
-                console.log('Final scenarios count:', result.scenarios.length);
-                console.log('Final currentScenarioId:', result.currentScenarioId);
-                return true;
+                result = jsondiffpatch.patch(currentData, diffData);
+                console.log('jsondiffpatch.patch executed');
               } catch (e) {
-                console.error('Failed to apply diff:', e.message);
+                console.error('jsondiffpatch.patch threw error:', e.message);
+              }
+              
+              // If jsondiffpatch returned undefined or threw, use fallback
+              if (!result) {
+                console.log('jsondiffpatch failed, using deep merge fallback...');
+                result = deepMerge(currentData, diffData);
+                console.log('Deep merge completed');
+              }
+              
+              // Validate the result
+              if (!result || !result.scenarios || !Array.isArray(result.scenarios)) {
+                console.error('Invalid result: scenarios is not an array');
+                console.log('Result keys:', result ? Object.keys(result) : 'null');
                 process.exit(1);
               }
+              
+              validateAndSave(result);
+              return true;
             }
             
             // ============================================================
@@ -180,9 +275,11 @@ jobs:
                 try {
                   diffData = JSON.parse(payloadData);
                   console.log('Direct diff parsed successfully');
+                  console.log('Diff data keys:', Object.keys(diffData));
                   applyDiffToData();
                 } catch (e) {
                   console.error('Failed to parse payload data:', e.message);
+                  console.log('Payload data preview:', payloadData.substring(0, 200));
                   process.exit(1);
                 }
               } else {
