@@ -24,7 +24,7 @@ jobs:
           ${{ toJSON(github.event.client_payload) }}
           EOF
 
-      - name: Apply changes (direct full data approach)
+      - name: Apply changes
         run: |
           node -e "
             const fs = require('fs');
@@ -37,6 +37,7 @@ jobs:
               const content = fs.readFileSync('data.json', 'utf8');
               currentData = JSON.parse(content);
               console.log('Current data loaded, scenarios:', currentData.scenarios?.length || 0);
+              console.log('Current scenario IDs:', currentData.scenarios?.map(s => s.id).join(', '));
             } catch (e) {
               console.log('No existing data.json, creating new one');
             }
@@ -64,22 +65,41 @@ jobs:
             function extractScenarioFromDiff(diffObj) {
               if (!diffObj || typeof diffObj !== 'object') return null;
               
-              // If it has an id and name, it's likely a scenario
-              if (diffObj.id && diffObj.name) {
-                return {
-                  id: diffObj.id,
-                  name: diffObj.name,
-                  processes: Array.isArray(diffObj.processes) ? diffObj.processes : []
-                };
+              // If it has an id and name, extract them
+              let id = null;
+              let name = null;
+              let processes = [];
+              
+              // Extract id (handle both string and array formats)
+              if (diffObj.id) {
+                id = Array.isArray(diffObj.id) ? diffObj.id[0] : diffObj.id;
               }
               
-              // Try to extract from nested structure
+              // Extract name (handle both string and array formats)
+              if (diffObj.name) {
+                name = Array.isArray(diffObj.name) ? diffObj.name[0] : diffObj.name;
+              }
+              
+              // Extract processes
               if (diffObj.processes) {
-                return {
-                  id: diffObj.id || 'scenario_' + Date.now(),
-                  name: diffObj.name || 'Unnamed Scenario',
-                  processes: Array.isArray(diffObj.processes) ? diffObj.processes : []
-                };
+                if (Array.isArray(diffObj.processes)) {
+                  processes = diffObj.processes;
+                } else if (typeof diffObj.processes === 'object') {
+                  // Handle nested process objects
+                  for (const key in diffObj.processes) {
+                    if (key === '_t') continue;
+                    const val = diffObj.processes[key];
+                    if (Array.isArray(val) && val.length > 0) {
+                      processes.push(val[0]);
+                    } else if (val && typeof val === 'object' && val.id) {
+                      processes.push(val);
+                    }
+                  }
+                }
+              }
+              
+              if (id || name) {
+                return { id: id || 'scenario_' + Date.now(), name: name || 'Unnamed Scenario', processes: processes };
               }
               
               return null;
@@ -90,16 +110,26 @@ jobs:
             // ============================================================
             function mergeScenarioIntoArray(existingScenarios, newScenario) {
               if (!Array.isArray(existingScenarios)) existingScenarios = [];
-              if (!newScenario) return existingScenarios;
+              if (!newScenario || !newScenario.id) return existingScenarios;
               
-              // Check if scenario already exists by id or name
-              const existingIndex = existingScenarios.findIndex(s => 
-                s && (s.id === newScenario.id || s.name === newScenario.name)
-              );
+              // Log for debugging
+              console.log('Merging scenario:', newScenario.id, newScenario.name);
+              console.log('Existing scenario IDs:', existingScenarios.map(s => s.id).join(', '));
+              
+              // Try to find by ID first
+              let existingIndex = existingScenarios.findIndex(s => s && s.id === newScenario.id);
+              
+              // If not found by ID, try to find by name (case-insensitive)
+              if (existingIndex === -1 && newScenario.name) {
+                const normalizedName = newScenario.name.toLowerCase().trim();
+                existingIndex = existingScenarios.findIndex(s => 
+                  s && s.name && s.name.toLowerCase().trim() === normalizedName
+                );
+              }
               
               if (existingIndex >= 0) {
-                // Merge with existing
-                console.log('Updating existing scenario:', newScenario.name || newScenario.id);
+                // Merge with existing scenario
+                console.log('Found existing scenario at index:', existingIndex);
                 const existing = existingScenarios[existingIndex];
                 
                 // Merge processes - avoid duplicates by id
@@ -110,12 +140,13 @@ jobs:
                 // Update name if changed
                 if (newScenario.name) existing.name = newScenario.name;
                 
+                console.log('Updated scenario, processes now:', existing.processes.length);
                 return existingScenarios;
               } else {
-                // Add new scenario
-                console.log('Adding new scenario:', newScenario.name || newScenario.id);
+                // Add as new scenario
+                console.log('Adding new scenario:', newScenario.id);
                 existingScenarios.push({
-                  id: newScenario.id || 'scenario_' + Date.now() + '_' + existingScenarios.length,
+                  id: newScenario.id,
                   name: newScenario.name || 'Scenario ' + (existingScenarios.length + 1),
                   processes: Array.isArray(newScenario.processes) ? newScenario.processes : []
                 });
@@ -140,28 +171,22 @@ jobs:
               
               // Case 2: diff.scenarios is an object with _t: 'a' (array diff)
               if (diff.scenarios && typeof diff.scenarios === 'object' && diff.scenarios._t === 'a') {
-                // Extract from array diff format
                 for (const key in diff.scenarios) {
                   if (key === '_t') continue;
                   const value = diff.scenarios[key];
                   
-                  // Check if it's a numeric key (index) or _ prefix (modified index)
                   if (key.startsWith('_') || !isNaN(key)) {
                     let scenarioData = null;
                     
                     if (Array.isArray(value) && value.length === 1) {
-                      // New item: [scenarioObject]
                       scenarioData = extractScenarioFromDiff(value[0]);
                     } else if (Array.isArray(value) && value.length === 3 && value[2] === 0) {
-                      // Replacement: [newScenario, 0, 0]
                       scenarioData = extractScenarioFromDiff(value[0]);
                     } else if (value && typeof value === 'object' && !Array.isArray(value)) {
-                      // Modified scenario
                       scenarioData = extractScenarioFromDiff(value);
                     }
                     
                     if (scenarioData) {
-                      // Try to get the actual index if it's a replacement
                       const idx = key.startsWith('_') ? parseInt(key.substring(1)) : parseInt(key);
                       if (!isNaN(idx)) {
                         scenarioData._index = idx;
@@ -181,7 +206,6 @@ jobs:
                   if (value && typeof value === 'object') {
                     const scenario = extractScenarioFromDiff(value);
                     if (scenario) {
-                      // Try to get index
                       if (!isNaN(key)) {
                         scenario._index = parseInt(key);
                       }
@@ -192,11 +216,20 @@ jobs:
                 return extracted;
               }
               
-              // Case 4: diff itself is a scenario
+              // Case 4: diff itself is a scenario or contains a scenario
               const selfScenario = extractScenarioFromDiff(diff);
               if (selfScenario) {
                 extracted.push(selfScenario);
                 return extracted;
+              }
+              
+              // Case 5: diff has a 'scenarios' property that is not an array or object
+              if (diff.scenarios) {
+                // Try to extract if it looks like a scenario object
+                const possibleScenario = extractScenarioFromDiff({ id: diff.scenarios });
+                if (possibleScenario) {
+                  extracted.push(possibleScenario);
+                }
               }
               
               return extracted;
@@ -265,22 +298,28 @@ jobs:
             // ============================================================
             function applyChanges(parsedData) {
               let resultData = JSON.parse(JSON.stringify(currentData));
+              console.log('Current data scenarios before any changes:', resultData.scenarios?.length || 0);
               
-              // Ensure scenarios array exists
               if (!resultData.scenarios || !Array.isArray(resultData.scenarios)) {
                 resultData.scenarios = [];
               }
               
               // Extract scenarios from the parsed data
               const extractedScenarios = extractScenariosFromDiff(parsedData);
-              console.log('Extracted scenarios:', extractedScenarios.length);
+              console.log('Extracted scenarios from diff:', extractedScenarios.length);
               
               if (extractedScenarios.length === 0) {
                 console.log('No scenarios extracted from diff, checking if parsedData itself is a scenario...');
                 const directScenario = extractScenarioFromDiff(parsedData);
                 if (directScenario) {
                   extractedScenarios.push(directScenario);
+                  console.log('Added direct scenario from parsedData');
                 }
+              }
+              
+              // Log extracted scenarios for debugging
+              for (const scenario of extractedScenarios) {
+                console.log('  Scenario extracted:', scenario.id, scenario.name, 'processes:', scenario.processes?.length || 0);
               }
               
               // Merge each extracted scenario into the result
@@ -296,16 +335,22 @@ jobs:
                 newCurrentId = newCurrentId[0];
               }
               
-              // Verify the currentScenarioId exists in the scenarios array
               if (newCurrentId) {
                 const exists = resultData.scenarios.some(s => s && s.id === newCurrentId);
                 if (exists) {
                   resultData.currentScenarioId = newCurrentId;
-                } else if (resultData.scenarios.length > 0) {
-                  resultData.currentScenarioId = resultData.scenarios[0].id;
+                  console.log('Set currentScenarioId to:', newCurrentId);
+                } else {
+                  console.log('New currentScenarioId not found in scenarios, keeping existing');
                 }
-              } else if (resultData.scenarios.length > 0) {
-                resultData.currentScenarioId = resultData.scenarios[0].id;
+              }
+              
+              // Ensure currentScenarioId is valid
+              if (!resultData.currentScenarioId || !resultData.scenarios.some(s => s && s.id === resultData.currentScenarioId)) {
+                if (resultData.scenarios.length > 0) {
+                  resultData.currentScenarioId = resultData.scenarios[0].id;
+                  console.log('Set currentScenarioId to first scenario:', resultData.currentScenarioId);
+                }
               }
               
               // Ensure master data exists
@@ -392,7 +437,7 @@ jobs:
             echo "No changes to commit"
           else
             git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git config.user.email "github-actions[bot]@users.noreply.github.com"
             git add data.json
             git commit -m "Apply changes from web [skip ci]" || echo "No changes to commit"
             git push
