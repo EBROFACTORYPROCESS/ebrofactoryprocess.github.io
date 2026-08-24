@@ -1123,14 +1123,14 @@ function confirmDelete(proc, scenario) {
     let sub = scenario.processes.filter(p => p.seq.startsWith(proc.seq + '.') && p.id !== proc.id);
     document.getElementById('deleteModalMessage').innerText = `Delete "${proc.name}" (${proc.seq})?` + (sub.length ? `\nAlso ${sub.length} subprocess(es).` : '');
     document.getElementById('deleteConfirmModal').classList.add('active');
+    
     pendingDeleteCallback = () => {
         scenario.processes = scenario.processes.filter(p => p.id !== proc.id && !sub.map(s => s.id).includes(p.id));
         scenario.processes = sortProcesses(scenario.processes);
         if (!proc.seq.includes('.')) collapseState.delete(proc.id);
         
-        // ✅ CRITICAL FIX: Update the snapshot after deletion
-        saveSnapshot(appData);
-        console.log('📸 Snapshot updated after process deletion');
+        // ✅ DO NOT update snapshot here - let save handle it
+        // The snapshot still has the deleted process, which is correct for diff detection
         
         renderCurrentView();
         document.getElementById('deleteConfirmModal').classList.remove('active');
@@ -1859,39 +1859,38 @@ function bindEvents() {
     // ============================================================
     // ✅ FIXED: Delete Scenario with snapshot update
     // ============================================================
-    document.getElementById('deleteScenarioBtn').onclick = () => {
-        if (currentMode !== 'edit') return;
-        if (appData.scenarios.length <= 1) { 
-            alert('❌ Cannot delete the last scenario.'); 
-            return; 
-        }
-        
-        const sc = getCurrentScenario();
-        if (!sc) return;
-        
-        const confirmMsg = `⚠️ Delete scenario "${sc.name}"?\n\nThis will permanently delete ALL processes within this scenario.`;
-        if (!confirm(confirmMsg)) return;
-        
-        // ✅ Remove the scenario
-        appData.scenarios = appData.scenarios.filter(s => s.id !== appData.currentScenarioId);
-        appData.currentScenarioId = appData.scenarios[0].id;
-        
-        // ✅ CRITICAL FIX: Update the snapshot immediately
-        saveSnapshot(appData);
-        console.log('📸 Snapshot updated after scenario deletion');
-        
-        collapseState.clear();
-        refreshScenarioDropdown();
-        renderCurrentView();
-        
-        // ✅ Notify user to save
-        const saveBtn = document.getElementById('saveDataBtn');
-        if (saveBtn) {
-            saveBtn.style.animation = 'pulse 0.5s ease 3';
-            setTimeout(() => { saveBtn.style.animation = ''; }, 2000);
-        }
-        alert('✅ Scenario deleted successfully!\n\n⚠️ Remember to click "Save to GitHub" to persist changes.');
-    };
+document.getElementById('deleteScenarioBtn').onclick = () => {
+    if (currentMode !== 'edit') return;
+    if (appData.scenarios.length <= 1) { 
+        alert('❌ Cannot delete the last scenario.'); 
+        return; 
+    }
+    
+    const sc = getCurrentScenario();
+    if (!sc) return;
+    
+    const confirmMsg = `⚠️ Delete scenario "${sc.name}"?\n\nThis will permanently delete ALL processes within this scenario.`;
+    if (!confirm(confirmMsg)) return;
+    
+    // ✅ Remove the scenario from appData ONLY
+    appData.scenarios = appData.scenarios.filter(s => s.id !== appData.currentScenarioId);
+    appData.currentScenarioId = appData.scenarios[0].id;
+    
+    // ✅ DO NOT update snapshot here - let save handle it
+    // The snapshot still has the deleted scenario, which is correct for diff detection
+    
+    collapseState.clear();
+    refreshScenarioDropdown();
+    renderCurrentView();
+    
+    // ✅ Notify user to save
+    const saveBtn = document.getElementById('saveDataBtn');
+    if (saveBtn) {
+        saveBtn.style.animation = 'pulse 0.5s ease 3';
+        setTimeout(() => { saveBtn.style.animation = ''; }, 2000);
+    }
+    alert('✅ Scenario deleted locally!\n\nClick "Save to GitHub" to persist changes.');
+};
 
     document.getElementById('addRowBtn').onclick = () => {
         if (currentMode !== 'edit') return;
