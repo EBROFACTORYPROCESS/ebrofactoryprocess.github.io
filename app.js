@@ -395,9 +395,6 @@ async function saveDataToGitHub(data) {
         // Clean token
         token = token.trim();
 
-        // ✅ REMOVED: Force snapshot sync check - it was causing "No changes" bug
-        // The snapshot should only update after successful save
-
         // ✅ IMPORTANT: Generate diff correctly
         let diff = null;
         
@@ -441,18 +438,129 @@ async function saveDataToGitHub(data) {
             return;
         }
 
-        // ... rest of the save function (keep everything else the same)
-        // The code from here down is unchanged...
+        const jsonStr = JSON.stringify(diff);
+        console.log(`📊 Diff size: ${jsonStr.length} bytes (${(jsonStr.length/1024).toFixed(1)} KB)`);
+
+        // Determine if we need Gist (data > 30KB for safety, under 64KB limit)
+        const useGist = jsonStr.length > 30000;
+        let gistId = null;
+        let payloadData = jsonStr;
+        let payloadType = 'diff';
+
+        if (useGist) {
+            console.log('📤 Data is large, uploading to Gist...');
+            
+            const gistPayload = {
+                description: `BPO diff - ${new Date().toISOString()}`,
+                public: false,
+                files: {
+                    'diff.json': {
+                        content: jsonStr
+                    }
+                }
+            };
+
+            try {
+                const gistResponse = await fetch('https://api.github.com/gists', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify(gistPayload)
+                });
+
+                if (!gistResponse.ok) {
+                    const errorData = await gistResponse.json();
+                    console.error('Gist API error:', errorData);
+                    console.log('⚠️ Gist creation failed, falling back to direct payload');
+                } else {
+                    const gistData = await gistResponse.json();
+                    gistId = gistData.id;
+                    payloadType = 'gist';
+                    payloadData = '';
+                    console.log(`✅ Gist created: ${gistId}`);
+                    
+                    const verifyResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    if (!verifyResponse.ok) {
+                        console.warn('⚠️ Gist verification failed, but continuing...');
+                    }
+                }
+            } catch (gistError) {
+                console.error('Gist creation failed:', gistError);
+                console.log('⚠️ Falling back to direct payload');
+                payloadType = 'diff';
+                payloadData = jsonStr;
+                gistId = null;
+            }
+        }
+
+        // Build payload
+        const payload = {
+            event_type: 'update-data',
+            client_payload: {
+                type: payloadType,
+                gist_id: gistId || '',
+                data: payloadData,
+                snapshot_id: Date.now()
+            }
+        };
+
+        console.log(`📤 Sending payload with type: ${payloadType}, gist_id: ${gistId || 'none'}`);
+        console.log(`📤 Payload data length: ${payloadData.length} bytes`);
+
+        const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `token ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Dispatch API error:', errorData);
+            if (response.status === 401) {
+                clearGitHubToken();
+                throw new Error('Token is invalid or expired. Please re-enter your Token.');
+            }
+            throw new Error(errorData.message || `HTTP ${response.status}`);
+        }
 
         // ✅ Save snapshot ONLY after successful save
         saveSnapshot(data);
         console.log('✅ Snapshot updated');
 
-        // ... rest of the function
+        const sizeMsg = useGist && gistId 
+            ? `📤 Uploaded to Gist (temporary)\n   Gist ID: ${gistId}`
+            : `📊 Size: ${(jsonStr.length/1024).toFixed(1)} KB`;
+        
+        alert(`✅ Changes saved successfully!\n\n${sizeMsg}\n\nGitHub Actions is applying the changes.`);
+
+        setTimeout(() => {
+            if (confirm('Refresh page to see the latest data?')) {
+                location.reload();
+            }
+        }, 10000);
+
     } catch (error) {
-        // ... error handling
+        console.error('Save failed:', error);
+        alert(`❌ Save failed: ${error.message}`);
     } finally {
-        // ... cleanup
+        isSaving = false;
+        if (saveBtn) {
+            saveBtn.textContent = '💾 Save to GitHub';
+            saveBtn.disabled = false;
+        }
     }
 }
 // ============================
@@ -479,7 +587,9 @@ async function loadData() {
                 console.log('📄 data.json not found, creating default');
                 appData = getDefaultData();
                 normalizeData(appData);
-                initializeSnapshot(appData);
+                // Create baseline snapshot
+                lastSnapshot = JSON.parse(JSON.stringify(appData));
+                saveSnapshot(lastSnapshot);
                 renderApp();
                 if (loading) loading.style.display = 'none';
                 if (root) root.style.display = 'block';
@@ -491,15 +601,17 @@ async function loadData() {
         const text = await response.text();
         console.log('📄 Data loaded, length:', text.length);
         
-        // Parse and normalize
         let rawData = JSON.parse(text);
         console.log('📊 Raw data parsed, scenarios:', rawData.scenarios?.length || 0);
         
-        // ✅ Normalize with robust function
         appData = normalizeData(rawData);
         
-        // ✅ Initialize snapshot
-        initializeSnapshot(appData);
+        // ✅ CRITICAL FIX: Reset snapshot to match loaded data
+        // This ensures lastSnapshot represents the GitHub state
+        // Any changes made after this will be detected as diff
+        lastSnapshot = JSON.parse(JSON.stringify(appData));
+        saveSnapshot(lastSnapshot);
+        console.log('📸 Baseline snapshot set to loaded data (scenarios: ' + lastSnapshot.scenarios?.length + ')');
 
         if (loading) loading.style.display = 'none';
         if (root) root.style.display = 'block';
