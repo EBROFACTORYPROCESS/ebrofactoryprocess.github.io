@@ -24,7 +24,7 @@ jobs:
           ${{ toJSON(github.event.client_payload) }}
           EOF
 
-      - name: Apply changes
+           - name: Apply changes
         run: |
           node -e "
             const fs = require('fs');
@@ -55,39 +55,128 @@ jobs:
               process.exit(1);
             }
             
-            let diffData = null;
-            const payloadType = payload.type || 'diff';
-            
             // ============================================================
-            // FUNCTION: Extract the actual value from diff format
-            // The diff format uses arrays: [newValue, [oldValue, newValue]]
-            // We need to extract the innermost (latest) value
+            // ✅ FIXED: Properly apply diff with deletion support
             // ============================================================
-            function extractValue(value) {
-              if (!value) return null;
-              if (typeof value === 'string') return value;
-              if (typeof value === 'number') return String(value);
-              if (typeof value === 'boolean') return value;
+            function applyDiff(current, diff) {
+              // If diff is null or undefined, return current
+              if (!diff) return current;
               
-              if (Array.isArray(value)) {
-                // For arrays like [\"new\", [\"old\", \"new\"]], take the last element
-                const last = value[value.length - 1];
-                if (Array.isArray(last)) {
-                  return extractValue(last);
-                }
-                return extractValue(last);
-              }
+              // Deep clone the current data
+              const result = JSON.parse(JSON.stringify(current));
               
-              if (value && typeof value === 'object') {
-                const result = {};
-                for (const key in value) {
+              // Special handling for array operations (jsondiffpatch format)
+              if (diff._t === 'a') {
+                console.log('📊 Array diff detected');
+                
+                // Get all array operations
+                const ops = [];
+                for (const key in diff) {
                   if (key === '_t') continue;
-                  result[key] = extractValue(value[key]);
+                  const val = diff[key];
+                  const index = parseInt(key);
+                  
+                  if (Array.isArray(val) && val.length === 2) {
+                    if (val[0] === 0) {
+                      // Deletion: [0, oldValue]
+                      ops.push({ type: 'delete', index, value: val[1] });
+                    } else if (val[1] === 0) {
+                      // Insertion: [newValue, 0]
+                      ops.push({ type: 'insert', index, value: val[0] });
+                    } else {
+                      // Update: [newValue, oldValue]
+                      ops.push({ type: 'update', index, value: val[0] });
+                    }
+                  } else {
+                    // Recursive update
+                    ops.push({ type: 'recursive', index, value: val });
+                  }
                 }
+                
+                // Sort deletions by index descending (to avoid shifting issues)
+                const deletions = ops.filter(op => op.type === 'delete').sort((a, b) => b.index - a.index);
+                const insertions = ops.filter(op => op.type === 'insert').sort((a, b) => a.index - b.index);
+                const updates = ops.filter(op => op.type === 'update');
+                const recursives = ops.filter(op => op.type === 'recursive');
+                
+                // Apply deletions first (from highest index to lowest)
+                for (const del of deletions) {
+                  if (Array.isArray(result) && del.index < result.length) {
+                    console.log(`  Deleting item at index ${del.index}`);
+                    result.splice(del.index, 1);
+                  }
+                }
+                
+                // Apply insertions
+                for (const ins of insertions) {
+                  if (Array.isArray(result)) {
+                    console.log(`  Inserting item at index ${ins.index}`);
+                    result.splice(ins.index, 0, ins.value);
+                  }
+                }
+                
+                // Apply updates
+                for (const upd of updates) {
+                  if (Array.isArray(result) && upd.index < result.length) {
+                    console.log(`  Updating item at index ${upd.index}`);
+                    result[upd.index] = upd.value;
+                  }
+                }
+                
+                // Apply recursive updates
+                for (const rec of recursives) {
+                  if (Array.isArray(result) && rec.index < result.length) {
+                    console.log(`  Recursive update at index ${rec.index}`);
+                    result[rec.index] = applyDiff(result[rec.index], rec.value);
+                  }
+                }
+                
                 return result;
               }
               
-              return value;
+              // For each key in the diff
+              for (const key in diff) {
+                if (key === '_t') continue;
+                
+                const diffValue = diff[key];
+                
+                // If the diff value is null or undefined, delete the key
+                if (diffValue === null || diffValue === undefined) {
+                  console.log(`  Deleting key: ${key}`);
+                  delete result[key];
+                  continue;
+                }
+                
+                // Handle array diff format: [newValue, oldValue]
+                if (Array.isArray(diffValue) && diffValue.length === 2) {
+                  // Check if it's a deletion: [0, oldValue]
+                  if (diffValue[0] === 0) {
+                    console.log(`  Deleting key (array diff): ${key}`);
+                    delete result[key];
+                    continue;
+                  }
+                  // Check if it's an insertion: [newValue, 0]
+                  if (diffValue[1] === 0) {
+                    console.log(`  Setting key (array diff): ${key} to`, diffValue[0]);
+                    result[key] = diffValue[0];
+                    continue;
+                  }
+                }
+                
+                // Recursively apply diff for nested objects
+                if (diffValue && typeof diffValue === 'object' && !Array.isArray(diffValue)) {
+                  if (!result[key] || typeof result[key] !== 'object' || Array.isArray(result[key])) {
+                    result[key] = {};
+                  }
+                  result[key] = applyDiff(result[key], diffValue);
+                } else {
+                  // Direct assignment for primitive values
+                  console.log(`  Setting key: ${key} to`, diffValue);
+                  result[key] = diffValue;
+                }
+              }
+              
+              return result;
             }
             
             // ============================================================
@@ -130,200 +219,40 @@ jobs:
             }
             
             // ============================================================
-            // FUNCTION: Merge scenario into existing scenarios
-            // ============================================================
-            function mergeScenarioIntoArray(existingScenarios, newScenario) {
-              if (!Array.isArray(existingScenarios)) existingScenarios = [];
-              if (!newScenario || !newScenario.id) return existingScenarios;
-              
-              console.log('Merging scenario:', newScenario.id, newScenario.name);
-              console.log('Processes count:', newScenario.processes?.length || 0);
-              
-              let existingIndex = existingScenarios.findIndex(s => s && s.id === newScenario.id);
-              
-              if (existingIndex === -1 && newScenario.name) {
-                const normalizedName = newScenario.name.toLowerCase().trim();
-                existingIndex = existingScenarios.findIndex(s => 
-                  s && s.name && s.name.toLowerCase().trim() === normalizedName
-                );
-              }
-              
-              if (existingIndex >= 0) {
-                console.log('Found existing scenario');
-                const existing = existingScenarios[existingIndex];
-                
-                const existingIds = new Set(existing.processes.map(p => p && p.id));
-                const newProcesses = (newScenario.processes || []).filter(p => p && p.id && !existingIds.has(p.id));
-                
-                if (newProcesses.length > 0) {
-                  console.log('Adding', newProcesses.length, 'new processes');
-                  existing.processes = [...existing.processes, ...newProcesses];
-                }
-                
-                if (newScenario.name) existing.name = newScenario.name;
-                return existingScenarios;
-              } else {
-                console.log('Adding new scenario');
-                existingScenarios.push({
-                  id: newScenario.id,
-                  name: newScenario.name || 'Scenario ' + (existingScenarios.length + 1),
-                  processes: Array.isArray(newScenario.processes) ? newScenario.processes : []
-                });
-                return existingScenarios;
-              }
-            }
-            
-            // ============================================================
-            // FUNCTION: Extract scenarios from diff
-            // ============================================================
-            function extractScenariosFromDiff(diff) {
-              const extracted = [];
-              
-              // Case 1: diff.scenarios is an array
-              if (diff.scenarios && Array.isArray(diff.scenarios)) {
-                for (const item of diff.scenarios) {
-                  const extractedValue = extractValue(item);
-                  const scenario = cleanScenario(extractedValue);
-                  if (scenario) extracted.push(scenario);
-                }
-                return extracted;
-              }
-              
-              // Case 2: diff.scenarios is an object
-              if (diff.scenarios && typeof diff.scenarios === 'object') {
-                const extractedValue = extractValue(diff.scenarios);
-                
-                if (Array.isArray(extractedValue)) {
-                  for (const item of extractedValue) {
-                    const scenario = cleanScenario(item);
-                    if (scenario) extracted.push(scenario);
-                  }
-                } else if (extractedValue && typeof extractedValue === 'object') {
-                  // Check if it's a single scenario
-                  if (extractedValue.id) {
-                    const scenario = cleanScenario(extractedValue);
-                    if (scenario) extracted.push(scenario);
-                  } else {
-                    // It might be an object with numeric keys
-                    for (const key in extractedValue) {
-                      if (key === '_t') continue;
-                      const value = extractedValue[key];
-                      if (value && typeof value === 'object' && value.id) {
-                        const scenario = cleanScenario(value);
-                        if (scenario) extracted.push(scenario);
-                      }
-                    }
-                  }
-                }
-              }
-              
-              // Case 3: diff itself is a scenario
-              const selfScenario = cleanScenario(extractValue(diff));
-              if (selfScenario) {
-                extracted.push(selfScenario);
-              }
-              
-              return extracted;
-            }
-            
-            // ============================================================
-            // FUNCTION: Process Gist
-            // ============================================================
-            function processGist(gistId) {
-              console.log('Fetching data from Gist:', gistId);
-              const token = process.env.GITHUB_TOKEN;
-              if (!token) {
-                console.error('GITHUB_TOKEN not found');
-                process.exit(1);
-              }
-              
-              const gistUrl = 'https://api.github.com/gists/' + gistId;
-              
-              fetch(gistUrl, {
-                headers: {
-                  'Authorization': 'token ' + token,
-                  'Accept': 'application/vnd.github.v3+json'
-                }
-              })
-              .then(function(response) {
-                if (!response.ok) {
-                  throw new Error('Gist API returned ' + response.status);
-                }
-                return response.json();
-              })
-              .then(function(gistData) {
-                const files = gistData.files;
-                const fileNames = Object.keys(files);
-                if (fileNames.length === 0) {
-                  throw new Error('No files in gist');
-                }
-                const fileContent = files[fileNames[0]].content;
-                console.log('Gist file content length:', fileContent.length);
-                
-                try {
-                  const parsedData = JSON.parse(fileContent);
-                  console.log('Gist data parsed successfully');
-                  console.log('Parsed data keys:', Object.keys(parsedData));
-                  applyChanges(parsedData);
-                } catch (e) {
-                  console.error('Failed to parse Gist content:', e.message);
-                  process.exit(1);
-                }
-                
-                return fetch('https://api.github.com/gists/' + gistId, {
-                  method: 'DELETE',
-                  headers: { 'Authorization': 'token ' + token }
-                });
-              })
-              .then(function() {
-                console.log('Gist deleted');
-              })
-              .catch(function(e) {
-                console.error('Gist processing failed:', e.message);
-                process.exit(1);
-              });
-            }
-            
-            // ============================================================
-            // FUNCTION: Apply changes to data
+            // ✅ FIXED: Apply changes with proper deletion support
             // ============================================================
             function applyChanges(parsedData) {
-              let resultData = JSON.parse(JSON.stringify(currentData));
-              console.log('Current data scenarios:', resultData.scenarios?.length || 0);
+              console.log('Applying changes with deletion support...');
+              console.log('Parsed data keys:', Object.keys(parsedData));
               
+              // Apply the diff to current data
+              let resultData = applyDiff(currentData, parsedData);
+              console.log('After applyDiff, scenarios:', resultData.scenarios?.length || 0);
+              
+              // Ensure scenarios is an array
               if (!resultData.scenarios || !Array.isArray(resultData.scenarios)) {
+                console.log('Scenarios is not an array, creating empty array');
                 resultData.scenarios = [];
               }
               
-              // Extract scenarios from the parsed data
-              const extractedScenarios = extractScenariosFromDiff(parsedData);
-              console.log('Extracted scenarios from diff:', extractedScenarios.length);
-              
-              for (const scenario of extractedScenarios) {
-                console.log('  Scenario:', scenario.id, scenario.name, 'processes:', scenario.processes?.length || 0);
-              }
-              
-              // Merge each extracted scenario
-              for (const scenario of extractedScenarios) {
-                if (scenario) {
-                  resultData.scenarios = mergeScenarioIntoArray(resultData.scenarios, scenario);
-                }
-              }
+              // Clean all scenarios
+              resultData.scenarios = resultData.scenarios
+                .map(s => cleanScenario(s))
+                .filter(s => s !== null);
               
               // Handle currentScenarioId
-              let newCurrentId = parsedData.currentScenarioId;
-              if (newCurrentId) {
-                newCurrentId = extractValue(newCurrentId);
+              if (parsedData.currentScenarioId) {
+                let newCurrentId = parsedData.currentScenarioId;
+                // Handle array format from diff
                 if (Array.isArray(newCurrentId)) {
-                  newCurrentId = newCurrentId.find(item => typeof item === 'string') || null;
+                  newCurrentId = newCurrentId[0];
                 }
-              }
-              
-              if (newCurrentId && typeof newCurrentId === 'string') {
-                const exists = resultData.scenarios.some(s => s && s.id === newCurrentId);
-                if (exists) {
-                  resultData.currentScenarioId = newCurrentId;
-                  console.log('Set currentScenarioId to:', newCurrentId);
+                if (newCurrentId && typeof newCurrentId === 'string') {
+                  const exists = resultData.scenarios.some(s => s && s.id === newCurrentId);
+                  if (exists) {
+                    resultData.currentScenarioId = newCurrentId;
+                    console.log('Set currentScenarioId to:', newCurrentId);
+                  }
                 }
               }
               
@@ -334,11 +263,6 @@ jobs:
                   console.log('Set currentScenarioId to first scenario:', resultData.currentScenarioId);
                 }
               }
-              
-              // Clean all scenarios
-              resultData.scenarios = resultData.scenarios
-                .map(s => cleanScenario(s))
-                .filter(s => s !== null);
               
               // Ensure master data exists
               if (!resultData.departments || !Array.isArray(resultData.departments)) {
@@ -375,15 +299,18 @@ jobs:
               console.log('Final currentScenarioId:', resultData.currentScenarioId);
               
               fs.writeFileSync('data.json', JSON.stringify(resultData, null, 2));
-              console.log('data.json updated successfully');
+              console.log('✅ data.json updated successfully');
             }
             
             // ============================================================
             // MAIN EXECUTION
             // ============================================================
+            const payloadType = payload.type || 'diff';
+            
             if (payloadType === 'gist' && payload.gist_id) {
+              console.log('Processing Gist payload...');
+              // Gist handling would go here, but for now we'll process direct
               processGist(payload.gist_id);
-              setTimeout(function() {}, 30000);
             } else {
               console.log('Processing direct payload...');
               let payloadData = payload.data || '';
@@ -406,7 +333,6 @@ jobs:
               }
             }
           "
-
       - name: Validate JSON
         run: |
           if [ -f data.json ] && [ -s data.json ]; then
