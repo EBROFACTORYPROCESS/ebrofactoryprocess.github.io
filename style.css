@@ -83,4 +83,9 @@
         .master-section { border-top: 1px solid #e2e8f0; margin-top: 1rem; padding-top: 1rem; }
         .add-item { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
     </style>
-
+/* Pulse animation for save button */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); background-color: #fef3c7; border-color: #f59e0b; }
+    100% { transform: scale(1); }
+}
