@@ -74,12 +74,72 @@ jobs:
               process.exit(1);
             }
             
-            function applyArrayDiff(currentArray, diffObj) {
+            // ============================================================
+            // FUNCTION: Merge workflow data into a scenario
+            // ============================================================
+            function mergeWorkflowIntoScenario(existingScenario, newScenario) {
+              if (!existingScenario || !newScenario) return existingScenario;
+              
+              if (newScenario.workflow) {
+                console.log("  Merging workflow data into scenario:", existingScenario.name || existingScenario.id);
+                
+                if (!existingScenario.workflow) {
+                  existingScenario.workflow = { nodes: [], connections: [] };
+                }
+                
+                if (newScenario.workflow.nodes && Array.isArray(newScenario.workflow.nodes)) {
+                  const existingNodeIds = new Set();
+                  if (existingScenario.workflow.nodes) {
+                    existingScenario.workflow.nodes.forEach(function(n) {
+                      if (n && n.id) existingNodeIds.add(n.id);
+                    });
+                  }
+                  
+                  newScenario.workflow.nodes.forEach(function(node) {
+                    if (node && node.id && !existingNodeIds.has(node.id)) {
+                      existingScenario.workflow.nodes.push(node);
+                      console.log("    Added node:", node.id, node.label || "");
+                    }
+                  });
+                }
+                
+                if (newScenario.workflow.connections && Array.isArray(newScenario.workflow.connections)) {
+                  const existingConnStrings = new Set();
+                  if (existingScenario.workflow.connections) {
+                    existingScenario.workflow.connections.forEach(function(c) {
+                      if (c && c.from && c.to) {
+                        existingConnStrings.add(c.from + "->" + c.to);
+                      }
+                    });
+                  }
+                  
+                  newScenario.workflow.connections.forEach(function(conn) {
+                    if (conn && conn.from && conn.to) {
+                      const key = conn.from + "->" + conn.to;
+                      if (!existingConnStrings.has(key)) {
+                        existingScenario.workflow.connections.push(conn);
+                        console.log("    Added connection:", conn.from, "->", conn.to);
+                      }
+                    }
+                  });
+                }
+                
+                console.log("  Final workflow nodes:", existingScenario.workflow.nodes.length);
+                console.log("  Final workflow connections:", existingScenario.workflow.connections.length);
+              }
+              
+              return existingScenario;
+            }
+            
+            // ============================================================
+            // FUNCTION: Apply array diff with workflow support
+            // ============================================================
+            function applyArrayDiffWithWorkflow(currentArray, diffObj) {
               if (!diffObj || diffObj._t !== "a") {
                 return currentArray;
               }
               
-              console.log("  Processing array diff...");
+              console.log("  Processing array diff with workflow support...");
               
               var result = [];
               for (var i = 0; i < currentArray.length; i++) {
@@ -90,7 +150,6 @@ jobs:
               for (var key in diffObj) {
                 if (key === "_t") continue;
                 var val = diffObj[key];
-                var isDeletionKey = key.startsWith("_");
                 var index = parseInt(key.replace("_", ""));
                 
                 if (Array.isArray(val)) {
@@ -124,23 +183,16 @@ jobs:
                 }
               }
               
-              console.log("    Operations:");
-              for (var o = 0; o < ops.length; o++) {
-                var op = ops[o];
-                console.log("      " + op.type + " at index " + op.index);
-              }
+              console.log("    Operations:", ops.map(function(op) { return op.type + " at " + op.index; }).join(", "));
               
               var deletions = ops.filter(function(op) { return op.type === "delete"; });
               deletions.sort(function(a, b) { return b.index - a.index; });
               for (var d = 0; d < deletions.length; d++) {
                 var del = deletions[d];
                 if (del.index < result.length) {
-                  var name = result[del.index] && result[del.index].name ? result[del.index].name : 
-                            (typeof result[del.index] === "string" ? result[del.index] : "unknown");
+                  var name = result[del.index] && result[del.index].name ? result[del.index].name : "unknown";
                   console.log("    Deleting item at index " + del.index + ": " + name);
                   result.splice(del.index, 1);
-                } else {
-                  console.log("    Warning: Delete index " + del.index + " out of range (length: " + result.length + ")");
                 }
               }
               
@@ -152,7 +204,6 @@ jobs:
                 if (ins.index <= result.length) {
                   result.splice(ins.index, 0, ins.value);
                 } else {
-                  console.log("    Index " + ins.index + " exceeds length " + result.length + ", appending");
                   result.push(ins.value);
                 }
               }
@@ -171,7 +222,11 @@ jobs:
                 var rec = recursives[r];
                 if (rec.index < result.length) {
                   console.log("    Recursive update at index " + rec.index);
-                  result[rec.index] = applyArrayDiff(result[rec.index], rec.value);
+                  if (rec.value && rec.value.workflow) {
+                    result[rec.index] = mergeWorkflowIntoScenario(result[rec.index], rec.value);
+                  } else {
+                    result[rec.index] = applyArrayDiffWithWorkflow(result[rec.index], rec.value);
+                  }
                 }
               }
               
@@ -208,7 +263,8 @@ jobs:
               return {
                 id: sc.id,
                 name: sc.name || "Scenario",
-                processes: processes
+                processes: processes,
+                workflow: sc.workflow || { nodes: [], connections: [] }
               };
             }
             
@@ -218,24 +274,30 @@ jobs:
               
               var resultData = JSON.parse(JSON.stringify(currentData));
               
-              for (var key in diffData) {
-                if (key === "_t") continue;
+              if (diffData.scenarios && diffData.scenarios._t === "a") {
+                console.log("Processing array diff for key: scenarios");
                 
-                var diffValue = diffData[key];
+                var currentScenarios = Array.isArray(currentData.scenarios) ? currentData.scenarios : [];
+                console.log("  Current scenarios length:", currentScenarios.length);
                 
-                if (diffValue && typeof diffValue === "object" && diffValue._t === "a") {
-                  console.log("Processing array diff for key: " + key);
-                  
-                  var currentArray = Array.isArray(currentData[key]) ? currentData[key] : [];
-                  console.log("  Current " + key + " length:", currentArray.length);
-                  
-                  var newArray = applyArrayDiff(currentArray, diffValue);
-                  
-                  resultData[key] = newArray;
-                  console.log("  Final " + key + " length:", newArray.length);
-                } else {
-                  console.log("Setting key: " + key);
-                  resultData[key] = diffValue;
+                var newScenarios = applyArrayDiffWithWorkflow(currentScenarios, diffData.scenarios);
+                
+                newScenarios = newScenarios
+                  .map(function(s) { return cleanScenario(s); })
+                  .filter(function(s) { return s !== null });
+                
+                resultData.scenarios = newScenarios;
+                console.log("  Final scenarios length:", resultData.scenarios.length);
+              } else {
+                for (var key in diffData) {
+                  if (key === "_t") continue;
+                  if (diffData[key] && typeof diffData[key] === "object" && diffData[key]._t === "a") {
+                    if (Array.isArray(resultData[key])) {
+                      resultData[key] = applyArrayDiffWithWorkflow(resultData[key], diffData[key]);
+                    }
+                  } else {
+                    resultData[key] = diffData[key];
+                  }
                 }
               }
               
@@ -243,10 +305,6 @@ jobs:
                 console.log("Scenarios is not an array, creating empty array");
                 resultData.scenarios = [];
               }
-              
-              resultData.scenarios = resultData.scenarios
-                .map(function(s) { return cleanScenario(s); })
-                .filter(function(s) { return s !== null; });
               
               if (diffData.currentScenarioId) {
                 var newCurrentId = diffData.currentScenarioId;
