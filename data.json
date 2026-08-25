@@ -1519,7 +1519,11 @@
           "userManual": "",
           "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
         }
-      ]
+      ],
+      "workflow": {
+        "nodes": [],
+        "connections": []
+      }
     },
     {
       "id": "1777474499044-2n4tvjmh",
@@ -2593,7 +2597,11 @@
           "userManual": "",
           "notes": ""
         }
-      ]
+      ],
+      "workflow": {
+        "nodes": [],
+        "connections": []
+      }
     }
   ],
   "currentScenarioId": "default"
