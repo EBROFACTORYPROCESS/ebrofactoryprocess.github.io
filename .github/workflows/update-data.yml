@@ -76,9 +76,14 @@ jobs:
             }
             
             // ============================================================
-            // FIXED: Apply jsondiffpatch diff format
-            // Format: { "_t": "a", "_2": [oldValue, 0, 0] } for deletion
-            //         { "_t": "a", "_2": [0, newValue, 0] } for insertion
+            // FIXED: Apply jsondiffpatch diff format for arrays
+            // 
+            // For arrays, jsondiffpatch uses:
+            //   { "_t": "a", "0": [newValue] }           -> Insert at index 0
+            //   { "_t": "a", "5": [newValue] }           -> Insert at index 5  
+            //   { "_t": "a", "_2": [oldValue, 0, 0] }    -> Delete at index 2
+            //   { "_t": "a", "_2": [0, newValue, 0] }    -> Insert at index 2
+            //   { "_t": "a", "2": [oldValue, newValue] } -> Update at index 2
             // ============================================================
             function applyArrayDiff(currentArray, diffObj) {
               if (!diffObj || diffObj._t !== 'a') {
@@ -98,34 +103,51 @@ jobs:
               for (var key in diffObj) {
                 if (key === '_t') continue;
                 var val = diffObj[key];
-                var index = parseInt(key.replace('_', '')); // Remove underscore prefix
                 
-                if (Array.isArray(val) && val.length === 3) {
-                  // Format: [oldValue, 0, 0] = deletion
-                  //          [0, newValue, 0] = insertion  
-                  //          [oldValue, newValue, 0] = update
-                  
-                  if (val[0] !== undefined && val[1] === 0 && val[2] === 0) {
-                    // Deletion: [oldValue, 0, 0]
-                    ops.push({ type: 'delete', index: index, value: val[0] });
-                  } else if (val[0] === 0 && val[1] !== undefined && val[2] === 0) {
-                    // Insertion: [0, newValue, 0]
-                    ops.push({ type: 'insert', index: index, value: val[1] });
-                  } else if (val[0] !== undefined && val[1] !== undefined && val[2] === 0) {
-                    // Update: [oldValue, newValue, 0]
-                    ops.push({ type: 'update', index: index, value: val[1] });
-                  } else {
-                    // Unknown format
-                    console.log('    Unknown array operation format:', val);
-                  }
-                } else if (Array.isArray(val) && val.length === 2) {
-                  // Alternative format: [0, oldValue] or [newValue, 0]
-                  if (val[0] === 0 && val[1] !== undefined) {
-                    ops.push({ type: 'delete', index: index, value: val[1] });
-                  } else if (val[0] !== undefined && val[1] === 0) {
+                // Check if key starts with '_' (deletion marker)
+                var isDeletionKey = key.startsWith('_');
+                var index = parseInt(key.replace('_', ''));
+                
+                if (Array.isArray(val)) {
+                  if (val.length === 1) {
+                    // Format: [newValue] - Insertion at index
+                    // This is used for adding items to the end
                     ops.push({ type: 'insert', index: index, value: val[0] });
+                  } else if (val.length === 3) {
+                    // Format: [oldValue, 0, 0] = deletion
+                    //          [0, newValue, 0] = insertion  
+                    //          [oldValue, newValue, 0] = update
+                    if (val[0] !== undefined && val[1] === 0 && val[2] === 0) {
+                      // Deletion: [oldValue, 0, 0]
+                      ops.push({ type: 'delete', index: index, value: val[0] });
+                    } else if (val[0] === 0 && val[1] !== undefined && val[2] === 0) {
+                      // Insertion: [0, newValue, 0]
+                      ops.push({ type: 'insert', index: index, value: val[1] });
+                    } else if (val[0] !== undefined && val[1] !== undefined && val[2] === 0) {
+                      // Update: [oldValue, newValue, 0]
+                      ops.push({ type: 'update', index: index, value: val[1] });
+                    } else {
+                      console.log('    Unknown 3-element format:', val);
+                      ops.push({ type: 'set', index: index, value: val });
+                    }
+                  } else if (val.length === 2) {
+                    // Format: [oldValue, newValue] = update
+                    //          [0, oldValue] = deletion (alternative format)
+                    //          [newValue, 0] = insertion (alternative format)
+                    if (val[0] === 0 && val[1] !== undefined) {
+                      // Deletion: [0, oldValue]
+                      ops.push({ type: 'delete', index: index, value: val[1] });
+                    } else if (val[0] !== undefined && val[1] === 0) {
+                      // Insertion: [newValue, 0]
+                      ops.push({ type: 'insert', index: index, value: val[0] });
+                    } else {
+                      // Update: [oldValue, newValue]
+                      ops.push({ type: 'update', index: index, value: val[1] });
+                    }
                   } else {
-                    ops.push({ type: 'update', index: index, value: val[0] });
+                    // Unknown format, treat as set
+                    console.log('    Unknown array format (length ' + val.length + '):', val);
+                    ops.push({ type: 'set', index: index, value: val });
                   }
                 } else if (val && typeof val === 'object' && !Array.isArray(val)) {
                   // Recursive object diff
@@ -137,9 +159,10 @@ jobs:
               }
               
               // Log operations
+              console.log('    Operations:');
               for (var o = 0; o < ops.length; o++) {
                 var op = ops[o];
-                console.log('    Operation: ' + op.type + ' at index ' + op.index);
+                console.log('      ' + op.type + ' at index ' + op.index);
               }
               
               // Apply deletions first (from highest index to lowest)
@@ -148,7 +171,8 @@ jobs:
               for (var d = 0; d < deletions.length; d++) {
                 var del = deletions[d];
                 if (del.index < result.length) {
-                  var name = result[del.index] && result[del.index].name ? result[del.index].name : 'unknown';
+                  var name = result[del.index] && result[del.index].name ? result[del.index].name : 
+                            (typeof result[del.index] === 'string' ? result[del.index] : 'unknown');
                   console.log('    Deleting item at index ' + del.index + ': ' + name);
                   result.splice(del.index, 1);
                 } else {
@@ -156,7 +180,7 @@ jobs:
                 }
               }
               
-              // Apply insertions
+              // Apply insertions (from lowest to highest index)
               var insertions = ops.filter(function(op) { return op.type === 'insert'; });
               insertions.sort(function(a, b) { return a.index - b.index; });
               for (var j = 0; j < insertions.length; j++) {
@@ -165,6 +189,8 @@ jobs:
                 if (ins.index <= result.length) {
                   result.splice(ins.index, 0, ins.value);
                 } else {
+                  // If index is beyond current length, append at end
+                  console.log('    Index ' + ins.index + ' exceeds length ' + result.length + ', appending');
                   result.push(ins.value);
                 }
               }
@@ -232,41 +258,29 @@ jobs:
               
               var resultData = JSON.parse(JSON.stringify(currentData));
               
-              // Handle scenarios diff
-              if (diffData.scenarios && diffData.scenarios._t === 'a') {
-                console.log('Processing scenarios array diff...');
+              // Process each top-level key in the diff
+              for (var key in diffData) {
+                if (key === '_t') continue;
                 
-                // Get current scenarios
-                var currentScenarios = Array.isArray(currentData.scenarios) ? currentData.scenarios : [];
-                console.log('Current scenarios count:', currentScenarios.length);
+                var diffValue = diffData[key];
                 
-                // Apply the array diff
-                var newScenarios = applyArrayDiff(currentScenarios, diffData.scenarios);
-                
-                // Clean scenarios
-                newScenarios = newScenarios
-                  .map(function(s) { return cleanScenario(s); })
-                  .filter(function(s) { return s !== null; });
-                
-                resultData.scenarios = newScenarios;
-                console.log('Final scenarios count:', resultData.scenarios.length);
-                if (resultData.scenarios.length > 0) {
-                  console.log('Final scenario names:', resultData.scenarios.map(function(s) { return s.name; }).join(', '));
-                }
-              } else {
-                // Handle other diffs or full replacement
-                console.log('Applying diff to entire data structure...');
-                resultData = JSON.parse(JSON.stringify(currentData));
-                
-                for (var key in diffData) {
-                  if (key === '_t') continue;
-                  if (diffData[key] && typeof diffData[key] === 'object' && diffData[key]._t === 'a') {
-                    if (Array.isArray(resultData[key])) {
-                      resultData[key] = applyArrayDiff(resultData[key], diffData[key]);
-                    }
-                  } else {
-                    resultData[key] = diffData[key];
-                  }
+                // Check if this is an array diff
+                if (diffValue && typeof diffValue === 'object' && diffValue._t === 'a') {
+                  console.log('Processing array diff for key: ' + key);
+                  
+                  // Get current array
+                  var currentArray = Array.isArray(currentData[key]) ? currentData[key] : [];
+                  console.log('  Current ' + key + ' length:', currentArray.length);
+                  
+                  // Apply the array diff
+                  var newArray = applyArrayDiff(currentArray, diffValue);
+                  
+                  resultData[key] = newArray;
+                  console.log('  Final ' + key + ' length:', newArray.length);
+                } else {
+                  // Direct assignment for non-array diffs
+                  console.log('Setting key: ' + key);
+                  resultData[key] = diffValue;
                 }
               }
               
@@ -275,6 +289,11 @@ jobs:
                 console.log('Scenarios is not an array, creating empty array');
                 resultData.scenarios = [];
               }
+              
+              // Clean scenarios
+              resultData.scenarios = resultData.scenarios
+                .map(function(s) { return cleanScenario(s); })
+                .filter(function(s) { return s !== null; });
               
               // Handle currentScenarioId
               if (diffData.currentScenarioId) {
@@ -320,6 +339,59 @@ jobs:
                   { value: 'Operational', color: 'green' },
                   { value: 'Completed', color: 'green' },
                   { value: 'Offline', color: 'red' },
+                  { value: 'To Be Implemented', color: 'red' },
+                  { value: 'Work in Progress', color: 'yellow' }
+                ];
+              }
+              
+              if (!resultData.sysRespList || !Array.isArray(resultData.sysRespList)) {
+                resultData.sysRespList = [];
+              }
+              
+              console.log('Final scenarios count:', resultData.scenarios.length);
+              console.log('Final currentScenarioId:', resultData.currentScenarioId);
+              
+              fs.writeFileSync('data.json', JSON.stringify(resultData, null, 2));
+              console.log('data.json updated successfully');
+            }
+            
+            // ============================================================
+            // MAIN EXECUTION
+            // ============================================================
+            var payloadType = payload.type || 'diff';
+            console.log('Payload type:', payloadType);
+            
+            if (payloadType === 'gist' && payload.gist_id) {
+              console.log('Processing Gist payload...');
+            } else {
+              console.log('Processing direct payload...');
+              console.log('Parsed data keys:', Object.keys(parsedData));
+              applyChanges(parsedData);
+            }
+          "
+
+      - name: Validate JSON
+        run: |
+          if [ -f data.json ] && [ -s data.json ]; then
+            if ! jq empty data.json 2>/dev/null; then
+              echo "Invalid JSON in data.json"
+              cat data.json | head -100
+              exit 1
+            fi
+            echo "JSON validation passed"
+          fi
+
+      - name: Commit and push
+        run: |
+          if [ -f data.json ] && git diff --quiet data.json; then
+            echo "No changes to commit"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add data.json
+            git commit -m "Apply changes from web [skip ci]" || echo "No changes to commit"
+            git push
+          filor: 'red' },
                   { value: 'To Be Implemented', color: 'red' },
                   { value: 'Work in Progress', color: 'yellow' }
                 ];
