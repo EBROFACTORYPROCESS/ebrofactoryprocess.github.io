@@ -2070,6 +2070,9 @@ function renderCurrentView() {
         document.getElementById('tableViewPanel').style.display = 'none';
         document.getElementById('sequenceViewPanel').style.display = 'none';
         document.getElementById('workflowViewPanel').style.display = 'block';
+        
+        // Render workflow
+        renderWorkflow();
         // Bind events after rendering
         setTimeout(bindWorkflowEvents, 100);
     }
