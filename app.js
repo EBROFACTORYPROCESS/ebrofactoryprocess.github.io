@@ -12,6 +12,7 @@ const REPO_OWNER = 'ebrofactoryprocess';
 const REPO_NAME = 'ebrofactoryprocess.github.io';
 const DATA_PATH = 'data.json';
 
+let selectedArrowIndex = null;
 let appData = null;
 let currentSha = null;
 let isSaving = false;
@@ -2592,7 +2593,6 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
     const toRect = toEl.getBoundingClientRect();
     const wrapperRect = wrapper.getBoundingClientRect();
     
-    // Calculate center points relative to the canvas wrapper
     const fromX = fromRect.left + fromRect.width / 2 - wrapperRect.left;
     const fromY = fromRect.top + fromRect.height / 2 - wrapperRect.top;
     const toX = toRect.left + toRect.width / 2 - wrapperRect.left;
@@ -2606,7 +2606,6 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
     let endX = toX;
     let endY = toY;
     
-    // Adjust for socket selection based on relative position
     if (Math.abs(dx) > Math.abs(dy)) {
         if (dx > 0) {
             startX = fromRect.right - wrapperRect.left;
@@ -2629,7 +2628,6 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
         endX = toRect.left + toRect.width / 2 - wrapperRect.left;
     }
     
-    // Create path with curve
     const offsetX = Math.abs(endX - startX) * 0.3;
     const offsetY = Math.abs(endY - startY) * 0.3;
     
@@ -2644,13 +2642,16 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
         pathData = `M ${startX} ${startY} C ${startX} ${cp1y}, ${endX} ${cp2y}, ${endX} ${endY}`;
     }
     
-    // ✅ Create a group for the arrow to allow click events
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     g.setAttribute('class', 'workflow-arrow-group');
     g.dataset.connectionIndex = connectionIndex;
     g.style.cursor = 'pointer';
     
-    // Draw the path
+    // ✅ If this arrow is selected, add the class
+    if (selectedArrowIndex === connectionIndex) {
+        g.classList.add('selected');
+    }
+    
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('d', pathData);
     path.setAttribute('stroke', color || '#475569');
@@ -2662,7 +2663,6 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
     path.setAttribute('class', 'workflow-arrow-line');
     g.appendChild(path);
     
-    // Draw arrowhead
     const angle = Math.atan2(endY - startY, endX - startX);
     const headLen = 10;
     const headAngle = Math.PI / 6;
@@ -2680,9 +2680,7 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
     arrowHead.setAttribute('class', 'workflow-arrow-head');
     g.appendChild(arrowHead);
     
-    // ✅ Add delete button on hover (only in edit mode)
     if (currentMode === 'edit') {
-        // Invisible hit area for easier clicking
         const hitArea = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         hitArea.setAttribute('d', pathData);
         hitArea.setAttribute('stroke', 'transparent');
@@ -2691,44 +2689,79 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
         hitArea.setAttribute('class', 'workflow-arrow-hit');
         g.appendChild(hitArea);
         
-        // Click to delete arrow
+        // ✅ Click to select/delete arrow
         g.addEventListener('click', function(e) {
             e.stopPropagation();
             const idx = parseInt(this.dataset.connectionIndex);
             if (!isNaN(idx)) {
-                deleteWorkflowConnection(idx);
+                // Deselect if already selected
+                if (selectedArrowIndex === idx) {
+                    selectedArrowIndex = null;
+                    renderWorkflow();
+                    return;
+                }
+                
+                // Select this arrow
+                selectedArrowIndex = idx;
+                renderWorkflow();
+                
+                // Show delete confirmation after brief delay for visual feedback
+                setTimeout(function() {
+                    if (selectedArrowIndex === idx) {
+                        if (confirm('Delete this arrow?')) {
+                            deleteWorkflowConnection(idx);
+                            selectedArrowIndex = null;
+                        } else {
+                            // Option to edit label
+                            if (confirm('Edit arrow label instead?')) {
+                                editWorkflowConnectionLabel(idx);
+                                selectedArrowIndex = null;
+                            } else {
+                                selectedArrowIndex = null;
+                                renderWorkflow();
+                            }
+                        }
+                    }
+                }, 300);
             }
         });
-        // ✅ Double-click to edit arrow label
+        
+        // Double-click to edit label (keep this too)
         g.addEventListener('dblclick', function(e) {
             e.stopPropagation();
             const idx = parseInt(this.dataset.connectionIndex);
             if (!isNaN(idx)) {
                 editWorkflowConnectionLabel(idx);
+                selectedArrowIndex = null;
             }
         });
+        
         // Hover effect
         g.addEventListener('mouseenter', function() {
-            this.querySelector('.workflow-arrow-line').setAttribute('stroke', '#ef4444');
-            this.querySelector('.workflow-arrow-head').setAttribute('fill', '#ef4444');
-            this.style.cursor = 'pointer';
+            if (!this.classList.contains('selected')) {
+                this.querySelector('.workflow-arrow-line').setAttribute('stroke', '#8b5cf6');
+                this.querySelector('.workflow-arrow-head').setAttribute('fill', '#8b5cf6');
+            }
         });
         
         g.addEventListener('mouseleave', function() {
-            this.querySelector('.workflow-arrow-line').setAttribute('stroke', color || '#475569');
-            this.querySelector('.workflow-arrow-head').setAttribute('fill', color || '#475569');
+            if (!this.classList.contains('selected')) {
+                this.querySelector('.workflow-arrow-line').setAttribute('stroke', color || '#475569');
+                this.querySelector('.workflow-arrow-head').setAttribute('fill', color || '#475569');
+            }
         });
     }
     
     svg.appendChild(g);
-    // ✅ Add text label on arrow (if exists)
+    
+    // Add text label on arrow
     if (connectionIndex !== undefined) {
         const workflow = getWorkflowData();
         const conn = workflow.connections[connectionIndex];
         if (conn && conn.label) {
             const midX = (startX + endX) / 2;
             const midY = (startY + endY) / 2 - 15;
-        
+            
             const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             text.setAttribute('x', midX);
             text.setAttribute('y', midY);
@@ -2741,7 +2774,6 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
             g.appendChild(text);
         }
     }
-    
 }
     // ✅ Delete a single connection
     function deleteWorkflowConnection(index) {
