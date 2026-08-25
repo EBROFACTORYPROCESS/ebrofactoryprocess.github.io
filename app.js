@@ -2297,6 +2297,7 @@ function renderWorkflow() {
     svgLayer.style.overflow = 'visible';
     canvasWrapper.appendChild(svgLayer);
     
+
     // Render nodes
     workflow.nodes.forEach(node => {
         const nodeEl = document.createElement('div');
@@ -2305,17 +2306,17 @@ function renderWorkflow() {
         nodeEl.dataset.nodeId = node.id;
         nodeEl.dataset.x = node.x || 100;
         nodeEl.dataset.y = node.y || 100;
-        
+    
         let process = null;
         if (node.processId) {
             process = processes.find(p => p.id === node.processId);
         }
-        
+    
         let typeClass = '';
         let statusColor = 'default';
         let seqLabel = '';
         let nameLabel = node.label || 'Unnamed';
-        
+    
         if (node.type === 'start') {
             typeClass = 'type-start';
             nameLabel = '🏁 START';
@@ -2334,20 +2335,20 @@ function renderWorkflow() {
             const status = appData.businessStatuses.find(s => s.value === process.businessStatus);
             statusColor = status ? status.color : 'default';
         }
-        
+    
         if (typeClass) {
             nodeEl.classList.add(typeClass);
         }
         
         const statusHtml = process ? `<span class="node-status ${statusColor}">${escapeHtml(process.businessStatus || 'Not Defined')}</span>` : '';
         const seqDisplay = seqLabel ? `<span class="node-seq">${escapeHtml(seqLabel)}</span>` : (node.type ? `<span class="node-seq">${escapeHtml(node.type)}</span>` : '');
-        
+    
         let decisionHtml = '';
         if (node.type === 'decision') {
             const decisionText = node.decisionText || 'Decision?';
             decisionHtml = `<div class="node-decision-text">❓ ${escapeHtml(decisionText)}</div>`;
         }
-        
+    
         nodeEl.innerHTML = `
             <div class="node-header">
                 ${seqDisplay}
@@ -2357,7 +2358,7 @@ function renderWorkflow() {
             ${decisionHtml}
             <button class="node-delete-btn" data-node-id="${node.id}">✕</button>
         `;
-        
+    
         const xPos = node.x || 100;
         const yPos = node.y || 100;
         nodeEl.style.left = xPos + 'px';
@@ -2369,7 +2370,7 @@ function renderWorkflow() {
             nodeEl.style.cursor = 'default';
         }
 
-        // Click to connect
+        // ✅ Click to connect (Edit Mode only)
         if (isEdit) {
             nodeEl.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -2378,7 +2379,18 @@ function renderWorkflow() {
                 handleNodeConnectionClick(node.id);
             });
         }
-        
+    
+        // ✅ Double-click to open process detail (Display Mode only)
+        if (!isEdit) {
+            nodeEl.addEventListener('dblclick', function(e) {
+                e.stopPropagation();
+                let processId = node.processId;
+                if (processId) {
+                    openProcessDetail(processId);
+                }
+            });
+        }
+    
         // Delete button
         const deleteBtn = nodeEl.querySelector('.node-delete-btn');
         if (deleteBtn && isEdit) {
@@ -2388,7 +2400,7 @@ function renderWorkflow() {
                 deleteWorkflowNode(node.id);
             });
         }
-        
+    
         // Edit button for decision nodes
         if (node.type === 'decision' && isEdit) {
             const editBtn = document.createElement('button');
@@ -2400,10 +2412,11 @@ function renderWorkflow() {
             });
             nodeEl.appendChild(editBtn);
         }
+    
+        // Toggle button for hide/show
         if (isEdit) {
             const toggleBtn = document.createElement('button');
             toggleBtn.className = 'node-toggle-btn';
-            // ✅ Closed eye (🙈) for hidden, open eye (👁️) for visible
             toggleBtn.textContent = node.hidden ? '👁️' : '🙈';
             toggleBtn.title = node.hidden ? 'Show node' : 'Hide node';
             toggleBtn.addEventListener('click', function(e) {
@@ -2412,6 +2425,7 @@ function renderWorkflow() {
             });
             nodeEl.appendChild(toggleBtn);
         }
+    
         nodeContainer.appendChild(nodeEl);
     });
     
