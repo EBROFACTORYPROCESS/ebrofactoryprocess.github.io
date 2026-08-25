@@ -1753,6 +1753,33 @@ function renderApp() {
                 <div id="sequenceViewPanel" style="display:block;">
                     <div class="sequence-fullview" id="sequenceFullView">Loading sequence...</div>
                 </div>
+                <div id="workflowViewPanel" style="display:none;">
+                    <div class="workflow-toolbar" id="workflowToolbar">
+                        <div class="btn-group">
+                            <button class="workflow-btn" id="wfAddStartBtn">🏁 Start</button>
+                            <button class="workflow-btn" id="wfAddEndBtn">🏁 End</button>
+                            <button class="workflow-btn" id="wfAddDecisionBtn">⚡ Decision</button>
+                            <button class="workflow-btn" id="wfAddParallelBtn">📋 Parallel</button>
+                        </div>
+                        <div class="btn-group">
+                            <button class="workflow-btn" id="wfConnectBtn">🔗 Connect</button>
+                            <button class="workflow-btn" id="wfClearArrowsBtn">🗑 Clear Arrows</button>
+                        </div>
+                        <div class="btn-group">
+                            <button class="workflow-btn" id="wfAutoLayoutBtn">📐 Auto Layout</button>
+                            <button class="workflow-btn danger" id="wfClearAllBtn">🗑 Clear All</button>
+                        </div>
+                    </div>
+                    <div class="workflow-container" id="workflowContainer">
+                        <div class="workflow-canvas" id="workflowCanvas">
+                            <div class="workflow-zoom-controls">
+                                <button id="wfZoomIn" title="Zoom In">➕</button>
+                                <button id="wfZoomOut" title="Zoom Out">➖</button>
+                                <button id="wfResetView" title="Reset View">⟲</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div id="deleteConfirmModal" class="custom-modal-overlay">
                 <div class="custom-modal"><h3>⚠️ Confirm Deletion</h3><p id="deleteModalMessage"></p>
