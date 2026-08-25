@@ -212,6 +212,17 @@ function normalizeData(data) {
         
         // Sort processes after normalization
         sc.processes = sortProcesses(sc.processes);
+    
+        if (!sc.workflow) {
+            sc.workflow = { nodes: [], connections: [] };
+        }
+        // Ensure workflow has nodes and connections arrays
+        if (!sc.workflow.nodes || !Array.isArray(sc.workflow.nodes)) {
+            sc.workflow.nodes = [];
+        }
+        if (!sc.workflow.connections || !Array.isArray(sc.workflow.connections)) {
+            sc.workflow.connections = [];
+        }
     }
     
     // Ensure currentScenarioId is valid
@@ -2136,24 +2147,32 @@ let workflowLines = [];
 let workflowConnections = [];
 let isConnectingMode = false;
 let connectionStartNode = null;
-let nodeIdCounter = 0;
+// let nodeIdCounter = 0;
 let workflowScale = 1;
 
 function getWorkflowData() {
     const sc = getCurrentScenario();
     if (!sc) return { nodes: [], connections: [] };
     
-    // Load workflow data from scenario or create default
     if (!sc.workflow) {
         sc.workflow = { nodes: [], connections: [] };
         console.log('Created new workflow for scenario:', sc.name);
     }
+    
+    // ✅ Restore nodeIdCounter from saved workflow
+    if (sc.workflow.nodeIdCounter !== undefined) {
+        nodeIdCounter = sc.workflow.nodeIdCounter;
+    }
+    
     return sc.workflow;
 }
 
 function saveWorkflowData(workflow) {
     const sc = getCurrentScenario();
     if (!sc) return;
+    
+    // ✅ Preserve nodeIdCounter in workflow data
+    workflow.nodeIdCounter = nodeIdCounter;
     sc.workflow = workflow;
     renderWorkflow();
 }
@@ -2380,7 +2399,8 @@ function renderWorkflow() {
     });
     
     // ✅ Draw arrows using SVG (inside canvas)
-    workflow.connections.forEach(function(conn) {
+    // ✅ Draw arrows using SVG (inside canvas) - pass index for deletion
+    workflow.connections.forEach(function(conn, index) {
         const fromEl = document.getElementById('wf-node-' + conn.from);
         const toEl = document.getElementById('wf-node-' + conn.to);
         if (fromEl && toEl) {
@@ -2390,7 +2410,8 @@ function renderWorkflow() {
                 toEl,
                 canvasWrapper,
                 '#475569',
-                conn.type === 'decision' ? { len: 8, gap: 4 } : undefined
+                conn.type === 'decision' ? { len: 8, gap: 4 } : undefined,
+                index  // ✅ Pass the connection index
             );
         }
     });
@@ -2484,7 +2505,6 @@ function handleNodeConnectionClick(nodeId) {
     console.log('Node clicked:', nodeId);
     
     if (!connectionStartNode) {
-        // First node selected
         connectionStartNode = nodeId;
         const el = document.getElementById('wf-node-' + nodeId);
         if (el) {
@@ -2497,7 +2517,6 @@ function handleNodeConnectionClick(nodeId) {
     }
     
     if (connectionStartNode === nodeId) {
-        // Deselect
         const el = document.getElementById('wf-node-' + nodeId);
         if (el) {
             el.classList.remove('connecting-start');
@@ -2509,21 +2528,22 @@ function handleNodeConnectionClick(nodeId) {
         return;
     }
     
-    // Create connection from first node to second node
     console.log('Creating connection from', connectionStartNode, 'to', nodeId);
     
     const workflow = getWorkflowData();
-    // Check if connection already exists (both directions)
     const exists = workflow.connections.some(function(c) {
         return (c.from === connectionStartNode && c.to === nodeId) ||
                (c.from === nodeId && c.to === connectionStartNode);
     });
     
     if (!exists) {
+        // ✅ Prompt for arrow label
+        const label = prompt('Enter arrow description (optional):', '');
         workflow.connections.push({
             from: connectionStartNode,
             to: nodeId,
-            type: 'arrow'
+            type: 'arrow',
+            label: label && label.trim() ? label.trim() : undefined
         });
         saveWorkflowData(workflow);
         console.log('Connection created!');
@@ -2532,7 +2552,6 @@ function handleNodeConnectionClick(nodeId) {
         alert('⚠️ Connection already exists between these nodes');
     }
     
-    // Clear selection
     const el1 = document.getElementById('wf-node-' + connectionStartNode);
     if (el1) {
         el1.classList.remove('connecting-start');
@@ -2542,8 +2561,8 @@ function handleNodeConnectionClick(nodeId) {
     connectionStartNode = null;
     renderWorkflow();
 }
-// ✅ Helper function to draw a single arrow using SVG
-function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash) {
+// ✅ Helper function to draw a single arrow using SVG with delete capability
+function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) {
     if (!fromEl || !toEl || !wrapper) return;
     
     const fromRect = fromEl.getBoundingClientRect();
@@ -2602,6 +2621,12 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash) {
         pathData = `M ${startX} ${startY} C ${startX} ${cp1y}, ${endX} ${cp2y}, ${endX} ${endY}`;
     }
     
+    // ✅ Create a group for the arrow to allow click events
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.setAttribute('class', 'workflow-arrow-group');
+    g.dataset.connectionIndex = connectionIndex;
+    g.style.cursor = 'pointer';
+    
     // Draw the path
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('d', pathData);
@@ -2612,7 +2637,7 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash) {
         path.setAttribute('stroke-dasharray', dash.len + ',' + dash.gap);
     }
     path.setAttribute('class', 'workflow-arrow-line');
-    svg.appendChild(path);
+    g.appendChild(path);
     
     // Draw arrowhead
     const angle = Math.atan2(endY - startY, endX - startX);
@@ -2630,9 +2655,83 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash) {
     arrowHead.setAttribute('points', `${tipX},${tipY} ${leftX},${leftY} ${rightX},${rightY}`);
     arrowHead.setAttribute('fill', color || '#475569');
     arrowHead.setAttribute('class', 'workflow-arrow-head');
-    svg.appendChild(arrowHead);
+    g.appendChild(arrowHead);
+    
+    // ✅ Add delete button on hover (only in edit mode)
+    if (currentMode === 'edit') {
+        // Invisible hit area for easier clicking
+        const hitArea = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        hitArea.setAttribute('d', pathData);
+        hitArea.setAttribute('stroke', 'transparent');
+        hitArea.setAttribute('stroke-width', '20');
+        hitArea.setAttribute('fill', 'none');
+        hitArea.setAttribute('class', 'workflow-arrow-hit');
+        g.appendChild(hitArea);
+        
+        // Click to delete arrow
+        g.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const idx = parseInt(this.dataset.connectionIndex);
+            if (!isNaN(idx)) {
+                deleteWorkflowConnection(idx);
+            }
+        });
+        // ✅ Double-click to edit arrow label
+        g.addEventListener('dblclick', function(e) {
+            e.stopPropagation();
+            const idx = parseInt(this.dataset.connectionIndex);
+            if (!isNaN(idx)) {
+                editWorkflowConnectionLabel(idx);
+            }
+        });
+        // Hover effect
+        g.addEventListener('mouseenter', function() {
+            this.querySelector('.workflow-arrow-line').setAttribute('stroke', '#ef4444');
+            this.querySelector('.workflow-arrow-head').setAttribute('fill', '#ef4444');
+            this.style.cursor = 'pointer';
+        });
+        
+        g.addEventListener('mouseleave', function() {
+            this.querySelector('.workflow-arrow-line').setAttribute('stroke', color || '#475569');
+            this.querySelector('.workflow-arrow-head').setAttribute('fill', color || '#475569');
+        });
+    }
+    
+    svg.appendChild(g);
+    // ✅ Add text label on arrow (if exists)
+    if (connectionIndex !== undefined) {
+        const workflow = getWorkflowData();
+        const conn = workflow.connections[connectionIndex];
+        if (conn && conn.label) {
+            const midX = (startX + endX) / 2;
+            const midY = (startY + endY) / 2 - 15;
+        
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', midX);
+            text.setAttribute('y', midY);
+            text.setAttribute('text-anchor', 'middle');
+            text.setAttribute('font-size', '11');
+            text.setAttribute('fill', '#475569');
+            text.setAttribute('font-weight', '500');
+            text.setAttribute('class', 'workflow-arrow-label');
+            text.textContent = conn.label;
+            g.appendChild(text);
+        }
+    }
+    
 }
-
+    // ✅ Delete a single connection
+    function deleteWorkflowConnection(index) {
+        if (currentMode !== 'edit') return;
+        if (!confirm('Delete this connection?')) return;
+        
+        const workflow = getWorkflowData();
+        if (index >= 0 && index < workflow.connections.length) {
+            workflow.connections.splice(index, 1);
+            saveWorkflowData(workflow);
+            renderWorkflow();
+        }
+    }
 // ✅ Update all arrows in real-time
 function updateWorkflowArrows() {
     const svgLayer = window.workflowSvgLayer;
@@ -2690,10 +2789,8 @@ function editDecisionNode(nodeId) {
 function addWorkflowNode(type, label) {
     if (currentMode !== 'edit') return;
     
-    const canvas = document.getElementById('workflowCanvas');
-    const rect = canvas.getBoundingClientRect();
-    
     const workflow = getWorkflowData();
+    
     // Find a good position (spread out)
     const count = workflow.nodes.length;
     const cols = Math.max(1, Math.ceil(Math.sqrt(count + 1)));
@@ -2710,12 +2807,12 @@ function addWorkflowNode(type, label) {
         label: label || type
     };
     
-    // ✅ Add decisionText for decision nodes
+    // ✅ Fix: Only prompt once for decision nodes
     if (type === 'decision') {
         node.decisionText = 'Decision?';
-        // Prompt user for decision text
+        // Prompt user for decision text - only once
         const desc = prompt('Enter decision description:', 'Decision?');
-        if (desc !== null && desc.trim()) {
+        if (desc !== null && desc.trim() !== '') {
             node.decisionText = desc.trim();
         }
     }
@@ -2794,7 +2891,9 @@ function bindWorkflowEvents() {
     }
     
     if (wfAddDecisionBtn) {
-        wfAddDecisionBtn.addEventListener('click', () => {
+        wfAddDecisionBtn.replaceWith(wfAddDecisionBtn.cloneNode(true));
+        const newBtn = document.getElementById('wfAddDecisionBtn');
+        newBtn.addEventListener('click', function() {
             addWorkflowNode('decision', 'Decision');
         });
     }
@@ -2854,10 +2953,22 @@ function bindWorkflowEvents() {
         });
     }
 }
-
-// ============================================================
-// WORKFLOW CONNECTION HANDLER
-// ============================================================
+// ✅ Edit connection label
+function editWorkflowConnectionLabel(index) {
+    if (currentMode !== 'edit') return;
+    
+    const workflow = getWorkflowData();
+    if (index < 0 || index >= workflow.connections.length) return;
+    
+    const conn = workflow.connections[index];
+    const currentLabel = conn.label || '';
+    const newLabel = prompt('Enter arrow description:', currentLabel);
+    if (newLabel !== null) {
+        conn.label = newLabel.trim() || undefined;
+        saveWorkflowData(workflow);
+        renderWorkflow();
+    }
+}
 
 
 // ============================
