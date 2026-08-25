@@ -2401,11 +2401,14 @@ function renderWorkflow() {
     console.log('✅ renderWorkflow completed, nodes:', nodeContainer.querySelectorAll('.workflow-node').length);
 }
 
-function setupWorkflowDrag() {
+function setupWorkflowDrag(container) {
     if (typeof interact === 'undefined') {
         console.warn('Interact.js not loaded');
         return;
     }
+    
+    const nodeContainer = container || document.querySelector('.workflow-node-container');
+    if (!nodeContainer) return;
     
     // Clean up existing interact instances
     try {
@@ -2416,7 +2419,7 @@ function setupWorkflowDrag() {
         inertia: false,
         modifiers: [
             interact.modifiers.restrictRect({
-                restriction: 'parent',
+                restriction: nodeContainer,
                 endOnly: true
             })
         ],
@@ -2427,8 +2430,13 @@ function setupWorkflowDrag() {
         },
         onmove: function(event) {
             const target = event.target;
-            const x = (parseFloat(target.dataset.x) || 0) + event.dx;
-            const y = (parseFloat(target.dataset.y) || 0) + event.dy;
+            // ✅ FIX 2: Account for scale
+            const scale = workflowScale;
+            const dx = event.dx / scale;
+            const dy = event.dy / scale;
+            
+            const x = (parseFloat(target.dataset.x) || 0) + dx;
+            const y = (parseFloat(target.dataset.y) || 0) + dy;
             
             target.style.left = x + 'px';
             target.style.top = y + 'px';
@@ -2441,9 +2449,8 @@ function setupWorkflowDrag() {
             const workflow = getWorkflowData();
             const node = workflow.nodes.find(n => n.id === nodeId);
             if (node) {
-                node.x = x / workflowScale;
-                node.y = y / workflowScale;
-                // Save frequently during drag to prevent data loss
+                node.x = x;
+                node.y = y;
             }
             
             // Update leader lines
@@ -2464,14 +2471,13 @@ function setupWorkflowDrag() {
             const workflow = getWorkflowData();
             const node = workflow.nodes.find(n => n.id === nodeId);
             if (node) {
-                node.x = (parseFloat(target.dataset.x) || 50) / workflowScale;
-                node.y = (parseFloat(target.dataset.y) || 50) / workflowScale;
+                node.x = parseFloat(target.dataset.x) || 50;
+                node.y = parseFloat(target.dataset.y) || 50;
                 saveWorkflowData(workflow);
             }
         }
     });
 }
-
 function handleNodeConnectionClick(nodeId) {
     if (!isConnectingMode) return;
     
