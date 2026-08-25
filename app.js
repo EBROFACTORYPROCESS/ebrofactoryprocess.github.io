@@ -1,4 +1,4 @@
-// ============================================================
+-// ============================================================
 // app.js - Complete Core Logic
 // ============================================================
 
@@ -2183,18 +2183,22 @@ function renderWorkflow() {
     window.leaderLines = [];
     workflowLines = [];
     
+    // Reset connection selection when re-rendering
+    connectionStartNode = null;
+    document.querySelectorAll('.workflow-node.active').forEach(function(el) {
+        if (el) el.classList.remove('active');
+    });
+    
     // Get all processes for the scenario
     const sc = getCurrentScenario();
     const processes = sc ? sc.processes : [];
     console.log('Processes found:', processes.length);
     
-    // ✅ FIXED: Initialize workflow from processes if empty
+    // Initialize workflow from processes if empty
     if (workflow.nodes.length === 0 && processes.length > 0) {
         console.log('Creating workflow nodes from processes...');
         const nodeMap = {};
         const cols = Math.min(5, processes.length);
-        
-        // Sort processes by seq for consistent layout
         const sortedProcs = sortProcesses(processes);
         
         sortedProcs.forEach((p, index) => {
@@ -2204,8 +2208,8 @@ function renderWorkflow() {
                 id: id,
                 processId: p.id,
                 type: isSub ? 'sub' : 'main',
-                x: 50 + (index % cols) * 180,
-                y: 50 + Math.floor(index / cols) * 120,
+                x: 50 + (index % cols) * 200,
+                y: 50 + Math.floor(index / cols) * 140,
                 label: p.name || 'Unnamed'
             };
             nodeMap[p.id] = node;
@@ -2226,12 +2230,44 @@ function renderWorkflow() {
             }
         }
         
-        // Save the initialized workflow
         saveWorkflowData(workflow);
         console.log('Created', workflow.nodes.length, 'nodes and', workflow.connections.length, 'connections');
     }
     
-    // Render nodes
+    // ✅ FIX 1: Use a wrapper div for proper positioning
+    const canvasWrapper = document.createElement('div');
+    canvasWrapper.className = 'workflow-canvas-wrapper';
+    canvasWrapper.style.position = 'relative';
+    canvasWrapper.style.width = '100%';
+    canvasWrapper.style.height = '100%';
+    canvasWrapper.style.minHeight = '700px';
+    canvasWrapper.style.overflow = 'hidden';
+    
+    // Move existing zoom controls to wrapper
+    const zoomControls = canvas.querySelector('.workflow-zoom-controls');
+    if (zoomControls) {
+        canvasWrapper.appendChild(zoomControls);
+    }
+    
+    // Clear canvas and add wrapper
+    canvas.innerHTML = '';
+    canvas.appendChild(canvasWrapper);
+    canvas.style.position = 'relative';
+    canvas.style.overflow = 'auto';
+    
+    // ✅ FIX 2: Use a container for nodes that can be scaled
+    const nodeContainer = document.createElement('div');
+    nodeContainer.className = 'workflow-node-container';
+    nodeContainer.style.position = 'absolute';
+    nodeContainer.style.top = '0';
+    nodeContainer.style.left = '0';
+    nodeContainer.style.width = '100%';
+    nodeContainer.style.height = '100%';
+    nodeContainer.style.transformOrigin = 'top left';
+    nodeContainer.style.transform = 'scale(' + workflowScale + ')';
+    canvasWrapper.appendChild(nodeContainer);
+    
+    // Render nodes inside the scaled container
     workflow.nodes.forEach(node => {
         const nodeEl = document.createElement('div');
         nodeEl.className = 'workflow-node';
@@ -2271,7 +2307,6 @@ function renderWorkflow() {
             statusColor = status ? status.color : 'default';
         }
         
-        // ✅ FIXED: Only add class if not empty
         if (typeClass) {
             nodeEl.classList.add(typeClass);
         }
@@ -2288,14 +2323,11 @@ function renderWorkflow() {
             <button class="node-delete-btn" data-node-id="${node.id}">✕</button>
         `;
         
-        // Position the node
-        const scale = workflowScale;
-        const xPos = (node.x || 50) * scale;
-        const yPos = (node.y || 50) * scale;
+        // Position the node (without scale, scale is applied to container)
+        const xPos = node.x || 50;
+        const yPos = node.y || 50;
         nodeEl.style.left = xPos + 'px';
         nodeEl.style.top = yPos + 'px';
-        nodeEl.style.transform = 'scale(' + scale + ')';
-        nodeEl.style.transformOrigin = 'top left';
         
         // Make draggable only in edit mode
         if (isEdit) {
@@ -2304,11 +2336,12 @@ function renderWorkflow() {
             nodeEl.style.cursor = 'default';
         }
         
-        // Click to select for connection
-        if (isEdit && isConnectingMode) {
-            nodeEl.style.cursor = 'crosshair';
+        // ✅ FIX 3: Click to connect mode (no button needed)
+        if (isEdit) {
             nodeEl.addEventListener('click', function(e) {
                 e.stopPropagation();
+                // Don't trigger if clicking delete button
+                if (e.target.classList.contains('node-delete-btn')) return;
                 handleNodeConnectionClick(node.id);
             });
         }
@@ -2323,17 +2356,17 @@ function renderWorkflow() {
             });
         }
         
-        canvas.appendChild(nodeEl);
+        nodeContainer.appendChild(nodeEl);
     });
     
     // Store node elements for reference
     window.workflowNodeElements = {};
-    document.querySelectorAll('.workflow-node').forEach(function(el) {
+    nodeContainer.querySelectorAll('.workflow-node').forEach(function(el) {
         const id = el.dataset.nodeId;
         if (id) window.workflowNodeElements[id] = el;
     });
     
-    // Render connections with leader-line
+    // ✅ FIX 4: Render connections with LeaderLine using the wrapper
     workflow.connections.forEach(function(conn) {
         const fromEl = document.getElementById('wf-node-' + conn.from);
         const toEl = document.getElementById('wf-node-' + conn.to);
@@ -2362,10 +2395,10 @@ function renderWorkflow() {
     
     // Setup drag in edit mode
     if (isEdit) {
-        setupWorkflowDrag();
+        setupWorkflowDrag(nodeContainer);
     }
     
-    console.log('✅ renderWorkflow completed, nodes:', canvas.querySelectorAll('.workflow-node').length);
+    console.log('✅ renderWorkflow completed, nodes:', nodeContainer.querySelectorAll('.workflow-node').length);
 }
 
 function setupWorkflowDrag() {
