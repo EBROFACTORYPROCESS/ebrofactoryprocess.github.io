@@ -2290,8 +2290,9 @@ function renderWorkflow() {
     svgLayer.style.left = '0';
     svgLayer.style.width = '100%';
     svgLayer.style.height = '100%';
-    // ✅ Enable pointer events on the layer so arrows can be clicked
-    svgLayer.style.pointerEvents = 'all';
+    // ✅ Set pointerEvents to 'none' so clicks pass through to nodes
+    // Only arrow groups within will have pointerEvents 'all'
+    svgLayer.style.pointerEvents = 'none';
     svgLayer.style.overflow = 'visible';
     canvasWrapper.appendChild(svgLayer);
     
@@ -2649,7 +2650,8 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
     g.setAttribute('class', 'workflow-arrow-group');
     g.dataset.connectionIndex = connectionIndex;
     g.style.cursor = 'pointer';
-    g.style.pointerEvents = 'all';  // ✅ Ensure clicks work
+    g.style.pointerEvents = 'all';  // ✅ Only arrow groups capture clicks
+    g.style.zIndex = '1000';  // ✅ Ensure arrows are above nodes
     
     // ✅ If this arrow is selected, add the class
     if (selectedArrowIndex === connectionIndex) {
@@ -2688,9 +2690,10 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
         const hitArea = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         hitArea.setAttribute('d', pathData);
         hitArea.setAttribute('stroke', 'transparent');
-        hitArea.setAttribute('stroke-width', '20');
+        hitArea.setAttribute('stroke-width', '15');  // Increased for easier clicking
         hitArea.setAttribute('fill', 'none');
         hitArea.setAttribute('class', 'workflow-arrow-hit');
+        hitArea.style.pointerEvents = 'all';
         g.appendChild(hitArea);
         
        // ✅ Click to select/delete arrow
