@@ -2166,10 +2166,6 @@ function renderWorkflow() {
     const workflow = getWorkflowData();
     const isEdit = currentMode === 'edit';
     
-    console.log('Workflow data:', workflow);
-    console.log('Workflow nodes:', workflow.nodes.length);
-    console.log('Workflow connections:', workflow.connections.length);
-    
     // Clear existing nodes
     canvas.querySelectorAll('.workflow-node').forEach(el => el.remove());
     canvas.querySelectorAll('.workflow-arrow').forEach(el => el.remove());
@@ -2183,16 +2179,14 @@ function renderWorkflow() {
     window.leaderLines = [];
     workflowLines = [];
     
-    // Reset connection selection when re-rendering
+    // Reset connection selection
     connectionStartNode = null;
     document.querySelectorAll('.workflow-node.active').forEach(function(el) {
         if (el) el.classList.remove('active');
     });
     
-    // Get all processes for the scenario
     const sc = getCurrentScenario();
     const processes = sc ? sc.processes : [];
-    console.log('Processes found:', processes.length);
     
     // Initialize workflow from processes if empty
     if (workflow.nodes.length === 0 && processes.length > 0) {
@@ -2208,15 +2202,14 @@ function renderWorkflow() {
                 id: id,
                 processId: p.id,
                 type: isSub ? 'sub' : 'main',
-                x: 50 + (index % cols) * 200,
-                y: 50 + Math.floor(index / cols) * 140,
+                x: 100 + (index % cols) * 220,
+                y: 100 + Math.floor(index / cols) * 160,
                 label: p.name || 'Unnamed'
             };
             nodeMap[p.id] = node;
             workflow.nodes.push(node);
         });
         
-        // Create default connections between sequential top-level steps
         const topLevel = sortedProcs.filter(p => !p.seq || !p.seq.includes('.'));
         for (let i = 0; i < topLevel.length - 1; i++) {
             const from = topLevel[i];
@@ -2234,28 +2227,27 @@ function renderWorkflow() {
         console.log('Created', workflow.nodes.length, 'nodes and', workflow.connections.length, 'connections');
     }
     
-    // ✅ FIX 1: Use a wrapper div for proper positioning
+    // Create wrapper with unlimited space
     const canvasWrapper = document.createElement('div');
     canvasWrapper.className = 'workflow-canvas-wrapper';
     canvasWrapper.style.position = 'relative';
-    canvasWrapper.style.width = '100%';
-    canvasWrapper.style.height = '100%';
-    canvasWrapper.style.minHeight = '700px';
-    canvasWrapper.style.overflow = 'hidden';
+    canvasWrapper.style.width = '5000px';
+    canvasWrapper.style.height = '5000px';
+    canvasWrapper.style.overflow = 'visible';
     
-    // Move existing zoom controls to wrapper
     const zoomControls = canvas.querySelector('.workflow-zoom-controls');
     if (zoomControls) {
         canvasWrapper.appendChild(zoomControls);
     }
     
-    // Clear canvas and add wrapper
     canvas.innerHTML = '';
     canvas.appendChild(canvasWrapper);
     canvas.style.position = 'relative';
     canvas.style.overflow = 'auto';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.minHeight = '700px';
     
-    // ✅ FIX 2: Use a container for nodes that can be scaled
     const nodeContainer = document.createElement('div');
     nodeContainer.className = 'workflow-node-container';
     nodeContainer.style.position = 'absolute';
@@ -2267,22 +2259,20 @@ function renderWorkflow() {
     nodeContainer.style.transform = 'scale(' + workflowScale + ')';
     canvasWrapper.appendChild(nodeContainer);
     
-    // Render nodes inside the scaled container
+    // Render nodes
     workflow.nodes.forEach(node => {
         const nodeEl = document.createElement('div');
         nodeEl.className = 'workflow-node';
         nodeEl.id = 'wf-node-' + node.id;
         nodeEl.dataset.nodeId = node.id;
-        nodeEl.dataset.x = node.x || 50;
-        nodeEl.dataset.y = node.y || 50;
+        nodeEl.dataset.x = node.x || 100;
+        nodeEl.dataset.y = node.y || 100;
         
-        // Find the process for this node
         let process = null;
         if (node.processId) {
             process = processes.find(p => p.id === node.processId);
         }
         
-        // Determine node type styling
         let typeClass = '';
         let statusColor = 'default';
         let seqLabel = '';
@@ -2314,34 +2304,40 @@ function renderWorkflow() {
         const statusHtml = process ? `<span class="node-status ${statusColor}">${escapeHtml(process.businessStatus || 'Not Defined')}</span>` : '';
         const seqDisplay = seqLabel ? `<span class="node-seq">${escapeHtml(seqLabel)}</span>` : (node.type ? `<span class="node-seq">${escapeHtml(node.type)}</span>` : '');
         
+        // Decision description
+        let decisionHtml = '';
+        if (node.type === 'decision') {
+            const decisionText = node.decisionText || 'Decision?';
+            decisionHtml = `<div class="node-decision-text">❓ ${escapeHtml(decisionText)}</div>`;
+        }
+        
         nodeEl.innerHTML = `
             <div class="node-header">
                 ${seqDisplay}
                 ${statusHtml}
             </div>
             <div class="node-name">${escapeHtml(nameLabel)}</div>
+            ${decisionHtml}
             <button class="node-delete-btn" data-node-id="${node.id}">✕</button>
         `;
         
-        // Position the node (without scale, scale is applied to container)
-        const xPos = node.x || 50;
-        const yPos = node.y || 50;
+        const xPos = node.x || 100;
+        const yPos = node.y || 100;
         nodeEl.style.left = xPos + 'px';
         nodeEl.style.top = yPos + 'px';
         
-        // Make draggable only in edit mode
         if (isEdit) {
             nodeEl.style.cursor = 'grab';
         } else {
             nodeEl.style.cursor = 'default';
         }
         
-        // ✅ FIX 3: Click to connect mode (no button needed)
+        // Click to connect
         if (isEdit) {
             nodeEl.addEventListener('click', function(e) {
                 e.stopPropagation();
-                // Don't trigger if clicking delete button
                 if (e.target.classList.contains('node-delete-btn')) return;
+                if (e.target.classList.contains('node-edit-btn')) return;
                 handleNodeConnectionClick(node.id);
             });
         }
@@ -2356,22 +2352,60 @@ function renderWorkflow() {
             });
         }
         
+        // Edit button for decision nodes
+        if (node.type === 'decision' && isEdit) {
+            const editBtn = document.createElement('button');
+            editBtn.className = 'node-edit-btn';
+            editBtn.textContent = '✏️';
+            editBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                editDecisionNode(node.id);
+            });
+            nodeEl.appendChild(editBtn);
+        }
+        
         nodeContainer.appendChild(nodeEl);
     });
     
-    // Store node elements for reference
     window.workflowNodeElements = {};
     nodeContainer.querySelectorAll('.workflow-node').forEach(function(el) {
         const id = el.dataset.nodeId;
         if (id) window.workflowNodeElements[id] = el;
     });
     
-    // ✅ FIX 4: Render connections with LeaderLine using the wrapper
+    // Render connections with smart socket selection
     workflow.connections.forEach(function(conn) {
         const fromEl = document.getElementById('wf-node-' + conn.from);
         const toEl = document.getElementById('wf-node-' + conn.to);
         if (fromEl && toEl) {
             try {
+                const fromRect = fromEl.getBoundingClientRect();
+                const toRect = toEl.getBoundingClientRect();
+                const dx = toRect.left - fromRect.left;
+                const dy = toRect.top - fromRect.top;
+                
+                let startSocket = 'right';
+                let endSocket = 'left';
+                
+                // Smart socket selection based on relative position
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    if (dx > 0) {
+                        startSocket = 'right';
+                        endSocket = 'left';
+                    } else {
+                        startSocket = 'left';
+                        endSocket = 'right';
+                    }
+                } else {
+                    if (dy > 0) {
+                        startSocket = 'bottom';
+                        endSocket = 'top';
+                    } else {
+                        startSocket = 'top';
+                        endSocket = 'bottom';
+                    }
+                }
+                
                 const line = new LeaderLine(
                     fromEl,
                     toEl,
@@ -2379,8 +2413,8 @@ function renderWorkflow() {
                         color: '#475569',
                         size: 2.5,
                         path: 'flow',
-                        startSocket: 'right',
-                        endSocket: 'left',
+                        startSocket: startSocket,
+                        endSocket: endSocket,
                         dash: conn.type === 'decision' ? { len: 8, gap: 4 } : undefined
                     }
                 );
@@ -2393,7 +2427,6 @@ function renderWorkflow() {
         }
     });
     
-    // Setup drag in edit mode
     if (isEdit) {
         setupWorkflowDrag(nodeContainer);
     }
@@ -2415,17 +2448,14 @@ function setupWorkflowDrag(container) {
         interact('.workflow-node').unset();
     } catch(e) {}
     
-    // ✅ FIX 1: No restrictRect - allow unlimited dragging
+    // ✅ REMOVED restrictRect - unlimited dragging!
     interact('.workflow-node').draggable({
         inertia: false,
-        modifiers: [
-            // ✅ REMOVED restrictRect - no more drag limit!
-        ],
+        modifiers: [],
         autoScroll: true,
         onstart: function(event) {
             const target = event.target;
             target.classList.add('dragging');
-            // Bring to front
             target.style.zIndex = 100;
         },
         onmove: function(event) {
@@ -2434,8 +2464,8 @@ function setupWorkflowDrag(container) {
             const dx = event.dx / scale;
             const dy = event.dy / scale;
             
-            const x = (parseFloat(target.dataset.x) || 0) + dx;
-            const y = (parseFloat(target.dataset.y) || 0) + dy;
+            const x = (parseFloat(target.dataset.x) || 100) + dx;
+            const y = (parseFloat(target.dataset.y) || 100) + dy;
             
             target.style.left = x + 'px';
             target.style.top = y + 'px';
@@ -2471,71 +2501,12 @@ function setupWorkflowDrag(container) {
             const workflow = getWorkflowData();
             const node = workflow.nodes.find(n => n.id === nodeId);
             if (node) {
-                node.x = parseFloat(target.dataset.x) || 50;
-                node.y = parseFloat(target.dataset.y) || 50;
+                node.x = parseFloat(target.dataset.x) || 100;
+                node.y = parseFloat(target.dataset.y) || 100;
                 saveWorkflowData(workflow);
             }
         }
     });
-}
-function handleNodeConnectionClick(nodeId) {
-    if (currentMode !== 'edit') return;
-    
-    console.log('Node clicked:', nodeId);
-    
-    if (!connectionStartNode) {
-        // First node selected
-        connectionStartNode = nodeId;
-        const el = document.getElementById('wf-node-' + nodeId);
-        if (el) {
-            el.classList.add('active');
-            el.style.boxShadow = '0 0 0 3px #2a5298, 0 0 0 6px rgba(42, 82, 152, 0.2)';
-        }
-        console.log('Selected start node:', nodeId);
-        return;
-    }
-    
-    if (connectionStartNode === nodeId) {
-        // Deselect
-        const el = document.getElementById('wf-node-' + nodeId);
-        if (el) {
-            el.classList.remove('active');
-            el.style.boxShadow = '';
-        }
-        connectionStartNode = null;
-        console.log('Deselected node');
-        return;
-    }
-    
-    // Create connection from first node to second node
-    console.log('Creating connection from', connectionStartNode, 'to', nodeId);
-    
-    const workflow = getWorkflowData();
-    // Check if connection already exists
-    const exists = workflow.connections.some(function(c) {
-        return c.from === connectionStartNode && c.to === nodeId;
-    });
-    
-    if (!exists) {
-        workflow.connections.push({
-            from: connectionStartNode,
-            to: nodeId,
-            type: 'arrow'
-        });
-        saveWorkflowData(workflow);
-        console.log('Connection created!');
-    } else {
-        console.log('Connection already exists');
-    }
-    
-    // Clear selection
-    const el1 = document.getElementById('wf-node-' + connectionStartNode);
-    if (el1) {
-        el1.classList.remove('active');
-        el1.style.boxShadow = '';
-    }
-    connectionStartNode = null;
-    renderWorkflow();
 }
 
 function deleteWorkflowNode(nodeId) {
@@ -2548,7 +2519,21 @@ function deleteWorkflowNode(nodeId) {
     saveWorkflowData(workflow);
     renderWorkflow();
 }
-
+function editDecisionNode(nodeId) {
+    if (currentMode !== 'edit') return;
+    
+    const workflow = getWorkflowData();
+    const node = workflow.nodes.find(n => n.id === nodeId);
+    if (!node || node.type !== 'decision') return;
+    
+    const currentText = node.decisionText || '';
+    const newText = prompt('Enter decision description:', currentText);
+    if (newText !== null) {
+        node.decisionText = newText.trim() || 'Decision?';
+        saveWorkflowData(workflow);
+        renderWorkflow();
+    }
+}
 function addWorkflowNode(type, label) {
     if (currentMode !== 'edit') return;
     
@@ -2559,10 +2544,10 @@ function addWorkflowNode(type, label) {
     // Find a good position (spread out)
     const count = workflow.nodes.length;
     const cols = Math.max(1, Math.ceil(Math.sqrt(count + 1)));
-    const spacingX = 200;
-    const spacingY = 130;
-    const startX = 50 + (count % cols) * spacingX;
-    const startY = 50 + Math.floor(count / cols) * spacingY;
+    const spacingX = 220;
+    const spacingY = 150;
+    const startX = 100 + (count % cols) * spacingX;
+    const startY = 100 + Math.floor(count / cols) * spacingY;
     
     const node = {
         id: 'node-' + (nodeIdCounter++),
@@ -2571,6 +2556,17 @@ function addWorkflowNode(type, label) {
         y: startY,
         label: label || type
     };
+    
+    // ✅ Add decisionText for decision nodes
+    if (type === 'decision') {
+        node.decisionText = 'Decision?';
+        // Prompt user for decision text
+        const desc = prompt('Enter decision description:', 'Decision?');
+        if (desc !== null && desc.trim()) {
+            node.decisionText = desc.trim();
+        }
+    }
+    
     workflow.nodes.push(node);
     saveWorkflowData(workflow);
     renderWorkflow();
@@ -2662,15 +2658,17 @@ function bindWorkflowEvents() {
             if (connectionStartNode) {
                 const el = document.getElementById('wf-node-' + connectionStartNode);
                 if (el) {
-                    el.classList.remove('active');
+                    el.classList.remove('connecting-start');
+                    el.style.borderColor = '';
                     el.style.boxShadow = '';
                 }
                 connectionStartNode = null;
             }
-            alert('💡 To create connections:\n1. Click a node to start\n2. Click another node to connect\n3. Click the same node to cancel');
-            renderWorkflow();
-        });
-    }
+        // Show connection instructions
+        alert('💡 To create connections:\n\n1️⃣ Click a node (it will highlight blue)\n2️⃣ Click another node\n3️⃣ An arrow will be created between them\n\n🔄 Click the same node twice to cancel');
+        renderWorkflow();
+    });
+}
     
     if (wfClearArrowsBtn) {
         wfClearArrowsBtn.addEventListener('click', clearWorkflowArrows);
