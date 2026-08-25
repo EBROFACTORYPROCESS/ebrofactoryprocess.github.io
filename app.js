@@ -2157,9 +2157,6 @@ function saveWorkflowData(workflow) {
 
 function renderWorkflow() {
     console.log('🔄 renderWorkflow called');
-    console.log('Current scenario:', getCurrentScenario()?.name);
-    console.log('Processes count:', getCurrentScenario()?.processes?.length);
-    
     const canvas = document.getElementById('workflowCanvas');
     if (!canvas) {
         console.warn('Canvas not found!');
@@ -2196,17 +2193,17 @@ function renderWorkflow() {
         console.log('Creating workflow nodes from processes...');
         const nodeMap = {};
         const cols = Math.min(5, processes.length);
-        const totalProcesses = processes.length;
         
         // Sort processes by seq for consistent layout
         const sortedProcs = sortProcesses(processes);
         
         sortedProcs.forEach((p, index) => {
             const id = 'node-' + (nodeIdCounter++);
+            const isSub = p.seq && p.seq.includes('.');
             const node = {
                 id: id,
                 processId: p.id,
-                type: p.seq && p.seq.includes('.') ? 'sub' : 'main',
+                type: isSub ? 'sub' : 'main',
                 x: 50 + (index % cols) * 180,
                 y: 50 + Math.floor(index / cols) * 120,
                 label: p.name || 'Unnamed'
@@ -2274,10 +2271,13 @@ function renderWorkflow() {
             statusColor = status ? status.color : 'default';
         }
         
-        if (typeClass) nodeEl.classList.add(typeClass);
+        // ✅ FIXED: Only add class if not empty
+        if (typeClass) {
+            nodeEl.classList.add(typeClass);
+        }
         
         const statusHtml = process ? `<span class="node-status ${statusColor}">${escapeHtml(process.businessStatus || 'Not Defined')}</span>` : '';
-        const seqDisplay = seqLabel ? `<span class="node-seq">${escapeHtml(seqLabel)}</span>` : (node.type ? `<span class="node-seq">${node.type}</span>` : '');
+        const seqDisplay = seqLabel ? `<span class="node-seq">${escapeHtml(seqLabel)}</span>` : (node.type ? `<span class="node-seq">${escapeHtml(node.type)}</span>` : '');
         
         nodeEl.innerHTML = `
             <div class="node-header">
@@ -2294,7 +2294,7 @@ function renderWorkflow() {
         const yPos = (node.y || 50) * scale;
         nodeEl.style.left = xPos + 'px';
         nodeEl.style.top = yPos + 'px';
-        nodeEl.style.transform = `scale(${scale})`;
+        nodeEl.style.transform = 'scale(' + scale + ')';
         nodeEl.style.transformOrigin = 'top left';
         
         // Make draggable only in edit mode
