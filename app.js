@@ -2415,22 +2415,21 @@ function setupWorkflowDrag(container) {
         interact('.workflow-node').unset();
     } catch(e) {}
     
+    // ✅ FIX 1: No restrictRect - allow unlimited dragging
     interact('.workflow-node').draggable({
         inertia: false,
         modifiers: [
-            interact.modifiers.restrictRect({
-                restriction: nodeContainer,
-                endOnly: true
-            })
+            // ✅ REMOVED restrictRect - no more drag limit!
         ],
         autoScroll: true,
         onstart: function(event) {
             const target = event.target;
             target.classList.add('dragging');
+            // Bring to front
+            target.style.zIndex = 100;
         },
         onmove: function(event) {
             const target = event.target;
-            // ✅ FIX 2: Account for scale
             const scale = workflowScale;
             const dx = event.dx / scale;
             const dy = event.dy / scale;
@@ -2465,6 +2464,7 @@ function setupWorkflowDrag(container) {
         onend: function(event) {
             const target = event.target;
             target.classList.remove('dragging');
+            target.style.zIndex = 10;
             
             // Save on drop
             const nodeId = target.dataset.nodeId;
