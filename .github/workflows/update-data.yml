@@ -26,219 +26,179 @@ jobs:
 
       - name: Apply changes
         run: |
-          node -e "
-            const fs = require('fs');
+          node -e '
+            const fs = require("fs");
             
-            console.log('=== Starting apply changes ===');
+            console.log("=== Starting apply changes ===");
             
             let currentData = {};
             try {
-              const content = fs.readFileSync('data.json', 'utf8');
+              const content = fs.readFileSync("data.json", "utf8");
               currentData = JSON.parse(content);
-              console.log('Current data loaded, scenarios:', currentData.scenarios?.length || 0);
+              console.log("Current data loaded, scenarios:", currentData.scenarios?.length || 0);
               if (currentData.scenarios && currentData.scenarios.length > 0) {
-                console.log('Current scenario names:', currentData.scenarios.map(function(s) { return s.name; }).join(', '));
+                console.log("Current scenario names:", currentData.scenarios.map(function(s) { return s.name; }).join(", "));
               }
             } catch (e) {
-              console.log('No existing data.json, creating new one');
+              console.log("No existing data.json, creating new one");
             }
             
-            const payloadContent = fs.readFileSync('payload.json', 'utf8');
-            console.log('Payload content length:', payloadContent.length);
+            const payloadContent = fs.readFileSync("payload.json", "utf8");
+            console.log("Payload content length:", payloadContent.length);
             
             let payload;
             try {
               payload = JSON.parse(payloadContent);
-              console.log('Payload parsed successfully');
-              console.log('Payload keys:', Object.keys(payload));
+              console.log("Payload parsed successfully");
+              console.log("Payload keys:", Object.keys(payload));
             } catch (e) {
-              console.error('Failed to parse payload.json:', e.message);
+              console.error("Failed to parse payload.json:", e.message);
               process.exit(1);
             }
             
-            // Parse the actual diff data
             let parsedData = null;
-            if (payload.data && typeof payload.data === 'string') {
+            if (payload.data && typeof payload.data === "string") {
               try {
                 parsedData = JSON.parse(payload.data);
-                console.log('Parsed diff data successfully');
-                console.log('Diff data keys:', Object.keys(parsedData));
+                console.log("Parsed diff data successfully");
+                console.log("Diff data keys:", Object.keys(parsedData));
               } catch (e) {
-                console.error('Failed to parse payload.data:', e.message);
+                console.error("Failed to parse payload.data:", e.message);
                 process.exit(1);
               }
-            } else if (payload.data && typeof payload.data === 'object') {
+            } else if (payload.data && typeof payload.data === "object") {
               parsedData = payload.data;
-              console.log('Payload data is already an object');
+              console.log("Payload data is already an object");
             } else {
-              console.error('No valid data found in payload');
+              console.error("No valid data found in payload");
               process.exit(1);
             }
             
-            // ============================================================
-            // FIXED: Apply jsondiffpatch diff format for arrays
-            // 
-            // For arrays, jsondiffpatch uses:
-            //   { "_t": "a", "0": [newValue] }           -> Insert at index 0
-            //   { "_t": "a", "5": [newValue] }           -> Insert at index 5  
-            //   { "_t": "a", "_2": [oldValue, 0, 0] }    -> Delete at index 2
-            //   { "_t": "a", "_2": [0, newValue, 0] }    -> Insert at index 2
-            //   { "_t": "a", "2": [oldValue, newValue] } -> Update at index 2
-            // ============================================================
             function applyArrayDiff(currentArray, diffObj) {
-              if (!diffObj || diffObj._t !== 'a') {
+              if (!diffObj || diffObj._t !== "a") {
                 return currentArray;
               }
               
-              console.log('  Processing array diff...');
+              console.log("  Processing array diff...");
               
-              // Start with a copy of the current array
               var result = [];
               for (var i = 0; i < currentArray.length; i++) {
                 result.push(JSON.parse(JSON.stringify(currentArray[i])));
               }
               
-              // Collect all operations
               var ops = [];
               for (var key in diffObj) {
-                if (key === '_t') continue;
+                if (key === "_t") continue;
                 var val = diffObj[key];
-                
-                // Check if key starts with '_' (deletion marker)
-                var isDeletionKey = key.startsWith('_');
-                var index = parseInt(key.replace('_', ''));
+                var isDeletionKey = key.startsWith("_");
+                var index = parseInt(key.replace("_", ""));
                 
                 if (Array.isArray(val)) {
                   if (val.length === 1) {
-                    // Format: [newValue] - Insertion at index
-                    // This is used for adding items to the end
-                    ops.push({ type: 'insert', index: index, value: val[0] });
+                    ops.push({ type: "insert", index: index, value: val[0] });
                   } else if (val.length === 3) {
-                    // Format: [oldValue, 0, 0] = deletion
-                    //          [0, newValue, 0] = insertion  
-                    //          [oldValue, newValue, 0] = update
                     if (val[0] !== undefined && val[1] === 0 && val[2] === 0) {
-                      // Deletion: [oldValue, 0, 0]
-                      ops.push({ type: 'delete', index: index, value: val[0] });
+                      ops.push({ type: "delete", index: index, value: val[0] });
                     } else if (val[0] === 0 && val[1] !== undefined && val[2] === 0) {
-                      // Insertion: [0, newValue, 0]
-                      ops.push({ type: 'insert', index: index, value: val[1] });
+                      ops.push({ type: "insert", index: index, value: val[1] });
                     } else if (val[0] !== undefined && val[1] !== undefined && val[2] === 0) {
-                      // Update: [oldValue, newValue, 0]
-                      ops.push({ type: 'update', index: index, value: val[1] });
+                      ops.push({ type: "update", index: index, value: val[1] });
                     } else {
-                      console.log('    Unknown 3-element format:', val);
-                      ops.push({ type: 'set', index: index, value: val });
+                      ops.push({ type: "set", index: index, value: val });
                     }
                   } else if (val.length === 2) {
-                    // Format: [oldValue, newValue] = update
-                    //          [0, oldValue] = deletion (alternative format)
-                    //          [newValue, 0] = insertion (alternative format)
                     if (val[0] === 0 && val[1] !== undefined) {
-                      // Deletion: [0, oldValue]
-                      ops.push({ type: 'delete', index: index, value: val[1] });
+                      ops.push({ type: "delete", index: index, value: val[1] });
                     } else if (val[0] !== undefined && val[1] === 0) {
-                      // Insertion: [newValue, 0]
-                      ops.push({ type: 'insert', index: index, value: val[0] });
+                      ops.push({ type: "insert", index: index, value: val[0] });
                     } else {
-                      // Update: [oldValue, newValue]
-                      ops.push({ type: 'update', index: index, value: val[1] });
+                      ops.push({ type: "update", index: index, value: val[1] });
                     }
                   } else {
-                    // Unknown format, treat as set
-                    console.log('    Unknown array format (length ' + val.length + '):', val);
-                    ops.push({ type: 'set', index: index, value: val });
+                    ops.push({ type: "set", index: index, value: val });
                   }
-                } else if (val && typeof val === 'object' && !Array.isArray(val)) {
-                  // Recursive object diff
-                  ops.push({ type: 'recursive', index: index, value: val });
+                } else if (val && typeof val === "object" && !Array.isArray(val)) {
+                  ops.push({ type: "recursive", index: index, value: val });
                 } else {
-                  // Direct assignment
-                  ops.push({ type: 'set', index: index, value: val });
+                  ops.push({ type: "set", index: index, value: val });
                 }
               }
               
-              // Log operations
-              console.log('    Operations:');
+              console.log("    Operations:");
               for (var o = 0; o < ops.length; o++) {
                 var op = ops[o];
-                console.log('      ' + op.type + ' at index ' + op.index);
+                console.log("      " + op.type + " at index " + op.index);
               }
               
-              // Apply deletions first (from highest index to lowest)
-              var deletions = ops.filter(function(op) { return op.type === 'delete'; });
+              var deletions = ops.filter(function(op) { return op.type === "delete"; });
               deletions.sort(function(a, b) { return b.index - a.index; });
               for (var d = 0; d < deletions.length; d++) {
                 var del = deletions[d];
                 if (del.index < result.length) {
                   var name = result[del.index] && result[del.index].name ? result[del.index].name : 
-                            (typeof result[del.index] === 'string' ? result[del.index] : 'unknown');
-                  console.log('    Deleting item at index ' + del.index + ': ' + name);
+                            (typeof result[del.index] === "string" ? result[del.index] : "unknown");
+                  console.log("    Deleting item at index " + del.index + ": " + name);
                   result.splice(del.index, 1);
                 } else {
-                  console.log('    Warning: Delete index ' + del.index + ' out of range (length: ' + result.length + ')');
+                  console.log("    Warning: Delete index " + del.index + " out of range (length: " + result.length + ")");
                 }
               }
               
-              // Apply insertions (from lowest to highest index)
-              var insertions = ops.filter(function(op) { return op.type === 'insert'; });
+              var insertions = ops.filter(function(op) { return op.type === "insert"; });
               insertions.sort(function(a, b) { return a.index - b.index; });
               for (var j = 0; j < insertions.length; j++) {
                 var ins = insertions[j];
-                console.log('    Inserting item at index ' + ins.index);
+                console.log("    Inserting item at index " + ins.index);
                 if (ins.index <= result.length) {
                   result.splice(ins.index, 0, ins.value);
                 } else {
-                  // If index is beyond current length, append at end
-                  console.log('    Index ' + ins.index + ' exceeds length ' + result.length + ', appending');
+                  console.log("    Index " + ins.index + " exceeds length " + result.length + ", appending");
                   result.push(ins.value);
                 }
               }
               
-              // Apply updates
-              var updates = ops.filter(function(op) { return op.type === 'update'; });
+              var updates = ops.filter(function(op) { return op.type === "update"; });
               for (var u = 0; u < updates.length; u++) {
                 var upd = updates[u];
                 if (upd.index < result.length) {
-                  console.log('    Updating item at index ' + upd.index);
+                  console.log("    Updating item at index " + upd.index);
                   result[upd.index] = upd.value;
                 }
               }
               
-              // Apply recursive updates
-              var recursives = ops.filter(function(op) { return op.type === 'recursive'; });
+              var recursives = ops.filter(function(op) { return op.type === "recursive"; });
               for (var r = 0; r < recursives.length; r++) {
                 var rec = recursives[r];
                 if (rec.index < result.length) {
-                  console.log('    Recursive update at index ' + rec.index);
+                  console.log("    Recursive update at index " + rec.index);
                   result[rec.index] = applyArrayDiff(result[rec.index], rec.value);
                 }
               }
               
-              console.log('  Final array length: ' + result.length);
+              console.log("  Final array length: " + result.length);
               return result;
             }
             
             function cleanProcess(p) {
-              if (!p || typeof p !== 'object') return null;
+              if (!p || typeof p !== "object") return null;
               if (!p.id) return null;
               
               return {
                 id: p.id,
-                seq: p.seq || '0',
-                name: p.name || 'Unnamed Process',
-                description: p.description || '',
+                seq: p.seq || "0",
+                name: p.name || "Unnamed Process",
+                description: p.description || "",
                 raci: p.raci || { r: [], a: [], c: [], i: [] },
-                businessStatus: p.businessStatus || 'Not Defined',
-                system: p.system || { name: 'To Be Determined', status: 'Offline', responsible: '' },
-                businessDoc: p.businessDoc || '',
-                userManual: p.userManual || '',
-                notes: p.notes || ''
+                businessStatus: p.businessStatus || "Not Defined",
+                system: p.system || { name: "To Be Determined", status: "Offline", responsible: "" },
+                businessDoc: p.businessDoc || "",
+                userManual: p.userManual || "",
+                notes: p.notes || ""
               };
             }
             
             function cleanScenario(sc) {
-              if (!sc || typeof sc !== 'object') return null;
+              if (!sc || typeof sc !== "object") return null;
               if (!sc.id) return null;
               
               var processes = Array.isArray(sc.processes) 
@@ -247,65 +207,57 @@ jobs:
               
               return {
                 id: sc.id,
-                name: sc.name || 'Scenario',
+                name: sc.name || "Scenario",
                 processes: processes
               };
             }
             
             function applyChanges(diffData) {
-              console.log('=== Applying changes ===');
-              console.log('Diff data keys:', Object.keys(diffData));
+              console.log("=== Applying changes ===");
+              console.log("Diff data keys:", Object.keys(diffData));
               
               var resultData = JSON.parse(JSON.stringify(currentData));
               
-              // Process each top-level key in the diff
               for (var key in diffData) {
-                if (key === '_t') continue;
+                if (key === "_t") continue;
                 
                 var diffValue = diffData[key];
                 
-                // Check if this is an array diff
-                if (diffValue && typeof diffValue === 'object' && diffValue._t === 'a') {
-                  console.log('Processing array diff for key: ' + key);
+                if (diffValue && typeof diffValue === "object" && diffValue._t === "a") {
+                  console.log("Processing array diff for key: " + key);
                   
-                  // Get current array
                   var currentArray = Array.isArray(currentData[key]) ? currentData[key] : [];
-                  console.log('  Current ' + key + ' length:', currentArray.length);
+                  console.log("  Current " + key + " length:", currentArray.length);
                   
-                  // Apply the array diff
                   var newArray = applyArrayDiff(currentArray, diffValue);
                   
                   resultData[key] = newArray;
-                  console.log('  Final ' + key + ' length:', newArray.length);
+                  console.log("  Final " + key + " length:", newArray.length);
                 } else {
-                  // Direct assignment for non-array diffs
-                  console.log('Setting key: ' + key);
+                  console.log("Setting key: " + key);
                   resultData[key] = diffValue;
                 }
               }
               
-              // Ensure scenarios is an array
               if (!resultData.scenarios || !Array.isArray(resultData.scenarios)) {
-                console.log('Scenarios is not an array, creating empty array');
+                console.log("Scenarios is not an array, creating empty array");
                 resultData.scenarios = [];
               }
               
-              // Clean scenarios
               resultData.scenarios = resultData.scenarios
                 .map(function(s) { return cleanScenario(s); })
                 .filter(function(s) { return s !== null; });
               
-              // Handle currentScenarioId
               if (diffData.currentScenarioId) {
                 var newCurrentId = diffData.currentScenarioId;
                 if (Array.isArray(newCurrentId)) {
                   newCurrentId = newCurrentId[0];
                 }
-                if (newCurrentId && typeof newCurrentId === 'string') {
+                if (newCurrentId && typeof newCurrentId === "string") {
                   var exists = resultData.scenarios.some(function(s) { return s && s.id === newCurrentId; });
                   if (exists) {
                     resultData.currentScenarioId = newCurrentId;
-                    console.log('Set currentScenarioId to:', newCurrentId);
+                    console.log("Set currentScenarioId to:", newCurrentId);
                   }
                 }
               }
@@ -313,34 +265,33 @@ jobs:
               if (!resultData.currentScenarioId || !resultData.scenarios.some(function(s) { return s && s.id === resultData.currentScenarioId; })) {
                 if (resultData.scenarios.length > 0) {
                   resultData.currentScenarioId = resultData.scenarios[0].id;
-                  console.log('Set currentScenarioId to first scenario:', resultData.currentScenarioId);
+                  console.log("Set currentScenarioId to first scenario:", resultData.currentScenarioId);
                 }
               }
               
-              // Ensure master data exists
               if (!resultData.departments || !Array.isArray(resultData.departments)) {
-                resultData.departments = ['Sales', 'Production Planning', 'Material Planning', 'Material Handling', 'Purchase', 'Production Execution', 'Parts Quality', 'Vehicle Quality', 'Finance', 'Trade & Compliance'];
+                resultData.departments = ["Sales", "Production Planning", "Material Planning", "Material Handling", "Purchase", "Production Execution", "Parts Quality", "Vehicle Quality", "Finance", "Trade & Compliance"];
               }
               
               if (!resultData.sysNameList || !Array.isArray(resultData.sysNameList)) {
-                resultData.sysNameList = ['SAP', 'LES', 'MES', 'KAPTURE', 'WMS', 'To Be Determined'];
+                resultData.sysNameList = ["SAP", "LES", "MES", "KAPTURE", "WMS", "To Be Determined"];
               }
               
               if (!resultData.businessStatuses || !Array.isArray(resultData.businessStatuses)) {
                 resultData.businessStatuses = [
-                  { value: 'Not Defined', color: 'red' },
-                  { value: 'In Progress', color: 'yellow' },
-                  { value: 'Completed', color: 'green' }
+                  { value: "Not Defined", color: "red" },
+                  { value: "In Progress", color: "yellow" },
+                  { value: "Completed", color: "green" }
                 ];
               }
               
               if (!resultData.sysStatusList || !Array.isArray(resultData.sysStatusList)) {
                 resultData.sysStatusList = [
-                  { value: 'Operational', color: 'green' },
-                  { value: 'Completed', color: 'green' },
-                  { value: 'Offline', color: 'red' },
-                  { value: 'To Be Implemented', color: 'red' },
-                  { value: 'Work in Progress', color: 'yellow' }
+                  { value: "Operational", color: "green" },
+                  { value: "Completed", color: "green" },
+                  { value: "Offline", color: "red" },
+                  { value: "To Be Implemented", color: "red" },
+                  { value: "Work in Progress", color: "yellow" }
                 ];
               }
               
@@ -348,80 +299,24 @@ jobs:
                 resultData.sysRespList = [];
               }
               
-              console.log('Final scenarios count:', resultData.scenarios.length);
-              console.log('Final currentScenarioId:', resultData.currentScenarioId);
+              console.log("Final scenarios count:", resultData.scenarios.length);
+              console.log("Final currentScenarioId:", resultData.currentScenarioId);
               
-              fs.writeFileSync('data.json', JSON.stringify(resultData, null, 2));
-              console.log('data.json updated successfully');
+              fs.writeFileSync("data.json", JSON.stringify(resultData, null, 2));
+              console.log("data.json updated successfully");
             }
             
-            // ============================================================
-            // MAIN EXECUTION
-            // ============================================================
-            var payloadType = payload.type || 'diff';
-            console.log('Payload type:', payloadType);
+            var payloadType = payload.type || "diff";
+            console.log("Payload type:", payloadType);
             
-            if (payloadType === 'gist' && payload.gist_id) {
-              console.log('Processing Gist payload...');
+            if (payloadType === "gist" && payload.gist_id) {
+              console.log("Processing Gist payload...");
             } else {
-              console.log('Processing direct payload...');
-              console.log('Parsed data keys:', Object.keys(parsedData));
+              console.log("Processing direct payload...");
+              console.log("Parsed data keys:", Object.keys(parsedData));
               applyChanges(parsedData);
             }
-          "
-
-      - name: Validate JSON
-        run: |
-          if [ -f data.json ] && [ -s data.json ]; then
-            if ! jq empty data.json 2>/dev/null; then
-              echo "Invalid JSON in data.json"
-              cat data.json | head -100
-              exit 1
-            fi
-            echo "JSON validation passed"
-          fi
-
-      - name: Commit and push
-        run: |
-          if [ -f data.json ] && git diff --quiet data.json; then
-            echo "No changes to commit"
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add data.json
-            git commit -m "Apply changes from web [skip ci]" || echo "No changes to commit"
-            git push
-          filor: 'red' },
-                  { value: 'To Be Implemented', color: 'red' },
-                  { value: 'Work in Progress', color: 'yellow' }
-                ];
-              }
-              
-              if (!resultData.sysRespList || !Array.isArray(resultData.sysRespList)) {
-                resultData.sysRespList = [];
-              }
-              
-              console.log('Final scenarios count:', resultData.scenarios.length);
-              console.log('Final currentScenarioId:', resultData.currentScenarioId);
-              
-              fs.writeFileSync('data.json', JSON.stringify(resultData, null, 2));
-              console.log('data.json updated successfully');
-            }
-            
-            // ============================================================
-            // MAIN EXECUTION
-            // ============================================================
-            var payloadType = payload.type || 'diff';
-            console.log('Payload type:', payloadType);
-            
-            if (payloadType === 'gist' && payload.gist_id) {
-              console.log('Processing Gist payload...');
-            } else {
-              console.log('Processing direct payload...');
-              console.log('Parsed data keys:', Object.keys(parsedData));
-              applyChanges(parsedData);
-            }
-          "
+          '
 
       - name: Validate JSON
         run: |
