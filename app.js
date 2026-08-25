@@ -2257,7 +2257,7 @@ function renderWorkflow() {
     canvasWrapper.style.width = '5000px';
     canvasWrapper.style.height = '5000px';
     canvasWrapper.style.overflow = 'visible';
-    
+    canvasWrapper.style.pointerEvents = 'auto';
     const zoomControls = canvas.querySelector('.workflow-zoom-controls');
     if (zoomControls) {
         canvasWrapper.appendChild(zoomControls);
@@ -2280,6 +2280,7 @@ function renderWorkflow() {
     nodeContainer.style.height = '100%';
     nodeContainer.style.transformOrigin = 'top left';
     nodeContainer.style.transform = 'scale(' + workflowScale + ')';
+    nodeContainer.style.pointerEvents = 'auto'; 
     canvasWrapper.appendChild(nodeContainer);
     
     // ✅ Create SVG layer for arrows (inside the canvas, not viewport)
@@ -2367,7 +2368,11 @@ function renderWorkflow() {
         } else {
             nodeEl.style.cursor = 'default';
         }
-        
+
+        // Setup drag in edit mode
+        if (isEdit) {
+            setupWorkflowDrag(nodeContainer);
+        }
         // Click to connect
         if (isEdit) {
             nodeEl.addEventListener('click', function(e) {
