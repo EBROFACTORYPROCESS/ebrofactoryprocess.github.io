@@ -2103,7 +2103,501 @@ function updateUIVisibility() {
         statusDiv.style.display = 'none';
     }
 }
+// ============================
+// 26. Workflow View
+// ============================
 
+let workflowNodes = {};
+let workflowLines = [];
+let workflowConnections = [];
+let isConnectingMode = false;
+let connectionStartNode = null;
+let nodeIdCounter = 0;
+let workflowScale = 1;
+
+function getWorkflowData() {
+    const sc = getCurrentScenario();
+    if (!sc) return { nodes: [], connections: [] };
+    
+    // Load workflow data from scenario or create default
+    if (!sc.workflow) {
+        sc.workflow = { nodes: [], connections: [] };
+    }
+    return sc.workflow;
+}
+
+function saveWorkflowData(workflow) {
+    const sc = getCurrentScenario();
+    if (!sc) return;
+    sc.workflow = workflow;
+    renderWorkflow();
+}
+
+function renderWorkflow() {
+    const canvas = document.getElementById('workflowCanvas');
+    if (!canvas) return;
+    
+    const workflow = getWorkflowData();
+    const isEdit = currentMode === 'edit';
+    
+    // Clear existing nodes
+    canvas.querySelectorAll('.workflow-node').forEach(el => el.remove());
+    canvas.querySelectorAll('.workflow-arrow').forEach(el => el.remove());
+    
+    // Clear existing leader lines
+    if (window.leaderLines) {
+        window.leaderLines.forEach(line => {
+            try { line.remove(); } catch(e) {}
+        });
+    }
+    window.leaderLines = [];
+    workflowLines = [];
+    
+    // Get all processes for the scenario
+    const sc = getCurrentScenario();
+    const processes = sc ? sc.processes : [];
+    
+    // Create workflow data if empty, initialize from processes
+    if (workflow.nodes.length === 0 && processes.length > 0) {
+        const nodeMap = {};
+        const cols = Math.min(5, processes.length);
+        processes.forEach((p, index) => {
+            const id = 'node-' + (nodeIdCounter++);
+            const node = {
+                id: id,
+                processId: p.id,
+                type: p.seq.includes('.') ? 'sub' : 'main',
+                x: 50 + (index % cols) * 180,
+                y: 50 + Math.floor(index / cols) * 120,
+                label: p.name
+            };
+            nodeMap[p.id] = node;
+            workflow.nodes.push(node);
+        });
+        
+        // Create default connections between sequential steps
+        const sortedProcesses = sortProcesses(processes);
+        for (let i = 0; i < sortedProcesses.length - 1; i++) {
+            const from = sortedProcesses[i];
+            const to = sortedProcesses[i + 1];
+            if (from && to && nodeMap[from.id] && nodeMap[to.id]) {
+                // Only connect if they are parent-child or sequential
+                const fromSeq = String(from.seq || '');
+                const toSeq = String(to.seq || '');
+                if (!toSeq.startsWith(fromSeq + '.')) {
+                    workflow.connections.push({
+                        from: nodeMap[from.id].id,
+                        to: nodeMap[to.id].id,
+                        type: 'arrow'
+                    });
+                }
+            }
+        }
+    }
+    
+    // Render nodes
+    workflow.nodes.forEach(node => {
+        const nodeEl = document.createElement('div');
+        nodeEl.className = 'workflow-node';
+        nodeEl.id = 'wf-node-' + node.id;
+        nodeEl.dataset.nodeId = node.id;
+        nodeEl.dataset.x = node.x || 50;
+        nodeEl.dataset.y = node.y || 50;
+        
+        // Find the process for this node
+        let process = null;
+        if (node.processId) {
+            process = processes.find(p => p.id === node.processId);
+        }
+        
+        // Determine node type styling
+        let typeClass = '';
+        let statusColor = 'default';
+        let seqLabel = '';
+        let nameLabel = node.label || 'Unnamed';
+        
+        if (node.type === 'start') {
+            typeClass = 'type-start';
+            nameLabel = '🏁 START';
+        } else if (node.type === 'end') {
+            typeClass = 'type-end';
+            nameLabel = '🏁 END';
+        } else if (node.type === 'decision') {
+            typeClass = 'type-decision';
+            nameLabel = '⚡ Decision';
+        } else if (node.type === 'parallel') {
+            typeClass = 'type-parallel';
+            nameLabel = '📋 Parallel';
+        } else if (process) {
+            seqLabel = process.seq || '';
+            nameLabel = process.name || 'Unnamed';
+            const status = appData.businessStatuses.find(s => s.value === process.businessStatus);
+            statusColor = status ? status.color : 'default';
+        }
+        
+        nodeEl.classList.add(typeClass);
+        
+        const statusHtml = process ? `<span class="node-status ${statusColor}">${escapeHtml(process.businessStatus || 'Not Defined')}</span>` : '';
+        const seqDisplay = seqLabel ? `<span class="node-seq">${escapeHtml(seqLabel)}</span>` : `<span class="node-seq">${node.type || 'Node'}</span>`;
+        
+        nodeEl.innerHTML = `
+            <div class="node-header">
+                ${seqDisplay}
+                ${statusHtml}
+            </div>
+            <div class="node-name">${escapeHtml(nameLabel)}</div>
+            <button class="node-delete-btn" data-node-id="${node.id}">✕</button>
+        `;
+        
+        // Position the node
+        const scale = workflowScale;
+        const xPos = (node.x || 50) * scale;
+        const yPos = (node.y || 50) * scale;
+        nodeEl.style.left = xPos + 'px';
+        nodeEl.style.top = yPos + 'px';
+        nodeEl.style.transform = `scale(${scale})`;
+        nodeEl.style.transformOrigin = 'top left';
+        
+        // Make draggable only in edit mode
+        if (isEdit) {
+            nodeEl.style.cursor = 'grab';
+        } else {
+            nodeEl.style.cursor = 'default';
+        }
+        
+        // Click to select for connection
+        if (isEdit && isConnectingMode) {
+            nodeEl.style.cursor = 'crosshair';
+            nodeEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                handleNodeConnectionClick(node.id);
+            });
+        }
+        
+        // Delete button
+        const deleteBtn = nodeEl.querySelector('.node-delete-btn');
+        if (deleteBtn && isEdit) {
+            deleteBtn.style.display = 'flex';
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                deleteWorkflowNode(node.id);
+            });
+        }
+        
+        canvas.appendChild(nodeEl);
+    });
+    
+    // Store node elements for reference
+    window.workflowNodeElements = {};
+    document.querySelectorAll('.workflow-node').forEach(el => {
+        const id = el.dataset.nodeId;
+        if (id) window.workflowNodeElements[id] = el;
+    });
+    
+    // Render connections with leader-line
+    workflow.connections.forEach(conn => {
+        const fromEl = document.getElementById('wf-node-' + conn.from);
+        const toEl = document.getElementById('wf-node-' + conn.to);
+        if (fromEl && toEl) {
+            try {
+                const line = new LeaderLine(
+                    fromEl,
+                    toEl,
+                    {
+                        color: '#475569',
+                        size: 2.5,
+                        path: 'flow',
+                        startSocket: 'right',
+                        endSocket: 'left',
+                        dash: conn.type === 'decision' ? { len: 8, gap: 4 } : undefined
+                    }
+                );
+                if (!window.leaderLines) window.leaderLines = [];
+                window.leaderLines.push(line);
+                workflowLines.push(line);
+            } catch (e) {
+                console.warn('Failed to create leader line:', e);
+            }
+        }
+    });
+    
+    // Setup drag in edit mode
+    if (isEdit) {
+        setupWorkflowDrag();
+    }
+}
+
+function setupWorkflowDrag() {
+    if (typeof interact === 'undefined') {
+        console.warn('Interact.js not loaded');
+        return;
+    }
+    
+    // Clean up existing interact instances
+    try {
+        interact('.workflow-node').unset();
+    } catch(e) {}
+    
+    interact('.workflow-node').draggable({
+        inertia: false,
+        modifiers: [
+            interact.modifiers.restrictRect({
+                restriction: 'parent',
+                endOnly: true
+            })
+        ],
+        autoScroll: true,
+        onstart: function(event) {
+            const target = event.target;
+            target.classList.add('dragging');
+        },
+        onmove: function(event) {
+            const target = event.target;
+            const x = (parseFloat(target.dataset.x) || 0) + event.dx;
+            const y = (parseFloat(target.dataset.y) || 0) + event.dy;
+            
+            target.style.left = x + 'px';
+            target.style.top = y + 'px';
+            
+            target.dataset.x = x;
+            target.dataset.y = y;
+            
+            // Update the node data
+            const nodeId = target.dataset.nodeId;
+            const workflow = getWorkflowData();
+            const node = workflow.nodes.find(n => n.id === nodeId);
+            if (node) {
+                node.x = x / workflowScale;
+                node.y = y / workflowScale;
+                // Save frequently during drag to prevent data loss
+            }
+            
+            // Update leader lines
+            if (window.leaderLines) {
+                window.leaderLines.forEach(line => {
+                    try {
+                        line.position();
+                    } catch (e) {}
+                });
+            }
+        },
+        onend: function(event) {
+            const target = event.target;
+            target.classList.remove('dragging');
+            
+            // Save on drop
+            const nodeId = target.dataset.nodeId;
+            const workflow = getWorkflowData();
+            const node = workflow.nodes.find(n => n.id === nodeId);
+            if (node) {
+                node.x = (parseFloat(target.dataset.x) || 50) / workflowScale;
+                node.y = (parseFloat(target.dataset.y) || 50) / workflowScale;
+                saveWorkflowData(workflow);
+            }
+        }
+    });
+}
+
+function handleNodeConnectionClick(nodeId) {
+    if (!isConnectingMode) return;
+    
+    if (!connectionStartNode) {
+        connectionStartNode = nodeId;
+        const el = document.getElementById('wf-node-' + nodeId);
+        if (el) el.classList.add('active');
+        return;
+    }
+    
+    if (connectionStartNode === nodeId) {
+        // Deselect
+        const el = document.getElementById('wf-node-' + nodeId);
+        if (el) el.classList.remove('active');
+        connectionStartNode = null;
+        return;
+    }
+    
+    // Create connection
+    const workflow = getWorkflowData();
+    // Check if connection already exists
+    const exists = workflow.connections.some(c => c.from === connectionStartNode && c.to === nodeId);
+    if (!exists) {
+        workflow.connections.push({
+            from: connectionStartNode,
+            to: nodeId,
+            type: 'arrow'
+        });
+        saveWorkflowData(workflow);
+    }
+    
+    // Clear selection
+    const el = document.getElementById('wf-node-' + connectionStartNode);
+    if (el) el.classList.remove('active');
+    connectionStartNode = null;
+    renderWorkflow();
+}
+
+function deleteWorkflowNode(nodeId) {
+    if (currentMode !== 'edit') return;
+    if (!confirm('Delete this workflow node?')) return;
+    
+    const workflow = getWorkflowData();
+    workflow.nodes = workflow.nodes.filter(n => n.id !== nodeId);
+    workflow.connections = workflow.connections.filter(c => c.from !== nodeId && c.to !== nodeId);
+    saveWorkflowData(workflow);
+    renderWorkflow();
+}
+
+function addWorkflowNode(type, label) {
+    if (currentMode !== 'edit') return;
+    
+    const canvas = document.getElementById('workflowCanvas');
+    const rect = canvas.getBoundingClientRect();
+    
+    const workflow = getWorkflowData();
+    // Find a good position (spread out)
+    const count = workflow.nodes.length;
+    const cols = Math.max(1, Math.ceil(Math.sqrt(count + 1)));
+    const spacingX = 200;
+    const spacingY = 130;
+    const startX = 50 + (count % cols) * spacingX;
+    const startY = 50 + Math.floor(count / cols) * spacingY;
+    
+    const node = {
+        id: 'node-' + (nodeIdCounter++),
+        type: type,
+        x: startX,
+        y: startY,
+        label: label || type
+    };
+    workflow.nodes.push(node);
+    saveWorkflowData(workflow);
+    renderWorkflow();
+}
+
+function clearWorkflowArrows() {
+    if (!confirm('Clear all connections?')) return;
+    const workflow = getWorkflowData();
+    workflow.connections = [];
+    saveWorkflowData(workflow);
+    renderWorkflow();
+}
+
+function clearAllWorkflow() {
+    if (!confirm('Clear ALL workflow nodes and connections?')) return;
+    const workflow = getWorkflowData();
+    workflow.nodes = [];
+    workflow.connections = [];
+    saveWorkflowData(workflow);
+    renderWorkflow();
+}
+
+function autoLayoutWorkflow() {
+    const workflow = getWorkflowData();
+    if (workflow.nodes.length === 0) return;
+    
+    // Simple grid layout
+    const cols = Math.ceil(Math.sqrt(workflow.nodes.length));
+    const spacingX = 220;
+    const spacingY = 140;
+    const startX = 50;
+    const startY = 50;
+    
+    workflow.nodes.forEach((node, index) => {
+        const col = index % cols;
+        const row = Math.floor(index / cols);
+        node.x = startX + col * spacingX;
+        node.y = startY + row * spacingY;
+    });
+    
+    saveWorkflowData(workflow);
+    renderWorkflow();
+}
+
+// ============================
+// 27. Workflow Event Binding
+// ============================
+
+function bindWorkflowEvents() {
+    const wfAddStartBtn = document.getElementById('wfAddStartBtn');
+    const wfAddEndBtn = document.getElementById('wfAddEndBtn');
+    const wfAddDecisionBtn = document.getElementById('wfAddDecisionBtn');
+    const wfAddParallelBtn = document.getElementById('wfAddParallelBtn');
+    const wfConnectBtn = document.getElementById('wfConnectBtn');
+    const wfClearArrowsBtn = document.getElementById('wfClearArrowsBtn');
+    const wfClearAllBtn = document.getElementById('wfClearAllBtn');
+    const wfAutoLayoutBtn = document.getElementById('wfAutoLayoutBtn');
+    const wfZoomIn = document.getElementById('wfZoomIn');
+    const wfZoomOut = document.getElementById('wfZoomOut');
+    const wfResetView = document.getElementById('wfResetView');
+    
+    if (wfAddStartBtn) {
+        wfAddStartBtn.addEventListener('click', () => {
+            addWorkflowNode('start', 'START');
+        });
+    }
+    
+    if (wfAddEndBtn) {
+        wfAddEndBtn.addEventListener('click', () => {
+            addWorkflowNode('end', 'END');
+        });
+    }
+    
+    if (wfAddDecisionBtn) {
+        wfAddDecisionBtn.addEventListener('click', () => {
+            addWorkflowNode('decision', 'Decision');
+        });
+    }
+    
+    if (wfAddParallelBtn) {
+        wfAddParallelBtn.addEventListener('click', () => {
+            addWorkflowNode('parallel', 'Parallel Process');
+        });
+    }
+    
+    if (wfConnectBtn) {
+        wfConnectBtn.addEventListener('click', function() {
+            isConnectingMode = !isConnectingMode;
+            this.classList.toggle('active');
+            connectionStartNode = null;
+            document.querySelectorAll('.workflow-node.active').forEach(el => el.classList.remove('active'));
+            // Re-render to update cursor styles
+            renderWorkflow();
+        });
+    }
+    
+    if (wfClearArrowsBtn) {
+        wfClearArrowsBtn.addEventListener('click', clearWorkflowArrows);
+    }
+    
+    if (wfClearAllBtn) {
+        wfClearAllBtn.addEventListener('click', clearAllWorkflow);
+    }
+    
+    if (wfAutoLayoutBtn) {
+        wfAutoLayoutBtn.addEventListener('click', autoLayoutWorkflow);
+    }
+    
+    if (wfZoomIn) {
+        wfZoomIn.addEventListener('click', () => {
+            workflowScale = Math.min(workflowScale + 0.1, 2);
+            renderWorkflow();
+        });
+    }
+    
+    if (wfZoomOut) {
+        wfZoomOut.addEventListener('click', () => {
+            workflowScale = Math.max(workflowScale - 0.1, 0.5);
+            renderWorkflow();
+        });
+    }
+    
+    if (wfResetView) {
+        wfResetView.addEventListener('click', () => {
+            workflowScale = 1;
+            renderWorkflow();
+        });
+    }
+}
 // ============================
 // 24. Page Startup
 // ============================
