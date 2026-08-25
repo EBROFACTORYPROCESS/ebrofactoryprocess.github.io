@@ -520,4 +520,100 @@ body {
     height: 5000px;
     overflow: visible;
 }
+
+/* ============================================================
+   WORKFLOW HIDDEN NODE
+   ============================================================ */
+
+.workflow-node.hidden {
+    opacity: 0.2;
+    border-color: #94a3b8 !important;
+    background: #f1f5f9 !important;
+    pointer-events: none !important;
+    cursor: default !important;
+    filter: grayscale(1);
+    transition: opacity 0.3s, filter 0.3s;
+}
+
+.workflow-node.hidden .node-name {
+    text-decoration: line-through;
+    color: #94a3b8;
+}
+
+.workflow-node.hidden .node-status {
+    opacity: 0.3;
+}
+
+.workflow-node.hidden .node-delete-btn {
+    display: none !important;
+}
+
+.workflow-node.hidden .node-edit-btn {
+    display: none !important;
+}
+
+/* Hidden node - show an indicator */
+.workflow-node.hidden::after {
+    content: "👁️ Hidden";
+    position: absolute;
+    bottom: -18px;
+    right: 8px;
+    font-size: 0.6rem;
+    color: #94a3b8;
+    background: #f1f5f9;
+    padding: 0.1rem 0.4rem;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+}
+
+/* Toggle button for hide/show */
+.workflow-node .node-toggle-btn {
+    position: absolute;
+    bottom: -10px;
+    right: 54px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    background: #8b5cf6;
+    color: white;
+    font-size: 10px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    z-index: 20;
+}
+
+.workflow-node .node-toggle-btn:hover {
+    transform: scale(1.15);
+    background: #7c3aed;
+}
+
+.edit-mode .workflow-node .node-toggle-btn {
+    display: flex;
+}
+
+/* ============================================================
+   ARROW SELECTION
+   ============================================================ */
+
+.workflow-arrow-group.selected .workflow-arrow-line {
+    stroke: #ef4444 !important;
+    stroke-width: 3.5 !important;
+    stroke-dasharray: 6, 4 !important;
+}
+
+.workflow-arrow-group.selected .workflow-arrow-head {
+    fill: #ef4444 !important;
+}
+
+.workflow-arrow-group.selected {
+    cursor: pointer;
+}
+
+.workflow-arrow-group .workflow-arrow-label {
+    pointer-events: none;
+}
 </style>
