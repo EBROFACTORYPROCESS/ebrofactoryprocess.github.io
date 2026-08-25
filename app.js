@@ -1762,7 +1762,7 @@ function renderApp() {
                             <button class="workflow-btn" id="wfAddParallelBtn">📋 Parallel</button>
                         </div>
                         <div class="btn-group">
-                            <button class="workflow-btn" id="wfConnectBtn">🔗 Connect</button>
+                            <button class="workflow-btn" id="wfConnectBtn" style="background:#e0f2fe;border-color:#2a5298;">🔗 Click nodes to connect</button>
                             <button class="workflow-btn" id="wfClearArrowsBtn">🗑 Clear Arrows</button>
                         </div>
                         <div class="btn-group">
@@ -2479,27 +2479,43 @@ function setupWorkflowDrag(container) {
     });
 }
 function handleNodeConnectionClick(nodeId) {
-    if (!isConnectingMode) return;
+    if (currentMode !== 'edit') return;
+    
+    console.log('Node clicked:', nodeId);
     
     if (!connectionStartNode) {
+        // First node selected
         connectionStartNode = nodeId;
         const el = document.getElementById('wf-node-' + nodeId);
-        if (el) el.classList.add('active');
+        if (el) {
+            el.classList.add('active');
+            el.style.boxShadow = '0 0 0 3px #2a5298, 0 0 0 6px rgba(42, 82, 152, 0.2)';
+        }
+        console.log('Selected start node:', nodeId);
         return;
     }
     
     if (connectionStartNode === nodeId) {
         // Deselect
         const el = document.getElementById('wf-node-' + nodeId);
-        if (el) el.classList.remove('active');
+        if (el) {
+            el.classList.remove('active');
+            el.style.boxShadow = '';
+        }
         connectionStartNode = null;
+        console.log('Deselected node');
         return;
     }
     
-    // Create connection
+    // Create connection from first node to second node
+    console.log('Creating connection from', connectionStartNode, 'to', nodeId);
+    
     const workflow = getWorkflowData();
     // Check if connection already exists
-    const exists = workflow.connections.some(c => c.from === connectionStartNode && c.to === nodeId);
+    const exists = workflow.connections.some(function(c) {
+        return c.from === connectionStartNode && c.to === nodeId;
+    });
+    
     if (!exists) {
         workflow.connections.push({
             from: connectionStartNode,
@@ -2507,11 +2523,17 @@ function handleNodeConnectionClick(nodeId) {
             type: 'arrow'
         });
         saveWorkflowData(workflow);
+        console.log('Connection created!');
+    } else {
+        console.log('Connection already exists');
     }
     
     // Clear selection
-    const el = document.getElementById('wf-node-' + connectionStartNode);
-    if (el) el.classList.remove('active');
+    const el1 = document.getElementById('wf-node-' + connectionStartNode);
+    if (el1) {
+        el1.classList.remove('active');
+        el1.style.boxShadow = '';
+    }
     connectionStartNode = null;
     renderWorkflow();
 }
@@ -2636,13 +2658,16 @@ function bindWorkflowEvents() {
     
     if (wfConnectBtn) {
         wfConnectBtn.addEventListener('click', function() {
-            isConnectingMode = !isConnectingMode;
-            this.classList.toggle('active');
-            connectionStartNode = null;
-            // ✅ FIXED: Check if element exists before removing class
-            document.querySelectorAll('.workflow-node.active').forEach(function(el) {
-                if (el) el.classList.remove('active');
-            });
+            // Clear any pending connection
+            if (connectionStartNode) {
+                const el = document.getElementById('wf-node-' + connectionStartNode);
+                if (el) {
+                    el.classList.remove('active');
+                    el.style.boxShadow = '';
+                }
+                connectionStartNode = null;
+            }
+            alert('💡 To create connections:\n1. Click a node to start\n2. Click another node to connect\n3. Click the same node to cancel');
             renderWorkflow();
         });
     }
@@ -2660,21 +2685,19 @@ function bindWorkflowEvents() {
     }
     
     if (wfZoomIn) {
-        wfZoomIn.addEventListener('click', () => {
+        wfZoomIn.addEventListener('click', function() {
             workflowScale = Math.min(workflowScale + 0.1, 2);
             renderWorkflow();
         });
     }
-    
     if (wfZoomOut) {
-        wfZoomOut.addEventListener('click', () => {
+        wfZoomOut.addEventListener('click', function() {
             workflowScale = Math.max(workflowScale - 0.1, 0.5);
             renderWorkflow();
         });
     }
-    
     if (wfResetView) {
-        wfResetView.addEventListener('click', () => {
+        wfResetView.addEventListener('click', function() {
             workflowScale = 1;
             renderWorkflow();
         });
