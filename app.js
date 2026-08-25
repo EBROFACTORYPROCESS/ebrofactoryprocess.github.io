@@ -2290,7 +2290,8 @@ function renderWorkflow() {
     svgLayer.style.left = '0';
     svgLayer.style.width = '100%';
     svgLayer.style.height = '100%';
-    svgLayer.style.pointerEvents = 'none'; // Allow clicks to pass through to nodes
+    // ✅ Enable pointer events on the layer so arrows can be clicked
+    svgLayer.style.pointerEvents = 'all';
     svgLayer.style.overflow = 'visible';
     canvasWrapper.appendChild(svgLayer);
     
@@ -2400,6 +2401,7 @@ function renderWorkflow() {
         if (isEdit) {
             const toggleBtn = document.createElement('button');
             toggleBtn.className = 'node-toggle-btn';
+            // ✅ Closed eye (🙈) for hidden, open eye (👁️) for visible
             toggleBtn.textContent = node.hidden ? '👁️' : '🙈';
             toggleBtn.title = node.hidden ? 'Show node' : 'Hide node';
             toggleBtn.addEventListener('click', function(e) {
@@ -2642,10 +2644,12 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
         pathData = `M ${startX} ${startY} C ${startX} ${cp1y}, ${endX} ${cp2y}, ${endX} ${endY}`;
     }
     
+    // Create a group for the arrow
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     g.setAttribute('class', 'workflow-arrow-group');
     g.dataset.connectionIndex = connectionIndex;
     g.style.cursor = 'pointer';
+    g.style.pointerEvents = 'all';  // ✅ Ensure clicks work
     
     // ✅ If this arrow is selected, add the class
     if (selectedArrowIndex === connectionIndex) {
@@ -2689,41 +2693,43 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
         hitArea.setAttribute('class', 'workflow-arrow-hit');
         g.appendChild(hitArea);
         
-        // ✅ Click to select/delete arrow
+       // ✅ Click to select/delete arrow
         g.addEventListener('click', function(e) {
             e.stopPropagation();
+            e.preventDefault();  // ✅ Prevent default behavior
+    
             const idx = parseInt(this.dataset.connectionIndex);
-            if (!isNaN(idx)) {
-                // Deselect if already selected
-                if (selectedArrowIndex === idx) {
-                    selectedArrowIndex = null;
-                    renderWorkflow();
-                    return;
-                }
-                
-                // Select this arrow
-                selectedArrowIndex = idx;
+            if (isNaN(idx)) return;
+    
+            // If already selected, deselect
+            if (selectedArrowIndex === idx) {
+                selectedArrowIndex = null;
                 renderWorkflow();
-                
-                // Show delete confirmation after brief delay for visual feedback
-                setTimeout(function() {
-                    if (selectedArrowIndex === idx) {
-                        if (confirm('Delete this arrow?')) {
-                            deleteWorkflowConnection(idx);
+                return;
+            }
+    
+            // Select this arrow
+            selectedArrowIndex = idx;
+            renderWorkflow();
+    
+            // Show delete confirmation after brief delay for visual feedback
+            setTimeout(function() {
+                if (selectedArrowIndex === idx) {
+                    if (confirm('Delete this arrow?')) {
+                        deleteWorkflowConnection(idx);
+                        selectedArrowIndex = null;
+                    } else {
+                        // Option to edit label
+                        if (confirm('Edit arrow label instead?')) {
+                            editWorkflowConnectionLabel(idx);
                             selectedArrowIndex = null;
                         } else {
-                            // Option to edit label
-                            if (confirm('Edit arrow label instead?')) {
-                                editWorkflowConnectionLabel(idx);
-                                selectedArrowIndex = null;
-                            } else {
-                                selectedArrowIndex = null;
-                                renderWorkflow();
-                            }
+                            selectedArrowIndex = null;
+                            renderWorkflow();
                         }
                     }
-                }, 300);
-            }
+                }
+            }, 300);
         });
         
         // Double-click to edit label (keep this too)
@@ -2793,8 +2799,7 @@ function updateWorkflowArrows() {
     if (!svgLayer) return;
     
     // Clear old arrows
-    svgLayer.querySelectorAll('.workflow-arrow-line').forEach(el => el.remove());
-    svgLayer.querySelectorAll('.workflow-arrow-head').forEach(el => el.remove());
+    svgLayer.querySelectorAll('.workflow-arrow-group').forEach(el => el.remove());
     
     const workflow = getWorkflowData();
     const canvasWrapper = document.querySelector('.workflow-canvas-wrapper');
@@ -2802,10 +2807,10 @@ function updateWorkflowArrows() {
     
     // Redraw all connections
     workflow.connections.forEach(function(conn) {
-        // ✅ Skip if connection involves a hidden node
+        // Skip if connection involves a hidden node
         if (isConnectionHidden(conn)) {
             return;
-        }     
+        }
         const fromEl = document.getElementById('wf-node-' + conn.from);
         const toEl = document.getElementById('wf-node-' + conn.to);
         if (fromEl && toEl) {
@@ -2815,7 +2820,8 @@ function updateWorkflowArrows() {
                 toEl,
                 canvasWrapper,
                 '#475569',
-                conn.type === 'decision' ? { len: 8, gap: 4 } : undefined
+                conn.type === 'decision' ? { len: 8, gap: 4 } : undefined,
+                workflow.connections.indexOf(conn)  // ✅ Pass correct index
             );
         }
     });
@@ -2830,6 +2836,7 @@ function deleteWorkflowNode(nodeId) {
     saveWorkflowData(workflow);
     renderWorkflow();
 }
+// ✅ Toggle node visibility (hide/show)
 // ✅ Toggle node visibility (hide/show)
 function toggleWorkflowNodeVisibility(nodeId) {
     if (currentMode !== 'edit') return;
