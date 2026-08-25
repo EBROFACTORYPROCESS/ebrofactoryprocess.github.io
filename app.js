@@ -2147,7 +2147,7 @@ let workflowLines = [];
 let workflowConnections = [];
 let isConnectingMode = false;
 let connectionStartNode = null;
-// let nodeIdCounter = 0;
+let nodeIdCounter = 0;
 let workflowScale = 1;
 
 function getWorkflowData() {
