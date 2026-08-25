@@ -2369,10 +2369,6 @@ function renderWorkflow() {
             nodeEl.style.cursor = 'default';
         }
 
-        // Setup drag in edit mode
-        if (isEdit) {
-            setupWorkflowDrag(nodeContainer);
-        }
         // Click to connect
         if (isEdit) {
             nodeEl.addEventListener('click', function(e) {
