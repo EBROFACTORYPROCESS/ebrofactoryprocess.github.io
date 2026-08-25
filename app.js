@@ -1847,7 +1847,7 @@ function renderApp() {
 function bindEvents() {
     if (eventsBound) return;
     eventsBound = true;
-
+    document.getElementById('workflowViewTab').onclick = () => setView('workflow');
     document.getElementById('scenarioSelect').onchange = (e) => {
         appData.currentScenarioId = e.target.value;
         collapseState.clear();
@@ -2047,16 +2047,31 @@ function setView(view) {
     currentView = view;
     document.getElementById('tableViewPanel').style.display = view === 'table' ? 'block' : 'none';
     document.getElementById('sequenceViewPanel').style.display = view === 'sequence' ? 'block' : 'none';
+    document.getElementById('workflowViewPanel').style.display = view === 'workflow' ? 'block' : 'none';
     document.getElementById('tableViewTab').classList.toggle('active', view === 'table');
     document.getElementById('sequenceViewTab').classList.toggle('active', view === 'sequence');
+    document.getElementById('workflowViewTab').classList.toggle('active', view === 'workflow');
     renderCurrentView();
 }
 
 function renderCurrentView() {
     if (currentView === 'table') {
         renderTable();
-    } else {
+        document.getElementById('tableViewPanel').style.display = 'block';
+        document.getElementById('sequenceViewPanel').style.display = 'none';
+        document.getElementById('workflowViewPanel').style.display = 'none';
+    } else if (currentView === 'sequence') {
         renderSequence();
+        document.getElementById('tableViewPanel').style.display = 'none';
+        document.getElementById('sequenceViewPanel').style.display = 'block';
+        document.getElementById('workflowViewPanel').style.display = 'none';
+    } else if (currentView === 'workflow') {
+        renderWorkflow();
+        document.getElementById('tableViewPanel').style.display = 'none';
+        document.getElementById('sequenceViewPanel').style.display = 'none';
+        document.getElementById('workflowViewPanel').style.display = 'block';
+        // Bind events after rendering
+        setTimeout(bindWorkflowEvents, 100);
     }
     updateUIVisibility();
 }
