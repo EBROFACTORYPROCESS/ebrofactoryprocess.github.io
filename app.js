@@ -2451,11 +2451,6 @@ function renderWorkflow() {
     // ✅ Store reference to svgLayer for updates
     window.workflowSvgLayer = svgLayer;
     
-    // Setup drag in edit mode
-    if (isEdit) {
-        setupWorkflowDrag(nodeContainer);
-    }
-    
     console.log('✅ renderWorkflow completed, nodes:', nodeContainer.querySelectorAll('.workflow-node').length);
 }
 
