@@ -2159,7 +2159,15 @@ function getWorkflowData() {
         console.log('Created new workflow for scenario:', sc.name);
     }
     
-    // ✅ Restore nodeIdCounter from saved workflow
+    // ✅ Ensure all nodes have a 'hidden' property
+    if (sc.workflow.nodes) {
+        sc.workflow.nodes.forEach(function(node) {
+            if (node.hidden === undefined) {
+                node.hidden = false;
+            }
+        });
+    }
+    
     if (sc.workflow.nodeIdCounter !== undefined) {
         nodeIdCounter = sc.workflow.nodeIdCounter;
     }
@@ -2388,7 +2396,17 @@ function renderWorkflow() {
             });
             nodeEl.appendChild(editBtn);
         }
-        
+        if (isEdit) {
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = 'node-toggle-btn';
+            toggleBtn.textContent = node.hidden ? '👁️' : '🙈';
+            toggleBtn.title = node.hidden ? 'Show node' : 'Hide node';
+            toggleBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleWorkflowNodeVisibility(node.id);
+            });
+            nodeEl.appendChild(toggleBtn);
+        }
         nodeContainer.appendChild(nodeEl);
     });
     
@@ -2401,6 +2419,11 @@ function renderWorkflow() {
     // ✅ Draw arrows using SVG (inside canvas)
     // ✅ Draw arrows using SVG (inside canvas) - pass index for deletion
     workflow.connections.forEach(function(conn, index) {
+        // ✅ Skip if connection involves a hidden node
+        if (isConnectionHidden(conn)) {
+            return;
+        }
+    
         const fromEl = document.getElementById('wf-node-' + conn.from);
         const toEl = document.getElementById('wf-node-' + conn.to);
         if (fromEl && toEl) {
@@ -2747,6 +2770,10 @@ function updateWorkflowArrows() {
     
     // Redraw all connections
     workflow.connections.forEach(function(conn) {
+        // ✅ Skip if connection involves a hidden node
+        if (isConnectionHidden(conn)) {
+            return;
+        }     
         const fromEl = document.getElementById('wf-node-' + conn.from);
         const toEl = document.getElementById('wf-node-' + conn.to);
         if (fromEl && toEl) {
@@ -2770,6 +2797,52 @@ function deleteWorkflowNode(nodeId) {
     workflow.connections = workflow.connections.filter(c => c.from !== nodeId && c.to !== nodeId);
     saveWorkflowData(workflow);
     renderWorkflow();
+}
+// ✅ Toggle node visibility (hide/show)
+function toggleWorkflowNodeVisibility(nodeId) {
+    if (currentMode !== 'edit') return;
+    
+    const workflow = getWorkflowData();
+    const node = workflow.nodes.find(n => n.id === nodeId);
+    if (!node) return;
+    
+    // Toggle hidden state
+    node.hidden = !node.hidden;
+    
+    // If node is being hidden, remove all connections to/from it
+    if (node.hidden) {
+        const connectedConnections = workflow.connections.filter(
+            c => c.from === nodeId || c.to === nodeId
+        );
+        if (connectedConnections.length > 0) {
+            // Ask for confirmation before removing arrows
+            if (confirm(`Hide "${node.label || node.type || 'Node'}"?\n\nThis will remove ${connectedConnections.length} connected arrow(s).`)) {
+                workflow.connections = workflow.connections.filter(
+                    c => c.from !== nodeId && c.to !== nodeId
+                );
+                console.log(`Removed ${connectedConnections.length} connections from hidden node`);
+            } else {
+                // User cancelled - revert the hide
+                node.hidden = false;
+                saveWorkflowData(workflow);
+                renderWorkflow();
+                return;
+            }
+        }
+    } else {
+        console.log('Node unhidden:', nodeId);
+    }
+    
+    saveWorkflowData(workflow);
+    renderWorkflow();
+}
+
+// ✅ Check if a connection involves a hidden node
+function isConnectionHidden(conn) {
+    const workflow = getWorkflowData();
+    const fromNode = workflow.nodes.find(n => n.id === conn.from);
+    const toNode = workflow.nodes.find(n => n.id === conn.to);
+    return (fromNode && fromNode.hidden) || (toNode && toNode.hidden);
 }
 function editDecisionNode(nodeId) {
     if (currentMode !== 'edit') return;
