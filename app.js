@@ -2066,15 +2066,18 @@ function renderCurrentView() {
         document.getElementById('sequenceViewPanel').style.display = 'block';
         document.getElementById('workflowViewPanel').style.display = 'none';
     } else if (currentView === 'workflow') {
-        renderWorkflow();
+        // Show the panel
         document.getElementById('tableViewPanel').style.display = 'none';
         document.getElementById('sequenceViewPanel').style.display = 'none';
         document.getElementById('workflowViewPanel').style.display = 'block';
         
-        // Render workflow
+        // Re-render workflow with current data
         renderWorkflow();
+        
         // Bind events after rendering
-        setTimeout(bindWorkflowEvents, 100);
+        setTimeout(function() {
+            bindWorkflowEvents();
+        }, 200);
     }
     updateUIVisibility();
 }
@@ -2140,6 +2143,7 @@ function getWorkflowData() {
     // Load workflow data from scenario or create default
     if (!sc.workflow) {
         sc.workflow = { nodes: [], connections: [] };
+        console.log('Created new workflow for scenario:', sc.name);
     }
     return sc.workflow;
 }
@@ -2152,11 +2156,22 @@ function saveWorkflowData(workflow) {
 }
 
 function renderWorkflow() {
+    console.log('🔄 renderWorkflow called');
+    console.log('Current scenario:', getCurrentScenario()?.name);
+    console.log('Processes count:', getCurrentScenario()?.processes?.length);
+    
     const canvas = document.getElementById('workflowCanvas');
-    if (!canvas) return;
+    if (!canvas) {
+        console.warn('Canvas not found!');
+        return;
+    }
     
     const workflow = getWorkflowData();
     const isEdit = currentMode === 'edit';
+    
+    console.log('Workflow data:', workflow);
+    console.log('Workflow nodes:', workflow.nodes.length);
+    console.log('Workflow connections:', workflow.connections.length);
     
     // Clear existing nodes
     canvas.querySelectorAll('.workflow-node').forEach(el => el.remove());
@@ -2174,43 +2189,49 @@ function renderWorkflow() {
     // Get all processes for the scenario
     const sc = getCurrentScenario();
     const processes = sc ? sc.processes : [];
+    console.log('Processes found:', processes.length);
     
-    // Create workflow data if empty, initialize from processes
+    // ✅ FIXED: Initialize workflow from processes if empty
     if (workflow.nodes.length === 0 && processes.length > 0) {
+        console.log('Creating workflow nodes from processes...');
         const nodeMap = {};
         const cols = Math.min(5, processes.length);
-        processes.forEach((p, index) => {
+        const totalProcesses = processes.length;
+        
+        // Sort processes by seq for consistent layout
+        const sortedProcs = sortProcesses(processes);
+        
+        sortedProcs.forEach((p, index) => {
             const id = 'node-' + (nodeIdCounter++);
             const node = {
                 id: id,
                 processId: p.id,
-                type: p.seq.includes('.') ? 'sub' : 'main',
+                type: p.seq && p.seq.includes('.') ? 'sub' : 'main',
                 x: 50 + (index % cols) * 180,
                 y: 50 + Math.floor(index / cols) * 120,
-                label: p.name
+                label: p.name || 'Unnamed'
             };
             nodeMap[p.id] = node;
             workflow.nodes.push(node);
         });
         
-        // Create default connections between sequential steps
-        const sortedProcesses = sortProcesses(processes);
-        for (let i = 0; i < sortedProcesses.length - 1; i++) {
-            const from = sortedProcesses[i];
-            const to = sortedProcesses[i + 1];
+        // Create default connections between sequential top-level steps
+        const topLevel = sortedProcs.filter(p => !p.seq || !p.seq.includes('.'));
+        for (let i = 0; i < topLevel.length - 1; i++) {
+            const from = topLevel[i];
+            const to = topLevel[i + 1];
             if (from && to && nodeMap[from.id] && nodeMap[to.id]) {
-                // Only connect if they are parent-child or sequential
-                const fromSeq = String(from.seq || '');
-                const toSeq = String(to.seq || '');
-                if (!toSeq.startsWith(fromSeq + '.')) {
-                    workflow.connections.push({
-                        from: nodeMap[from.id].id,
-                        to: nodeMap[to.id].id,
-                        type: 'arrow'
-                    });
-                }
+                workflow.connections.push({
+                    from: nodeMap[from.id].id,
+                    to: nodeMap[to.id].id,
+                    type: 'arrow'
+                });
             }
         }
+        
+        // Save the initialized workflow
+        saveWorkflowData(workflow);
+        console.log('Created', workflow.nodes.length, 'nodes and', workflow.connections.length, 'connections');
     }
     
     // Render nodes
@@ -2253,10 +2274,10 @@ function renderWorkflow() {
             statusColor = status ? status.color : 'default';
         }
         
-        nodeEl.classList.add(typeClass);
+        if (typeClass) nodeEl.classList.add(typeClass);
         
         const statusHtml = process ? `<span class="node-status ${statusColor}">${escapeHtml(process.businessStatus || 'Not Defined')}</span>` : '';
-        const seqDisplay = seqLabel ? `<span class="node-seq">${escapeHtml(seqLabel)}</span>` : `<span class="node-seq">${node.type || 'Node'}</span>`;
+        const seqDisplay = seqLabel ? `<span class="node-seq">${escapeHtml(seqLabel)}</span>` : (node.type ? `<span class="node-seq">${node.type}</span>` : '');
         
         nodeEl.innerHTML = `
             <div class="node-header">
@@ -2286,7 +2307,7 @@ function renderWorkflow() {
         // Click to select for connection
         if (isEdit && isConnectingMode) {
             nodeEl.style.cursor = 'crosshair';
-            nodeEl.addEventListener('click', (e) => {
+            nodeEl.addEventListener('click', function(e) {
                 e.stopPropagation();
                 handleNodeConnectionClick(node.id);
             });
@@ -2296,7 +2317,7 @@ function renderWorkflow() {
         const deleteBtn = nodeEl.querySelector('.node-delete-btn');
         if (deleteBtn && isEdit) {
             deleteBtn.style.display = 'flex';
-            deleteBtn.addEventListener('click', (e) => {
+            deleteBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 deleteWorkflowNode(node.id);
             });
@@ -2307,13 +2328,13 @@ function renderWorkflow() {
     
     // Store node elements for reference
     window.workflowNodeElements = {};
-    document.querySelectorAll('.workflow-node').forEach(el => {
+    document.querySelectorAll('.workflow-node').forEach(function(el) {
         const id = el.dataset.nodeId;
         if (id) window.workflowNodeElements[id] = el;
     });
     
     // Render connections with leader-line
-    workflow.connections.forEach(conn => {
+    workflow.connections.forEach(function(conn) {
         const fromEl = document.getElementById('wf-node-' + conn.from);
         const toEl = document.getElementById('wf-node-' + conn.to);
         if (fromEl && toEl) {
@@ -2343,6 +2364,8 @@ function renderWorkflow() {
     if (isEdit) {
         setupWorkflowDrag();
     }
+    
+    console.log('✅ renderWorkflow completed, nodes:', canvas.querySelectorAll('.workflow-node').length);
 }
 
 function setupWorkflowDrag() {
