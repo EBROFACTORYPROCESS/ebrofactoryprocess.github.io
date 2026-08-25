@@ -386,4 +386,95 @@
     border-color: #2a5298 !important;
     box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.4) !important;
 }
+/* ============================================================
+   WORKFLOW DECISION EDIT BUTTON
+   ============================================================ */
+
+.workflow-node .node-edit-btn {
+    position: absolute;
+    bottom: -10px;
+    right: 30px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    background: #f59e0b;
+    color: white;
+    font-size: 10px;
+    cursor: pointer;
+    display: none !important;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    z-index: 20;
+}
+
+.edit-mode .workflow-node.type-decision .node-edit-btn {
+    display: flex !important;
+}
+
+.workflow-node .node-edit-btn:hover {
+    transform: scale(1.15);
+    background: #d97706;
+}
+
+.workflow-node .node-decision-text {
+    font-size: 0.7rem;
+    color: #b45309;
+    margin-top: 0.3rem;
+    font-style: italic;
+    border-top: 1px dashed #f59e0b;
+    padding-top: 0.3rem;
+    word-wrap: break-word;
+    max-width: 200px;
+}
+
+/* ============================================================
+   WORKFLOW CONNECTION HIGHLIGHT
+   ============================================================ */
+
+.workflow-node.connecting-start {
+    border-color: #2a5298 !important;
+    box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.4) !important;
+}
+
+.workflow-node.connecting-target {
+    border-color: #16a34a !important;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.4) !important;
+}
+
+/* ============================================================
+   WORKFLOW CANVAS - UNLIMITED SPACE
+   ============================================================ */
+
+.workflow-canvas-wrapper {
+    position: relative;
+    width: 5000px !important;  /* Very large canvas */
+    height: 5000px !important;
+    min-height: 100%;
+    overflow: visible;
+}
+
+.workflow-container {
+    position: relative;
+    width: 100%;
+    min-height: 700px;
+    height: 800px;
+    background: #f8fafc;
+    border-radius: 1.5rem;
+    border: 2px solid #e2e8f0;
+    overflow: auto;  /* Scroll bars when needed */
+    padding: 2rem;
+}
+
+/* ============================================================
+   RESPONSIVE OVERRIDES
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .workflow-canvas-wrapper {
+        width: 2000px !important;
+        height: 2000px !important;
+    }
+}
 </style>
