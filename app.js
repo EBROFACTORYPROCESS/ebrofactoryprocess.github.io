@@ -2773,70 +2773,7 @@ function bindWorkflowEvents() {
 // WORKFLOW CONNECTION HANDLER
 // ============================================================
 
-function handleNodeConnectionClick(nodeId) {
-    if (currentMode !== 'edit') return;
-    
-    console.log('Node clicked:', nodeId);
-    
-    if (!connectionStartNode) {
-        // First node selected
-        connectionStartNode = nodeId;
-        const el = document.getElementById('wf-node-' + nodeId);
-        if (el) {
-            el.classList.add('connecting-start');
-            el.style.borderColor = '#2a5298';
-            el.style.boxShadow = '0 0 0 3px rgba(42, 82, 152, 0.4)';
-        }
-        console.log('Selected start node:', nodeId);
-        return;
-    }
-    
-    if (connectionStartNode === nodeId) {
-        // Deselect
-        const el = document.getElementById('wf-node-' + nodeId);
-        if (el) {
-            el.classList.remove('connecting-start');
-            el.style.borderColor = '';
-            el.style.boxShadow = '';
-        }
-        connectionStartNode = null;
-        console.log('Deselected node');
-        return;
-    }
-    
-    // Create connection from first node to second node
-    console.log('Creating connection from', connectionStartNode, 'to', nodeId);
-    
-    const workflow = getWorkflowData();
-    // Check if connection already exists (both directions)
-    const exists = workflow.connections.some(function(c) {
-        return (c.from === connectionStartNode && c.to === nodeId) ||
-               (c.from === nodeId && c.to === connectionStartNode);
-    });
-    
-    if (!exists) {
-        workflow.connections.push({
-            from: connectionStartNode,
-            to: nodeId,
-            type: 'arrow'
-        });
-        saveWorkflowData(workflow);
-        console.log('Connection created!');
-    } else {
-        console.log('Connection already exists');
-        alert('⚠️ Connection already exists between these nodes');
-    }
-    
-    // Clear selection
-    const el1 = document.getElementById('wf-node-' + connectionStartNode);
-    if (el1) {
-        el1.classList.remove('connecting-start');
-        el1.style.borderColor = '';
-        el1.style.boxShadow = '';
-    }
-    connectionStartNode = null;
-    renderWorkflow();
-}
+
 // ============================
 // 24. Page Startup
 // ============================
