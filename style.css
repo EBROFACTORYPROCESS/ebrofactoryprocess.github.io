@@ -477,4 +477,47 @@
         height: 2000px !important;
     }
 }
+
+/* ============================================================
+   FIX: Prevent page margin shift on scroll
+   ============================================================ */
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(145deg, #eef2f9 0%, #d9e2ef 100%);
+    padding: 2rem;
+    overflow-x: hidden; /* ✅ Prevent horizontal scroll on body */
+}
+
+.glass-dashboard {
+    max-width: 1500px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.92);
+    border-radius: 2rem;
+    border: 1px solid rgba(255,255,255,0.6);
+    box-shadow: 0 25px 45px -12px rgba(0,0,0,0.25);
+    padding: 1.8rem 2rem 2.2rem;
+    overflow: hidden; /* ✅ Prevent overflow on dashboard */
+}
+
+/* ✅ Fix: Workflow container should handle scrolling */
+.workflow-container {
+    position: relative;
+    width: 100%;
+    min-height: 700px;
+    height: 800px;
+    background: #f8fafc;
+    border-radius: 1.5rem;
+    border: 2px solid #e2e8f0;
+    overflow: auto; /* ✅ Scroll inside container only */
+    padding: 2rem;
+}
+
+/* ✅ Fix: Canvas wrapper with proper overflow */
+.workflow-canvas-wrapper {
+    position: relative;
+    width: 5000px;
+    height: 5000px;
+    overflow: visible;
+}
 </style>
