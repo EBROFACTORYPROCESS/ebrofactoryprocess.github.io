@@ -1728,6 +1728,7 @@ function renderApp() {
                 <div class="view-tabs">
                     <button id="tableViewTab" class="tab-btn active">📋 Process Table</button>
                     <button id="sequenceViewTab" class="tab-btn">🌳 Process Tree</button>
+                    <button id="workflowViewTab" class="tab-btn">🔀 Workflow</button>
                 </div>
                 <div class="filter-panel">
                     <div class="filter-conditions" id="filterConditions"></div>
