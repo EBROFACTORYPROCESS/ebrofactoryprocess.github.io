@@ -2300,6 +2300,10 @@ function renderWorkflow() {
 
     // Render nodes
     workflow.nodes.forEach(node => {
+        // ✅ Skip hidden nodes in display mode
+        if (!isEdit && node.hidden) {
+            return; // Skip rendering this node
+        }
         const nodeEl = document.createElement('div');
         nodeEl.className = 'workflow-node';
         nodeEl.id = 'wf-node-' + node.id;
