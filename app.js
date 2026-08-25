@@ -2055,6 +2055,12 @@ function setView(view) {
 }
 
 function renderCurrentView() {
+    // ✅ Clean up SVG arrows when switching tabs
+    if (window.workflowSvgLayer) {
+        window.workflowSvgLayer.innerHTML = '';
+        window.workflowSvgLayer = null;
+    }
+    
     if (currentView === 'table') {
         renderTable();
         document.getElementById('tableViewPanel').style.display = 'block';
@@ -2066,15 +2072,12 @@ function renderCurrentView() {
         document.getElementById('sequenceViewPanel').style.display = 'block';
         document.getElementById('workflowViewPanel').style.display = 'none';
     } else if (currentView === 'workflow') {
-        // Show the panel
         document.getElementById('tableViewPanel').style.display = 'none';
         document.getElementById('sequenceViewPanel').style.display = 'none';
         document.getElementById('workflowViewPanel').style.display = 'block';
         
-        // Re-render workflow with current data
         renderWorkflow();
         
-        // Bind events after rendering
         setTimeout(function() {
             bindWorkflowEvents();
         }, 200);
@@ -2166,18 +2169,10 @@ function renderWorkflow() {
     const workflow = getWorkflowData();
     const isEdit = currentMode === 'edit';
     
-    // Clear existing nodes
+    // Clear existing nodes and arrows
     canvas.querySelectorAll('.workflow-node').forEach(el => el.remove());
-    canvas.querySelectorAll('.workflow-arrow').forEach(el => el.remove());
-    
-    // Clear existing leader lines
-    if (window.leaderLines) {
-        window.leaderLines.forEach(line => {
-            try { line.remove(); } catch(e) {}
-        });
-    }
-    window.leaderLines = [];
-    workflowLines = [];
+    canvas.querySelectorAll('.workflow-arrow-svg').forEach(el => el.remove());
+    canvas.querySelectorAll('.workflow-arrow-line').forEach(el => el.remove());
     
     // Reset connection selection
     connectionStartNode = null;
@@ -2259,6 +2254,18 @@ function renderWorkflow() {
     nodeContainer.style.transform = 'scale(' + workflowScale + ')';
     canvasWrapper.appendChild(nodeContainer);
     
+    // ✅ Create SVG layer for arrows (inside the canvas, not viewport)
+    const svgLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svgLayer.setAttribute('class', 'workflow-arrow-svg');
+    svgLayer.style.position = 'absolute';
+    svgLayer.style.top = '0';
+    svgLayer.style.left = '0';
+    svgLayer.style.width = '100%';
+    svgLayer.style.height = '100%';
+    svgLayer.style.pointerEvents = 'none'; // Allow clicks to pass through to nodes
+    svgLayer.style.overflow = 'visible';
+    canvasWrapper.appendChild(svgLayer);
+    
     // Render nodes
     workflow.nodes.forEach(node => {
         const nodeEl = document.createElement('div');
@@ -2304,7 +2311,6 @@ function renderWorkflow() {
         const statusHtml = process ? `<span class="node-status ${statusColor}">${escapeHtml(process.businessStatus || 'Not Defined')}</span>` : '';
         const seqDisplay = seqLabel ? `<span class="node-seq">${escapeHtml(seqLabel)}</span>` : (node.type ? `<span class="node-seq">${escapeHtml(node.type)}</span>` : '');
         
-        // Decision description
         let decisionHtml = '';
         if (node.type === 'decision') {
             const decisionText = node.decisionText || 'Decision?';
@@ -2373,60 +2379,26 @@ function renderWorkflow() {
         if (id) window.workflowNodeElements[id] = el;
     });
     
-    // Render connections with smart socket selection
+    // ✅ Draw arrows using SVG (inside canvas)
     workflow.connections.forEach(function(conn) {
         const fromEl = document.getElementById('wf-node-' + conn.from);
         const toEl = document.getElementById('wf-node-' + conn.to);
         if (fromEl && toEl) {
-            try {
-                const fromRect = fromEl.getBoundingClientRect();
-                const toRect = toEl.getBoundingClientRect();
-                const dx = toRect.left - fromRect.left;
-                const dy = toRect.top - fromRect.top;
-                
-                let startSocket = 'right';
-                let endSocket = 'left';
-                
-                // Smart socket selection based on relative position
-                if (Math.abs(dx) > Math.abs(dy)) {
-                    if (dx > 0) {
-                        startSocket = 'right';
-                        endSocket = 'left';
-                    } else {
-                        startSocket = 'left';
-                        endSocket = 'right';
-                    }
-                } else {
-                    if (dy > 0) {
-                        startSocket = 'bottom';
-                        endSocket = 'top';
-                    } else {
-                        startSocket = 'top';
-                        endSocket = 'bottom';
-                    }
-                }
-                
-                const line = new LeaderLine(
-                    fromEl,
-                    toEl,
-                    {
-                        color: '#475569',
-                        size: 2.5,
-                        path: 'flow',
-                        startSocket: startSocket,
-                        endSocket: endSocket,
-                        dash: conn.type === 'decision' ? { len: 8, gap: 4 } : undefined
-                    }
-                );
-                if (!window.leaderLines) window.leaderLines = [];
-                window.leaderLines.push(line);
-                workflowLines.push(line);
-            } catch (e) {
-                console.warn('Failed to create leader line:', e);
-            }
+            drawArrowSVG(
+                svgLayer,
+                fromEl,
+                toEl,
+                canvasWrapper,
+                '#475569',
+                conn.type === 'decision' ? { len: 8, gap: 4 } : undefined
+            );
         }
     });
     
+    // ✅ Store reference to svgLayer for updates
+    window.workflowSvgLayer = svgLayer;
+    
+    // Setup drag in edit mode
     if (isEdit) {
         setupWorkflowDrag(nodeContainer);
     }
@@ -2448,7 +2420,6 @@ function setupWorkflowDrag(container) {
         interact('.workflow-node').unset();
     } catch(e) {}
     
-    // ✅ REMOVED restrictRect - unlimited dragging!
     interact('.workflow-node').draggable({
         inertia: false,
         modifiers: [],
@@ -2482,14 +2453,8 @@ function setupWorkflowDrag(container) {
                 node.y = y;
             }
             
-            // Update leader lines
-            if (window.leaderLines) {
-                window.leaderLines.forEach(line => {
-                    try {
-                        line.position();
-                    } catch (e) {}
-                });
-            }
+            // ✅ Update SVG arrows in real-time
+            updateWorkflowArrows();
         },
         onend: function(event) {
             const target = event.target;
@@ -2505,10 +2470,12 @@ function setupWorkflowDrag(container) {
                 node.y = parseFloat(target.dataset.y) || 100;
                 saveWorkflowData(workflow);
             }
+            
+            // ✅ Final arrow update
+            updateWorkflowArrows();
         }
     });
 }
-
 
 // ✅ ADD THIS MISSING FUNCTION HERE
 function handleNodeConnectionClick(nodeId) {
@@ -2575,7 +2542,126 @@ function handleNodeConnectionClick(nodeId) {
     connectionStartNode = null;
     renderWorkflow();
 }
+// ✅ Helper function to draw a single arrow using SVG
+function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash) {
+    if (!fromEl || !toEl || !wrapper) return;
+    
+    const fromRect = fromEl.getBoundingClientRect();
+    const toRect = toEl.getBoundingClientRect();
+    const wrapperRect = wrapper.getBoundingClientRect();
+    
+    // Calculate center points relative to the canvas wrapper
+    const fromX = fromRect.left + fromRect.width / 2 - wrapperRect.left;
+    const fromY = fromRect.top + fromRect.height / 2 - wrapperRect.top;
+    const toX = toRect.left + toRect.width / 2 - wrapperRect.left;
+    const toY = toRect.top + toRect.height / 2 - wrapperRect.top;
+    
+    const dx = toX - fromX;
+    const dy = toY - fromY;
+    
+    let startX = fromX;
+    let startY = fromY;
+    let endX = toX;
+    let endY = toY;
+    
+    // Adjust for socket selection based on relative position
+    if (Math.abs(dx) > Math.abs(dy)) {
+        if (dx > 0) {
+            startX = fromRect.right - wrapperRect.left;
+            endX = toRect.left - wrapperRect.left;
+        } else {
+            startX = fromRect.left - wrapperRect.left;
+            endX = toRect.right - wrapperRect.left;
+        }
+        startY = fromRect.top + fromRect.height / 2 - wrapperRect.top;
+        endY = toRect.top + toRect.height / 2 - wrapperRect.top;
+    } else {
+        if (dy > 0) {
+            startY = fromRect.bottom - wrapperRect.top;
+            endY = toRect.top - wrapperRect.top;
+        } else {
+            startY = fromRect.top - wrapperRect.top;
+            endY = toRect.bottom - wrapperRect.top;
+        }
+        startX = fromRect.left + fromRect.width / 2 - wrapperRect.left;
+        endX = toRect.left + toRect.width / 2 - wrapperRect.left;
+    }
+    
+    // Create path with curve
+    const offsetX = Math.abs(endX - startX) * 0.3;
+    const offsetY = Math.abs(endY - startY) * 0.3;
+    
+    let pathData = '';
+    if (Math.abs(dx) > Math.abs(dy)) {
+        const cp1x = startX + offsetX * (dx > 0 ? 1 : -1);
+        const cp2x = endX - offsetX * (dx > 0 ? 1 : -1);
+        pathData = `M ${startX} ${startY} C ${cp1x} ${startY}, ${cp2x} ${endY}, ${endX} ${endY}`;
+    } else {
+        const cp1y = startY + offsetY * (dy > 0 ? 1 : -1);
+        const cp2y = endY - offsetY * (dy > 0 ? 1 : -1);
+        pathData = `M ${startX} ${startY} C ${startX} ${cp1y}, ${endX} ${cp2y}, ${endX} ${endY}`;
+    }
+    
+    // Draw the path
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', pathData);
+    path.setAttribute('stroke', color || '#475569');
+    path.setAttribute('stroke-width', '2.5');
+    path.setAttribute('fill', 'none');
+    if (dash) {
+        path.setAttribute('stroke-dasharray', dash.len + ',' + dash.gap);
+    }
+    path.setAttribute('class', 'workflow-arrow-line');
+    svg.appendChild(path);
+    
+    // Draw arrowhead
+    const angle = Math.atan2(endY - startY, endX - startX);
+    const headLen = 10;
+    const headAngle = Math.PI / 6;
+    
+    const arrowHead = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    const tipX = endX;
+    const tipY = endY;
+    const leftX = endX - headLen * Math.cos(angle - headAngle);
+    const leftY = endY - headLen * Math.sin(angle - headAngle);
+    const rightX = endX - headLen * Math.cos(angle + headAngle);
+    const rightY = endY - headLen * Math.sin(angle + headAngle);
+    
+    arrowHead.setAttribute('points', `${tipX},${tipY} ${leftX},${leftY} ${rightX},${rightY}`);
+    arrowHead.setAttribute('fill', color || '#475569');
+    arrowHead.setAttribute('class', 'workflow-arrow-head');
+    svg.appendChild(arrowHead);
+}
 
+// ✅ Update all arrows in real-time
+function updateWorkflowArrows() {
+    const svgLayer = window.workflowSvgLayer;
+    if (!svgLayer) return;
+    
+    // Clear old arrows
+    svgLayer.querySelectorAll('.workflow-arrow-line').forEach(el => el.remove());
+    svgLayer.querySelectorAll('.workflow-arrow-head').forEach(el => el.remove());
+    
+    const workflow = getWorkflowData();
+    const canvasWrapper = document.querySelector('.workflow-canvas-wrapper');
+    if (!canvasWrapper) return;
+    
+    // Redraw all connections
+    workflow.connections.forEach(function(conn) {
+        const fromEl = document.getElementById('wf-node-' + conn.from);
+        const toEl = document.getElementById('wf-node-' + conn.to);
+        if (fromEl && toEl) {
+            drawArrowSVG(
+                svgLayer,
+                fromEl,
+                toEl,
+                canvasWrapper,
+                '#475569',
+                conn.type === 'decision' ? { len: 8, gap: 4 } : undefined
+            );
+        }
+    });
+}
 function deleteWorkflowNode(nodeId) {
     if (currentMode !== 'edit') return;
     if (!confirm('Delete this workflow node?')) return;
