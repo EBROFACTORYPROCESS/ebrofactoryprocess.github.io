@@ -2600,8 +2600,10 @@ function bindWorkflowEvents() {
             isConnectingMode = !isConnectingMode;
             this.classList.toggle('active');
             connectionStartNode = null;
-            document.querySelectorAll('.workflow-node.active').forEach(el => el.classList.remove('active'));
-            // Re-render to update cursor styles
+            // ✅ FIXED: Check if element exists before removing class
+            document.querySelectorAll('.workflow-node.active').forEach(function(el) {
+                if (el) el.classList.remove('active');
+            });
             renderWorkflow();
         });
     }
