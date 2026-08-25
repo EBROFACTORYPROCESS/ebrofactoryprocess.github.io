@@ -616,4 +616,77 @@ body {
 .workflow-arrow-group .workflow-arrow-label {
     pointer-events: none;
 }
+/* ============================================================
+   WORKFLOW HIDDEN NODE - GRAY BACKGROUND
+   ============================================================ */
+
+.workflow-node.hidden {
+    opacity: 0.6;
+    border-color: #94a3b8 !important;
+    background: #cbd5e1 !important;  /* ✅ Gray background */
+    pointer-events: none !important;
+    cursor: default !important;
+    filter: grayscale(0.8);
+    transition: opacity 0.3s, filter 0.3s, background 0.3s;
+}
+
+.workflow-node.hidden .node-name {
+    text-decoration: line-through;
+    color: #475569;
+}
+
+.workflow-node.hidden .node-status {
+    opacity: 0.3;
+}
+
+.workflow-node.hidden .node-delete-btn {
+    display: none !important;
+}
+
+.workflow-node.hidden .node-edit-btn {
+    display: none !important;
+}
+
+/* Hidden node - show an indicator */
+.workflow-node.hidden::after {
+    content: "👁️ Hidden";
+    position: absolute;
+    bottom: -18px;
+    right: 8px;
+    font-size: 0.6rem;
+    color: #64748b;
+    background: #e2e8f0;
+    padding: 0.1rem 0.4rem;
+    border-radius: 10px;
+    border: 1px solid #94a3b8;
+}
+
+/* Toggle button for hide/show */
+.workflow-node .node-toggle-btn {
+    position: absolute;
+    bottom: -10px;
+    right: 54px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: #8b5cf6;
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    z-index: 20;
+}
+
+.workflow-node .node-toggle-btn:hover {
+    transform: scale(1.15);
+    background: #7c3aed;
+}
+
+.edit-mode .workflow-node .node-toggle-btn {
+    display: flex;
+}
 </style>
