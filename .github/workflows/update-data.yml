@@ -31,7 +31,6 @@ jobs:
             
             console.log('=== Starting apply changes ===');
             
-            // Read current data.json
             let currentData = {};
             try {
               const content = fs.readFileSync('data.json', 'utf8');
@@ -44,7 +43,6 @@ jobs:
               console.log('No existing data.json, creating new one');
             }
             
-            // Read payload
             const payloadContent = fs.readFileSync('payload.json', 'utf8');
             console.log('Payload content length:', payloadContent.length);
             
@@ -59,7 +57,7 @@ jobs:
             }
             
             // ============================================================
-            // FIXED: Apply diff with proper array handling
+            // FIXED: applyDiff with proper array handling
             // ============================================================
             function applyDiff(current, diff) {
               if (!diff) return current;
@@ -67,79 +65,90 @@ jobs:
               // Deep clone the current data
               const result = JSON.parse(JSON.stringify(current));
               
-              // Handle array operations (jsondiffpatch format)
-              if (diff._t === 'a') {
-                console.log('Array diff detected');
+              // ============================================================
+              // Handle scenarios array diff
+              // ============================================================
+              if (diff.scenarios && typeof diff.scenarios === 'object' && !Array.isArray(diff.scenarios)) {
+                const scenariosDiff = diff.scenarios;
                 
-                // Get all operations and sort them
-                const ops = [];
-                for (const key in diff) {
-                  if (key === '_t') continue;
-                  const val = diff[key];
-                  const index = parseInt(key);
+                if (scenariosDiff._t === 'a') {
+                  console.log('Processing scenarios array diff...');
                   
-                  if (Array.isArray(val) && val.length === 2) {
-                    if (val[0] === 0) {
-                      // Deletion: [0, oldValue]
-                      ops.push({ type: 'delete', index: index, value: val[1] });
-                    } else if (val[1] === 0) {
-                      // Insertion: [newValue, 0]
-                      ops.push({ type: 'insert', index: index, value: val[0] });
+                  const currentScenarios = Array.isArray(current.scenarios) ? current.scenarios : [];
+                  const resultScenarios = [];
+                  
+                  // Get all operations
+                  const ops = [];
+                  for (const key in scenariosDiff) {
+                    if (key === '_t') continue;
+                    const val = scenariosDiff[key];
+                    const index = parseInt(key);
+                    
+                    if (Array.isArray(val) && val.length === 2) {
+                      if (val[0] === 0) {
+                        ops.push({ type: 'delete', index: index, value: val[1] });
+                      } else if (val[1] === 0) {
+                        ops.push({ type: 'insert', index: index, value: val[0] });
+                      } else {
+                        ops.push({ type: 'update', index: index, value: val[0] });
+                      }
                     } else {
-                      // Update: [newValue, oldValue]
-                      ops.push({ type: 'update', index: index, value: val[0] });
+                      ops.push({ type: 'recursive', index: index, value: val });
                     }
-                  } else {
-                    // Recursive update
-                    ops.push({ type: 'recursive', index: index, value: val });
                   }
-                }
-                
-                // Apply deletions first (from highest index to lowest)
-                const deletions = ops.filter(function(op) { return op.type === 'delete'; }).sort(function(a, b) { return b.index - a.index; });
-                const insertions = ops.filter(function(op) { return op.type === 'insert'; }).sort(function(a, b) { return a.index - b.index; });
-                const updates = ops.filter(function(op) { return op.type === 'update'; });
-                const recursives = ops.filter(function(op) { return op.type === 'recursive'; });
-                
-                for (var i = 0; i < deletions.length; i++) {
-                  var del = deletions[i];
-                  if (Array.isArray(result) && del.index < result.length) {
-                    console.log('  Deleting item at index ' + del.index + ': ' + (del.value && del.value.name ? del.value.name : ''));
-                    result.splice(del.index, 1);
+                  
+                  // Start with current scenarios
+                  for (var i = 0; i < currentScenarios.length; i++) {
+                    resultScenarios.push(JSON.parse(JSON.stringify(currentScenarios[i])));
                   }
-                }
-                
-                // Apply insertions
-                for (var j = 0; j < insertions.length; j++) {
-                  var ins = insertions[j];
-                  if (Array.isArray(result)) {
-                    console.log('  Inserting item at index ' + ins.index);
-                    result.splice(ins.index, 0, ins.value);
+                  
+                  // Apply deletions (highest index first)
+                  var deletions = ops.filter(function(op) { return op.type === 'delete'; }).sort(function(a, b) { return b.index - a.index; });
+                  for (var d = 0; d < deletions.length; d++) {
+                    var del = deletions[d];
+                    if (del.index < resultScenarios.length) {
+                      console.log('  Deleting scenario at index ' + del.index + ': ' + (del.value && del.value.name ? del.value.name : ''));
+                      resultScenarios.splice(del.index, 1);
+                    }
                   }
-                }
-                
-                // Apply updates
-                for (var k = 0; k < updates.length; k++) {
-                  var upd = updates[k];
-                  if (Array.isArray(result) && upd.index < result.length) {
-                    console.log('  Updating item at index ' + upd.index);
-                    result[upd.index] = upd.value;
+                  
+                  // Apply insertions
+                  var insertions = ops.filter(function(op) { return op.type === 'insert'; }).sort(function(a, b) { return a.index - b.index; });
+                  for (var j = 0; j < insertions.length; j++) {
+                    var ins = insertions[j];
+                    console.log('  Inserting scenario at index ' + ins.index);
+                    resultScenarios.splice(ins.index, 0, ins.value);
                   }
-                }
-                
-                // Apply recursive updates
-                for (var l = 0; l < recursives.length; l++) {
-                  var rec = recursives[l];
-                  if (Array.isArray(result) && rec.index < result.length) {
-                    console.log('  Recursive update at index ' + rec.index);
-                    result[rec.index] = applyDiff(result[rec.index], rec.value);
+                  
+                  // Apply updates
+                  var updates = ops.filter(function(op) { return op.type === 'update'; });
+                  for (var u = 0; u < updates.length; u++) {
+                    var upd = updates[u];
+                    if (upd.index < resultScenarios.length) {
+                      console.log('  Updating scenario at index ' + upd.index);
+                      resultScenarios[upd.index] = upd.value;
+                    }
                   }
+                  
+                  // Apply recursive updates
+                  var recursives = ops.filter(function(op) { return op.type === 'recursive'; });
+                  for (var r = 0; r < recursives.length; r++) {
+                    var rec = recursives[r];
+                    if (rec.index < resultScenarios.length) {
+                      console.log('  Recursive update at index ' + rec.index);
+                      resultScenarios[rec.index] = applyDiff(resultScenarios[rec.index], rec.value);
+                    }
+                  }
+                  
+                  result.scenarios = resultScenarios;
+                  console.log('  Final scenarios count: ' + result.scenarios.length);
+                  
+                  // Remove from diff to avoid double processing
+                  delete diff.scenarios;
                 }
-                
-                return result;
               }
               
-              // Handle regular object diff
+              // Handle remaining diff
               for (var key in diff) {
                 if (key === '_t') continue;
                 var diffValue = diff[key];
@@ -214,27 +223,18 @@ jobs:
               console.log('=== Applying changes ===');
               console.log('Parsed data keys:', Object.keys(parsedData));
               
-              // Log what we're about to apply
-              if (parsedData.scenarios) {
-                console.log('Scenarios in diff:', parsedData.scenarios);
-              }
-              
-              // Apply the diff to current data
               var resultData = applyDiff(currentData, parsedData);
               console.log('After applyDiff, scenarios count:', resultData.scenarios ? resultData.scenarios.length : 0);
               
-              // Ensure scenarios is an array
               if (!resultData.scenarios || !Array.isArray(resultData.scenarios)) {
                 console.log('Scenarios is not an array, creating empty array');
                 resultData.scenarios = [];
               }
               
-              // Log scenarios before cleaning
               if (resultData.scenarios.length > 0) {
                 console.log('Scenario names before cleaning:', resultData.scenarios.map(function(s) { return s.name; }).join(', '));
               }
               
-              // Clean all scenarios
               resultData.scenarios = resultData.scenarios
                 .map(function(s) { return cleanScenario(s); })
                 .filter(function(s) { return s !== null; });
@@ -244,7 +244,6 @@ jobs:
                 console.log('Scenario names after cleaning:', resultData.scenarios.map(function(s) { return s.name; }).join(', '));
               }
               
-              // Handle currentScenarioId
               if (parsedData.currentScenarioId) {
                 var newCurrentId = parsedData.currentScenarioId;
                 if (Array.isArray(newCurrentId)) {
@@ -259,7 +258,6 @@ jobs:
                 }
               }
               
-              // Ensure currentScenarioId is valid
               if (!resultData.currentScenarioId || !resultData.scenarios.some(function(s) { return s && s.id === resultData.currentScenarioId; })) {
                 if (resultData.scenarios.length > 0) {
                   resultData.currentScenarioId = resultData.scenarios[0].id;
@@ -267,7 +265,6 @@ jobs:
                 }
               }
               
-              // Ensure master data exists
               if (!resultData.departments || !Array.isArray(resultData.departments)) {
                 resultData.departments = ['Sales', 'Production Planning', 'Material Planning', 'Material Handling', 'Purchase', 'Production Execution', 'Parts Quality', 'Vehicle Quality', 'Finance', 'Trade & Compliance'];
               }
@@ -309,12 +306,10 @@ jobs:
             // MAIN EXECUTION
             // ============================================================
             var payloadType = payload.type || 'diff';
-            
             console.log('Payload type:', payloadType);
             
             if (payloadType === 'gist' && payload.gist_id) {
               console.log('Processing Gist payload...');
-              // Gist handling would go here
             } else {
               console.log('Processing direct payload...');
               var payloadData = payload.data || '';
