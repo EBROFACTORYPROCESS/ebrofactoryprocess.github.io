@@ -87,15 +87,36 @@ jobs:
                   existingScenario.workflow = { nodes: [], connections: [] };
                 }
                 
-                if (newScenario.workflow.nodes && Array.isArray(newScenario.workflow.nodes)) {
-                  const existingNodeIds = new Set();
+                // ✅ FIX: Handle nodes as object with numeric keys
+                if (newScenario.workflow.nodes) {
+                  var newNodeArray = [];
+                  
+                  if (Array.isArray(newScenario.workflow.nodes)) {
+                    newNodeArray = newScenario.workflow.nodes;
+                  } else if (typeof newScenario.workflow.nodes === "object") {
+                    console.log("    Converting nodes object to array...");
+                    for (var key in newScenario.workflow.nodes) {
+                      if (key === "_t") continue;
+                      var val = newScenario.workflow.nodes[key];
+                      if (Array.isArray(val)) {
+                        if (val.length > 0 && val[0] && typeof val[0] === "object") {
+                          newNodeArray.push(val[0]);
+                        }
+                      } else if (val && typeof val === "object") {
+                        newNodeArray.push(val);
+                      }
+                    }
+                    console.log("    Found " + newNodeArray.length + " nodes");
+                  }
+                  
+                  var existingNodeIds = new Set();
                   if (existingScenario.workflow.nodes) {
                     existingScenario.workflow.nodes.forEach(function(n) {
                       if (n && n.id) existingNodeIds.add(n.id);
                     });
                   }
                   
-                  newScenario.workflow.nodes.forEach(function(node) {
+                  newNodeArray.forEach(function(node) {
                     if (node && node.id && !existingNodeIds.has(node.id)) {
                       existingScenario.workflow.nodes.push(node);
                       console.log("    Added node:", node.id, node.label || "");
@@ -103,8 +124,29 @@ jobs:
                   });
                 }
                 
-                if (newScenario.workflow.connections && Array.isArray(newScenario.workflow.connections)) {
-                  const existingConnStrings = new Set();
+                // ✅ FIX: Handle connections as object with numeric keys
+                if (newScenario.workflow.connections) {
+                  var newConnArray = [];
+                  
+                  if (Array.isArray(newScenario.workflow.connections)) {
+                    newConnArray = newScenario.workflow.connections;
+                  } else if (typeof newScenario.workflow.connections === "object") {
+                    console.log("    Converting connections object to array...");
+                    for (var key in newScenario.workflow.connections) {
+                      if (key === "_t") continue;
+                      var val = newScenario.workflow.connections[key];
+                      if (Array.isArray(val)) {
+                        if (val.length > 0 && typeof val[0] === "object") {
+                          newConnArray.push(val[0]);
+                        }
+                      } else if (val && typeof val === "object") {
+                        newConnArray.push(val);
+                      }
+                    }
+                    console.log("    Found " + newConnArray.length + " connections");
+                  }
+                  
+                  var existingConnStrings = new Set();
                   if (existingScenario.workflow.connections) {
                     existingScenario.workflow.connections.forEach(function(c) {
                       if (c && c.from && c.to) {
@@ -113,15 +155,20 @@ jobs:
                     });
                   }
                   
-                  newScenario.workflow.connections.forEach(function(conn) {
+                  newConnArray.forEach(function(conn) {
                     if (conn && conn.from && conn.to) {
-                      const key = conn.from + "->" + conn.to;
+                      var key = conn.from + "->" + conn.to;
                       if (!existingConnStrings.has(key)) {
                         existingScenario.workflow.connections.push(conn);
                         console.log("    Added connection:", conn.from, "->", conn.to);
                       }
                     }
                   });
+                }
+                
+                if (newScenario.workflow.nodeIdCounter !== undefined) {
+                  existingScenario.workflow.nodeIdCounter = newScenario.workflow.nodeIdCounter;
+                  console.log("  Set nodeIdCounter to:", newScenario.workflow.nodeIdCounter);
                 }
                 
                 console.log("  Final workflow nodes:", existingScenario.workflow.nodes.length);
