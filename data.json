@@ -21,7 +21,8 @@
     "Vehicle Quality",
     "Environment",
     "BOM Management",
-    "All"
+    "All",
+    "test1"
   ],
   "importanceList": [],
   "urgencyList": [],
@@ -35,7 +36,8 @@
     "SCADA",
     "SPS",
     "WMS",
-    "To Be Determined"
+    "To Be Determined",
+    "test12"
   ],
   "sysStatusList": [
     {
@@ -57,9 +59,15 @@
     {
       "value": "Work in Porgress",
       "color": "yellow"
+    },
+    {
+      "value": "test13",
+      "color": "default"
     }
   ],
-  "sysRespList": [],
+  "sysRespList": [
+    "test14"
+  ],
   "businessStatuses": [
     {
       "value": "Not Defined",
@@ -72,6 +80,10 @@
     {
       "value": "Completed",
       "color": "green"
+    },
+    {
+      "value": "test15",
+      "color": "default"
     }
   ],
   "scenarios": [
