@@ -2175,7 +2175,13 @@ function getWorkflowData() {
     }
     
     if (sc.workflow.nodeIdCounter !== undefined) {
-        nodeIdCounter = sc.workflow.nodeIdCounter;
+        let counter = sc.workflow.nodeIdCounter;
+        // If it's an array, take the first element (safely)
+        if (Array.isArray(counter)) {
+            counter = counter[0] || 0;
+        }
+        // Ensure it's a valid number
+        nodeIdCounter = typeof counter === 'number' ? counter : parseInt(counter) || 0;
     }
     
     return sc.workflow;
