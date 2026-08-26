@@ -219,6 +219,7 @@ function normalizeData(data) {
         if (!sc.workflow) {
             sc.workflow = { nodes: [], connections: [] };
         }
+        normalizeWorkflowData(sc.workflow);
         // Normalize nodeIdCounter if present
         if (sc.workflow && sc.workflow.nodeIdCounter !== undefined) {
             if (Array.isArray(sc.workflow.nodeIdCounter)) {
@@ -584,6 +585,47 @@ async function saveDataToGitHub(data) {
         if (saveBtn) {
             saveBtn.textContent = '💾 Save to GitHub';
             saveBtn.disabled = false;
+        }
+    }
+}
+function normalizeWorkflowData(workflow) {
+    if (!workflow) return;
+    // Normalize nodeIdCounter
+    if (workflow.nodeIdCounter !== undefined) {
+        let counter = workflow.nodeIdCounter;
+        if (Array.isArray(counter)) counter = counter[0] || 0;
+        if (typeof counter !== 'number') counter = parseInt(counter) || 0;
+        workflow.nodeIdCounter = counter;
+    }
+    // Normalize nodes
+    if (Array.isArray(workflow.nodes)) {
+        workflow.nodes = workflow.nodes.filter(n => n && typeof n === 'object');
+        for (let node of workflow.nodes) {
+            // Ensure id is a string
+            if (node.id !== undefined) {
+                if (Array.isArray(node.id)) {
+                    node.id = node.id[0] || 'node-' + Date.now();
+                }
+                if (typeof node.id !== 'string') {
+                    node.id = String(node.id);
+                }
+            }
+            // Ensure x and y are numbers
+            if (node.x !== undefined && Array.isArray(node.x)) node.x = node.x[0] || 100;
+            if (node.y !== undefined && Array.isArray(node.y)) node.y = node.y[0] || 100;
+            // Ensure hidden is boolean
+            if (node.hidden !== undefined && Array.isArray(node.hidden)) node.hidden = node.hidden[0] || false;
+        }
+    }
+    // Normalize connections
+    if (Array.isArray(workflow.connections)) {
+        workflow.connections = workflow.connections.filter(c => c && typeof c === 'object');
+        for (let conn of workflow.connections) {
+            if (conn.from !== undefined && Array.isArray(conn.from)) conn.from = conn.from[0] || '';
+            if (conn.to !== undefined && Array.isArray(conn.to)) conn.to = conn.to[0] || '';
+            // Also ensure they are strings
+            if (typeof conn.from !== 'string') conn.from = String(conn.from);
+            if (typeof conn.to !== 'string') conn.to = String(conn.to);
         }
     }
 }
@@ -2174,7 +2216,7 @@ function getWorkflowData() {
         sc.workflow = { nodes: [], connections: [] };
         console.log('Created new workflow for scenario:', sc.name);
     }
-    
+    normalizeWorkflowData(sc.workflow); 
     // ✅ Ensure all nodes have a 'hidden' property
     if (sc.workflow.nodes) {
         sc.workflow.nodes.forEach(function(node) {
