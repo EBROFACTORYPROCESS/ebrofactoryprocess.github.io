@@ -3032,8 +3032,8 @@ function autoLayoutWorkflow() {
     
     // Simple grid layout
     const cols = Math.ceil(Math.sqrt(workflow.nodes.length));
-    const spacingX = 220;
-    const spacingY = 140;
+    const spacingX = 160;
+    const spacingY = 110;
     const startX = 50;
     const startY = 50;
     
