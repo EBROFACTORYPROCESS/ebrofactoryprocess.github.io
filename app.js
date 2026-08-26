@@ -590,6 +590,7 @@ async function saveDataToGitHub(data) {
 }
 function normalizeWorkflowData(workflow) {
     if (!workflow) return;
+
     // Normalize nodeIdCounter
     if (workflow.nodeIdCounter !== undefined) {
         let counter = workflow.nodeIdCounter;
@@ -597,6 +598,7 @@ function normalizeWorkflowData(workflow) {
         if (typeof counter !== 'number') counter = parseInt(counter) || 0;
         workflow.nodeIdCounter = counter;
     }
+
     // Normalize nodes
     if (Array.isArray(workflow.nodes)) {
         workflow.nodes = workflow.nodes.filter(n => n && typeof n === 'object');
@@ -610,29 +612,37 @@ function normalizeWorkflowData(workflow) {
                     node.id = String(node.id);
                 }
             }
+
+            // Ensure processId is a string (if present)
+            if (node.processId !== undefined && Array.isArray(node.processId)) {
+                node.processId = node.processId[0] || '';
+            }
+
             // Ensure x and y are numbers
             if (node.x !== undefined && Array.isArray(node.x)) node.x = node.x[0] || 100;
             if (node.y !== undefined && Array.isArray(node.y)) node.y = node.y[0] || 100;
+
             // Ensure hidden is boolean
             if (node.hidden !== undefined && Array.isArray(node.hidden)) node.hidden = node.hidden[0] || false;
+
+            // ✅ Ensure label is a string (MOVED INSIDE THE LOOP)
+            if (node.label !== undefined) {
+                if (Array.isArray(node.label)) {
+                    node.label = node.label[0] || 'Unnamed';
+                }
+                if (typeof node.label !== 'string' || node.label.trim() === '') {
+                    node.label = 'Unnamed';
+                }
+            }
         }
     }
-    // Ensure label is a string
-    if (node.label !== undefined) {
-        if (Array.isArray(node.label)) {
-            node.label = node.label[0] || 'Unnamed';
-        }
-        if (typeof node.label !== 'string' || node.label.trim() === '') {
-            node.label = 'Unnamed';
-        }
-    }
+
     // Normalize connections
     if (Array.isArray(workflow.connections)) {
         workflow.connections = workflow.connections.filter(c => c && typeof c === 'object');
         for (let conn of workflow.connections) {
             if (conn.from !== undefined && Array.isArray(conn.from)) conn.from = conn.from[0] || '';
             if (conn.to !== undefined && Array.isArray(conn.to)) conn.to = conn.to[0] || '';
-            // Also ensure they are strings
             if (typeof conn.from !== 'string') conn.from = String(conn.from);
             if (typeof conn.to !== 'string') conn.to = String(conn.to);
         }
