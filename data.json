@@ -1544,8 +1544,8 @@
             "id": "node-144",
             "processId": "1781161866074-dr66nph6",
             "type": "sub",
-            "x": 440,
-            "y": 9.166656494140625,
+            "x": 55.00004577636719,
+            "y": 3.3333740234375,
             "label": "Validate M+3 Sales plan",
             "hidden": false
           },
@@ -1580,8 +1580,8 @@
             "id": "node-148",
             "processId": "1781161866074-xo9ftqqz",
             "type": "sub",
-            "x": -12.500015258789062,
-            "y": 308.3333435058594,
+            "x": 58.33331298828125,
+            "y": 122.50006103515625,
             "label": "Purchase Requirement Creation",
             "hidden": false
           },
@@ -1589,8 +1589,8 @@
             "id": "node-149",
             "processId": "1781161866074-2ny3mo1h",
             "type": "sub",
-            "x": 255.83331298828125,
-            "y": 210,
+            "x": 281.6666259765625,
+            "y": 28.3333740234375,
             "label": "Purchase Requirement Maintenance",
             "hidden": false
           },
@@ -1598,8 +1598,8 @@
             "id": "node-150",
             "processId": "1781161866074-19ispykb",
             "type": "main",
-            "x": 489.1666259765625,
-            "y": 141.66668701171875,
+            "x": 534.1666870117188,
+            "y": 20.833343505859375,
             "label": "Purchase Execution",
             "hidden": false
           },
@@ -3187,6 +3187,17 @@
           }
         ],
         "connections": [
+          {
+            "from": "node-66",
+            "to": "node-142",
+            "type": "arrow"
+          },
+          {
+            "from": "node-142",
+            "to": "node-143",
+            "type": "arrow",
+            "label": "1213123"
+          },
           {
             "from": [
               "node-0",
