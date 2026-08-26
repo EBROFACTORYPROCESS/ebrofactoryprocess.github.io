@@ -617,6 +617,15 @@ function normalizeWorkflowData(workflow) {
             if (node.hidden !== undefined && Array.isArray(node.hidden)) node.hidden = node.hidden[0] || false;
         }
     }
+    // Ensure label is a string
+    if (node.label !== undefined) {
+        if (Array.isArray(node.label)) {
+            node.label = node.label[0] || 'Unnamed';
+        }
+        if (typeof node.label !== 'string' || node.label.trim() === '') {
+            node.label = 'Unnamed';
+        }
+    }
     // Normalize connections
     if (Array.isArray(workflow.connections)) {
         workflow.connections = workflow.connections.filter(c => c && typeof c === 'object');
@@ -2418,20 +2427,23 @@ function renderWorkflow() {
     
         // ---- NEW: Gather system info ----
         let sysName = '';
-        let sysResp = '';
-        if (process && process.system) {
-            sysName = process.system.name || '';
-            sysResp = process.system.responsible || '';
+        let raciResponsible = '';
+        if (process) {
+            sysName = process.system?.name || '';
+            // Get the first responsible from RACI r array, or join all if multiple
+            if (process.raci && process.raci.r && process.raci.r.length > 0) {
+                raciResponsible = process.raci.r.join(', ');
+            }
         }
-        // Hide system info for special node types (Start/End/Decision/Parallel)
+        // Hide system info for special node types
         if (node.type && ['start','end','decision','parallel'].includes(node.type)) {
             sysName = '';
-            sysResp = '';
+            raciResponsible = '';
         }
-        const metaHtml = (sysName || sysResp) ? `
+        const metaHtml = (sysName || raciResponsible) ? `
             <div class="node-meta">
                 ${sysName ? `<span class="node-sysname">🖥️ ${escapeHtml(sysName)}</span>` : ''}
-                ${sysResp ? `<span class="node-sysresp">👤 ${escapeHtml(sysResp)}</span>` : ''}
+                ${raciResponsible ? `<span class="node-raci">👤 ${escapeHtml(raciResponsible)}</span>` : ''}
             </div>
         ` : '';
         // ---- END NEW ----
