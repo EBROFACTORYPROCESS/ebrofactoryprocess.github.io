@@ -629,20 +629,28 @@ function normalizeWorkflowData(workflow) {
             } else {
                 node.label = 'Unnamed';
             }
+            // Ensure type is a string (if present)
+            if (node.type !== undefined && Array.isArray(node.type)) node.type = node.type[0] || '';
         }
 
-        // 3. DEDUPLICATE: keep only one node per processId (prefer non-'Unnamed' label)
-        const seen = new Map();
-        const deduped = [];
+        // 3. DEDUPLICATE: keep one node per processId, and keep all special nodes
+        const seen = new Map();      // for processId nodes
+        const specialNodes = [];     // for nodes without processId
+
         for (let node of workflow.nodes) {
-            // For nodes without processId (start/end/decision/parallel), keep them as-is
             if (!node.processId) {
-                // Keep only if label is not 'Unnamed' or if it's a special type
-                if (node.label !== 'Unnamed' || (node.type && ['start','end','decision','parallel'].includes(node.type))) {
-                    deduped.push(node);
+                // Keep special nodes (Start/End/Decision/Parallel) even if label is "Unnamed"
+                if (node.type && ['start', 'end', 'decision', 'parallel'].includes(node.type)) {
+                    specialNodes.push(node);
+                } else {
+                    // For other nodes without processId, keep only if they have a proper label
+                    if (node.label !== 'Unnamed') {
+                        specialNodes.push(node);
+                    }
                 }
                 continue;
             }
+
             const key = node.processId;
             if (!seen.has(key)) {
                 seen.set(key, node);
@@ -655,17 +663,18 @@ function normalizeWorkflowData(workflow) {
                 // Otherwise keep existing (prefer first)
             }
         }
-        // Convert map back to array
-        workflow.nodes = Array.from(seen.values());
 
-        // Additionally, remove any nodes that are still 'Unnamed' and have no type (orphans)
-        workflow.nodes = workflow.nodes.filter(n => {
+        // Combine special nodes + deduplicated process nodes
+        const dedupedNodes = [...specialNodes, ...Array.from(seen.values())];
+
+        // Finally, remove any node that is still 'Unnamed' and has no type (orphan)
+        workflow.nodes = dedupedNodes.filter(n => {
             if (n.label === 'Unnamed' && !n.type) return false;
             return true;
         });
     }
 
-    // 4. Normalize connections and remove those pointing to non-existent nodes
+    // 4. Normalize connections and remove those pointing to non‑existent nodes
     if (Array.isArray(workflow.connections)) {
         workflow.connections = workflow.connections.filter(c => c && typeof c === 'object');
         const validNodeIds = new Set(workflow.nodes.map(n => n.id));
@@ -676,7 +685,7 @@ function normalizeWorkflowData(workflow) {
             if (typeof conn.to !== 'string') conn.to = String(conn.to);
         }
         // Remove connections with missing nodes
-        workflow.connections = workflow.connections.filter(c => 
+        workflow.connections = workflow.connections.filter(c =>
             validNodeIds.has(c.from) && validNodeIds.has(c.to)
         );
     }
