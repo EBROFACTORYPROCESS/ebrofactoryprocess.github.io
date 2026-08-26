@@ -219,6 +219,16 @@ function normalizeData(data) {
         if (!sc.workflow) {
             sc.workflow = { nodes: [], connections: [] };
         }
+        // Normalize nodeIdCounter if present
+        if (sc.workflow && sc.workflow.nodeIdCounter !== undefined) {
+            if (Array.isArray(sc.workflow.nodeIdCounter)) {
+                sc.workflow.nodeIdCounter = sc.workflow.nodeIdCounter[0] || 0;
+            }
+            // Ensure it's a number
+            if (typeof sc.workflow.nodeIdCounter !== 'number') {
+                sc.workflow.nodeIdCounter = parseInt(sc.workflow.nodeIdCounter) || 0;
+            }
+        }
         // Ensure workflow has nodes and connections arrays
         if (!sc.workflow.nodes || !Array.isArray(sc.workflow.nodes)) {
             sc.workflow.nodes = [];
