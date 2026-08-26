@@ -29,6 +29,7 @@ let currentEditingProcess = null;
 let lastSnapshot = null;
 let eventsBound = false;
 
+let workflowEventsBound = false;  
 // ============================
 // 2. Column Definitions
 // ============================
@@ -2219,7 +2220,7 @@ function renderWorkflow() {
     if (workflow.nodes.length === 0 && processes.length > 0) {
         console.log('Creating workflow nodes from processes...');
         const nodeMap = {};
-        const cols = Math.min(5, processes.length);
+        const cols = Math.min(6, processes.length);
         const sortedProcs = sortProcesses(processes);
         
         sortedProcs.forEach((p, index) => {
@@ -2229,8 +2230,8 @@ function renderWorkflow() {
                 id: id,
                 processId: p.id,
                 type: isSub ? 'sub' : 'main',
-                x: 100 + (index % cols) * 220,
-                y: 100 + Math.floor(index / cols) * 160,
+                x: 100 + (index % cols) * 160,
+                y: 100 + Math.floor(index / cols) * 110,
                 label: p.name || 'Unnamed'
             };
             nodeMap[p.id] = node;
@@ -2357,6 +2358,26 @@ function renderWorkflow() {
             decisionHtml = `<div class="node-decision-text">❓ ${escapeHtml(decisionText)}</div>`;
         }
     
+        // ---- NEW: Gather system info ----
+        let sysName = '';
+        let sysResp = '';
+        if (process && process.system) {
+            sysName = process.system.name || '';
+            sysResp = process.system.responsible || '';
+        }
+        // Hide system info for special node types (Start/End/Decision/Parallel)
+        if (node.type && ['start','end','decision','parallel'].includes(node.type)) {
+            sysName = '';
+            sysResp = '';
+        }
+        const metaHtml = (sysName || sysResp) ? `
+            <div class="node-meta">
+                ${sysName ? `<span class="node-sysname">🖥️ ${escapeHtml(sysName)}</span>` : ''}
+                ${sysResp ? `<span class="node-sysresp">👤 ${escapeHtml(sysResp)}</span>` : ''}
+            </div>
+        ` : '';
+        // ---- END NEW ----
+
         nodeEl.innerHTML = `
             <div class="node-header">
                 ${seqDisplay}
@@ -2364,6 +2385,7 @@ function renderWorkflow() {
             </div>
             <div class="node-name">${escapeHtml(nameLabel)}</div>
             ${decisionHtml}
+            ${metaHtml}
             <button class="node-delete-btn" data-node-id="${node.id}">✕</button>
         `;
     
@@ -3030,7 +3052,6 @@ function autoLayoutWorkflow() {
 // 27. Workflow Event Binding
 // ============================
 
-// Replace the entire bindWorkflowEvents function
 function bindWorkflowEvents() {
     // Only bind once
     if (workflowEventsBound) {
@@ -3063,7 +3084,7 @@ function bindWorkflowEvents() {
         });
     }
     if (wfAddDecisionBtn) {
-        // No need to clone; just use addEventListener (only once because flag is set)
+        // No clone needed – flag prevents duplicate listeners
         wfAddDecisionBtn.addEventListener('click', function() {
             addWorkflowNode('decision', 'Decision');
         });
@@ -3075,7 +3096,6 @@ function bindWorkflowEvents() {
     }
     if (wfConnectBtn) {
         wfConnectBtn.addEventListener('click', function() {
-            // Clear any pending connection and show instructions
             resetConnectionState();
             alert('💡 To create connections:\n\n1️⃣ Click a node (it will highlight blue)\n2️⃣ Click another node\n3️⃣ An arrow will be created between them\n\n🔄 Click the same node twice to cancel');
             renderWorkflow();
@@ -3109,7 +3129,6 @@ function bindWorkflowEvents() {
         });
     }
 
-    // Initial reset of connection state
     resetConnectionState();
 }
 
