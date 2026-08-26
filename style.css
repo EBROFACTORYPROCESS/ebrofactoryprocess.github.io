@@ -701,7 +701,7 @@ body {
     padding-top: 0.3rem;
 }
 .workflow-node .node-sysname,
-.workflow-node .node-sysresp {
+.workflow-node .node-raci {  /* was .node-sysresp */
     display: flex;
     align-items: center;
     gap: 0.2rem;
