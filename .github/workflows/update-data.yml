@@ -18,6 +18,9 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Install jsondiffpatch
+        run: npm install jsondiffpatch
+
       - name: Write payload to file
         run: |
           cat > payload.json << 'EOF'
@@ -28,398 +31,74 @@ jobs:
         run: |
           node -e '
             const fs = require("fs");
-            
+            const jsondiffpatch = require("jsondiffpatch");
+
             console.log("=== Starting apply changes ===");
-            
+
+            // Read current data.json (or start empty)
             let currentData = {};
             try {
               const content = fs.readFileSync("data.json", "utf8");
               currentData = JSON.parse(content);
               console.log("Current data loaded, scenarios:", currentData.scenarios?.length || 0);
-              if (currentData.scenarios && currentData.scenarios.length > 0) {
-                console.log("Current scenario names:", currentData.scenarios.map(function(s) { return s.name; }).join(", "));
-              }
             } catch (e) {
-              console.log("No existing data.json, creating new one");
+              console.log("No existing data.json, starting fresh");
             }
-            
-            const payloadContent = fs.readFileSync("payload.json", "utf8");
-            console.log("Payload content length:", payloadContent.length);
-            
-            let payload;
-            try {
-              payload = JSON.parse(payloadContent);
-              console.log("Payload parsed successfully");
-              console.log("Payload keys:", Object.keys(payload));
-            } catch (e) {
-              console.error("Failed to parse payload.json:", e.message);
-              process.exit(1);
-            }
-            
-            let parsedData = null;
-            if (payload.data && typeof payload.data === "string") {
-              try {
-                parsedData = JSON.parse(payload.data);
-                console.log("Parsed diff data successfully");
-                console.log("Diff data keys:", Object.keys(parsedData));
-              } catch (e) {
-                console.error("Failed to parse payload.data:", e.message);
+
+            // Read the payload
+            const payload = JSON.parse(fs.readFileSync("payload.json", "utf8"));
+            console.log("Payload type:", payload.type);
+
+            // Handle Gist payload (if still used)
+            if (payload.type === "gist" && payload.gist_id) {
+              console.log("Fetching diff from Gist:", payload.gist_id);
+              const token = process.env.GITHUB_TOKEN;
+              if (!token) {
+                console.error("GITHUB_TOKEN not set");
                 process.exit(1);
               }
-            } else if (payload.data && typeof payload.data === "object") {
-              parsedData = payload.data;
-              console.log("Payload data is already an object");
+              const gistUrl = "https://api.github.com/gists/" + payload.gist_id;
+              fetch(gistUrl, {
+                headers: { "Authorization": "token " + token, "Accept": "application/vnd.github.v3+json" }
+              })
+              .then(res => res.json())
+              .then(gistData => {
+                const files = gistData.files;
+                const fileName = Object.keys(files)[0];
+                const diffData = JSON.parse(files[fileName].content);
+                applyDiff(diffData);
+                // Delete the gist after applying
+                return fetch(gistUrl, { method: "DELETE", headers: { "Authorization": "token " + token } });
+              })
+              .catch(e => {
+                console.error("Gist processing failed:", e.message);
+                process.exit(1);
+              });
+              return;
+            }
+
+            // Direct diff or full data
+            if (payload.type === "diff" && payload.data) {
+              const diffData = JSON.parse(payload.data);
+              applyDiff(diffData);
+            } else if (payload.type === "full" && payload.data) {
+              const newData = JSON.parse(payload.data);
+              fs.writeFileSync("data.json", JSON.stringify(newData, null, 2));
+              console.log("✅ Full data written");
             } else {
-              console.error("No valid data found in payload");
-              process.exit(1);
+              console.log("⚠️ No valid data to apply");
             }
-            
-            // ============================================================
-            // FUNCTION: Merge workflow data into a scenario
-            // ============================================================
-            function mergeWorkflowIntoScenario(existingScenario, newScenario) {
-              if (!existingScenario || !newScenario) return existingScenario;
-              
-              if (newScenario.workflow) {
-                console.log("  Merging workflow data into scenario:", existingScenario.name || existingScenario.id);
-                
-                if (!existingScenario.workflow) {
-                  existingScenario.workflow = { nodes: [], connections: [] };
-                }
-                
-                // ✅ FIX: Handle nodes as object with numeric keys
-                if (newScenario.workflow.nodes) {
-                  var newNodeArray = [];
-                  
-                  if (Array.isArray(newScenario.workflow.nodes)) {
-                    newNodeArray = newScenario.workflow.nodes;
-                  } else if (typeof newScenario.workflow.nodes === "object") {
-                    console.log("    Converting nodes object to array...");
-                    for (var key in newScenario.workflow.nodes) {
-                      if (key === "_t") continue;
-                      var val = newScenario.workflow.nodes[key];
-                      if (Array.isArray(val)) {
-                        if (val.length > 0 && val[0] && typeof val[0] === "object") {
-                          newNodeArray.push(val[0]);
-                        }
-                      } else if (val && typeof val === "object") {
-                        newNodeArray.push(val);
-                      }
-                    }
-                    console.log("    Found " + newNodeArray.length + " nodes");
-                  }
-                  
-                  var existingNodeIds = new Set();
-                  if (existingScenario.workflow.nodes) {
-                    existingScenario.workflow.nodes.forEach(function(n) {
-                      if (n && n.id) existingNodeIds.add(n.id);
-                    });
-                  }
-                  
-                  newNodeArray.forEach(function(node) {
-                    if (node && node.id && !existingNodeIds.has(node.id)) {
-                      existingScenario.workflow.nodes.push(node);
-                      console.log("    Added node:", node.id, node.label || "");
-                    }
-                  });
-                }
-                
-                // ✅ FIX: Handle connections as object with numeric keys
-                if (newScenario.workflow.connections) {
-                  var newConnArray = [];
-                  
-                  if (Array.isArray(newScenario.workflow.connections)) {
-                    newConnArray = newScenario.workflow.connections;
-                  } else if (typeof newScenario.workflow.connections === "object") {
-                    console.log("    Converting connections object to array...");
-                    for (var key in newScenario.workflow.connections) {
-                      if (key === "_t") continue;
-                      var val = newScenario.workflow.connections[key];
-                      if (Array.isArray(val)) {
-                        if (val.length > 0 && typeof val[0] === "object") {
-                          newConnArray.push(val[0]);
-                        }
-                      } else if (val && typeof val === "object") {
-                        newConnArray.push(val);
-                      }
-                    }
-                    console.log("    Found " + newConnArray.length + " connections");
-                  }
-                  
-                  var existingConnStrings = new Set();
-                  if (existingScenario.workflow.connections) {
-                    existingScenario.workflow.connections.forEach(function(c) {
-                      if (c && c.from && c.to) {
-                        existingConnStrings.add(c.from + "->" + c.to);
-                      }
-                    });
-                  }
-                  
-                  newConnArray.forEach(function(conn) {
-                    if (conn && conn.from && conn.to) {
-                      var key = conn.from + "->" + conn.to;
-                      if (!existingConnStrings.has(key)) {
-                        existingScenario.workflow.connections.push(conn);
-                        console.log("    Added connection:", conn.from, "->", conn.to);
-                      }
-                    }
-                  });
-                }
-                
-                if (newScenario.workflow.nodeIdCounter !== undefined) {
-                  existingScenario.workflow.nodeIdCounter = newScenario.workflow.nodeIdCounter;
-                  console.log("  Set nodeIdCounter to:", newScenario.workflow.nodeIdCounter);
-                }
-                
-                console.log("  Final workflow nodes:", existingScenario.workflow.nodes.length);
-                console.log("  Final workflow connections:", existingScenario.workflow.connections.length);
+
+            function applyDiff(diff) {
+              console.log("Applying diff...");
+              try {
+                const result = jsondiffpatch.patch(currentData, diff);
+                fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
+                console.log("✅ Patch applied successfully");
+              } catch (e) {
+                console.error("Patch failed:", e.message);
+                process.exit(1);
               }
-              
-              return existingScenario;
-            }
-            
-            // ============================================================
-            // FUNCTION: Apply array diff with workflow support
-            // ============================================================
-            function applyArrayDiffWithWorkflow(currentArray, diffObj) {
-              if (!diffObj || diffObj._t !== "a") {
-                return currentArray;
-              }
-              
-              console.log("  Processing array diff with workflow support...");
-              
-              var result = [];
-              for (var i = 0; i < currentArray.length; i++) {
-                result.push(JSON.parse(JSON.stringify(currentArray[i])));
-              }
-              
-              var ops = [];
-              for (var key in diffObj) {
-                if (key === "_t") continue;
-                var val = diffObj[key];
-                var index = parseInt(key.replace("_", ""));
-                
-                if (Array.isArray(val)) {
-                  if (val.length === 1) {
-                    ops.push({ type: "insert", index: index, value: val[0] });
-                  } else if (val.length === 3) {
-                    if (val[0] !== undefined && val[1] === 0 && val[2] === 0) {
-                      ops.push({ type: "delete", index: index, value: val[0] });
-                    } else if (val[0] === 0 && val[1] !== undefined && val[2] === 0) {
-                      ops.push({ type: "insert", index: index, value: val[1] });
-                    } else if (val[0] !== undefined && val[1] !== undefined && val[2] === 0) {
-                      ops.push({ type: "update", index: index, value: val[1] });
-                    } else {
-                      ops.push({ type: "set", index: index, value: val });
-                    }
-                  } else if (val.length === 2) {
-                    if (val[0] === 0 && val[1] !== undefined) {
-                      ops.push({ type: "delete", index: index, value: val[1] });
-                    } else if (val[0] !== undefined && val[1] === 0) {
-                      ops.push({ type: "insert", index: index, value: val[0] });
-                    } else {
-                      ops.push({ type: "update", index: index, value: val[1] });
-                    }
-                  } else {
-                    ops.push({ type: "set", index: index, value: val });
-                  }
-                } else if (val && typeof val === "object" && !Array.isArray(val)) {
-                  ops.push({ type: "recursive", index: index, value: val });
-                } else {
-                  ops.push({ type: "set", index: index, value: val });
-                }
-              }
-              
-              console.log("    Operations:", ops.map(function(op) { return op.type + " at " + op.index; }).join(", "));
-              
-              var deletions = ops.filter(function(op) { return op.type === "delete"; });
-              deletions.sort(function(a, b) { return b.index - a.index; });
-              for (var d = 0; d < deletions.length; d++) {
-                var del = deletions[d];
-                if (del.index < result.length) {
-                  var name = result[del.index] && result[del.index].name ? result[del.index].name : "unknown";
-                  console.log("    Deleting item at index " + del.index + ": " + name);
-                  result.splice(del.index, 1);
-                }
-              }
-              
-              var insertions = ops.filter(function(op) { return op.type === "insert"; });
-              insertions.sort(function(a, b) { return a.index - b.index; });
-              for (var j = 0; j < insertions.length; j++) {
-                var ins = insertions[j];
-                console.log("    Inserting item at index " + ins.index);
-                if (ins.index <= result.length) {
-                  result.splice(ins.index, 0, ins.value);
-                } else {
-                  result.push(ins.value);
-                }
-              }
-              
-              var updates = ops.filter(function(op) { return op.type === "update"; });
-              for (var u = 0; u < updates.length; u++) {
-                var upd = updates[u];
-                if (upd.index < result.length) {
-                  console.log("    Updating item at index " + upd.index);
-                  result[upd.index] = upd.value;
-                }
-              }
-              
-              var recursives = ops.filter(function(op) { return op.type === "recursive"; });
-              for (var r = 0; r < recursives.length; r++) {
-                var rec = recursives[r];
-                if (rec.index < result.length) {
-                  console.log("    Recursive update at index " + rec.index);
-                  if (rec.value && rec.value.workflow) {
-                    result[rec.index] = mergeWorkflowIntoScenario(result[rec.index], rec.value);
-                  } else {
-                    result[rec.index] = applyArrayDiffWithWorkflow(result[rec.index], rec.value);
-                  }
-                }
-              }
-              
-              console.log("  Final array length: " + result.length);
-              return result;
-            }
-            
-            function cleanProcess(p) {
-              if (!p || typeof p !== "object") return null;
-              if (!p.id) return null;
-              
-              return {
-                id: p.id,
-                seq: p.seq || "0",
-                name: p.name || "Unnamed Process",
-                description: p.description || "",
-                raci: p.raci || { r: [], a: [], c: [], i: [] },
-                businessStatus: p.businessStatus || "Not Defined",
-                system: p.system || { name: "To Be Determined", status: "Offline", responsible: "" },
-                businessDoc: p.businessDoc || "",
-                userManual: p.userManual || "",
-                notes: p.notes || ""
-              };
-            }
-            
-            function cleanScenario(sc) {
-              if (!sc || typeof sc !== "object") return null;
-              if (!sc.id) return null;
-              
-              var processes = Array.isArray(sc.processes) 
-                ? sc.processes.map(function(p) { return cleanProcess(p); }).filter(function(p) { return p !== null; })
-                : [];
-              
-              return {
-                id: sc.id,
-                name: sc.name || "Scenario",
-                processes: processes,
-                workflow: sc.workflow || { nodes: [], connections: [] }
-              };
-            }
-            
-            function applyChanges(diffData) {
-              console.log("=== Applying changes ===");
-              console.log("Diff data keys:", Object.keys(diffData));
-              
-              var resultData = JSON.parse(JSON.stringify(currentData));
-              
-              if (diffData.scenarios && diffData.scenarios._t === "a") {
-                console.log("Processing array diff for key: scenarios");
-                
-                var currentScenarios = Array.isArray(currentData.scenarios) ? currentData.scenarios : [];
-                console.log("  Current scenarios length:", currentScenarios.length);
-                
-                var newScenarios = applyArrayDiffWithWorkflow(currentScenarios, diffData.scenarios);
-                
-                newScenarios = newScenarios
-                  .map(function(s) { return cleanScenario(s); })
-                  .filter(function(s) { return s !== null });
-                
-                resultData.scenarios = newScenarios;
-                console.log("  Final scenarios length:", resultData.scenarios.length);
-              } else {
-                for (var key in diffData) {
-                  if (key === "_t") continue;
-                  if (diffData[key] && typeof diffData[key] === "object" && diffData[key]._t === "a") {
-                    if (Array.isArray(resultData[key])) {
-                      resultData[key] = applyArrayDiffWithWorkflow(resultData[key], diffData[key]);
-                    }
-                  } else {
-                    resultData[key] = diffData[key];
-                  }
-                }
-              }
-              
-              if (!resultData.scenarios || !Array.isArray(resultData.scenarios)) {
-                console.log("Scenarios is not an array, creating empty array");
-                resultData.scenarios = [];
-              }
-              
-              if (diffData.currentScenarioId) {
-                var newCurrentId = diffData.currentScenarioId;
-                if (Array.isArray(newCurrentId)) {
-                  newCurrentId = newCurrentId[0];
-                }
-                if (newCurrentId && typeof newCurrentId === "string") {
-                  var exists = resultData.scenarios.some(function(s) { return s && s.id === newCurrentId; });
-                  if (exists) {
-                    resultData.currentScenarioId = newCurrentId;
-                    console.log("Set currentScenarioId to:", newCurrentId);
-                  }
-                }
-              }
-              
-              if (!resultData.currentScenarioId || !resultData.scenarios.some(function(s) { return s && s.id === resultData.currentScenarioId; })) {
-                if (resultData.scenarios.length > 0) {
-                  resultData.currentScenarioId = resultData.scenarios[0].id;
-                  console.log("Set currentScenarioId to first scenario:", resultData.currentScenarioId);
-                }
-              }
-              
-              if (!resultData.departments || !Array.isArray(resultData.departments)) {
-                resultData.departments = ["Sales", "Production Planning", "Material Planning", "Material Handling", "Purchase", "Production Execution", "Parts Quality", "Vehicle Quality", "Finance", "Trade & Compliance"];
-              }
-              
-              if (!resultData.sysNameList || !Array.isArray(resultData.sysNameList)) {
-                resultData.sysNameList = ["SAP", "LES", "MES", "KAPTURE", "WMS", "To Be Determined"];
-              }
-              
-              if (!resultData.businessStatuses || !Array.isArray(resultData.businessStatuses)) {
-                resultData.businessStatuses = [
-                  { value: "Not Defined", color: "red" },
-                  { value: "In Progress", color: "yellow" },
-                  { value: "Completed", color: "green" }
-                ];
-              }
-              
-              if (!resultData.sysStatusList || !Array.isArray(resultData.sysStatusList)) {
-                resultData.sysStatusList = [
-                  { value: "Operational", color: "green" },
-                  { value: "Completed", color: "green" },
-                  { value: "Offline", color: "red" },
-                  { value: "To Be Implemented", color: "red" },
-                  { value: "Work in Progress", color: "yellow" }
-                ];
-              }
-              
-              if (!resultData.sysRespList || !Array.isArray(resultData.sysRespList)) {
-                resultData.sysRespList = [];
-              }
-              
-              console.log("Final scenarios count:", resultData.scenarios.length);
-              console.log("Final currentScenarioId:", resultData.currentScenarioId);
-              
-              fs.writeFileSync("data.json", JSON.stringify(resultData, null, 2));
-              console.log("data.json updated successfully");
-            }
-            
-            var payloadType = payload.type || "diff";
-            console.log("Payload type:", payloadType);
-            
-            if (payloadType === "gist" && payload.gist_id) {
-              console.log("Processing Gist payload...");
-            } else {
-              console.log("Processing direct payload...");
-              console.log("Parsed data keys:", Object.keys(parsedData));
-              applyChanges(parsedData);
             }
           '
 
@@ -427,11 +106,14 @@ jobs:
         run: |
           if [ -f data.json ] && [ -s data.json ]; then
             if ! jq empty data.json 2>/dev/null; then
-              echo "Invalid JSON in data.json"
+              echo "❌ Invalid JSON in data.json"
               cat data.json | head -100
               exit 1
             fi
-            echo "JSON validation passed"
+            echo "✅ JSON validation passed"
+          else
+            echo "⚠️ data.json missing or empty"
+            exit 1
           fi
 
       - name: Commit and push
