@@ -591,7 +591,7 @@ async function saveDataToGitHub(data) {
 function normalizeWorkflowData(workflow) {
     if (!workflow) return;
 
-    // Normalize nodeIdCounter
+    // 1. Normalize nodeIdCounter
     if (workflow.nodeIdCounter !== undefined) {
         let counter = workflow.nodeIdCounter;
         if (Array.isArray(counter)) counter = counter[0] || 0;
@@ -599,53 +599,86 @@ function normalizeWorkflowData(workflow) {
         workflow.nodeIdCounter = counter;
     }
 
-    // Normalize nodes
+    // 2. Normalize nodes
     if (Array.isArray(workflow.nodes)) {
+        // Remove invalid entries
         workflow.nodes = workflow.nodes.filter(n => n && typeof n === 'object');
-        for (let node of workflow.nodes) {
-            // Ensure id is a string
-            if (node.id !== undefined) {
-                if (Array.isArray(node.id)) {
-                    node.id = node.id[0] || 'node-' + Date.now();
-                }
-                if (typeof node.id !== 'string') {
-                    node.id = String(node.id);
-                }
-            }
 
-            // Ensure processId is a string (if present)
+        // Normalize each node's fields
+        for (let node of workflow.nodes) {
+            // id
+            if (node.id !== undefined) {
+                if (Array.isArray(node.id)) node.id = node.id[0] || 'node-' + Date.now();
+                if (typeof node.id !== 'string') node.id = String(node.id);
+            }
+            // processId
             if (node.processId !== undefined && Array.isArray(node.processId)) {
                 node.processId = node.processId[0] || '';
             }
-
-            // Ensure x and y are numbers
+            // x, y
             if (node.x !== undefined && Array.isArray(node.x)) node.x = node.x[0] || 100;
             if (node.y !== undefined && Array.isArray(node.y)) node.y = node.y[0] || 100;
-
-            // Ensure hidden is boolean
+            // hidden
             if (node.hidden !== undefined && Array.isArray(node.hidden)) node.hidden = node.hidden[0] || false;
-
-            // ✅ Ensure label is a string (MOVED INSIDE THE LOOP)
+            // label
             if (node.label !== undefined) {
-                if (Array.isArray(node.label)) {
-                    node.label = node.label[0] || 'Unnamed';
-                }
+                if (Array.isArray(node.label)) node.label = node.label[0] || 'Unnamed';
                 if (typeof node.label !== 'string' || node.label.trim() === '') {
                     node.label = 'Unnamed';
                 }
+            } else {
+                node.label = 'Unnamed';
             }
         }
+
+        // 3. DEDUPLICATE: keep only one node per processId (prefer non-'Unnamed' label)
+        const seen = new Map();
+        const deduped = [];
+        for (let node of workflow.nodes) {
+            // For nodes without processId (start/end/decision/parallel), keep them as-is
+            if (!node.processId) {
+                // Keep only if label is not 'Unnamed' or if it's a special type
+                if (node.label !== 'Unnamed' || (node.type && ['start','end','decision','parallel'].includes(node.type))) {
+                    deduped.push(node);
+                }
+                continue;
+            }
+            const key = node.processId;
+            if (!seen.has(key)) {
+                seen.set(key, node);
+            } else {
+                // If existing node has 'Unnamed' and current has a proper name, replace
+                const existing = seen.get(key);
+                if (existing.label === 'Unnamed' && node.label !== 'Unnamed') {
+                    seen.set(key, node);
+                }
+                // Otherwise keep existing (prefer first)
+            }
+        }
+        // Convert map back to array
+        workflow.nodes = Array.from(seen.values());
+
+        // Additionally, remove any nodes that are still 'Unnamed' and have no type (orphans)
+        workflow.nodes = workflow.nodes.filter(n => {
+            if (n.label === 'Unnamed' && !n.type) return false;
+            return true;
+        });
     }
 
-    // Normalize connections
+    // 4. Normalize connections and remove those pointing to non-existent nodes
     if (Array.isArray(workflow.connections)) {
         workflow.connections = workflow.connections.filter(c => c && typeof c === 'object');
+        const validNodeIds = new Set(workflow.nodes.map(n => n.id));
         for (let conn of workflow.connections) {
             if (conn.from !== undefined && Array.isArray(conn.from)) conn.from = conn.from[0] || '';
             if (conn.to !== undefined && Array.isArray(conn.to)) conn.to = conn.to[0] || '';
             if (typeof conn.from !== 'string') conn.from = String(conn.from);
             if (typeof conn.to !== 'string') conn.to = String(conn.to);
         }
+        // Remove connections with missing nodes
+        workflow.connections = workflow.connections.filter(c => 
+            validNodeIds.has(c.from) && validNodeIds.has(c.to)
+        );
     }
 }
 // ============================
