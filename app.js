@@ -28,7 +28,7 @@ let currentEditingProcess = null;
 let lastSnapshot = null;
 let eventsBound = false;
 let workflowEventsBound = false;
-let arrowUpdatePending = false; // ✅ only declared once
+let arrowUpdatePending = false; // ✅ declared only once
 
 // ============================
 // 2. Column Definitions
@@ -588,10 +588,6 @@ function normalizeWorkflowData(workflow) {
                 node.label = 'Unnamed';
             }
             if (node.type !== undefined && Array.isArray(node.type)) node.type = node.type[0] || '';
-            // Ensure each connection has an ID
-            if (node.id && !node.connectionId) {
-                node.connectionId = 'conn-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6);
-            }
         }
 
         const seen = new Map();
