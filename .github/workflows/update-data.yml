@@ -33,54 +33,38 @@ jobs:
             const fs = require("fs");
             const jsondiffpatch = require("jsondiffpatch");
 
-            console.log("=== Starting apply changes ===");
+            console.log("=== Applying changes ===");
 
-            // Read current data.json (or start empty)
+            // Read current data
             let currentData = {};
             try {
-              const content = fs.readFileSync("data.json", "utf8");
-              currentData = JSON.parse(content);
+              currentData = JSON.parse(fs.readFileSync("data.json", "utf8"));
               console.log("Current data loaded, scenarios:", currentData.scenarios?.length || 0);
             } catch (e) {
               console.log("No existing data.json, starting fresh");
             }
 
-            // Read the payload
+            // Read payload
             const payload = JSON.parse(fs.readFileSync("payload.json", "utf8"));
             console.log("Payload type:", payload.type);
 
-            // Handle Gist payload (if still used)
+            // Handle different payload types
             if (payload.type === "gist" && payload.gist_id) {
-              console.log("Fetching diff from Gist:", payload.gist_id);
-              const token = process.env.GITHUB_TOKEN;
-              if (!token) {
-                console.error("GITHUB_TOKEN not set");
-                process.exit(1);
+              console.log("Gist mode not implemented in this version, falling back to diff");
+              // Process as diff instead if data is present
+              if (payload.data) {
+                const diff = JSON.parse(payload.data);
+                const result = jsondiffpatch.patch(currentData, diff);
+                fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
+                console.log("✅ Patch applied (from gist data)");
+              } else {
+                console.log("⚠️ No data in gist payload");
               }
-              const gistUrl = "https://api.github.com/gists/" + payload.gist_id;
-              fetch(gistUrl, {
-                headers: { "Authorization": "token " + token, "Accept": "application/vnd.github.v3+json" }
-              })
-              .then(res => res.json())
-              .then(gistData => {
-                const files = gistData.files;
-                const fileName = Object.keys(files)[0];
-                const diffData = JSON.parse(files[fileName].content);
-                applyDiff(diffData);
-                // Delete the gist after applying
-                return fetch(gistUrl, { method: "DELETE", headers: { "Authorization": "token " + token } });
-              })
-              .catch(e => {
-                console.error("Gist processing failed:", e.message);
-                process.exit(1);
-              });
-              return;
-            }
-
-            // Direct diff or full data
-            if (payload.type === "diff" && payload.data) {
-              const diffData = JSON.parse(payload.data);
-              applyDiff(diffData);
+            } else if (payload.type === "diff" && payload.data) {
+              const diff = JSON.parse(payload.data);
+              const result = jsondiffpatch.patch(currentData, diff);
+              fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
+              console.log("✅ Patch applied successfully");
             } else if (payload.type === "full" && payload.data) {
               const newData = JSON.parse(payload.data);
               fs.writeFileSync("data.json", JSON.stringify(newData, null, 2));
@@ -89,17 +73,7 @@ jobs:
               console.log("⚠️ No valid data to apply");
             }
 
-            function applyDiff(diff) {
-              console.log("Applying diff...");
-              try {
-                const result = jsondiffpatch.patch(currentData, diff);
-                fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
-                console.log("✅ Patch applied successfully");
-              } catch (e) {
-                console.error("Patch failed:", e.message);
-                process.exit(1);
-              }
-            }
+            console.log("✅ Apply changes completed");
           '
 
       - name: Validate JSON
