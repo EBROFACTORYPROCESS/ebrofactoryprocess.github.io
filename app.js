@@ -12,6 +12,7 @@ const REPO_OWNER = 'ebrofactoryprocess';
 const REPO_NAME = 'ebrofactoryprocess.github.io';
 const DATA_PATH = 'data.json';
 
+let workflowEventsBound = false;
 let selectedArrowIndex = null;
 let appData = null;
 let currentSha = null;
@@ -2090,6 +2091,9 @@ function renderCurrentView() {
         
         renderWorkflow();
         
+        // Ensure connection state is clean
+        resetConnectionState();
+        
         setTimeout(function() {
             bindWorkflowEvents();
         }, 200);
@@ -2922,24 +2926,51 @@ function editDecisionNode(nodeId) {
 }
 function addWorkflowNode(type, label) {
     if (currentMode !== 'edit') return;
-    
     const workflow = getWorkflowData();
-    
-    // Find a good position (spread out)
-    const count = workflow.nodes.length;
-    const cols = Math.max(1, Math.ceil(Math.sqrt(count + 1)));
-    const spacingX = 220;
-    const spacingY = 150;
-    const startX = 100 + (count % cols) * spacingX;
-    const startY = 100 + Math.floor(count / cols) * spacingY;
-    
+    const container = document.getElementById('workflowContainer');
+
+    // Calculate a good default position (center of visible area)
+    let x = 100;
+    let y = 100;
+
+    if (container) {
+        const scale = workflowScale || 1;
+        // Get container scroll and dimensions in unscaled coordinates
+        const scrollLeft = container.scrollLeft || 0;
+        const scrollTop = container.scrollTop || 0;
+        const visibleWidth = container.clientWidth || 800;
+        const visibleHeight = container.clientHeight || 600;
+        
+        // Center of visible area (unscaled)
+        const centerX = (scrollLeft + visibleWidth / 2) / scale;
+        const centerY = (scrollTop + visibleHeight / 2) / scale;
+
+        // Node size approximations (half width/height for centering)
+        const nodeWidth = 120;
+        const nodeHeight = 80;
+        x = Math.max(0, centerX - nodeWidth / 2);
+        y = Math.max(0, centerY - nodeHeight / 2);
+        // Ensure within canvas bounds (5000x5000)
+        const maxX = 5000 - nodeWidth;
+        const maxY = 5000 - nodeHeight;
+        x = Math.min(x, maxX);
+        y = Math.min(y, maxY);
+    } else {
+        // Fallback: grid layout
+        const count = workflow.nodes.length;
+        const cols = Math.max(1, Math.ceil(Math.sqrt(count + 1)));
+        const spacingX = 220;
+        const spacingY = 150;
+        x = 100 + (count % cols) * spacingX;
+        y = 100 + Math.floor(count / cols) * spacingY;
+    }        
     const node = {
         id: 'node-' + (nodeIdCounter++),
         type: type,
-        x: startX,
-        y: startY,
+        x: x,
+        y: y,
         label: label || type
-    };
+    };  
     
     // ✅ Fix: Only prompt once for decision nodes
     if (type === 'decision') {
@@ -2999,7 +3030,16 @@ function autoLayoutWorkflow() {
 // 27. Workflow Event Binding
 // ============================
 
+// Replace the entire bindWorkflowEvents function
 function bindWorkflowEvents() {
+    // Only bind once
+    if (workflowEventsBound) {
+        // Still reset connection state on each tab switch
+        resetConnectionState();
+        return;
+    }
+    workflowEventsBound = true;
+
     const wfAddStartBtn = document.getElementById('wfAddStartBtn');
     const wfAddEndBtn = document.getElementById('wfAddEndBtn');
     const wfAddDecisionBtn = document.getElementById('wfAddDecisionBtn');
@@ -3011,63 +3051,45 @@ function bindWorkflowEvents() {
     const wfZoomIn = document.getElementById('wfZoomIn');
     const wfZoomOut = document.getElementById('wfZoomOut');
     const wfResetView = document.getElementById('wfResetView');
-    
+
     if (wfAddStartBtn) {
-        wfAddStartBtn.addEventListener('click', () => {
+        wfAddStartBtn.addEventListener('click', function() {
             addWorkflowNode('start', 'START');
         });
     }
-    
     if (wfAddEndBtn) {
-        wfAddEndBtn.addEventListener('click', () => {
+        wfAddEndBtn.addEventListener('click', function() {
             addWorkflowNode('end', 'END');
         });
     }
-    
     if (wfAddDecisionBtn) {
-        wfAddDecisionBtn.replaceWith(wfAddDecisionBtn.cloneNode(true));
-        const newBtn = document.getElementById('wfAddDecisionBtn');
-        newBtn.addEventListener('click', function() {
+        // No need to clone; just use addEventListener (only once because flag is set)
+        wfAddDecisionBtn.addEventListener('click', function() {
             addWorkflowNode('decision', 'Decision');
         });
     }
-    
     if (wfAddParallelBtn) {
-        wfAddParallelBtn.addEventListener('click', () => {
+        wfAddParallelBtn.addEventListener('click', function() {
             addWorkflowNode('parallel', 'Parallel Process');
         });
     }
-    
     if (wfConnectBtn) {
         wfConnectBtn.addEventListener('click', function() {
-            // Clear any pending connection
-            if (connectionStartNode) {
-                const el = document.getElementById('wf-node-' + connectionStartNode);
-                if (el) {
-                    el.classList.remove('connecting-start');
-                    el.style.borderColor = '';
-                    el.style.boxShadow = '';
-                }
-                connectionStartNode = null;
-            }
-            // Show connection instructions
+            // Clear any pending connection and show instructions
+            resetConnectionState();
             alert('💡 To create connections:\n\n1️⃣ Click a node (it will highlight blue)\n2️⃣ Click another node\n3️⃣ An arrow will be created between them\n\n🔄 Click the same node twice to cancel');
             renderWorkflow();
         });
     }
-    
     if (wfClearArrowsBtn) {
         wfClearArrowsBtn.addEventListener('click', clearWorkflowArrows);
     }
-    
     if (wfClearAllBtn) {
         wfClearAllBtn.addEventListener('click', clearAllWorkflow);
     }
-    
     if (wfAutoLayoutBtn) {
         wfAutoLayoutBtn.addEventListener('click', autoLayoutWorkflow);
     }
-    
     if (wfZoomIn) {
         wfZoomIn.addEventListener('click', function() {
             workflowScale = Math.min(workflowScale + 0.1, 2);
@@ -3086,7 +3108,30 @@ function bindWorkflowEvents() {
             renderWorkflow();
         });
     }
+
+    // Initial reset of connection state
+    resetConnectionState();
 }
+
+// Helper to reset connection selection
+function resetConnectionState() {
+    if (connectionStartNode) {
+        const el = document.getElementById('wf-node-' + connectionStartNode);
+        if (el) {
+            el.classList.remove('connecting-start');
+            el.style.borderColor = '';
+            el.style.boxShadow = '';
+        }
+        connectionStartNode = null;
+    }
+    // Remove any active connection highlights
+    document.querySelectorAll('.workflow-node.connecting-start').forEach(el => {
+        el.classList.remove('connecting-start');
+        el.style.borderColor = '';
+        el.style.boxShadow = '';
+    });
+}
+
 // ✅ Edit connection label
 function editWorkflowConnectionLabel(index) {
     if (currentMode !== 'edit') return;
