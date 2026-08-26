@@ -12,7 +12,7 @@ const REPO_OWNER = 'ebrofactoryprocess';
 const REPO_NAME = 'ebrofactoryprocess.github.io';
 const DATA_PATH = 'data.json';
 
-let workflowEventsBound = false;
+
 let selectedArrowIndex = null;
 let appData = null;
 let currentSha = null;
