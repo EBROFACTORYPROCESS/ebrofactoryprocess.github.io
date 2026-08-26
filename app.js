@@ -1,5 +1,5 @@
 // ============================================================
-// app.js - Complete Core Logic
+// app.js - Complete Core Logic (Bug Fixes Applied)
 // ============================================================
 
 console.log('✅ app.js loaded');
@@ -11,7 +11,6 @@ console.log('✅ app.js loaded');
 const REPO_OWNER = 'ebrofactoryprocess';
 const REPO_NAME = 'ebrofactoryprocess.github.io';
 const DATA_PATH = 'data.json';
-
 
 let selectedArrowIndex = null;
 let appData = null;
@@ -28,8 +27,9 @@ let pendingImportCallback = null;
 let currentEditingProcess = null;
 let lastSnapshot = null;
 let eventsBound = false;
+let workflowEventsBound = false;
+let arrowUpdatePending = false; // ✅ for drag flicker fix
 
-let workflowEventsBound = false;  
 // ============================
 // 2. Column Definitions
 // ============================
@@ -104,16 +104,12 @@ function compareSeq(a, b) {
     return 0;
 }
 function sortProcesses(procs) {
-    // Guard against invalid input
     if (!procs || !Array.isArray(procs)) {
         console.warn('⚠️ sortProcesses: input is not an array, returning empty array');
         return [];
     }
-    
-    // Filter out invalid processes and sort
     const validProcs = procs.filter(p => p && typeof p === 'object' && p.seq !== undefined);
     return [...validProcs].sort((a, b) => {
-        // Guard against missing seq
         const seqA = a.seq || '0';
         const seqB = b.seq || '0';
         return compareSeq(String(seqA), String(seqB));
@@ -131,13 +127,11 @@ function isSeqUnique(scenario, seq, excludeId) {
 function normalizeData(data) {
     console.log('📊 normalizeData called');
     
-    // Ensure data is an object
     if (!data || typeof data !== 'object') {
         console.warn('⚠️ normalizeData: data is not an object, creating default');
         return getDefaultData();
     }
     
-    // Ensure scenarios exists and is an array
     if (!data.scenarios || !Array.isArray(data.scenarios)) {
         console.warn('⚠️ normalizeData: scenarios is not an array, creating default');
         data.scenarios = [{
@@ -148,33 +142,27 @@ function normalizeData(data) {
         data.currentScenarioId = 'default';
     }
     
-    // Process each scenario
     for (let sc of data.scenarios) {
-        // Skip if scenario is invalid
         if (!sc || typeof sc !== 'object') {
             console.warn('⚠️ Skipping invalid scenario:', sc);
             continue;
         }
         
-        // Ensure processes exists and is an array
         if (!sc.processes || !Array.isArray(sc.processes)) {
             console.warn('⚠️ Scenario missing processes array, creating empty:', sc.id || 'unknown');
             sc.processes = [];
         }
         
-        // Normalize each process
         for (let p of sc.processes) {
             if (!p || typeof p !== 'object') {
                 console.warn('⚠️ Skipping invalid process:', p);
                 continue;
             }
             
-            // Ensure raci exists
             if (!p.raci || typeof p.raci !== 'object') {
                 p.raci = { r: [], a: [], c: [], i: [] };
             }
             
-            // Convert raci strings to arrays if needed
             if (typeof p.raci.r === 'string') {
                 p.raci.r = p.raci.r.split(',').filter(s => s && s.trim());
             }
@@ -188,24 +176,20 @@ function normalizeData(data) {
                 p.raci.i = p.raci.i.split(',').filter(s => s && s.trim());
             }
             
-            // Ensure raci arrays exist
             if (!Array.isArray(p.raci.r)) p.raci.r = [];
             if (!Array.isArray(p.raci.a)) p.raci.a = [];
             if (!Array.isArray(p.raci.c)) p.raci.c = [];
             if (!Array.isArray(p.raci.i)) p.raci.i = [];
             
-            // Ensure system exists
             if (!p.system || typeof p.system !== 'object') {
                 p.system = { name: '', status: '', responsible: '' };
             }
             
-            // Ensure all required fields exist
             if (!p.businessDoc) p.businessDoc = '';
             if (!p.userManual) p.userManual = '';
             if (!p.notes) p.notes = '';
             if (!p.id) p.id = genId();
             
-            // Ensure seq is a string
             if (p.seq !== undefined && p.seq !== null) {
                 p.seq = String(p.seq);
             } else {
@@ -213,24 +197,20 @@ function normalizeData(data) {
             }
         }
         
-        // Sort processes after normalization
         sc.processes = sortProcesses(sc.processes);
     
         if (!sc.workflow) {
             sc.workflow = { nodes: [], connections: [] };
         }
         normalizeWorkflowData(sc.workflow);
-        // Normalize nodeIdCounter if present
         if (sc.workflow && sc.workflow.nodeIdCounter !== undefined) {
             if (Array.isArray(sc.workflow.nodeIdCounter)) {
                 sc.workflow.nodeIdCounter = sc.workflow.nodeIdCounter[0] || 0;
             }
-            // Ensure it's a number
             if (typeof sc.workflow.nodeIdCounter !== 'number') {
                 sc.workflow.nodeIdCounter = parseInt(sc.workflow.nodeIdCounter) || 0;
             }
         }
-        // Ensure workflow has nodes and connections arrays
         if (!sc.workflow.nodes || !Array.isArray(sc.workflow.nodes)) {
             sc.workflow.nodes = [];
         }
@@ -239,12 +219,10 @@ function normalizeData(data) {
         }
     }
     
-    // Ensure currentScenarioId is valid
     if (!data.currentScenarioId && data.scenarios.length > 0) {
         data.currentScenarioId = data.scenarios[0].id || 'default';
     }
     
-    // Ensure master data exists
     if (!data.departments || !Array.isArray(data.departments)) {
         data.departments = ['Sales', 'Production Planning', 'Material Planning', 'Material Handling', 'Purchase', 'Production Execution', 'Parts Quality', 'Vehicle Quality', 'Finance', 'Trade & Compliance'];
     }
@@ -278,6 +256,7 @@ function normalizeData(data) {
     console.log('✅ Data normalized successfully, scenarios:', data.scenarios.length);
     return data;
 }
+
 // ============================
 // 5. Token Management
 // ============================
@@ -349,7 +328,6 @@ function saveSnapshot(data) {
 
 function initializeSnapshot(data) {
     if (!loadSnapshot()) {
-        // Create a deep clone of the data as baseline
         lastSnapshot = JSON.parse(JSON.stringify(data));
         saveSnapshot(lastSnapshot);
         console.log('📸 Initial snapshot created');
@@ -357,7 +335,6 @@ function initializeSnapshot(data) {
     }
     return true;
 }
-
 
 function generateDiff(oldData, newData) {
     if (typeof jsondiffpatch !== 'undefined' && jsondiffpatch.diff) {
@@ -402,7 +379,6 @@ async function saveDataToGitHub(data) {
     }
 
     try {
-        // Get token
         let token = getGitHubToken();
         if (!token) {
             token = prompt(
@@ -417,13 +393,10 @@ async function saveDataToGitHub(data) {
             }
         }
 
-        // Clean token
         token = token.trim();
 
-        // ✅ IMPORTANT: Generate diff correctly
         let diff = null;
         
-        // If lastSnapshot is null or empty, use a deep clone of current data as baseline
         if (!lastSnapshot) {
             console.log('📸 No snapshot found, creating baseline...');
             lastSnapshot = JSON.parse(JSON.stringify(data));
@@ -437,13 +410,11 @@ async function saveDataToGitHub(data) {
             return;
         }
 
-        // Generate diff using jsondiffpatch
         try {
             if (typeof jsondiffpatch !== 'undefined' && jsondiffpatch.diff) {
                 diff = jsondiffpatch.diff(lastSnapshot, data);
                 console.log('📊 Diff generated with jsondiffpatch');
             } else {
-                // Fallback: simple diff
                 diff = generateSimpleDiff(lastSnapshot, data);
                 console.log('📊 Diff generated with simple fallback');
             }
@@ -452,7 +423,6 @@ async function saveDataToGitHub(data) {
             diff = generateSimpleDiff(lastSnapshot, data);
         }
 
-        // If no changes detected
         if (!diff) {
             alert('ℹ️ No changes detected. Nothing to save.');
             isSaving = false;
@@ -466,7 +436,6 @@ async function saveDataToGitHub(data) {
         const jsonStr = JSON.stringify(diff);
         console.log(`📊 Diff size: ${jsonStr.length} bytes (${(jsonStr.length/1024).toFixed(1)} KB)`);
 
-        // Determine if we need Gist (data > 30KB for safety, under 64KB limit)
         const useGist = jsonStr.length > 30000;
         let gistId = null;
         let payloadData = jsonStr;
@@ -526,7 +495,6 @@ async function saveDataToGitHub(data) {
             }
         }
 
-        // Build payload
         const payload = {
             event_type: 'update-data',
             client_payload: {
@@ -561,7 +529,6 @@ async function saveDataToGitHub(data) {
             throw new Error(errorData.message || `HTTP ${response.status}`);
         }
 
-        // ✅ Save snapshot ONLY after successful save
         saveSnapshot(data);
         console.log('✅ Snapshot updated');
 
@@ -588,10 +555,10 @@ async function saveDataToGitHub(data) {
         }
     }
 }
+
 function normalizeWorkflowData(workflow) {
     if (!workflow) return;
 
-    // 1. Normalize nodeIdCounter
     if (workflow.nodeIdCounter !== undefined) {
         let counter = workflow.nodeIdCounter;
         if (Array.isArray(counter)) counter = counter[0] || 0;
@@ -599,28 +566,20 @@ function normalizeWorkflowData(workflow) {
         workflow.nodeIdCounter = counter;
     }
 
-    // 2. Normalize nodes
     if (Array.isArray(workflow.nodes)) {
-        // Remove invalid entries
         workflow.nodes = workflow.nodes.filter(n => n && typeof n === 'object');
 
-        // Normalize each node's fields
         for (let node of workflow.nodes) {
-            // id
             if (node.id !== undefined) {
                 if (Array.isArray(node.id)) node.id = node.id[0] || 'node-' + Date.now();
                 if (typeof node.id !== 'string') node.id = String(node.id);
             }
-            // processId
             if (node.processId !== undefined && Array.isArray(node.processId)) {
                 node.processId = node.processId[0] || '';
             }
-            // x, y
             if (node.x !== undefined && Array.isArray(node.x)) node.x = node.x[0] || 100;
             if (node.y !== undefined && Array.isArray(node.y)) node.y = node.y[0] || 100;
-            // hidden
             if (node.hidden !== undefined && Array.isArray(node.hidden)) node.hidden = node.hidden[0] || false;
-            // label
             if (node.label !== undefined) {
                 if (Array.isArray(node.label)) node.label = node.label[0] || 'Unnamed';
                 if (typeof node.label !== 'string' || node.label.trim() === '') {
@@ -629,21 +588,21 @@ function normalizeWorkflowData(workflow) {
             } else {
                 node.label = 'Unnamed';
             }
-            // Ensure type is a string (if present)
             if (node.type !== undefined && Array.isArray(node.type)) node.type = node.type[0] || '';
+            // Ensure each node has a unique connection ID if not present (for backward compatibility)
+            if (node.id && !node.connectionId) {
+                node.connectionId = 'conn-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6);
+            }
         }
 
-        // 3. DEDUPLICATE: keep one node per processId, and keep all special nodes
-        const seen = new Map();      // for processId nodes
-        const specialNodes = [];     // for nodes without processId
+        const seen = new Map();
+        const specialNodes = [];
 
         for (let node of workflow.nodes) {
             if (!node.processId) {
-                // Keep special nodes (Start/End/Decision/Parallel) even if label is "Unnamed"
                 if (node.type && ['start', 'end', 'decision', 'parallel'].includes(node.type)) {
                     specialNodes.push(node);
                 } else {
-                    // For other nodes without processId, keep only if they have a proper label
                     if (node.label !== 'Unnamed') {
                         specialNodes.push(node);
                     }
@@ -655,26 +614,21 @@ function normalizeWorkflowData(workflow) {
             if (!seen.has(key)) {
                 seen.set(key, node);
             } else {
-                // If existing node has 'Unnamed' and current has a proper name, replace
                 const existing = seen.get(key);
                 if (existing.label === 'Unnamed' && node.label !== 'Unnamed') {
                     seen.set(key, node);
                 }
-                // Otherwise keep existing (prefer first)
             }
         }
 
-        // Combine special nodes + deduplicated process nodes
         const dedupedNodes = [...specialNodes, ...Array.from(seen.values())];
 
-        // Finally, remove any node that is still 'Unnamed' and has no type (orphan)
         workflow.nodes = dedupedNodes.filter(n => {
             if (n.label === 'Unnamed' && !n.type) return false;
             return true;
         });
     }
 
-    // 4. Normalize connections and remove those pointing to non‑existent nodes
     if (Array.isArray(workflow.connections)) {
         workflow.connections = workflow.connections.filter(c => c && typeof c === 'object');
         const validNodeIds = new Set(workflow.nodes.map(n => n.id));
@@ -683,13 +637,17 @@ function normalizeWorkflowData(workflow) {
             if (conn.to !== undefined && Array.isArray(conn.to)) conn.to = conn.to[0] || '';
             if (typeof conn.from !== 'string') conn.from = String(conn.from);
             if (typeof conn.to !== 'string') conn.to = String(conn.to);
+            // Ensure each connection has an ID
+            if (!conn.id) {
+                conn.id = 'conn-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6);
+            }
         }
-        // Remove connections with missing nodes
         workflow.connections = workflow.connections.filter(c =>
             validNodeIds.has(c.from) && validNodeIds.has(c.to)
         );
     }
 }
+
 // ============================
 // 8. Load Data
 // ============================
@@ -714,7 +672,6 @@ async function loadData() {
                 console.log('📄 data.json not found, creating default');
                 appData = getDefaultData();
                 normalizeData(appData);
-                // Create baseline snapshot
                 lastSnapshot = JSON.parse(JSON.stringify(appData));
                 saveSnapshot(lastSnapshot);
                 renderApp();
@@ -730,15 +687,11 @@ async function loadData() {
         
         let rawData = JSON.parse(text);
         console.log('📊 Raw data parsed, scenarios:', rawData.scenarios?.length || 0);
-        localStorage.removeItem('bpo_snapshot');   // Always start with a clean slate
+        localStorage.removeItem('bpo_snapshot');
         appData = normalizeData(rawData);
         
-        // ✅ Ensure a clean snapshot on every load
         localStorage.removeItem('bpo_snapshot');
         console.log('🧹 Snapshot cleared for fresh start');
-        // ✅ CRITICAL FIX: Reset snapshot to match loaded data
-        // This ensures lastSnapshot represents the GitHub state
-        // Any changes made after this will be detected as diff
         lastSnapshot = JSON.parse(JSON.stringify(appData));
         saveSnapshot(lastSnapshot);
         console.log('📸 Baseline snapshot set to loaded data (scenarios: ' + lastSnapshot.scenarios?.length + ')');
@@ -805,6 +758,7 @@ function getDefaultData() {
         currentScenarioId: 'default'
     };
 }
+
 // ============================
 // 10. Get Current Scenario
 // ============================
@@ -1251,10 +1205,6 @@ function confirmDelete(proc, scenario) {
         scenario.processes = scenario.processes.filter(p => p.id !== proc.id && !sub.map(s => s.id).includes(p.id));
         scenario.processes = sortProcesses(scenario.processes);
         if (!proc.seq.includes('.')) collapseState.delete(proc.id);
-        
-        // ✅ DO NOT update snapshot here - let save handle it
-        // The snapshot still has the deleted process, which is correct for diff detection
-        
         renderCurrentView();
         document.getElementById('deleteConfirmModal').classList.remove('active');
         pendingDeleteCallback = null;
@@ -2007,41 +1957,33 @@ function bindEvents() {
         }
     };
 
-    // ============================================================
-    // ✅ FIXED: Delete Scenario with snapshot update
-    // ============================================================
-document.getElementById('deleteScenarioBtn').onclick = () => {
-    if (currentMode !== 'edit') return;
-    if (appData.scenarios.length <= 1) { 
-        alert('❌ Cannot delete the last scenario.'); 
-        return; 
-    }
-    
-    const sc = getCurrentScenario();
-    if (!sc) return;
-    
-    const confirmMsg = `⚠️ Delete scenario "${sc.name}"?\n\nThis will permanently delete ALL processes within this scenario.`;
-    if (!confirm(confirmMsg)) return;
-    
-    // ✅ Remove the scenario from appData ONLY
-    appData.scenarios = appData.scenarios.filter(s => s.id !== appData.currentScenarioId);
-    appData.currentScenarioId = appData.scenarios[0].id;
-    
-    // ✅ DO NOT update snapshot here - let save handle it
-    // The snapshot still has the deleted scenario, which is correct for diff detection
-    
-    collapseState.clear();
-    refreshScenarioDropdown();
-    renderCurrentView();
-    
-    // ✅ Notify user to save
-    const saveBtn = document.getElementById('saveDataBtn');
-    if (saveBtn) {
-        saveBtn.style.animation = 'pulse 0.5s ease 3';
-        setTimeout(() => { saveBtn.style.animation = ''; }, 2000);
-    }
-    alert('✅ Scenario deleted locally!\n\nClick "Save to GitHub" to persist changes.');
-};
+    document.getElementById('deleteScenarioBtn').onclick = () => {
+        if (currentMode !== 'edit') return;
+        if (appData.scenarios.length <= 1) { 
+            alert('❌ Cannot delete the last scenario.'); 
+            return; 
+        }
+        
+        const sc = getCurrentScenario();
+        if (!sc) return;
+        
+        const confirmMsg = `⚠️ Delete scenario "${sc.name}"?\n\nThis will permanently delete ALL processes within this scenario.`;
+        if (!confirm(confirmMsg)) return;
+        
+        appData.scenarios = appData.scenarios.filter(s => s.id !== appData.currentScenarioId);
+        appData.currentScenarioId = appData.scenarios[0].id;
+        
+        collapseState.clear();
+        refreshScenarioDropdown();
+        renderCurrentView();
+        
+        const saveBtn = document.getElementById('saveDataBtn');
+        if (saveBtn) {
+            saveBtn.style.animation = 'pulse 0.5s ease 3';
+            setTimeout(() => { saveBtn.style.animation = ''; }, 2000);
+        }
+        alert('✅ Scenario deleted locally!\n\nClick "Save to GitHub" to persist changes.');
+    };
 
     document.getElementById('addRowBtn').onclick = () => {
         if (currentMode !== 'edit') return;
@@ -2185,7 +2127,6 @@ function setView(view) {
 }
 
 function renderCurrentView() {
-    // ✅ Clean up SVG arrows when switching tabs
     if (window.workflowSvgLayer) {
         window.workflowSvgLayer.innerHTML = '';
         window.workflowSvgLayer = null;
@@ -2208,7 +2149,6 @@ function renderCurrentView() {
         
         renderWorkflow();
         
-        // Ensure connection state is clean
         resetConnectionState();
         
         setTimeout(function() {
@@ -2260,6 +2200,7 @@ function updateUIVisibility() {
         statusDiv.style.display = 'none';
     }
 }
+
 // ============================
 // 26. Workflow View
 // ============================
@@ -2280,8 +2221,7 @@ function getWorkflowData() {
         sc.workflow = { nodes: [], connections: [] };
         console.log('Created new workflow for scenario:', sc.name);
     }
-    normalizeWorkflowData(sc.workflow); 
-    // ✅ Ensure all nodes have a 'hidden' property
+    normalizeWorkflowData(sc.workflow);
     if (sc.workflow.nodes) {
         sc.workflow.nodes.forEach(function(node) {
             if (node.hidden === undefined) {
@@ -2292,11 +2232,9 @@ function getWorkflowData() {
     
     if (sc.workflow.nodeIdCounter !== undefined) {
         let counter = sc.workflow.nodeIdCounter;
-        // If it's an array, take the first element (safely)
         if (Array.isArray(counter)) {
             counter = counter[0] || 0;
         }
-        // Ensure it's a valid number
         nodeIdCounter = typeof counter === 'number' ? counter : parseInt(counter) || 0;
     }
     
@@ -2307,10 +2245,58 @@ function saveWorkflowData(workflow) {
     const sc = getCurrentScenario();
     if (!sc) return;
     
-    // ✅ Preserve nodeIdCounter in workflow data
     workflow.nodeIdCounter = nodeIdCounter;
     sc.workflow = workflow;
+    
+    // ✅ Update snapshot after workflow change
+    if (lastSnapshot) {
+        lastSnapshot = JSON.parse(JSON.stringify(appData));
+        saveSnapshot(lastSnapshot);
+    }
+    
     renderWorkflow();
+}
+
+// ✅ Improved: use requestAnimationFrame to avoid flicker
+let arrowUpdatePending = false;
+
+function updateWorkflowArrows() {
+    if (arrowUpdatePending) return;
+    arrowUpdatePending = true;
+    
+    requestAnimationFrame(function() {
+        arrowUpdatePending = false;
+        const svgLayer = window.workflowSvgLayer;
+        if (!svgLayer) return;
+        
+        svgLayer.querySelectorAll('.workflow-arrow-group').forEach(el => el.remove());
+        
+        const workflow = getWorkflowData();
+        const canvasWrapper = document.querySelector('.workflow-canvas-wrapper');
+        if (!canvasWrapper) return;
+        
+        const visibleNodeIds = new Set();
+        workflow.nodes.forEach(function(n) {
+            if (!n.hidden) visibleNodeIds.add(n.id);
+        });
+        
+        workflow.connections.forEach(function(conn) {
+            if (!visibleNodeIds.has(conn.from) || !visibleNodeIds.has(conn.to)) return;
+            const fromEl = document.getElementById('wf-node-' + conn.from);
+            const toEl = document.getElementById('wf-node-' + conn.to);
+            if (fromEl && toEl) {
+                drawArrowSVG(
+                    svgLayer,
+                    fromEl,
+                    toEl,
+                    canvasWrapper,
+                    '#475569',
+                    conn.type === 'decision' ? { len: 8, gap: 4 } : undefined,
+                    conn.id
+                );
+            }
+        });
+    });
 }
 
 function renderWorkflow() {
@@ -2324,12 +2310,10 @@ function renderWorkflow() {
     const workflow = getWorkflowData();
     const isEdit = currentMode === 'edit';
     
-    // Clear existing nodes and arrows
     canvas.querySelectorAll('.workflow-node').forEach(el => el.remove());
     canvas.querySelectorAll('.workflow-arrow-svg').forEach(el => el.remove());
     canvas.querySelectorAll('.workflow-arrow-line').forEach(el => el.remove());
     
-    // Reset connection selection
     connectionStartNode = null;
     document.querySelectorAll('.workflow-node.active').forEach(function(el) {
         if (el) el.classList.remove('active');
@@ -2338,7 +2322,6 @@ function renderWorkflow() {
     const sc = getCurrentScenario();
     const processes = sc ? sc.processes : [];
     
-    // Initialize workflow from processes if empty
     if (workflow.nodes.length === 0 && processes.length > 0) {
         console.log('Creating workflow nodes from processes...');
         const nodeMap = {};
@@ -2365,7 +2348,9 @@ function renderWorkflow() {
             const from = topLevel[i];
             const to = topLevel[i + 1];
             if (from && to && nodeMap[from.id] && nodeMap[to.id]) {
+                const connId = 'conn-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6);
                 workflow.connections.push({
+                    id: connId,
                     from: nodeMap[from.id].id,
                     to: nodeMap[to.id].id,
                     type: 'arrow'
@@ -2377,7 +2362,6 @@ function renderWorkflow() {
         console.log('Created', workflow.nodes.length, 'nodes and', workflow.connections.length, 'connections');
     }
     
-    // Create wrapper with unlimited space
     const canvasWrapper = document.createElement('div');
     canvasWrapper.className = 'workflow-canvas-wrapper';
     canvasWrapper.style.position = 'relative';
@@ -2407,10 +2391,9 @@ function renderWorkflow() {
     nodeContainer.style.height = '100%';
     nodeContainer.style.transformOrigin = 'top left';
     nodeContainer.style.transform = 'scale(' + workflowScale + ')';
-    nodeContainer.style.pointerEvents = 'auto'; 
+    nodeContainer.style.pointerEvents = 'auto';
     canvasWrapper.appendChild(nodeContainer);
     
-    // ✅ Create SVG layer for arrows (inside the canvas, not viewport)
     const svgLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svgLayer.setAttribute('class', 'workflow-arrow-svg');
     svgLayer.style.position = 'absolute';
@@ -2418,21 +2401,18 @@ function renderWorkflow() {
     svgLayer.style.left = '0';
     svgLayer.style.width = '100%';
     svgLayer.style.height = '100%';
-    // ✅ Set pointerEvents to 'none' so clicks pass through to nodes
-    // Only arrow groups within will have pointerEvents 'all'
     svgLayer.style.pointerEvents = 'none';
     svgLayer.style.overflow = 'visible';
     canvasWrapper.appendChild(svgLayer);
     
-
     // Render nodes
     workflow.nodes.forEach(node => {
-        // ✅ Skip hidden nodes in display mode
         if (!isEdit && node.hidden) {
-            return; // Skip rendering this node
+            return;
         }
         const nodeEl = document.createElement('div');
         nodeEl.className = 'workflow-node';
+        if (node.hidden) nodeEl.classList.add('hidden');
         nodeEl.id = 'wf-node-' + node.id;
         nodeEl.dataset.nodeId = node.id;
         nodeEl.dataset.x = node.x || 100;
@@ -2480,17 +2460,14 @@ function renderWorkflow() {
             decisionHtml = `<div class="node-decision-text">❓ ${escapeHtml(decisionText)}</div>`;
         }
     
-        // ---- NEW: Gather system info ----
         let sysName = '';
         let raciResponsible = '';
         if (process) {
             sysName = process.system?.name || '';
-            // Get the first responsible from RACI r array, or join all if multiple
             if (process.raci && process.raci.r && process.raci.r.length > 0) {
                 raciResponsible = process.raci.r.join(', ');
             }
         }
-        // Hide system info for special node types
         if (node.type && ['start','end','decision','parallel'].includes(node.type)) {
             sysName = '';
             raciResponsible = '';
@@ -2501,7 +2478,6 @@ function renderWorkflow() {
                 ${raciResponsible ? `<span class="node-raci">👤 ${escapeHtml(raciResponsible)}</span>` : ''}
             </div>
         ` : '';
-        // ---- END NEW ----
 
         nodeEl.innerHTML = `
             <div class="node-header">
@@ -2525,7 +2501,6 @@ function renderWorkflow() {
             nodeEl.style.cursor = 'default';
         }
 
-        // ✅ Click to connect (Edit Mode only)
         if (isEdit) {
             nodeEl.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -2535,7 +2510,6 @@ function renderWorkflow() {
             });
         }
     
-        // ✅ Double-click to open process detail (Display Mode only)
         if (!isEdit) {
             nodeEl.addEventListener('dblclick', function(e) {
                 e.stopPropagation();
@@ -2546,7 +2520,6 @@ function renderWorkflow() {
             });
         }
     
-        // Delete button
         const deleteBtn = nodeEl.querySelector('.node-delete-btn');
         if (deleteBtn && isEdit) {
             deleteBtn.style.display = 'flex';
@@ -2556,7 +2529,6 @@ function renderWorkflow() {
             });
         }
     
-        // Edit button for decision nodes
         if (node.type === 'decision' && isEdit) {
             const editBtn = document.createElement('button');
             editBtn.className = 'node-edit-btn';
@@ -2568,7 +2540,6 @@ function renderWorkflow() {
             nodeEl.appendChild(editBtn);
         }
     
-        // Toggle button for hide/show
         if (isEdit) {
             const toggleBtn = document.createElement('button');
             toggleBtn.className = 'node-toggle-btn';
@@ -2590,10 +2561,8 @@ function renderWorkflow() {
         if (id) window.workflowNodeElements[id] = el;
     });
     
-    // ✅ Draw arrows using SVG (inside canvas)
-    // ✅ Draw arrows using SVG (inside canvas) - pass index for deletion
-    workflow.connections.forEach(function(conn, index) {
-        // ✅ Skip if connection involves a hidden node
+    // Draw arrows
+    workflow.connections.forEach(function(conn) {
         if (isConnectionHidden(conn)) {
             return;
         }
@@ -2608,15 +2577,13 @@ function renderWorkflow() {
                 canvasWrapper,
                 '#475569',
                 conn.type === 'decision' ? { len: 8, gap: 4 } : undefined,
-                index  // ✅ Pass the connection index
+                conn.id
             );
         }
     });
     
-    // ✅ Store reference to svgLayer for updates
     window.workflowSvgLayer = svgLayer;
 
-    // ✅ Setup drag in edit mode - ONLY AFTER all nodes are rendered
     if (isEdit) {
         setupWorkflowDrag(nodeContainer);
     }
@@ -2633,7 +2600,6 @@ function setupWorkflowDrag(container) {
     const nodeContainer = container || document.querySelector('.workflow-node-container');
     if (!nodeContainer) return;
     
-    // Clean up existing interact instances
     try {
         interact('.workflow-node').unset();
     } catch(e) {}
@@ -2662,7 +2628,6 @@ function setupWorkflowDrag(container) {
             target.dataset.x = x;
             target.dataset.y = y;
             
-            // Update the node data
             const nodeId = target.dataset.nodeId;
             const workflow = getWorkflowData();
             const node = workflow.nodes.find(n => n.id === nodeId);
@@ -2671,7 +2636,7 @@ function setupWorkflowDrag(container) {
                 node.y = y;
             }
             
-            // ✅ Update SVG arrows in real-time
+            // Update arrows with debounce
             updateWorkflowArrows();
         },
         onend: function(event) {
@@ -2679,7 +2644,6 @@ function setupWorkflowDrag(container) {
             target.classList.remove('dragging');
             target.style.zIndex = 10;
             
-            // Save on drop
             const nodeId = target.dataset.nodeId;
             const workflow = getWorkflowData();
             const node = workflow.nodes.find(n => n.id === nodeId);
@@ -2689,17 +2653,51 @@ function setupWorkflowDrag(container) {
                 saveWorkflowData(workflow);
             }
             
-            // ✅ Final arrow update
             updateWorkflowArrows();
         }
     });
 }
 
-// ✅ ADD THIS MISSING FUNCTION HERE
+// ✅ Connection handling with validation
+function validateConnection(workflow, fromId, toId) {
+    if (fromId === toId) {
+        alert('❌ Cannot connect a node to itself');
+        return false;
+    }
+    
+    const exists = workflow.connections.some(function(c) {
+        return (c.from === fromId && c.to === toId) ||
+               (c.from === toId && c.to === fromId);
+    });
+    if (exists) {
+        alert('⚠️ Connection already exists between these nodes');
+        return false;
+    }
+    
+    function canReach(start, target, visited) {
+        if (start === target) return true;
+        if (visited.has(start)) return false;
+        visited.add(start);
+        
+        const outgoing = workflow.connections.filter(c => c.from === start);
+        for (const c of outgoing) {
+            if (canReach(c.to, target, visited)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    if (canReach(toId, fromId, new Set())) {
+        alert('⚠️ This would create a cycle in the workflow');
+        return false;
+    }
+    
+    return true;
+}
+
 function handleNodeConnectionClick(nodeId) {
     if (currentMode !== 'edit') return;
-    
-    console.log('Node clicked:', nodeId);
     
     if (!connectionStartNode) {
         connectionStartNode = nodeId;
@@ -2709,7 +2707,6 @@ function handleNodeConnectionClick(nodeId) {
             el.style.borderColor = '#2a5298';
             el.style.boxShadow = '0 0 0 3px rgba(42, 82, 152, 0.4)';
         }
-        console.log('Selected start node:', nodeId);
         return;
     }
     
@@ -2721,33 +2718,33 @@ function handleNodeConnectionClick(nodeId) {
             el.style.boxShadow = '';
         }
         connectionStartNode = null;
-        console.log('Deselected node');
         return;
     }
     
-    console.log('Creating connection from', connectionStartNode, 'to', nodeId);
-    
     const workflow = getWorkflowData();
-    const exists = workflow.connections.some(function(c) {
-        return (c.from === connectionStartNode && c.to === nodeId) ||
-               (c.from === nodeId && c.to === connectionStartNode);
+    
+    if (!validateConnection(workflow, connectionStartNode, nodeId)) {
+        const el = document.getElementById('wf-node-' + connectionStartNode);
+        if (el) {
+            el.classList.remove('connecting-start');
+            el.style.borderColor = '';
+            el.style.boxShadow = '';
+        }
+        connectionStartNode = null;
+        return;
+    }
+    
+    const label = prompt('Enter arrow description (optional):', '');
+    const connId = 'conn-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6);
+    workflow.connections.push({
+        id: connId,
+        from: connectionStartNode,
+        to: nodeId,
+        type: 'arrow',
+        label: label && label.trim() ? label.trim() : undefined
     });
     
-    if (!exists) {
-        // ✅ Prompt for arrow label
-        const label = prompt('Enter arrow description (optional):', '');
-        workflow.connections.push({
-            from: connectionStartNode,
-            to: nodeId,
-            type: 'arrow',
-            label: label && label.trim() ? label.trim() : undefined
-        });
-        saveWorkflowData(workflow);
-        console.log('Connection created!');
-    } else {
-        console.log('Connection already exists');
-        alert('⚠️ Connection already exists between these nodes');
-    }
+    saveWorkflowData(workflow);
     
     const el1 = document.getElementById('wf-node-' + connectionStartNode);
     if (el1) {
@@ -2758,8 +2755,9 @@ function handleNodeConnectionClick(nodeId) {
     connectionStartNode = null;
     renderWorkflow();
 }
-// ✅ Helper function to draw a single arrow using SVG with delete capability
-function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) {
+
+// ✅ Use connection ID instead of index
+function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionId) {
     if (!fromEl || !toEl || !wrapper) return;
     
     const fromRect = fromEl.getBoundingClientRect();
@@ -2815,16 +2813,14 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
         pathData = `M ${startX} ${startY} C ${startX} ${cp1y}, ${endX} ${cp2y}, ${endX} ${endY}`;
     }
     
-    // Create a group for the arrow
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     g.setAttribute('class', 'workflow-arrow-group');
-    g.dataset.connectionIndex = connectionIndex;
+    g.dataset.connectionId = connectionId;
     g.style.cursor = 'pointer';
-    g.style.pointerEvents = 'all';  // ✅ Only arrow groups capture clicks
-    g.style.zIndex = '1000';  // ✅ Ensure arrows are above nodes
+    g.style.pointerEvents = 'all';
+    g.style.zIndex = '1000';
     
-    // ✅ If this arrow is selected, add the class
-    if (selectedArrowIndex === connectionIndex) {
+    if (selectedArrowIndex !== null && selectedArrowIndex === connectionId) {
         g.classList.add('selected');
     }
     
@@ -2860,41 +2856,36 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
         const hitArea = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         hitArea.setAttribute('d', pathData);
         hitArea.setAttribute('stroke', 'transparent');
-        hitArea.setAttribute('stroke-width', '15');  // Increased for easier clicking
+        hitArea.setAttribute('stroke-width', '15');
         hitArea.setAttribute('fill', 'none');
         hitArea.setAttribute('class', 'workflow-arrow-hit');
         hitArea.style.pointerEvents = 'all';
         g.appendChild(hitArea);
         
-       // ✅ Click to select/delete arrow
         g.addEventListener('click', function(e) {
             e.stopPropagation();
-            e.preventDefault();  // ✅ Prevent default behavior
+            e.preventDefault();
     
-            const idx = parseInt(this.dataset.connectionIndex);
-            if (isNaN(idx)) return;
+            const connId = this.dataset.connectionId;
+            if (!connId) return;
     
-            // If already selected, deselect
-            if (selectedArrowIndex === idx) {
+            if (selectedArrowIndex === connId) {
                 selectedArrowIndex = null;
                 renderWorkflow();
                 return;
             }
     
-            // Select this arrow
-            selectedArrowIndex = idx;
+            selectedArrowIndex = connId;
             renderWorkflow();
     
-            // Show delete confirmation after brief delay for visual feedback
             setTimeout(function() {
-                if (selectedArrowIndex === idx) {
+                if (selectedArrowIndex === connId) {
                     if (confirm('Delete this arrow?')) {
-                        deleteWorkflowConnection(idx);
+                        deleteWorkflowConnection(connId);
                         selectedArrowIndex = null;
                     } else {
-                        // Option to edit label
                         if (confirm('Edit arrow label instead?')) {
-                            editWorkflowConnectionLabel(idx);
+                            editWorkflowConnectionLabel(connId);
                             selectedArrowIndex = null;
                         } else {
                             selectedArrowIndex = null;
@@ -2905,17 +2896,15 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
             }, 300);
         });
         
-        // Double-click to edit label (keep this too)
         g.addEventListener('dblclick', function(e) {
             e.stopPropagation();
-            const idx = parseInt(this.dataset.connectionIndex);
-            if (!isNaN(idx)) {
-                editWorkflowConnectionLabel(idx);
+            const connId = this.dataset.connectionId;
+            if (connId) {
+                editWorkflowConnectionLabel(connId);
                 selectedArrowIndex = null;
             }
         });
         
-        // Hover effect
         g.addEventListener('mouseenter', function() {
             if (!this.classList.contains('selected')) {
                 this.querySelector('.workflow-arrow-line').setAttribute('stroke', '#8b5cf6');
@@ -2933,10 +2922,10 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
     
     svg.appendChild(g);
     
-    // Add text label on arrow
-    if (connectionIndex !== undefined) {
+    // Add label
+    if (connectionId) {
         const workflow = getWorkflowData();
-        const conn = workflow.connections[connectionIndex];
+        const conn = workflow.connections.find(c => c.id === connectionId);
         if (conn && conn.label) {
             const midX = (startX + endX) / 2;
             const midY = (startY + endY) / 2 - 15;
@@ -2954,51 +2943,38 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionIndex) 
         }
     }
 }
-    // ✅ Delete a single connection
-    function deleteWorkflowConnection(index) {
-        if (currentMode !== 'edit') return;
-        if (!confirm('Delete this connection?')) return;
-        
-        const workflow = getWorkflowData();
-        if (index >= 0 && index < workflow.connections.length) {
-            workflow.connections.splice(index, 1);
-            saveWorkflowData(workflow);
-            renderWorkflow();
-        }
-    }
-// ✅ Update all arrows in real-time
-function updateWorkflowArrows() {
-    const svgLayer = window.workflowSvgLayer;
-    if (!svgLayer) return;
-    
-    // Clear old arrows
-    svgLayer.querySelectorAll('.workflow-arrow-group').forEach(el => el.remove());
+
+// ✅ Delete connection by ID
+function deleteWorkflowConnection(connectionId) {
+    if (currentMode !== 'edit') return;
+    if (!confirm('Delete this connection?')) return;
     
     const workflow = getWorkflowData();
-    const canvasWrapper = document.querySelector('.workflow-canvas-wrapper');
-    if (!canvasWrapper) return;
-    
-    // Redraw all connections
-    workflow.connections.forEach(function(conn) {
-        // Skip if connection involves a hidden node
-        if (isConnectionHidden(conn)) {
-            return;
-        }
-        const fromEl = document.getElementById('wf-node-' + conn.from);
-        const toEl = document.getElementById('wf-node-' + conn.to);
-        if (fromEl && toEl) {
-            drawArrowSVG(
-                svgLayer,
-                fromEl,
-                toEl,
-                canvasWrapper,
-                '#475569',
-                conn.type === 'decision' ? { len: 8, gap: 4 } : undefined,
-                workflow.connections.indexOf(conn)  // ✅ Pass correct index
-            );
-        }
-    });
+    const idx = workflow.connections.findIndex(c => c.id === connectionId);
+    if (idx !== -1) {
+        workflow.connections.splice(idx, 1);
+        saveWorkflowData(workflow);
+        renderWorkflow();
+    }
 }
+
+// ✅ Edit connection label by ID
+function editWorkflowConnectionLabel(connectionId) {
+    if (currentMode !== 'edit') return;
+    
+    const workflow = getWorkflowData();
+    const conn = workflow.connections.find(c => c.id === connectionId);
+    if (!conn) return;
+    
+    const currentLabel = conn.label || '';
+    const newLabel = prompt('Enter arrow description:', currentLabel);
+    if (newLabel !== null) {
+        conn.label = newLabel.trim() || undefined;
+        saveWorkflowData(workflow);
+        renderWorkflow();
+    }
+}
+
 function deleteWorkflowNode(nodeId) {
     if (currentMode !== 'edit') return;
     if (!confirm('Delete this workflow node?')) return;
@@ -3009,8 +2985,7 @@ function deleteWorkflowNode(nodeId) {
     saveWorkflowData(workflow);
     renderWorkflow();
 }
-// ✅ Toggle node visibility (hide/show)
-// ✅ Toggle node visibility (hide/show)
+
 function toggleWorkflowNodeVisibility(nodeId) {
     if (currentMode !== 'edit') return;
     
@@ -3018,44 +2993,33 @@ function toggleWorkflowNodeVisibility(nodeId) {
     const node = workflow.nodes.find(n => n.id === nodeId);
     if (!node) return;
     
-    // Toggle hidden state
     node.hidden = !node.hidden;
     
-    // If node is being hidden, remove all connections to/from it
     if (node.hidden) {
-        const connectedConnections = workflow.connections.filter(
-            c => c.from === nodeId || c.to === nodeId
-        );
-        if (connectedConnections.length > 0) {
-            // Ask for confirmation before removing arrows
-            if (confirm(`Hide "${node.label || node.type || 'Node'}"?\n\nThis will remove ${connectedConnections.length} connected arrow(s).`)) {
-                workflow.connections = workflow.connections.filter(
-                    c => c.from !== nodeId && c.to !== nodeId
-                );
-                console.log(`Removed ${connectedConnections.length} connections from hidden node`);
+        const connected = workflow.connections.filter(c => c.from === nodeId || c.to === nodeId);
+        if (connected.length > 0) {
+            if (confirm(`Hide "${node.label || node.type || 'Node'}"?\n\nThis will remove ${connected.length} connected arrow(s).`)) {
+                workflow.connections = workflow.connections.filter(c => c.from !== nodeId && c.to !== nodeId);
             } else {
-                // User cancelled - revert the hide
                 node.hidden = false;
                 saveWorkflowData(workflow);
                 renderWorkflow();
                 return;
             }
         }
-    } else {
-        console.log('Node unhidden:', nodeId);
     }
     
     saveWorkflowData(workflow);
     renderWorkflow();
 }
 
-// ✅ Check if a connection involves a hidden node
 function isConnectionHidden(conn) {
     const workflow = getWorkflowData();
     const fromNode = workflow.nodes.find(n => n.id === conn.from);
     const toNode = workflow.nodes.find(n => n.id === conn.to);
     return (fromNode && fromNode.hidden) || (toNode && toNode.hidden);
 }
+
 function editDecisionNode(nodeId) {
     if (currentMode !== 'edit') return;
     
@@ -3071,58 +3035,54 @@ function editDecisionNode(nodeId) {
         renderWorkflow();
     }
 }
+
 function addWorkflowNode(type, label) {
     if (currentMode !== 'edit') return;
     const workflow = getWorkflowData();
     const container = document.getElementById('workflowContainer');
 
-    // Calculate a good default position (center of visible area)
-    let x = 100;
-    let y = 100;
-
+    let x = 100, y = 100;
+    
     if (container) {
         const scale = workflowScale || 1;
-        // Get container scroll and dimensions in unscaled coordinates
         const scrollLeft = container.scrollLeft || 0;
         const scrollTop = container.scrollTop || 0;
         const visibleWidth = container.clientWidth || 800;
         const visibleHeight = container.clientHeight || 600;
         
-        // Center of visible area (unscaled)
         const centerX = (scrollLeft + visibleWidth / 2) / scale;
         const centerY = (scrollTop + visibleHeight / 2) / scale;
-
-        // Node size approximations (half width/height for centering)
-        const nodeWidth = 120;
-        const nodeHeight = 80;
-        x = Math.max(0, centerX - nodeWidth / 2);
-        y = Math.max(0, centerY - nodeHeight / 2);
-        // Ensure within canvas bounds (5000x5000)
-        const maxX = 5000 - nodeWidth;
-        const maxY = 5000 - nodeHeight;
+        
+        // Add random offset to avoid overlap
+        const offsetX = (Math.random() - 0.5) * 120;
+        const offsetY = (Math.random() - 0.5) * 80;
+        
+        x = Math.max(0, centerX - 60 + offsetX);
+        y = Math.max(0, centerY - 40 + offsetY);
+        
+        const maxX = 5000 - 120;
+        const maxY = 5000 - 80;
         x = Math.min(x, maxX);
         y = Math.min(y, maxY);
     } else {
-        // Fallback: grid layout
         const count = workflow.nodes.length;
         const cols = Math.max(1, Math.ceil(Math.sqrt(count + 1)));
         const spacingX = 220;
         const spacingY = 150;
         x = 100 + (count % cols) * spacingX;
         y = 100 + Math.floor(count / cols) * spacingY;
-    }        
+    }
+    
     const node = {
         id: 'node-' + (nodeIdCounter++),
         type: type,
         x: x,
         y: y,
         label: label || type
-    };  
+    };
     
-    // ✅ Fix: Only prompt once for decision nodes
     if (type === 'decision') {
         node.decisionText = 'Decision?';
-        // Prompt user for decision text - only once
         const desc = prompt('Enter decision description:', 'Decision?');
         if (desc !== null && desc.trim() !== '') {
             node.decisionText = desc.trim();
@@ -3155,18 +3115,81 @@ function autoLayoutWorkflow() {
     const workflow = getWorkflowData();
     if (workflow.nodes.length === 0) return;
     
-    // Simple grid layout
-    const cols = Math.ceil(Math.sqrt(workflow.nodes.length));
+    // Hierarchical layout
+    const adj = {};
+    workflow.nodes.forEach(function(n) { adj[n.id] = []; });
+    workflow.connections.forEach(function(c) {
+        if (adj[c.from]) adj[c.from].push(c.to);
+    });
+    
+    const hasIncoming = new Set();
+    workflow.connections.forEach(function(c) { hasIncoming.add(c.to); });
+    const roots = workflow.nodes.filter(function(n) { return !hasIncoming.has(n.id); });
+    
+    if (roots.length === 0) {
+        // Fallback to grid
+        const cols = Math.ceil(Math.sqrt(workflow.nodes.length));
+        const spacingX = 160;
+        const spacingY = 110;
+        const startX = 50;
+        const startY = 50;
+        workflow.nodes.forEach(function(node, index) {
+            const col = index % cols;
+            const row = Math.floor(index / cols);
+            node.x = startX + col * spacingX;
+            node.y = startY + row * spacingY;
+        });
+        saveWorkflowData(workflow);
+        renderWorkflow();
+        return;
+    }
+    
+    const levels = {};
+    const visited = new Set();
+    let queue = roots.map(function(r) { return { id: r.id, level: 0 }; });
+    
+    while (queue.length > 0) {
+        const current = queue.shift();
+        if (visited.has(current.id)) continue;
+        visited.add(current.id);
+        levels[current.id] = current.level;
+        
+        const children = adj[current.id] || [];
+        for (const child of children) {
+            if (!visited.has(child)) {
+                queue.push({ id: child, level: current.level + 1 });
+            }
+        }
+    }
+    
+    workflow.nodes.forEach(function(n) {
+        if (!visited.has(n.id)) {
+            levels[n.id] = 0;
+        }
+    });
+    
+    const levelGroups = {};
+    workflow.nodes.forEach(function(n) {
+        const l = levels[n.id] || 0;
+        if (!levelGroups[l]) levelGroups[l] = [];
+        levelGroups[l].push(n);
+    });
+    
+    const levelKeys = Object.keys(levelGroups).map(Number).sort((a, b) => a - b);
     const spacingX = 160;
-    const spacingY = 110;
+    const spacingY = 140;
     const startX = 50;
     const startY = 50;
     
-    workflow.nodes.forEach((node, index) => {
-        const col = index % cols;
-        const row = Math.floor(index / cols);
-        node.x = startX + col * spacingX;
-        node.y = startY + row * spacingY;
+    levelKeys.forEach(function(level, lIdx) {
+        const nodes = levelGroups[level];
+        const totalHeight = (nodes.length - 1) * spacingY;
+        const startYOffset = -totalHeight / 2;
+        
+        nodes.forEach(function(node, idx) {
+            node.x = startX + lIdx * spacingX;
+            node.y = startY + startYOffset + idx * spacingY + 50;
+        });
     });
     
     saveWorkflowData(workflow);
@@ -3178,9 +3201,7 @@ function autoLayoutWorkflow() {
 // ============================
 
 function bindWorkflowEvents() {
-    // Only bind once
     if (workflowEventsBound) {
-        // Still reset connection state on each tab switch
         resetConnectionState();
         return;
     }
@@ -3209,7 +3230,6 @@ function bindWorkflowEvents() {
         });
     }
     if (wfAddDecisionBtn) {
-        // No clone needed – flag prevents duplicate listeners
         wfAddDecisionBtn.addEventListener('click', function() {
             addWorkflowNode('decision', 'Decision');
         });
@@ -3257,7 +3277,6 @@ function bindWorkflowEvents() {
     resetConnectionState();
 }
 
-// Helper to reset connection selection
 function resetConnectionState() {
     if (connectionStartNode) {
         const el = document.getElementById('wf-node-' + connectionStartNode);
@@ -3268,31 +3287,12 @@ function resetConnectionState() {
         }
         connectionStartNode = null;
     }
-    // Remove any active connection highlights
     document.querySelectorAll('.workflow-node.connecting-start').forEach(el => {
         el.classList.remove('connecting-start');
         el.style.borderColor = '';
         el.style.boxShadow = '';
     });
 }
-
-// ✅ Edit connection label
-function editWorkflowConnectionLabel(index) {
-    if (currentMode !== 'edit') return;
-    
-    const workflow = getWorkflowData();
-    if (index < 0 || index >= workflow.connections.length) return;
-    
-    const conn = workflow.connections[index];
-    const currentLabel = conn.label || '';
-    const newLabel = prompt('Enter arrow description:', currentLabel);
-    if (newLabel !== null) {
-        conn.label = newLabel.trim() || undefined;
-        saveWorkflowData(workflow);
-        renderWorkflow();
-    }
-}
-
 
 // ============================
 // 24. Page Startup
