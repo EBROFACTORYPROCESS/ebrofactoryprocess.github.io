@@ -730,9 +730,12 @@ async function loadData() {
         
         let rawData = JSON.parse(text);
         console.log('📊 Raw data parsed, scenarios:', rawData.scenarios?.length || 0);
-        
+        localStorage.removeItem('bpo_snapshot');   // Always start with a clean slate
         appData = normalizeData(rawData);
         
+        // ✅ Ensure a clean snapshot on every load
+        localStorage.removeItem('bpo_snapshot');
+        console.log('🧹 Snapshot cleared for fresh start');
         // ✅ CRITICAL FIX: Reset snapshot to match loaded data
         // This ensures lastSnapshot represents the GitHub state
         // Any changes made after this will be detected as diff
