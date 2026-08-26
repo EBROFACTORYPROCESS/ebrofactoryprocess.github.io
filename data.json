@@ -1535,8 +1535,8 @@
             "id": "node-1",
             "processId": "1781161866074-0gtup2ma",
             "type": "sub",
-            "x": 352.5,
-            "y": 65,
+            "x": 341.6667022705078,
+            "y": 159.16671752929688,
             "label": "Anual Sales Forecast",
             "hidden": false
           },
@@ -1544,8 +1544,8 @@
             "id": "node-2",
             "processId": "1781161866074-dr66nph6",
             "type": "sub",
-            "x": 66.66670227050781,
-            "y": 19.166748046875,
+            "x": 494.16668701171875,
+            "y": 148.3332977294922,
             "label": "Validate M+3 Sales plan",
             "hidden": false
           },
@@ -1553,8 +1553,8 @@
             "id": "node-3",
             "processId": "1781161866074-rtnv4m3f",
             "type": "sub",
-            "x": 760,
-            "y": 100,
+            "x": 107.50004577636719,
+            "y": 110.00003051757812,
             "label": "Create M+3 Subcontract STO",
             "hidden": false
           },
@@ -2047,8 +2047,8 @@
             "id": "node-51",
             "processId": "1781161866074-zmri3msl",
             "type": "sub",
-            "x": 320,
-            "y": 1860,
+            "x": 118.33331298828125,
+            "y": 0.833404541015625,
             "label": "Buy-off validation",
             "hidden": false
           },
@@ -2222,6 +2222,11 @@
           {
             "from": "node-7",
             "to": "node-9",
+            "type": "arrow"
+          },
+          {
+            "from": "node-57",
+            "to": "node-2",
             "type": "arrow"
           },
           {
