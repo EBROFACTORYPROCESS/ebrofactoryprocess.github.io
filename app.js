@@ -530,9 +530,8 @@ async function saveDataToGitHub(data) {
         const payload = {
             event_type: 'update-data',
             client_payload: {
-                type: payloadType,
-                gist_id: gistId || '',
-                data: payloadData,
+                type: 'full',           // <-- change to "full"
+                data: jsonStr,
                 snapshot_id: Date.now()
             }
         };
