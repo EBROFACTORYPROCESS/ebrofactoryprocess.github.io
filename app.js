@@ -2243,10 +2243,10 @@ function saveWorkflowData(workflow) {
     sc.workflow = workflow;
 
     // ✅ Update snapshot after workflow change
-    if (lastSnapshot) {
-        lastSnapshot = JSON.parse(JSON.stringify(appData));
-        saveSnapshot(lastSnapshot);
-    }
+    //if (lastSnapshot) {
+    //    lastSnapshot = JSON.parse(JSON.stringify(appData));
+    //    saveSnapshot(lastSnapshot);
+    //}
 
     renderWorkflow();
 }
