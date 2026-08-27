@@ -27,7 +27,7 @@ jobs:
           ${{ toJSON(github.event.client_payload) }}
           EOF
 
-      - name: Apply changes
+     -  name: Apply changes
         run: |
           node -e '
             const fs = require("fs");
@@ -78,14 +78,23 @@ jobs:
               console.log("✅ Node-diff applied successfully");
       
             } else if (payload.type === "diff" && payload.data) {
-              // Keep existing diff handler for backward compatibility
+              // Keep for backward compatibility
               const diff = JSON.parse(payload.data);
               result = jsondiffpatch.patch(currentData, diff);
               fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
               console.log("✅ Patch applied successfully");
       
             } else if (payload.type === "gist" && payload.gist_id) {
-              // ... your existing gist logic
+              // (If you have Gist logic, keep it here)
+              console.log("Gist mode not implemented in this version, falling back to diff");
+              if (payload.data) {
+                const diff = JSON.parse(payload.data);
+                result = jsondiffpatch.patch(currentData, diff);
+                fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
+                console.log("✅ Patch applied (from gist data)");
+              } else {
+                console.log("⚠️ No data in gist payload");
+              }
       
             } else if (payload.type === "full" && payload.data) {
               const newData = JSON.parse(payload.data);
