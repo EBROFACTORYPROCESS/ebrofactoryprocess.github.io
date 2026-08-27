@@ -1911,12 +1911,6 @@ function renderApp() {
                 <div id="workflowViewPanel" style="display:none;">
                     <div class="workflow-toolbar" id="workflowToolbar">
                         <div class="btn-group">
-                            <button class="workflow-btn" id="wfAddStartBtn">🏁 Start</button>
-                            <button class="workflow-btn" id="wfAddEndBtn">🏁 End</button>
-                            <button class="workflow-btn" id="wfAddDecisionBtn">⚡ Decision</button>
-                            <button class="workflow-btn" id="wfAddParallelBtn">📋 Parallel</button>
-                        </div>
-                        <div class="btn-group">
                             <button class="workflow-btn" id="wfConnectBtn">💡 How to Connect</button>
                             <button class="workflow-btn" id="wfClearArrowsBtn">🗑 Clear Arrows</button>
                         </div>
@@ -3108,63 +3102,6 @@ function editDecisionNode(nodeId) {
     }
 }
 
-function addWorkflowNode(type, label) {
-    if (currentMode !== 'edit') return;
-    const workflow = getWorkflowData();
-    const container = document.getElementById('workflowContainer');
-
-    let x = 100, y = 100;
-
-    if (container) {
-        const scale = workflowScale || 1;
-        const scrollLeft = container.scrollLeft || 0;
-        const scrollTop = container.scrollTop || 0;
-        const visibleWidth = container.clientWidth || 800;
-        const visibleHeight = container.clientHeight || 600;
-
-        const centerX = (scrollLeft + visibleWidth / 2) / scale;
-        const centerY = (scrollTop + visibleHeight / 2) / scale;
-
-        const offsetX = (Math.random() - 0.5) * 120;
-        const offsetY = (Math.random() - 0.5) * 80;
-
-        x = Math.max(0, centerX - 60 + offsetX);
-        y = Math.max(0, centerY - 40 + offsetY);
-
-        const maxX = 5000 - 120;
-        const maxY = 5000 - 80;
-        x = Math.min(x, maxX);
-        y = Math.min(y, maxY);
-    } else {
-        const count = workflow.nodes.length;
-        const cols = Math.max(1, Math.ceil(Math.sqrt(count + 1)));
-        const spacingX = 220;
-        const spacingY = 150;
-        x = 100 + (count % cols) * spacingX;
-        y = 100 + Math.floor(count / cols) * spacingY;
-    }
-
-    const node = {
-        id: 'node-' + (nodeIdCounter++),
-        type: type,
-        x: x,
-        y: y,
-        label: label || type
-    };
-
-    if (type === 'decision') {
-        node.decisionText = 'Decision?';
-        const desc = prompt('Enter decision description:', 'Decision?');
-        if (desc !== null && desc.trim() !== '') {
-            node.decisionText = desc.trim();
-        }
-    }
-
-    workflow.nodes.push(node);
-    saveWorkflowData(workflow);
-    renderWorkflow();
-}
-
 function clearWorkflowArrows() {
     if (!confirm('Clear all connections?')) return;
     const workflow = getWorkflowData();
@@ -3278,10 +3215,6 @@ function bindWorkflowEvents() {
     }
     workflowEventsBound = true;
 
-    const wfAddStartBtn = document.getElementById('wfAddStartBtn');
-    const wfAddEndBtn = document.getElementById('wfAddEndBtn');
-    const wfAddDecisionBtn = document.getElementById('wfAddDecisionBtn');
-    const wfAddParallelBtn = document.getElementById('wfAddParallelBtn');
     const wfConnectBtn = document.getElementById('wfConnectBtn');
     const wfClearArrowsBtn = document.getElementById('wfClearArrowsBtn');
     const wfClearAllBtn = document.getElementById('wfClearAllBtn');
@@ -3290,26 +3223,6 @@ function bindWorkflowEvents() {
     const wfZoomOut = document.getElementById('wfZoomOut');
     const wfResetView = document.getElementById('wfResetView');
 
-    if (wfAddStartBtn) {
-        wfAddStartBtn.addEventListener('click', function() {
-            addWorkflowNode('start', 'START');
-        });
-    }
-    if (wfAddEndBtn) {
-        wfAddEndBtn.addEventListener('click', function() {
-            addWorkflowNode('end', 'END');
-        });
-    }
-    if (wfAddDecisionBtn) {
-        wfAddDecisionBtn.addEventListener('click', function() {
-            addWorkflowNode('decision', 'Decision');
-        });
-    }
-    if (wfAddParallelBtn) {
-        wfAddParallelBtn.addEventListener('click', function() {
-            addWorkflowNode('parallel', 'Parallel Process');
-        });
-    }
     if (wfConnectBtn) {
         wfConnectBtn.addEventListener('click', function() {
             resetConnectionState();
