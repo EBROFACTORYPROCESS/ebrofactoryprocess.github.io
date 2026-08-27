@@ -1526,8 +1526,8 @@
             "id": "node-0",
             "processId": "1781161866074-ccs1x0d0",
             "type": "main",
-            "x": 94.16670227050781,
-            "y": 70.00006103515625,
+            "x": 919.5,
+            "y": 25.333343505859375,
             "label": "Sales Forecast",
             "hidden": false
           },
@@ -1535,8 +1535,8 @@
             "id": "node-1",
             "processId": "1781161866074-0gtup2ma",
             "type": "sub",
-            "x": 341.6667022705078,
-            "y": 159.16671752929688,
+            "x": 65.83338928222656,
+            "y": 143.3333740234375,
             "label": "Anual Sales Forecast",
             "hidden": false
           },
@@ -1544,8 +1544,8 @@
             "id": "node-2",
             "processId": "1781161866074-dr66nph6",
             "type": "sub",
-            "x": 494.16668701171875,
-            "y": 148.3332977294922,
+            "x": 485.0000457763672,
+            "y": 164.16671752929688,
             "label": "Validate M+3 Sales plan",
             "hidden": false
           },
@@ -1553,8 +1553,8 @@
             "id": "node-3",
             "processId": "1781161866074-rtnv4m3f",
             "type": "sub",
-            "x": 107.50004577636719,
-            "y": 110.00003051757812,
+            "x": 741.666748046875,
+            "y": 203.3332977294922,
             "label": "Create M+3 Subcontract STO",
             "hidden": false
           },
@@ -1562,8 +1562,8 @@
             "id": "node-4",
             "processId": "1781161866074-uqioisf3",
             "type": "sub",
-            "x": 980,
-            "y": 100,
+            "x": 564.9999847412109,
+            "y": 20.833404541015625,
             "label": "Maintain M+3 Subcontract STO",
             "hidden": false
           },
@@ -1993,8 +1993,8 @@
             "id": "node-45",
             "processId": "1781161866074-7lyat8xk",
             "type": "main",
-            "x": 100,
-            "y": 1700,
+            "x": 359.1666259765625,
+            "y": 12.5001220703125,
             "label": "Offline vehicle Test",
             "hidden": false
           },
@@ -2047,8 +2047,8 @@
             "id": "node-51",
             "processId": "1781161866074-zmri3msl",
             "type": "sub",
-            "x": 118.33331298828125,
-            "y": 0.833404541015625,
+            "x": 51.666656494140625,
+            "y": 23.33343505859375,
             "label": "Buy-off validation",
             "hidden": false
           },
@@ -2145,7 +2145,32 @@
         ],
         "connections": [
           {
+            "from": "node-57",
+            "to": "node-0",
+            "type": "arrow",
+            "id": "conn-1787818025652-7l0a27"
+          },
+          {
+            "id": "conn-1787818042668-p5t70f",
+            "from": "node-0",
+            "to": "node-1",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1787818044835-zp2vlg",
             "from": "node-1",
+            "to": "node-2",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1787818051231-h8yl4c",
+            "from": "node-2",
+            "to": "node-3",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1787818054804-9shbhc",
+            "from": "node-3",
             "to": "node-72",
             "type": "arrow"
           }
