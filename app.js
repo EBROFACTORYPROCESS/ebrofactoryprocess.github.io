@@ -266,7 +266,7 @@ function normalizeData(data) {
         }
         normalizeWorkflowData(sc.workflow);
         if (sc.workflow && sc.workflow.nodes) {
-            ensureUniqueNodeIds(sc.workflow);
+            // ensureUniqueNodeIds(sc.workflow);
             sortWorkflowNodes(sc.workflow);
         }
         if (sc.workflow && sc.workflow.nodeIdCounter !== undefined) {
