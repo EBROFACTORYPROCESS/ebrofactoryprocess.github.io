@@ -1577,14 +1577,6 @@
             "hidden": false
           },
           {
-            "id": "node-72",
-            "type": "end",
-            "x": 38.33331298828125,
-            "y": 297.4999694824219,
-            "label": "END",
-            "hidden": false
-          },
-          {
             "id": "node-0",
             "processId": "1781161866074-ccs1x0d0",
             "type": "main",
@@ -2077,60 +2069,6 @@
             "x": 980,
             "y": 1700,
             "label": "vehicle buy off",
-            "hidden": false
-          },
-          {
-            "id": "node-55",
-            "type": "start",
-            "x": 1038.3333740234375,
-            "y": 115,
-            "label": "Plant Gate In",
-            "processId": "1781161866074-1d0xkjej",
-            "hidden": false
-          },
-          {
-            "id": "node-56",
-            "type": "start",
-            "x": 320,
-            "y": 1150,
-            "label": "Plant Gate out",
-            "processId": "1781161866074-iaxn2051",
-            "hidden": false
-          },
-          {
-            "id": "node-57",
-            "type": "start",
-            "x": 50.83331298828125,
-            "y": 14.166740417480469,
-            "label": "Stage 162",
-            "processId": "1781161866074-6tlgun3c",
-            "hidden": false
-          },
-          {
-            "id": "node-58",
-            "type": "start",
-            "x": 760,
-            "y": 1150,
-            "label": "Compound In",
-            "processId": "1781161866074-2ndgfj1w",
-            "hidden": false
-          },
-          {
-            "id": "node-59",
-            "type": "start",
-            "x": 980,
-            "y": 1860,
-            "label": "Outbound plan",
-            "processId": "1781161866074-qnnkix0r",
-            "hidden": false
-          },
-          {
-            "id": "node-60",
-            "type": "start",
-            "x": 100,
-            "y": 1150,
-            "label": "Compound Out",
-            "processId": "1781161866074-tuxvfocc",
             "hidden": false
           },
           {
