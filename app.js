@@ -490,8 +490,6 @@ async function saveDataToGitHub(data) {
             });
         }    
         
-        let diff = null;
-        
         if (!lastSnapshot) {
             console.log('📸 No snapshot found, creating baseline...');
             lastSnapshot = JSON.parse(JSON.stringify(data));
@@ -505,15 +503,25 @@ async function saveDataToGitHub(data) {
             return;
         }
 
-        try {
-            if (typeof jsondiffpatch !== 'undefined' && jsondiffpatch.diff) {
-                diff = jsondiffpatch.diff(lastSnapshot, data);
-                console.log('📊 Diff generated with jsondiffpatch');
-            } else {
-                diff = generateSimpleDiff(lastSnapshot, data);
-                console.log('📊 Diff generated with simple fallback');
+        // Generate custom diff using node IDs (stable)
+        const diff = generateNodeDiff(lastSnapshot.scenarios, data.scenarios);
+        if (!diff || Object.keys(diff).length === 0) {
+            alert('ℹ️ No changes detected. Nothing to save.');
+            isSaving = false;
+            if (saveBtn) {
+                saveBtn.textContent = '💾 Save to GitHub';
+                saveBtn.disabled = false;
             }
-        } catch (e) {
+            return;
+        }
+        const jsonStr = JSON.stringify(diff);
+        console.log(`📊 Diff size: ${jsonStr.length} bytes (${(jsonStr.length/1024).toFixed(1)} KB)`);
+
+        let gistId = null;
+        let payloadData = jsonStr;
+        let payloadType = 'node-diff';
+        
+        catch (e) {
             console.error('Diff generation failed:', e);
             diff = generateSimpleDiff(lastSnapshot, data);
         }
