@@ -451,6 +451,10 @@ function generateSimpleDiff(oldData, newData) {
 // Save data to GitHub (with Gist for large data)
 // ============================
 
+// ============================
+// Save data to GitHub (with Gist for large data)
+// ============================
+
 async function saveDataToGitHub(data) {
     if (isSaving) return;
     isSaving = true;
@@ -477,8 +481,8 @@ async function saveDataToGitHub(data) {
         }
 
         token = token.trim();
-        
-        // Inside saveDataToGitHub, after token validation and before diff
+
+        // Sort workflow nodes for consistency
         if (data.scenarios) {
             data.scenarios.forEach(sc => {
                 if (sc.workflow && sc.workflow.nodes) sortWorkflowNodes(sc.workflow);
@@ -488,8 +492,8 @@ async function saveDataToGitHub(data) {
             lastSnapshot.scenarios.forEach(sc => {
                 if (sc.workflow && sc.workflow.nodes) sortWorkflowNodes(sc.workflow);
             });
-        }    
-        
+        }
+
         if (!lastSnapshot) {
             console.log('📸 No snapshot found, creating baseline...');
             lastSnapshot = JSON.parse(JSON.stringify(data));
@@ -514,41 +518,19 @@ async function saveDataToGitHub(data) {
             }
             return;
         }
+
         const jsonStr = JSON.stringify(diff);
         console.log(`📊 Diff size: ${jsonStr.length} bytes (${(jsonStr.length/1024).toFixed(1)} KB)`);
 
         let gistId = null;
         let payloadData = jsonStr;
         let payloadType = 'node-diff';
-        
-        catch (e) {
-            console.error('Diff generation failed:', e);
-            diff = generateSimpleDiff(lastSnapshot, data);
-        }
 
-        if (!diff) {
-            alert('ℹ️ No changes detected. Nothing to save.');
-            isSaving = false;
-            if (saveBtn) {
-                saveBtn.textContent = '💾 Save to GitHub';
-                saveBtn.disabled = false;
-            }
-            return;
-        }
-
-        const jsonStr = JSON.stringify(diff);
-        console.log(`📊 Diff size: ${jsonStr.length} bytes (${(jsonStr.length/1024).toFixed(1)} KB)`);
-
-        const useGist = jsonStr.length > 30000;
-        let gistId = null;
-        let payloadData = jsonStr;
-        let payloadType = 'diff';
-
-        if (useGist) {
+        // Optional: use Gist for very large diffs (>30KB)
+        if (jsonStr.length > 30000) {
             console.log('📤 Data is large, uploading to Gist...');
-
             const gistPayload = {
-                description: `BPO diff - ${new Date().toISOString()}`,
+                description: `BPO node-diff - ${new Date().toISOString()}`,
                 public: false,
                 files: {
                     'diff.json': {
@@ -578,16 +560,6 @@ async function saveDataToGitHub(data) {
                     payloadType = 'gist';
                     payloadData = '';
                     console.log(`✅ Gist created: ${gistId}`);
-
-                    const verifyResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
-                        headers: {
-                            'Authorization': `token ${token}`,
-                            'Accept': 'application/vnd.github.v3+json'
-                        }
-                    });
-                    if (!verifyResponse.ok) {
-                        console.warn('⚠️ Gist verification failed, but continuing...');
-                    }
                 }
             } catch (gistError) {
                 console.error('Gist creation failed:', gistError);
@@ -601,9 +573,9 @@ async function saveDataToGitHub(data) {
         const payload = {
             event_type: 'update-data',
             client_payload: {
-                type: 'node-diff',
+                type: payloadType,              // 'node-diff' or 'gist' (but gist still contains node-diff data)
                 gist_id: gistId || '',
-                data: JSON.stringify(diff),
+                data: payloadData,              // if gist, this is empty; if not, it's the diff JSON
                 snapshot_id: Date.now()
             }
         };
@@ -635,7 +607,7 @@ async function saveDataToGitHub(data) {
         saveSnapshot(data);
         console.log('✅ Snapshot updated');
 
-        const sizeMsg = useGist && gistId
+        const sizeMsg = (jsonStr.length > 30000 && gistId)
             ? `📤 Uploaded to Gist (temporary)\n   Gist ID: ${gistId}`
             : `📊 Size: ${(jsonStr.length/1024).toFixed(1)} KB`;
 
