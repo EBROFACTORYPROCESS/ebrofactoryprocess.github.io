@@ -65,6 +65,37 @@ jobs:
               const result = jsondiffpatch.patch(currentData, diff);
               fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
               console.log("✅ Patch applied successfully");
+              
+            } else if (payload.type === "node-diff" && payload.data) {
+                const diff = JSON.parse(payload.data);
+                // diff is { scenarioId: { nodes: { nodeId: { x, y, hidden } } } }
+                console.log("Applying node-diff by ID");
+                let result = JSON.parse(JSON.stringify(currentData)); // deep clone
+            
+                for (const scId in diff) {
+                    const scenarioDiff = diff[scId];
+                    const scenario = result.scenarios.find(s => s.id === scId);
+                    if (!scenario) continue;
+                    if (!scenario.workflow) scenario.workflow = { nodes: [], connections: [] };
+                    const nodes = scenario.workflow.nodes || [];
+                    // For each node change
+                    for (const nodeId in scenarioDiff.nodes) {
+                        const changes = scenarioDiff.nodes[nodeId];
+                        const node = nodes.find(n => n.id === nodeId);
+                        if (node) {
+                            // Apply changes
+                            if (changes.x !== undefined) node.x = changes.x;
+                            if (changes.y !== undefined) node.y = changes.y;
+                            if (changes.hidden !== undefined) node.hidden = changes.hidden;
+                        } else {
+                            // Node not found – maybe it was added? For now, ignore.
+                            console.warn(`Node ${nodeId} not found in scenario ${scId}`);
+                        }
+                    }
+                }
+                fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
+                console.log("✅ Node-diff applied successfully");
+                
             } else if (payload.type === "full" && payload.data) {
               const newData = JSON.parse(payload.data);
               fs.writeFileSync("data.json", JSON.stringify(newData, null, 2));
