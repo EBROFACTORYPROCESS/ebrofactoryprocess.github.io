@@ -202,6 +202,9 @@ function normalizeData(data) {
             sc.workflow = { nodes: [], connections: [] };
         }
         normalizeWorkflowData(sc.workflow);
+        if (sc.workflow && sc.workflow.nodes) {
+            sortWorkflowNodes(sc.workflow);
+        }
         if (sc.workflow && sc.workflow.nodeIdCounter !== undefined) {
             if (Array.isArray(sc.workflow.nodeIdCounter)) {
                 sc.workflow.nodeIdCounter = sc.workflow.nodeIdCounter[0] || 0;
@@ -256,6 +259,18 @@ function normalizeData(data) {
     return data;
 }
 
+// ============================
+// Sort the workflow nodes array 
+// ============================
+
+
+function sortWorkflowNodes(workflow) {
+    if (!workflow || !workflow.nodes || !Array.isArray(workflow.nodes)) return;
+    workflow.nodes.sort((a, b) => {
+        // Sort by id – this is stable and unique (if duplicates are fixed)
+        return (a.id || '').localeCompare(b.id || '');
+    });
+}
 // ============================
 // 5. Token Management
 // ============================
@@ -393,9 +408,21 @@ async function saveDataToGitHub(data) {
         }
 
         token = token.trim();
-
+        
+        // Inside saveDataToGitHub, after token validation and before diff
+        if (data.scenarios) {
+            data.scenarios.forEach(sc => {
+                if (sc.workflow && sc.workflow.nodes) sortWorkflowNodes(sc.workflow);
+            });
+        }
+        if (lastSnapshot && lastSnapshot.scenarios) {
+            lastSnapshot.scenarios.forEach(sc => {
+                if (sc.workflow && sc.workflow.nodes) sortWorkflowNodes(sc.workflow);
+            });
+        }    
+        
         let diff = null;
-
+        
         if (!lastSnapshot) {
             console.log('📸 No snapshot found, creating baseline...');
             lastSnapshot = JSON.parse(JSON.stringify(data));
