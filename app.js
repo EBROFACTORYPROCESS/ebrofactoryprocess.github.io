@@ -506,7 +506,16 @@ async function saveDataToGitHub(data) {
             }
             return;
         }
-
+        console.log('🔍 Snapshot scenarios:', lastSnapshot.scenarios.map(s => s.id));
+        console.log('🔍 Current scenarios:', data.scenarios.map(s => s.id));
+        
+        // Check first node in snapshot and current data
+        if (lastSnapshot.scenarios.length > 0 && data.scenarios.length > 0) {
+            const snapNode = lastSnapshot.scenarios[0].workflow?.nodes?.[0];
+            const currNode = data.scenarios[0].workflow?.nodes?.[0];
+            console.log('📌 Snapshot first node:', snapNode);
+            console.log('📌 Current first node:', currNode);
+        }
         // Generate custom diff using node IDs (stable)
         const diff = generateNodeDiff(lastSnapshot.scenarios, data.scenarios);
         if (!diff || Object.keys(diff).length === 0) {
