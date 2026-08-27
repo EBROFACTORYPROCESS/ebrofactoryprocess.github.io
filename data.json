@@ -1526,8 +1526,8 @@
             "id": "node-0",
             "processId": "1781161866074-ccs1x0d0",
             "type": "main",
-            "x": 979.5,
-            "y": 167.00003051757812,
+            "x": 53.333343505859375,
+            "y": 171.6666259765625,
             "label": "Sales Forecast",
             "hidden": false
           },
@@ -1535,8 +1535,8 @@
             "id": "node-1",
             "processId": "1781161866074-0gtup2ma",
             "type": "sub",
-            "x": 83.66670227050781,
-            "y": 151.16668701171875,
+            "x": 260.3333435058594,
+            "y": 7.000030517578125,
             "label": "Anual Sales Forecast",
             "hidden": false
           },
@@ -1544,8 +1544,8 @@
             "id": "node-2",
             "processId": "1781161866074-dr66nph6",
             "type": "sub",
-            "x": 294.16676330566406,
-            "y": 150.83340454101562,
+            "x": 462.83338928222656,
+            "y": 7,
             "label": "Validate M+3 Sales plan",
             "hidden": false
           },
@@ -1553,8 +1553,8 @@
             "id": "node-3",
             "processId": "1781161866074-rtnv4m3f",
             "type": "sub",
-            "x": 500.0000457763672,
-            "y": 149.16671752929688,
+            "x": 667.5000762939453,
+            "y": 7.500091552734375,
             "label": "Create M+3 Subcontract STO",
             "hidden": false
           },
@@ -1562,8 +1562,8 @@
             "id": "node-4",
             "processId": "1781161866074-uqioisf3",
             "type": "sub",
-            "x": 709.1668090820312,
-            "y": 149.16664123535156,
+            "x": 905.8332366943359,
+            "y": 1.666717529296875,
             "label": "Maintain M+3 Subcontract STO",
             "hidden": false
           },
@@ -1571,8 +1571,8 @@
             "id": "node-5",
             "processId": "1781161866074-ylnldwbk",
             "type": "main",
-            "x": 757.4999847412109,
-            "y": 284.1667022705078,
+            "x": 903.3333740234375,
+            "y": 139.16661071777344,
             "label": "Material Requirement Planning",
             "hidden": false
           },
@@ -1615,8 +1615,8 @@
             "id": "node-3",
             "processId": "1781161866074-rtnv4m3f",
             "type": "sub",
-            "x": 1057.5,
-            "y": 284.1666564941406,
+            "x": 1016.6666259765625,
+            "y": 277.5,
             "label": "Create M+3 Subcontract STO",
             "hidden": false
           },
@@ -1993,8 +1993,8 @@
             "id": "node-45",
             "processId": "1781161866074-7lyat8xk",
             "type": "main",
-            "x": 560.0000305175781,
-            "y": 293.3334045410156,
+            "x": 80.83332824707031,
+            "y": 289.16676330566406,
             "label": "Offline vehicle Test",
             "hidden": false
           },
@@ -2047,8 +2047,8 @@
             "id": "node-51",
             "processId": "1781161866074-zmri3msl",
             "type": "sub",
-            "x": 84.99998474121094,
-            "y": 33.33341979980469,
+            "x": 48.33329772949219,
+            "y": 26.666717529296875,
             "label": "Buy-off validation",
             "hidden": false
           },
@@ -2169,8 +2169,14 @@
             "type": "arrow"
           },
           {
-            "id": "conn-1787818054804-9shbhc",
+            "id": "conn-1787819049544-wfyfa1",
             "from": "node-3",
+            "to": "node-4",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1787819051968-kfmoba",
+            "from": "node-4",
             "to": "node-72",
             "type": "arrow"
           }
