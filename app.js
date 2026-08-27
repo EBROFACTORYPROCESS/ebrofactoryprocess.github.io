@@ -75,7 +75,50 @@ const columnNames = {
 function genId() {
     return Date.now() + '-' + Math.random().toString(36).substr(2, 8);
 }
+function generateNodeDiff(oldScenarios, newScenarios) {
+    // Returns an object: { scenarioId: { nodes: { nodeId: { changedFields } } } }
+    const diff = {};
+    for (let i = 0; i < newScenarios.length; i++) {
+        const newSc = newScenarios[i];
+        const oldSc = oldScenarios[i] || { workflow: { nodes: [] } };
+        if (!newSc.workflow) continue;
+        const newNodes = newSc.workflow.nodes || [];
+        const oldNodes = oldSc.workflow.nodes || [];
+        // Build maps by id
+        const oldMap = {};
+        oldNodes.forEach(n => { if (n.id) oldMap[n.id] = n; });
+        const newMap = {};
+        newNodes.forEach(n => { if (n.id) newMap[n.id] = n; });
 
+        const nodeDiff = {};
+        // Check for added/removed nodes (optional)
+        // For positions, we only need updates
+        for (const id in newMap) {
+            const oldNode = oldMap[id];
+            const newNode = newMap[id];
+            if (!oldNode) {
+                // New node – we could add it, but we'll rely on full data for now
+                // To simplify, we'll treat as no change (or handle separately)
+                continue;
+            }
+            const changes = {};
+            if (newNode.x !== oldNode.x) changes.x = newNode.x;
+            if (newNode.y !== oldNode.y) changes.y = newNode.y;
+            if (newNode.hidden !== oldNode.hidden) changes.hidden = newNode.hidden;
+            // Add other fields if needed
+            if (Object.keys(changes).length > 0) {
+                nodeDiff[id] = changes;
+            }
+        }
+        // Also check for deletions? (nodes removed from new)
+        // For now we only send updates.
+        if (Object.keys(nodeDiff).length > 0) {
+            const scenarioId = newSc.id;
+            diff[scenarioId] = { nodes: nodeDiff };
+        }
+    }
+    return diff;
+}
 function escapeHtml(str) {
     if (!str) return '';
     return String(str).replace(/[&<>"]/g, m => {
@@ -364,7 +407,12 @@ function generateDiff(oldData, newData) {
 }
 
 function generateSimpleDiff(oldData, newData) {
-    const diff = {};
+    const diff = generateNodeDiff(lastSnapshot.scenarios, data.scenarios);
+    if (!diff || Object.keys(diff).length === 0) {
+        alert('ℹ️ No changes detected. Nothing to save.');
+        // ... cleanup
+        return;
+    }
     let hasChanges = false;
     const allKeys = new Set([...Object.keys(oldData), ...Object.keys(newData)]);
     for (const key of allKeys) {
@@ -524,9 +572,9 @@ async function saveDataToGitHub(data) {
         const payload = {
             event_type: 'update-data',
             client_payload: {
-                type: payloadType,
+                type: 'node-diff',
                 gist_id: gistId || '',
-                data: payloadData,
+                data: JSON.stringify(diff),
                 snapshot_id: Date.now()
             }
         };
