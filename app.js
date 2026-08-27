@@ -76,47 +76,55 @@ function genId() {
     return Date.now() + '-' + Math.random().toString(36).substr(2, 8);
 }
 function generateNodeDiff(oldScenarios, newScenarios) {
-    // Returns an object: { scenarioId: { nodes: { nodeId: { changedFields } } } }
+    // Returns { scenarioId: { nodeId: { x, y, hidden } } }
     const diff = {};
-    for (let i = 0; i < newScenarios.length; i++) {
-        const newSc = newScenarios[i];
-        const oldSc = oldScenarios[i] || { workflow: { nodes: [] } };
-        if (!newSc.workflow) continue;
-        const newNodes = newSc.workflow.nodes || [];
-        const oldNodes = oldSc.workflow.nodes || [];
-        // Build maps by id
-        const oldMap = {};
-        oldNodes.forEach(n => { if (n.id) oldMap[n.id] = n; });
-        const newMap = {};
-        newNodes.forEach(n => { if (n.id) newMap[n.id] = n; });
 
-        const nodeDiff = {};
-        // Check for added/removed nodes (optional)
-        // For positions, we only need updates
-        for (const id in newMap) {
-            const oldNode = oldMap[id];
-            const newNode = newMap[id];
-            if (!oldNode) {
-                // New node – we could add it, but we'll rely on full data for now
-                // To simplify, we'll treat as no change (or handle separately)
-                continue;
-            }
+    // Build a map of old scenarios by id
+    const oldMap = {};
+    oldScenarios.forEach(s => { oldMap[s.id] = s; });
+
+    newScenarios.forEach(newSc => {
+        const oldSc = oldMap[newSc.id];
+        if (!oldSc) {
+            // Scenario is new – we could send full data, but skip for now
+            return;
+        }
+
+        const newNodes = newSc.workflow?.nodes || [];
+        const oldNodes = oldSc.workflow?.nodes || [];
+
+        // Create maps by node id
+        const oldNodeMap = {};
+        oldNodes.forEach(n => { if (n.id) oldNodeMap[n.id] = n; });
+
+        const newNodeMap = {};
+        newNodes.forEach(n => { if (n.id) newNodeMap[n.id] = n; });
+
+        const nodeChanges = {};
+
+        // Check for updates (existing nodes)
+        for (const id in newNodeMap) {
+            const oldNode = oldNodeMap[id];
+            const newNode = newNodeMap[id];
+            if (!oldNode) continue; // new node – ignore for now (or add)
             const changes = {};
             if (newNode.x !== oldNode.x) changes.x = newNode.x;
             if (newNode.y !== oldNode.y) changes.y = newNode.y;
             if (newNode.hidden !== oldNode.hidden) changes.hidden = newNode.hidden;
             // Add other fields if needed
             if (Object.keys(changes).length > 0) {
-                nodeDiff[id] = changes;
+                nodeChanges[id] = changes;
             }
         }
-        // Also check for deletions? (nodes removed from new)
-        // For now we only send updates.
-        if (Object.keys(nodeDiff).length > 0) {
-            const scenarioId = newSc.id;
-            diff[scenarioId] = { nodes: nodeDiff };
+
+        // Also check for deleted nodes (optional)
+        // ...
+
+        if (Object.keys(nodeChanges).length > 0) {
+            diff[newSc.id] = nodeChanges;
         }
-    }
+    });
+
     return diff;
 }
 function escapeHtml(str) {
