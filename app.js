@@ -137,7 +137,19 @@ function escapeHtml(str) {
         return m;
     });
 }
-
+function ensureUniqueNodeIds(workflow) {
+    if (!workflow || !workflow.nodes) return;
+    let counter = 0;
+    for (let node of workflow.nodes) {
+        // Generate a new unique ID based on the existing nodeIdCounter
+        // or simply use a sequential ID.
+        node.id = 'node-' + (workflow.nodeIdCounter || 0) + '-' + (counter++);
+    }
+    // Update the workflow's counter
+    if (workflow.nodes.length > 0) {
+        workflow.nodeIdCounter = (workflow.nodeIdCounter || 0) + workflow.nodes.length;
+    }
+}
 function compareSeq(a, b) {
     const strA = String(a || '0');
     const strB = String(b || '0');
@@ -254,6 +266,7 @@ function normalizeData(data) {
         }
         normalizeWorkflowData(sc.workflow);
         if (sc.workflow && sc.workflow.nodes) {
+            ensureUniqueNodeIds(sc.workflow);
             sortWorkflowNodes(sc.workflow);
         }
         if (sc.workflow && sc.workflow.nodeIdCounter !== undefined) {
@@ -772,7 +785,12 @@ async function loadData() {
         lastSnapshot = JSON.parse(JSON.stringify(appData));
         saveSnapshot(lastSnapshot);
         console.log('📸 Baseline snapshot set to loaded data (scenarios: ' + lastSnapshot.scenarios?.length + ')');
-
+        
+        if (lastSnapshot && lastSnapshot.scenarios) {
+            lastSnapshot.scenarios.forEach(sc => {
+                if (sc.workflow && sc.workflow.nodes) sortWorkflowNodes(sc.workflow);
+            });
+        }
         if (loading) loading.style.display = 'none';
         if (root) root.style.display = 'block';
         renderApp();
