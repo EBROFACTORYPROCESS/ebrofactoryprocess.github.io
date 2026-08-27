@@ -27,7 +27,7 @@ jobs:
           ${{ toJSON(github.event.client_payload) }}
           EOF
 
-     -  name: Apply changes
+      - name: Apply changes
         run: |
           node -e '
             const fs = require("fs");
