@@ -32,10 +32,9 @@ jobs:
           node -e '
             const fs = require("fs");
             const jsondiffpatch = require("jsondiffpatch");
-
+      
             console.log("=== Applying changes ===");
-
-            // Read current data
+      
             let currentData = {};
             try {
               currentData = JSON.parse(fs.readFileSync("data.json", "utf8"));
@@ -43,67 +42,61 @@ jobs:
             } catch (e) {
               console.log("No existing data.json, starting fresh");
             }
-
-            // Read payload
+      
             const payload = JSON.parse(fs.readFileSync("payload.json", "utf8"));
             console.log("Payload type:", payload.type);
-
-            // Handle different payload types
-            if (payload.type === "gist" && payload.gist_id) {
-              console.log("Gist mode not implemented in this version, falling back to diff");
-              // Process as diff instead if data is present
-              if (payload.data) {
-                const diff = JSON.parse(payload.data);
-                const result = jsondiffpatch.patch(currentData, diff);
-                fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
-                console.log("✅ Patch applied (from gist data)");
-              } else {
-                console.log("⚠️ No data in gist payload");
-              }
-            } else if (payload.type === "diff" && payload.data) {
+      
+            let result = JSON.parse(JSON.stringify(currentData)); // clone
+      
+            if (payload.type === "node-diff" && payload.data) {
               const diff = JSON.parse(payload.data);
-              const result = jsondiffpatch.patch(currentData, diff);
+              // diff is { scenarioId: { nodeId: { x, y, hidden } } }
+              console.log("Applying node-diff by ID");
+              for (const scId in diff) {
+                const scenario = result.scenarios.find(s => s.id === scId);
+                if (!scenario) {
+                  console.warn("Scenario not found:", scId);
+                  continue;
+                }
+                if (!scenario.workflow) scenario.workflow = { nodes: [], connections: [] };
+                const nodes = scenario.workflow.nodes || [];
+                const nodeChanges = diff[scId];
+                for (const nodeId in nodeChanges) {
+                  const changes = nodeChanges[nodeId];
+                  const node = nodes.find(n => n.id === nodeId);
+                  if (node) {
+                    if (changes.x !== undefined) node.x = changes.x;
+                    if (changes.y !== undefined) node.y = changes.y;
+                    if (changes.hidden !== undefined) node.hidden = changes.hidden;
+                    console.log(`Updated node ${nodeId} in scenario ${scId}`);
+                  } else {
+                    console.warn(`Node ${nodeId} not found in scenario ${scId}`);
+                  }
+                }
+              }
+              fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
+              console.log("✅ Node-diff applied successfully");
+      
+            } else if (payload.type === "diff" && payload.data) {
+              // Keep existing diff handler for backward compatibility
+              const diff = JSON.parse(payload.data);
+              result = jsondiffpatch.patch(currentData, diff);
               fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
               console.log("✅ Patch applied successfully");
-              
-            } else if (payload.type === "node-diff" && payload.data) {
-                const diff = JSON.parse(payload.data);
-                // diff is { scenarioId: { nodes: { nodeId: { x, y, hidden } } } }
-                console.log("Applying node-diff by ID");
-                let result = JSON.parse(JSON.stringify(currentData)); // deep clone
-            
-                for (const scId in diff) {
-                    const scenarioDiff = diff[scId];
-                    const scenario = result.scenarios.find(s => s.id === scId);
-                    if (!scenario) continue;
-                    if (!scenario.workflow) scenario.workflow = { nodes: [], connections: [] };
-                    const nodes = scenario.workflow.nodes || [];
-                    // For each node change
-                    for (const nodeId in scenarioDiff.nodes) {
-                        const changes = scenarioDiff.nodes[nodeId];
-                        const node = nodes.find(n => n.id === nodeId);
-                        if (node) {
-                            // Apply changes
-                            if (changes.x !== undefined) node.x = changes.x;
-                            if (changes.y !== undefined) node.y = changes.y;
-                            if (changes.hidden !== undefined) node.hidden = changes.hidden;
-                        } else {
-                            // Node not found – maybe it was added? For now, ignore.
-                            console.warn(`Node ${nodeId} not found in scenario ${scId}`);
-                        }
-                    }
-                }
-                fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
-                console.log("✅ Node-diff applied successfully");
-                
+      
+            } else if (payload.type === "gist" && payload.gist_id) {
+              // ... your existing gist logic
+      
             } else if (payload.type === "full" && payload.data) {
               const newData = JSON.parse(payload.data);
               fs.writeFileSync("data.json", JSON.stringify(newData, null, 2));
               console.log("✅ Full data written");
+      
             } else {
               console.log("⚠️ No valid data to apply");
+              process.exit(1);
             }
-
+      
             console.log("✅ Apply changes completed");
           '
 
