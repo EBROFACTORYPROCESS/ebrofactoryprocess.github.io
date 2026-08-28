@@ -708,4 +708,15 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.workflow-node.type-start {
+    border-color: #16a34a;
+    background: #f0fdf4;
+}
+.workflow-node.type-start .node-name { color: #15803d; }
+
+.workflow-node.type-end {
+    border-color: #dc2626;
+    background: #fef2f2;
+}
+.workflow-node.type-end .node-name { color: #b91c1c; }
 </style>
