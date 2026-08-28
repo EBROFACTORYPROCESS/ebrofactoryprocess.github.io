@@ -2553,13 +2553,12 @@ function renderWorkflow() {
         let seqLabel = '';
         let nameLabel = node.label || 'Unnamed';
 
-        // ========== FIX: Do NOT override nameLabel for start/end ==========
+        // Set type class but preserve label for start/end
         if (node.type === 'start') {
             typeClass = 'type-start';
-            // nameLabel remains as is (from node.label or later from process)
+            // label will come from process or node.label
         } else if (node.type === 'end') {
             typeClass = 'type-end';
-            // nameLabel remains as is
         } else if (node.type === 'decision') {
             typeClass = 'type-decision';
             nameLabel = '⚡ Decision';
@@ -2568,7 +2567,7 @@ function renderWorkflow() {
             nameLabel = '📋 Parallel';
         }
 
-        // If we have a process and node type is NOT decision/parallel, use process info
+        // For process-linked nodes (not decision/parallel), use process info
         if (process && !['decision', 'parallel'].includes(node.type)) {
             seqLabel = process.seq || '';
             nameLabel = process.name || 'Unnamed';
@@ -2578,7 +2577,6 @@ function renderWorkflow() {
             // For start/end without process, keep the node's label
             nameLabel = node.label || 'Unnamed';
         }
-        // ================================================================
 
         if (typeClass) {
             nodeEl.classList.add(typeClass);
@@ -2593,6 +2591,7 @@ function renderWorkflow() {
             decisionHtml = `<div class="node-decision-text">❓ ${escapeHtml(decisionText)}</div>`;
         }
 
+        // System info: only hide for decision/parallel
         let sysName = '';
         let raciResponsible = '';
         if (process) {
@@ -2601,6 +2600,10 @@ function renderWorkflow() {
                 raciResponsible = process.raci.r.join(', ');
             }
         }
+        if (node.type && ['decision', 'parallel'].includes(node.type)) {
+            sysName = '';
+            raciResponsible = '';
+        }
         const metaHtml = (sysName || raciResponsible) ? `
             <div class="node-meta">
                 ${sysName ? `<span class="node-sysname">🖥️ ${escapeHtml(sysName)}</span>` : ''}
@@ -2608,6 +2611,7 @@ function renderWorkflow() {
             </div>
         ` : '';
 
+        // Build node HTML – NO delete button, NO toggle button
         nodeEl.innerHTML = `
             <div class="node-header">
                 ${seqDisplay}
@@ -2616,7 +2620,6 @@ function renderWorkflow() {
             <div class="node-name">${escapeHtml(nameLabel)}</div>
             ${decisionHtml}
             ${metaHtml}
-            <button class="node-delete-btn" data-node-id="${node.id}">✕</button>
         `;
 
         const xPos = node.x || 100;
@@ -2630,10 +2633,10 @@ function renderWorkflow() {
             nodeEl.style.cursor = 'default';
         }
 
+        // Click handling
         if (isEdit) {
             nodeEl.addEventListener('click', function(e) {
                 e.stopPropagation();
-                if (e.target.classList.contains('node-delete-btn')) return;
                 if (e.target.classList.contains('node-edit-btn')) return;
                 handleNodeConnectionClick(node.id);
             });
@@ -2649,6 +2652,7 @@ function renderWorkflow() {
             });
         }
 
+        // Keep decision edit button
         if (node.type === 'decision' && isEdit) {
             const editBtn = document.createElement('button');
             editBtn.className = 'node-edit-btn';
@@ -2674,7 +2678,6 @@ function renderWorkflow() {
         if (isConnectionHidden(conn)) {
             return;
         }
-
         const fromEl = document.getElementById('wf-node-' + conn.from);
         const toEl = document.getElementById('wf-node-' + conn.to);
         if (fromEl && toEl) {
