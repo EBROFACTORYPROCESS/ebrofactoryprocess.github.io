@@ -674,9 +674,18 @@ body {
 }
 .workflow-node.type-end .node-name { color: #b91c1c; }
 
-/* Allow selection of hidden nodes in edit mode */
+
+/* ============================================================
+   EDIT MODE: Allow selection of hidden nodes
+   ============================================================ */
 .edit-mode .workflow-node.hidden {
     pointer-events: auto !important;
     cursor: pointer !important;
+}
+
+/* DISPLAY MODE: Hidden nodes are not interactive */
+.display-mode .workflow-node.hidden {
+    pointer-events: none !important;
+    cursor: default !important;
 }
 </style>
