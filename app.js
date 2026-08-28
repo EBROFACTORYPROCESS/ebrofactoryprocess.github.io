@@ -860,16 +860,22 @@ function toggleNodeType(nodeId, type) {
         return;
     }
 
-    // If the node already has this type, remove it (toggle off)
+    // If already this type, remove it and revert to 'main' or 'sub'
     if (node.type === type) {
-        delete node.type; // or set to undefined
+        // Determine the default type based on process
+        const sc = getCurrentScenario();
+        const process = sc.processes.find(p => p.id === node.processId);
+        if (process && process.seq && process.seq.includes('.')) {
+            node.type = 'sub';
+        } else {
+            node.type = 'main';
+        }
     } else {
-        // If the node has a different special type (e.g., 'decision'), you may want to overwrite
         node.type = type;
     }
 
     saveWorkflowData(workflow);
-    selectedNodeId = null; // clear selection after action
+    selectedNodeId = null;
     renderWorkflow();
 }
 // ============================
