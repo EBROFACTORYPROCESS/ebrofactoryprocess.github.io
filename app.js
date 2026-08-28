@@ -12,6 +12,7 @@ const REPO_OWNER = 'ebrofactoryprocess';
 const REPO_NAME = 'ebrofactoryprocess.github.io';
 const DATA_PATH = 'data.json';
 
+let isConnectingMode = false;
 let selectedNodeId = null;
 let selectedArrowIndex = null;
 let appData = null;
@@ -2706,7 +2707,11 @@ function renderWorkflow() {
             renderWorkflow();
         }
     });
-
+    if (isConnectingMode) {
+        canvas.classList.add('workflow-connecting');
+    } else {
+        canvas.classList.remove('workflow-connecting');
+    }
     console.log('✅ renderWorkflow completed, nodes:', nodeContainer.querySelectorAll('.workflow-node').length);
 }
 function setupWorkflowDrag(container) {
@@ -2816,8 +2821,8 @@ function validateConnection(workflow, fromId, toId) {
 function handleNodeConnectionClick(nodeId) {
     if (currentMode !== 'edit') return;
 
-    // If we are NOT in connection mode (connectionStartNode is null), handle selection
-    if (!connectionStartNode) {
+    // If we are NOT in connection mode, handle selection
+    if (!isConnectingMode) {
         // Toggle selection: if already selected, deselect; else select
         if (selectedNodeId === nodeId) {
             selectedNodeId = null;
@@ -2829,7 +2834,19 @@ function handleNodeConnectionClick(nodeId) {
         return;
     }
 
-    // --- Connection mode (connectionStartNode is not null) ---
+    // --- Connection mode (isConnectingMode === true) ---
+    if (!connectionStartNode) {
+        // Start connection
+        connectionStartNode = nodeId;
+        const el = document.getElementById('wf-node-' + nodeId);
+        if (el) {
+            el.classList.add('connecting-start');
+            el.style.borderColor = '#2a5298';
+            el.style.boxShadow = '0 0 0 3px rgba(42, 82, 152, 0.4)';
+        }
+        return;
+    }
+
     if (connectionStartNode === nodeId) {
         // Cancel connection
         const el = document.getElementById('wf-node-' + nodeId);
@@ -2867,6 +2884,7 @@ function handleNodeConnectionClick(nodeId) {
 
     saveWorkflowData(workflow);
 
+    // Clear connection start highlight
     const el1 = document.getElementById('wf-node-' + connectionStartNode);
     if (el1) {
         el1.classList.remove('connecting-start');
@@ -3279,11 +3297,32 @@ function bindWorkflowEvents() {
 
     if (wfConnectBtn) {
         wfConnectBtn.addEventListener('click', function() {
-            resetConnectionState();
-            alert('💡 To create connections:\n\n1️⃣ Click a node (it will highlight blue)\n2️⃣ Click another node\n3️⃣ An arrow will be created between them\n\n🔄 Click the same node twice to cancel');
+            // Toggle connection mode
+            isConnectingMode = !isConnectingMode;
+            if (isConnectingMode) {
+                connectionStartNode = null;
+                this.classList.add('active');
+                this.textContent = '🔗 Cancel Connection';
+                alert('💡 Connection mode enabled. Click a node to start, then click another node to connect. Click this button again to cancel.');
+            } else {
+                this.classList.remove('active');
+                this.textContent = '💡 How to Connect';
+                // Reset connection state
+                if (connectionStartNode) {
+                    const el = document.getElementById('wf-node-' + connectionStartNode);
+                    if (el) {
+                        el.classList.remove('connecting-start');
+                        el.style.borderColor = '';
+                        el.style.boxShadow = '';
+                    }
+                    connectionStartNode = null;
+                }
+                // Deselect any selected node? Not necessary.
+            }
             renderWorkflow();
         });
     }
+    
     if (wfClearArrowsBtn) {
         wfClearArrowsBtn.addEventListener('click', clearWorkflowArrows);
     }
