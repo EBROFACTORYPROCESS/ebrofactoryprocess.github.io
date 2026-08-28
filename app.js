@@ -2195,6 +2195,11 @@ function bindEvents() {
 
 function setView(view) {
     currentView = view;
+    // Hide/show the filter panel based on current view
+    const filterPanel = document.querySelector('.filter-panel');
+    if (filterPanel) {
+        filterPanel.style.display = (view === 'workflow') ? 'none' : 'block';
+    } 
     document.getElementById('tableViewPanel').style.display = view === 'table' ? 'block' : 'none';
     document.getElementById('sequenceViewPanel').style.display = view === 'sequence' ? 'block' : 'none';
     document.getElementById('workflowViewPanel').style.display = view === 'workflow' ? 'block' : 'none';
