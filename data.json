@@ -1525,7 +1525,7 @@
           {
             "id": "node-0",
             "processId": "1781161866074-ccs1x0d0",
-            "type": "main",
+            "type": "start",
             "x": 37.55555725097656,
             "y": 23.555694580078125,
             "label": "Sales Forecast",
