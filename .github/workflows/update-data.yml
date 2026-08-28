@@ -50,7 +50,6 @@ jobs:
       
             if (payload.type === "node-diff" && payload.data) {
               const diff = JSON.parse(payload.data);
-              // diff is { scenarioId: { nodeId: { x, y, hidden } } }
               console.log("Applying node-diff by ID");
               for (const scId in diff) {
                 const scenario = result.scenarios.find(s => s.id === scId);
@@ -65,10 +64,11 @@ jobs:
                   const changes = nodeChanges[nodeId];
                   const node = nodes.find(n => n.id === nodeId);
                   if (node) {
-                    if (changes.x !== undefined) node.x = changes.x;
-                    if (changes.y !== undefined) node.y = changes.y;
-                    if (changes.hidden !== undefined) node.hidden = changes.hidden;
-                    console.log(`Updated node ${nodeId} in scenario ${scId}`);
+                    // Apply all properties from changes
+                    for (const key in changes) {
+                      node[key] = changes[key];
+                      console.log(`Updated node ${nodeId}: ${key} = ${changes[key]}`);
+                    }
                   } else {
                     console.warn(`Node ${nodeId} not found in scenario ${scId}`);
                   }
