@@ -2415,6 +2415,7 @@ function renderWorkflow() {
     const workflow = getWorkflowData();
     const isEdit = currentMode === 'edit';
 
+    // Clear previous content
     canvas.querySelectorAll('.workflow-node').forEach(el => el.remove());
     canvas.querySelectorAll('.workflow-arrow-svg').forEach(el => el.remove());
     canvas.querySelectorAll('.workflow-arrow-line').forEach(el => el.remove());
@@ -2427,6 +2428,7 @@ function renderWorkflow() {
     const sc = getCurrentScenario();
     const processes = sc ? sc.processes : [];
 
+    // Auto-create nodes if none exist
     if (workflow.nodes.length === 0 && processes.length > 0) {
         console.log('Creating workflow nodes from processes...');
         const nodeMap = {};
@@ -2467,6 +2469,7 @@ function renderWorkflow() {
         console.log('Created', workflow.nodes.length, 'nodes and', workflow.connections.length, 'connections');
     }
 
+    // Build the canvas wrapper (large scrollable area)
     const canvasWrapper = document.createElement('div');
     canvasWrapper.className = 'workflow-canvas-wrapper';
     canvasWrapper.style.position = 'relative';
@@ -2487,6 +2490,7 @@ function renderWorkflow() {
     canvas.style.height = '100%';
     canvas.style.minHeight = '700px';
 
+    // Node container (scaled)
     const nodeContainer = document.createElement('div');
     nodeContainer.className = 'workflow-node-container';
     nodeContainer.style.position = 'absolute';
@@ -2499,6 +2503,7 @@ function renderWorkflow() {
     nodeContainer.style.pointerEvents = 'auto';
     canvasWrapper.appendChild(nodeContainer);
 
+    // SVG layer for arrows
     const svgLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svgLayer.setAttribute('class', 'workflow-arrow-svg');
     svgLayer.style.position = 'absolute';
@@ -2522,6 +2527,18 @@ function renderWorkflow() {
         nodeEl.dataset.nodeId = node.id;
         nodeEl.dataset.x = node.x || 100;
         nodeEl.dataset.y = node.y || 100;
+
+        // ===== NEW: Apply selection styling =====
+        if (selectedNodeId === node.id) {
+            nodeEl.classList.add('selected');
+            nodeEl.style.borderColor = '#2a5298';
+            nodeEl.style.boxShadow = '0 0 0 3px rgba(42, 82, 152, 0.4)';
+        } else {
+            nodeEl.classList.remove('selected');
+            nodeEl.style.borderColor = '';
+            nodeEl.style.boxShadow = '';
+        }
+        // ========================================
 
         let process = null;
         if (node.processId) {
@@ -2693,9 +2710,18 @@ function renderWorkflow() {
         setupWorkflowDrag(nodeContainer);
     }
 
+    // ===== NEW: Click on canvas background to deselect =====
+    canvas.addEventListener('click', function(e) {
+        // If click is directly on the canvas or the wrapper (not on a node)
+        if (e.target === canvas || e.target === canvasWrapper) {
+            selectedNodeId = null;
+            renderWorkflow();
+        }
+    });
+    // ========================================================
+
     console.log('✅ renderWorkflow completed, nodes:', nodeContainer.querySelectorAll('.workflow-node').length);
 }
-
 function setupWorkflowDrag(container) {
     if (typeof interact === 'undefined') {
         console.warn('Interact.js not loaded');
