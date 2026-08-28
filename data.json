@@ -1534,7 +1534,7 @@
           {
             "id": "node-1",
             "processId": "1781161866074-0gtup2ma",
-            "type": "sub",
+            "type": "start",
             "x": 288.9999694824219,
             "y": 21.11102294921875,
             "label": "Anual Sales Forecast",
@@ -1561,7 +1561,7 @@
           {
             "id": "node-4",
             "processId": "1781161866074-uqioisf3",
-            "type": "sub",
+            "type": "end",
             "x": 1055.6663665771484,
             "y": 16.77777099609375,
             "label": "Maintain M+3 Subcontract STO",
