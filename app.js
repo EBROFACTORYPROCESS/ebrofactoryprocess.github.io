@@ -1935,11 +1935,6 @@ function renderApp() {
                     </div>
                     <div class="workflow-container" id="workflowContainer">
                         <div class="workflow-canvas" id="workflowCanvas">
-                            <div class="workflow-zoom-controls">
-                                <button id="wfZoomIn" title="Zoom In">➕</button>
-                                <button id="wfZoomOut" title="Zoom Out">➖</button>
-                                <button id="wfResetView" title="Reset View">⟲</button>
-                            </div>
                         </div>
                     </div>
                 </div>
