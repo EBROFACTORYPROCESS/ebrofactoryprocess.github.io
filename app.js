@@ -12,6 +12,7 @@ const REPO_OWNER = 'ebrofactoryprocess';
 const REPO_NAME = 'ebrofactoryprocess.github.io';
 const DATA_PATH = 'data.json';
 
+let selectedNodeId = null;
 let selectedArrowIndex = null;
 let appData = null;
 let currentSha = null;
@@ -856,7 +857,26 @@ function getScenarioById(id) {
     if (!appData) return null;
     return appData.scenarios.find(s => s.id === id);
 }
+function toggleNodeType(nodeId, type) {
+    const workflow = getWorkflowData();
+    const node = workflow.nodes.find(n => n.id === nodeId);
+    if (!node) {
+        alert('No node selected');
+        return;
+    }
 
+    // If the node already has this type, remove it (toggle off)
+    if (node.type === type) {
+        delete node.type; // or set to undefined
+    } else {
+        // If the node has a different special type (e.g., 'decision'), you may want to overwrite
+        node.type = type;
+    }
+
+    saveWorkflowData(workflow);
+    selectedNodeId = null; // clear selection after action
+    renderWorkflow();
+}
 // ============================
 // 11. Filter and Search
 // ============================
@@ -1927,6 +1947,10 @@ function renderApp() {
                             <button class="workflow-btn" id="wfAutoLayoutBtn">📐 Auto Layout</button>
                             <button class="workflow-btn danger" id="wfClearAllBtn">🗑 Clear All</button>
                         </div>
+                         <div class="btn-group">
+                            <button class="workflow-btn" id="wfMarkStartBtn">🏁 Mark as Start</button>
+                            <button class="workflow-btn" id="wfMarkEndBtn">🏁 Mark as End</button>
+                        </div>
                         <div class="btn-group workflow-zoom-controls">
                             <button id="wfZoomIn" title="Zoom In">➕</button>
                             <button id="wfZoomOut" title="Zoom Out">➖</button>
@@ -2779,18 +2803,22 @@ function validateConnection(workflow, fromId, toId) {
 function handleNodeConnectionClick(nodeId) {
     if (currentMode !== 'edit') return;
 
+    // If we are NOT in connection mode (connectionStartNode is null), handle selection
     if (!connectionStartNode) {
-        connectionStartNode = nodeId;
-        const el = document.getElementById('wf-node-' + nodeId);
-        if (el) {
-            el.classList.add('connecting-start');
-            el.style.borderColor = '#2a5298';
-            el.style.boxShadow = '0 0 0 3px rgba(42, 82, 152, 0.4)';
+        // Toggle selection: if already selected, deselect; else select
+        if (selectedNodeId === nodeId) {
+            selectedNodeId = null;
+        } else {
+            selectedNodeId = nodeId;
         }
+        // Re-render to update the highlight
+        renderWorkflow();
         return;
     }
 
+    // --- Connection mode (connectionStartNode is not null) ---
     if (connectionStartNode === nodeId) {
+        // Cancel connection
         const el = document.getElementById('wf-node-' + nodeId);
         if (el) {
             el.classList.remove('connecting-start');
@@ -2835,7 +2863,6 @@ function handleNodeConnectionClick(nodeId) {
     connectionStartNode = null;
     renderWorkflow();
 }
-
 // ✅ Use connection ID instead of index
 function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionId) {
     if (!fromEl || !toEl || !wrapper) return;
@@ -3271,7 +3298,28 @@ function bindWorkflowEvents() {
             renderWorkflow();
         });
     }
-
+    const wfMarkStartBtn = document.getElementById('wfMarkStartBtn');
+    const wfMarkEndBtn = document.getElementById('wfMarkEndBtn');
+    
+    if (wfMarkStartBtn) {
+        wfMarkStartBtn.addEventListener('click', function() {
+            if (!selectedNodeId) {
+                alert('Please select a node first (click on it).');
+                return;
+            }
+            toggleNodeType(selectedNodeId, 'start');
+        });
+    }
+    
+    if (wfMarkEndBtn) {
+        wfMarkEndBtn.addEventListener('click', function() {
+            if (!selectedNodeId) {
+                alert('Please select a node first (click on it).');
+                return;
+            }
+            toggleNodeType(selectedNodeId, 'end');
+        });
+    }
     resetConnectionState();
 }
 
