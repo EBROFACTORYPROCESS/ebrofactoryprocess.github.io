@@ -2597,10 +2597,6 @@ function renderWorkflow() {
                 raciResponsible = process.raci.r.join(', ');
             }
         }
-        if (node.type && ['start','end','decision','parallel'].includes(node.type)) {
-            sysName = '';
-            raciResponsible = '';
-        }
         const metaHtml = (sysName || raciResponsible) ? `
             <div class="node-meta">
                 ${sysName ? `<span class="node-sysname">🖥️ ${escapeHtml(sysName)}</span>` : ''}
