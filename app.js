@@ -1941,7 +1941,7 @@ function renderApp() {
                 <div id="workflowViewPanel" style="display:none;">
                     <div class="workflow-toolbar" id="workflowToolbar">
                         <div class="btn-group">
-                            <button class="workflow-btn" id="wfConnectBtn">💡 How to Connect</button>
+                            <button class="workflow-btn" id="wfConnectBtn">🔗 Start to Connect</button>
                             <button class="workflow-btn" id="wfClearArrowsBtn">🗑 Clear Arrows</button>
                         </div>
                         <div class="btn-group">
@@ -3305,7 +3305,7 @@ function bindWorkflowEvents() {
                 alert('💡 Connection mode enabled. Click a node to start, then click another node to connect. Click this button again to cancel.');
             } else {
                 this.classList.remove('active');
-                this.textContent = '💡 How to Connect';
+                this.textContent = '🔗 Start to Connect';
                 // Reset connection state
                 if (connectionStartNode) {
                     const el = document.getElementById('wf-node-' + connectionStartNode);
