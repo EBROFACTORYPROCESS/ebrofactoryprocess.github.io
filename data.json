@@ -2042,7 +2042,7 @@
             "x": 39.66664123535156,
             "y": 175.61117553710938,
             "label": "Buy-off validation",
-            "hidden": true
+            "hidden": false
           },
           {
             "id": "node-52",
