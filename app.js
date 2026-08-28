@@ -1951,6 +1951,10 @@ function renderApp() {
                             <button class="workflow-btn" id="wfMarkStartBtn">🏁 Mark as Start</button>
                             <button class="workflow-btn" id="wfMarkEndBtn">🏁 Mark as End</button>
                         </div>
+                        <div class="btn-group">
+                            <button class="workflow-btn" id="wfDeleteNodeBtn">🗑 Delete Node</button>
+                            <button class="workflow-btn" id="wfToggleHideBtn">👁️ Hide Node</button>
+                        </div>                        
                         <div class="btn-group workflow-zoom-controls">
                             <button id="wfZoomIn" title="Zoom In">➕</button>
                             <button id="wfZoomOut" title="Zoom Out">➖</button>
@@ -2645,15 +2649,6 @@ function renderWorkflow() {
             });
         }
 
-        const deleteBtn = nodeEl.querySelector('.node-delete-btn');
-        if (deleteBtn && isEdit) {
-            deleteBtn.style.display = 'flex';
-            deleteBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                deleteWorkflowNode(node.id);
-            });
-        }
-
         if (node.type === 'decision' && isEdit) {
             const editBtn = document.createElement('button');
             editBtn.className = 'node-edit-btn';
@@ -2663,18 +2658,6 @@ function renderWorkflow() {
                 editDecisionNode(node.id);
             });
             nodeEl.appendChild(editBtn);
-        }
-
-        if (isEdit) {
-            const toggleBtn = document.createElement('button');
-            toggleBtn.className = 'node-toggle-btn';
-            toggleBtn.textContent = node.hidden ? '👁️' : '🙈';
-            toggleBtn.title = node.hidden ? 'Show node' : 'Hide node';
-            toggleBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                toggleWorkflowNodeVisibility(node.id);
-            });
-            nodeEl.appendChild(toggleBtn);
         }
 
         nodeContainer.appendChild(nodeEl);
@@ -3347,6 +3330,36 @@ function bindWorkflowEvents() {
             toggleNodeType(selectedNodeId, 'end');
         });
     }
+    // ===== NEW: Delete Node =====
+    const wfDeleteNodeBtn = document.getElementById('wfDeleteNodeBtn');
+    if (wfDeleteNodeBtn) {
+        wfDeleteNodeBtn.addEventListener('click', function() {
+            if (!selectedNodeId) {
+                alert('Please select a node first (click on it).');
+                return;
+            }
+            if (confirm('Delete the selected workflow node?')) {
+                deleteWorkflowNode(selectedNodeId);
+                selectedNodeId = null; // clear selection
+            }
+        });
+    }
+    
+    // ===== NEW: Hide/Unhide Node =====
+    const wfToggleHideBtn = document.getElementById('wfToggleHideBtn');
+    if (wfToggleHideBtn) {
+        wfToggleHideBtn.addEventListener('click', function() {
+            if (!selectedNodeId) {
+                alert('Please select a node first (click on it).');
+                return;
+            }
+            toggleWorkflowNodeVisibility(selectedNodeId);
+            // Keep selection on the node (it stays selected)
+        });
+    }
+
+
+    
     resetConnectionState();
 }
 
