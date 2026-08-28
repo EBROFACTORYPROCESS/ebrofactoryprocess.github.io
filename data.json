@@ -1877,8 +1877,8 @@
             "id": "node-33",
             "processId": "1781161866074-057dxciv",
             "type": "sub",
-            "x": 725.1666564941406,
-            "y": 165.88893127441406,
+            "x": 726.0555725097656,
+            "y": 166.77781677246094,
             "label": "Monthlyh production plannig",
             "hidden": false
           },
@@ -1922,8 +1922,8 @@
             "id": "node-38",
             "processId": "1781161866074-fy2plun1",
             "type": "sub",
-            "x": 41.44444274902344,
-            "y": 303.8888702392578,
+            "x": 39.66667175292969,
+            "y": 309.22218322753906,
             "label": "BIW Quality Check",
             "hidden": false
           },
@@ -2042,7 +2042,7 @@
             "x": 39.66664123535156,
             "y": 175.61117553710938,
             "label": "Buy-off validation",
-            "hidden": false
+            "hidden": true
           },
           {
             "id": "node-52",
