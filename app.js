@@ -78,24 +78,17 @@ function genId() {
     return Date.now() + '-' + Math.random().toString(36).substr(2, 8);
 }
 function generateNodeDiff(oldScenarios, newScenarios) {
-    // Returns { scenarioId: { nodeId: { x, y, hidden } } }
     const diff = {};
-
-    // Build a map of old scenarios by id
     const oldMap = {};
     oldScenarios.forEach(s => { oldMap[s.id] = s; });
 
     newScenarios.forEach(newSc => {
         const oldSc = oldMap[newSc.id];
-        if (!oldSc) {
-            // Scenario is new – we could send full data, but skip for now
-            return;
-        }
+        if (!oldSc) return;
 
         const newNodes = newSc.workflow?.nodes || [];
         const oldNodes = oldSc.workflow?.nodes || [];
 
-        // Create maps by node id
         const oldNodeMap = {};
         oldNodes.forEach(n => { if (n.id) oldNodeMap[n.id] = n; });
 
@@ -104,23 +97,24 @@ function generateNodeDiff(oldScenarios, newScenarios) {
 
         const nodeChanges = {};
 
-        // Check for updates (existing nodes)
         for (const id in newNodeMap) {
             const oldNode = oldNodeMap[id];
             const newNode = newNodeMap[id];
-            if (!oldNode) continue; // new node – ignore for now (or add)
+            if (!oldNode) continue;
+
             const changes = {};
             if (newNode.x !== oldNode.x) changes.x = newNode.x;
             if (newNode.y !== oldNode.y) changes.y = newNode.y;
             if (newNode.hidden !== oldNode.hidden) changes.hidden = newNode.hidden;
-            // Add other fields if needed
+            // ✅ Add type comparison
+            if (newNode.type !== oldNode.type) changes.type = newNode.type;
+
             if (Object.keys(changes).length > 0) {
                 nodeChanges[id] = changes;
             }
         }
 
         // Also check for deleted nodes (optional)
-        // ...
 
         if (Object.keys(nodeChanges).length > 0) {
             diff[newSc.id] = nodeChanges;
