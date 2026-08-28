@@ -2528,7 +2528,7 @@ function renderWorkflow() {
         nodeEl.dataset.x = node.x || 100;
         nodeEl.dataset.y = node.y || 100;
 
-        // ===== NEW: Apply selection styling =====
+        // Selection highlighting
         if (selectedNodeId === node.id) {
             nodeEl.classList.add('selected');
             nodeEl.style.borderColor = '#2a5298';
@@ -2538,7 +2538,6 @@ function renderWorkflow() {
             nodeEl.style.borderColor = '';
             nodeEl.style.boxShadow = '';
         }
-        // ========================================
 
         let process = null;
         if (node.processId) {
@@ -2550,24 +2549,32 @@ function renderWorkflow() {
         let seqLabel = '';
         let nameLabel = node.label || 'Unnamed';
 
+        // ========== FIX: Do NOT override nameLabel for start/end ==========
         if (node.type === 'start') {
             typeClass = 'type-start';
-            nameLabel = '🏁 START';
+            // nameLabel remains as is (from node.label or later from process)
         } else if (node.type === 'end') {
             typeClass = 'type-end';
-            nameLabel = '🏁 END';
+            // nameLabel remains as is
         } else if (node.type === 'decision') {
             typeClass = 'type-decision';
             nameLabel = '⚡ Decision';
         } else if (node.type === 'parallel') {
             typeClass = 'type-parallel';
             nameLabel = '📋 Parallel';
-        } else if (process) {
+        }
+
+        // If we have a process and node type is NOT decision/parallel, use process info
+        if (process && !['decision', 'parallel'].includes(node.type)) {
             seqLabel = process.seq || '';
             nameLabel = process.name || 'Unnamed';
             const status = appData.businessStatuses.find(s => s.value === process.businessStatus);
             statusColor = status ? status.color : 'default';
+        } else if (!process && !['decision', 'parallel'].includes(node.type)) {
+            // For start/end without process, keep the node's label
+            nameLabel = node.label || 'Unnamed';
         }
+        // ================================================================
 
         if (typeClass) {
             nodeEl.classList.add(typeClass);
@@ -2710,15 +2717,13 @@ function renderWorkflow() {
         setupWorkflowDrag(nodeContainer);
     }
 
-    // ===== NEW: Click on canvas background to deselect =====
+    // Click on canvas background to deselect
     canvas.addEventListener('click', function(e) {
-        // If click is directly on the canvas or the wrapper (not on a node)
         if (e.target === canvas || e.target === canvasWrapper) {
             selectedNodeId = null;
             renderWorkflow();
         }
     });
-    // ========================================================
 
     console.log('✅ renderWorkflow completed, nodes:', nodeContainer.querySelectorAll('.workflow-node').length);
 }
