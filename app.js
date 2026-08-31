@@ -3429,14 +3429,10 @@ console.log('🚀 Starting app...');
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📄 DOMContentLoaded event');
-    const token = getGitHubToken();
-    if (!token) {
-        if (confirm('🔑 GitHub Token Required\n\nClick "OK" to enter your token, or "Cancel" to proceed in read-only mode.')) {
-            showTokenSetup();
-        }
-    }
+    // No token prompt on load – just load data in read‑only mode.
     loadData();
 });
+
 
 // ============================
 // 25. Expose Global Functions
