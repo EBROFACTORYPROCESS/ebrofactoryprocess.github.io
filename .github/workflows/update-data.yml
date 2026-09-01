@@ -32,9 +32,9 @@ jobs:
           node -e '
             const fs = require("fs");
             const jsondiffpatch = require("jsondiffpatch");
-      
+
             console.log("=== Applying changes ===");
-      
+
             let currentData = {};
             try {
               currentData = JSON.parse(fs.readFileSync("data.json", "utf8"));
@@ -42,12 +42,15 @@ jobs:
             } catch (e) {
               console.log("No existing data.json, starting fresh");
             }
-      
+
             const payload = JSON.parse(fs.readFileSync("payload.json", "utf8"));
             console.log("Payload type:", payload.type);
-      
+
             let result = JSON.parse(JSON.stringify(currentData)); // clone
-      
+
+            // ============================================================
+            // HANDLER: node-diff (node & connection changes by ID)
+            // ============================================================
             if (payload.type === "node-diff" && payload.data) {
               const diff = JSON.parse(payload.data);
               console.log("Applying node-diff by ID");
@@ -59,33 +62,82 @@ jobs:
                 }
                 if (!scenario.workflow) scenario.workflow = { nodes: [], connections: [] };
                 const nodes = scenario.workflow.nodes || [];
-                const nodeChanges = diff[scId];
-                for (const nodeId in nodeChanges) {
-                  const changes = nodeChanges[nodeId];
-                  const node = nodes.find(n => n.id === nodeId);
-                  if (node) {
-                    // Apply all properties from changes
-                    for (const key in changes) {
-                      node[key] = changes[key];
-                      console.log(`Updated node ${nodeId}: ${key} = ${changes[key]}`);
+                const connections = scenario.workflow.connections || [];
+
+                const scenarioDiff = diff[scId];
+
+                // --- Apply node changes ---
+                if (scenarioDiff.nodes) {
+                  for (const nodeId in scenarioDiff.nodes) {
+                    const changes = scenarioDiff.nodes[nodeId];
+                    const node = nodes.find(n => n.id === nodeId);
+                    if (node) {
+                      for (const key in changes) {
+                        node[key] = changes[key];
+                      }
+                      console.log(`Updated node ${nodeId}`);
+                    } else {
+                      console.warn(`Node ${nodeId} not found in scenario ${scId}`);
                     }
-                  } else {
-                    console.warn(`Node ${nodeId} not found in scenario ${scId}`);
+                  }
+                }
+
+                // --- Apply connection changes ---
+                if (scenarioDiff.connections) {
+                  const connDiffs = scenarioDiff.connections;
+                  for (const connId in connDiffs) {
+                    const change = connDiffs[connId];
+                    if (change._deleted) {
+                      // Remove connection
+                      const idx = connections.findIndex(c => c.id === connId);
+                      if (idx !== -1) {
+                        connections.splice(idx, 1);
+                        console.log(`Deleted connection ${connId}`);
+                      } else {
+                        console.warn(`Connection ${connId} not found for deletion`);
+                      }
+                    } else if (change._added) {
+                      // Add new connection
+                      const newConn = change.conn;
+                      if (!newConn.id) newConn.id = connId;
+                      // Check if already exists (avoid duplicates)
+                      if (!connections.some(c => c.id === connId)) {
+                        connections.push(newConn);
+                        console.log(`Added connection ${connId}`);
+                      } else {
+                        console.warn(`Connection ${connId} already exists, skipping add`);
+                      }
+                    } else {
+                      // Update existing connection
+                      const conn = connections.find(c => c.id === connId);
+                      if (conn) {
+                        for (const key in change) {
+                          conn[key] = change[key];
+                        }
+                        console.log(`Updated connection ${connId}`);
+                      } else {
+                        console.warn(`Connection ${connId} not found for update`);
+                      }
+                    }
                   }
                 }
               }
               fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
               console.log("✅ Node-diff applied successfully");
-      
+
+            // ============================================================
+            // HANDLER: diff (legacy jsondiffpatch)
+            // ============================================================
             } else if (payload.type === "diff" && payload.data) {
-              // Keep for backward compatibility
               const diff = JSON.parse(payload.data);
               result = jsondiffpatch.patch(currentData, diff);
               fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
               console.log("✅ Patch applied successfully");
-      
+
+            // ============================================================
+            // HANDLER: gist (legacy)
+            // ============================================================
             } else if (payload.type === "gist" && payload.gist_id) {
-              // (If you have Gist logic, keep it here)
               console.log("Gist mode not implemented in this version, falling back to diff");
               if (payload.data) {
                 const diff = JSON.parse(payload.data);
@@ -95,17 +147,20 @@ jobs:
               } else {
                 console.log("⚠️ No data in gist payload");
               }
-      
+
+            // ============================================================
+            // HANDLER: full (complete overwrite)
+            // ============================================================
             } else if (payload.type === "full" && payload.data) {
               const newData = JSON.parse(payload.data);
               fs.writeFileSync("data.json", JSON.stringify(newData, null, 2));
               console.log("✅ Full data written");
-      
+
             } else {
               console.log("⚠️ No valid data to apply");
               process.exit(1);
             }
-      
+
             console.log("✅ Apply changes completed");
           '
 
