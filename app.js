@@ -86,6 +86,9 @@ function generateNodeDiff(oldScenarios, newScenarios) {
         const oldSc = oldMap[newSc.id];
         if (!oldSc) return;
 
+        const scenarioDiff = {};
+
+        // ----- Compare nodes -----
         const newNodes = newSc.workflow?.nodes || [];
         const oldNodes = oldSc.workflow?.nodes || [];
 
@@ -96,7 +99,6 @@ function generateNodeDiff(oldScenarios, newScenarios) {
         newNodes.forEach(n => { if (n.id) newNodeMap[n.id] = n; });
 
         const nodeChanges = {};
-
         for (const id in newNodeMap) {
             const oldNode = oldNodeMap[id];
             const newNode = newNodeMap[id];
@@ -106,18 +108,64 @@ function generateNodeDiff(oldScenarios, newScenarios) {
             if (newNode.x !== oldNode.x) changes.x = newNode.x;
             if (newNode.y !== oldNode.y) changes.y = newNode.y;
             if (newNode.hidden !== oldNode.hidden) changes.hidden = newNode.hidden;
-            // ✅ Add type comparison
             if (newNode.type !== oldNode.type) changes.type = newNode.type;
 
             if (Object.keys(changes).length > 0) {
                 nodeChanges[id] = changes;
             }
         }
-
-        // Also check for deleted nodes (optional)
+        // (Optional: check for deleted nodes – if oldNode has id not in newNodeMap, treat as deletion)
+        // For simplicity, we ignore deletion; we'll handle full replacement if needed.
 
         if (Object.keys(nodeChanges).length > 0) {
-            diff[newSc.id] = nodeChanges;
+            scenarioDiff.nodes = nodeChanges;
+        }
+
+        // ----- Compare connections -----
+        const newConnections = newSc.workflow?.connections || [];
+        const oldConnections = oldSc.workflow?.connections || [];
+
+        const oldConnMap = {};
+        oldConnections.forEach(c => { if (c.id) oldConnMap[c.id] = c; });
+
+        const newConnMap = {};
+        newConnections.forEach(c => { if (c.id) newConnMap[c.id] = c; });
+
+        const connChanges = {};
+
+        // Check for added/modified connections
+        for (const id in newConnMap) {
+            const oldConn = oldConnMap[id];
+            const newConn = newConnMap[id];
+            if (!oldConn) {
+                // New connection – store the whole connection object
+                connChanges[id] = { _added: true, conn: newConn };
+                continue;
+            }
+            // Compare properties: from, to, type, label
+            const changes = {};
+            if (newConn.from !== oldConn.from) changes.from = newConn.from;
+            if (newConn.to !== oldConn.to) changes.to = newConn.to;
+            if (newConn.type !== oldConn.type) changes.type = newConn.type;
+            if (newConn.label !== oldConn.label) changes.label = newConn.label;
+            if (Object.keys(changes).length > 0) {
+                connChanges[id] = changes;
+            }
+        }
+
+        // Check for deleted connections (in old but not in new)
+        for (const id in oldConnMap) {
+            if (!newConnMap[id]) {
+                connChanges[id] = { _deleted: true };
+            }
+        }
+
+        if (Object.keys(connChanges).length > 0) {
+            scenarioDiff.connections = connChanges;
+        }
+
+        if (Object.keys(scenarioDiff).length > 0) {
+            diff[newSc.id] = scenarioDiff;
         }
     });
 
