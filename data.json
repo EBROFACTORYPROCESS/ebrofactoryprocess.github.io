@@ -1526,7 +1526,7 @@
             "id": "node-0",
             "processId": "1781161866074-ccs1x0d0",
             "type": "start",
-            "x": 18.500015258789062,
+            "x": 8.500030517578125,
             "y": 31.00017547607422,
             "label": "Sales Forecast",
             "hidden": false
@@ -1544,8 +1544,8 @@
             "id": "node-2",
             "processId": "1781161866074-od5je90c",
             "type": "sub",
-            "x": 1051.9998474121094,
-            "y": 939.1110534667969,
+            "x": 2431.166534423828,
+            "y": 1879.1110229492188,
             "label": "Decanting Handling Unit",
             "hidden": false
           },
@@ -1553,8 +1553,8 @@
             "id": "node-3",
             "processId": "1781161866074-wmqiq029",
             "type": "sub",
-            "x": 1058.6665649414062,
-            "y": 1084.8888854980469,
+            "x": 2439.4998474121094,
+            "y": 2051.5555419921875,
             "label": "Put Away Handling Unit",
             "hidden": false
           },
@@ -1562,8 +1562,8 @@
             "id": "node-4",
             "processId": "1781161866074-183enc0h",
             "type": "start",
-            "x": 1782.8887023925781,
-            "y": 358.9997253417969,
+            "x": 1779.5553894042969,
+            "y": 360.6663818359375,
             "label": "Consumption PO Creation",
             "hidden": false
           },
@@ -1571,8 +1571,8 @@
             "id": "node-5",
             "processId": "1781161866074-ylgz713e",
             "type": "main",
-            "x": 1340.944107055664,
-            "y": 1087.5556182861328,
+            "x": 2763.444107055664,
+            "y": 1380.8889617919922,
             "label": "Intralogistic Replenishment",
             "hidden": false
           },
@@ -1580,8 +1580,8 @@
             "id": "node-6",
             "processId": "1781161866074-9bqb366k",
             "type": "sub",
-            "x": 1344.0000305175781,
-            "y": 1240.4443969726562,
+            "x": 2456.5,
+            "y": 896.2777404785156,
             "label": "Kitting Area replenishment",
             "hidden": false
           },
@@ -1589,8 +1589,8 @@
             "id": "node-7",
             "processId": "1781161866074-ya5fyt4v",
             "type": "main",
-            "x": 1348.8890380859375,
-            "y": 932.8887329101562,
+            "x": 2376.3890075683594,
+            "y": 977.8887329101562,
             "label": "SPS Area replenishment",
             "hidden": false
           },
@@ -1607,8 +1607,8 @@
             "id": "node-9",
             "processId": "1781161866074-dd1l1q0b",
             "type": "end",
-            "x": 1618.2221984863281,
-            "y": 1082.222297668457,
+            "x": 2820.7220764160156,
+            "y": 1083.0556259155273,
             "label": "Edgeline Repelnishment",
             "hidden": false
           },
@@ -1634,8 +1634,8 @@
             "id": "node-12",
             "processId": "1781161866074-4ssftnw0",
             "type": "sub",
-            "x": 63.83331298828125,
-            "y": 384.66666412353516,
+            "x": 2122.1665954589844,
+            "y": 1398.8332901000977,
             "label": "Goods Receive DJV",
             "hidden": false
           },
@@ -1670,8 +1670,8 @@
             "id": "node-16",
             "processId": "1781161866074-h1s2acz7",
             "type": "sub",
-            "x": 1786.9999084472656,
-            "y": 526.6111526489258,
+            "x": 1782.8332214355469,
+            "y": 528.2778396606445,
             "label": "PO complaince validation",
             "hidden": false
           },
@@ -1733,8 +1733,8 @@
             "id": "node-23",
             "processId": "1781161866074-p7mbj38j",
             "type": "sub",
-            "x": 59.555694580078125,
-            "y": 543.7777404785156,
+            "x": 2117.8889923095703,
+            "y": 1572.9444618225098,
             "label": "Factory supply transport",
             "hidden": false
           },
@@ -1841,8 +1841,8 @@
             "id": "node-35",
             "processId": "1781161866074-ylnldwbk",
             "type": "main",
-            "x": 1209.2776184082031,
-            "y": 201.5556182861328,
+            "x": 1215.9442443847656,
+            "y": 207.388916015625,
             "label": "Material Requirement Planning",
             "hidden": false
           },
@@ -1886,8 +1886,8 @@
             "id": "node-40",
             "processId": "1781161866074-venywrtc",
             "type": "main",
-            "x": 1803.7776336669922,
-            "y": 868.4444580078125,
+            "x": 1799.6110076904297,
+            "y": 870.9444580078125,
             "label": "PO Execution",
             "hidden": false
           },
@@ -1904,8 +1904,8 @@
             "id": "node-42",
             "processId": "1781161866074-bkpt60ro",
             "type": "sub",
-            "x": 2403.1109924316406,
-            "y": 1819.2222900390625,
+            "x": 1733.9443664550781,
+            "y": 1550.8889465332031,
             "label": "Outbound plan confirmation",
             "hidden": false
           },
@@ -1922,8 +1922,8 @@
             "id": "node-44",
             "processId": "1781161866074-2ny3mo1h",
             "type": "sub",
-            "x": 1217.1668701171875,
-            "y": 526.8890228271484,
+            "x": 1203.83349609375,
+            "y": 529.3890228271484,
             "label": "Purchase Requirement Maintenance",
             "hidden": false
           },
@@ -1958,8 +1958,8 @@
             "id": "node-48",
             "processId": "1781161866074-ychqnhqu",
             "type": "sub",
-            "x": 1550.3889617919922,
-            "y": 702.0000305175781,
+            "x": 1548.7223358154297,
+            "y": 870.3333129882812,
             "label": "Invoice Payment",
             "hidden": false
           },
@@ -1967,8 +1967,8 @@
             "id": "node-49",
             "processId": "1781161866074-jidhcv90",
             "type": "main",
-            "x": 2139.1111755371094,
-            "y": 512.6665344238281,
+            "x": 2093.277801513672,
+            "y": 868.4998474121094,
             "label": "Inbound Delivery Management",
             "hidden": false
           },
@@ -1976,8 +1976,8 @@
             "id": "node-50",
             "processId": "1781161866074-qeb4gql9",
             "type": "sub",
-            "x": 2049.5552825927734,
-            "y": 642.2780456542969,
+            "x": 2091.221908569336,
+            "y": 1055.6113891601562,
             "label": "Inbound Delivery Note Tracking",
             "hidden": false
           },
@@ -1985,8 +1985,8 @@
             "id": "node-51",
             "processId": "1781161866074-mjpctt7i",
             "type": "sub",
-            "x": 1758.666748046875,
-            "y": 177.44447326660156,
+            "x": 2098.666748046875,
+            "y": 1222.4444885253906,
             "label": "Inb DN Custom Cleaning",
             "hidden": false
           },
@@ -2030,8 +2030,8 @@
             "id": "node-56",
             "processId": "1781161866074-pw6wt8gg",
             "type": "sub",
-            "x": 1053.3335571289062,
-            "y": 353.3333206176758,
+            "x": 2421.6668701171875,
+            "y": 1224.166633605957,
             "label": "Container Reception",
             "hidden": false
           },
@@ -2057,8 +2057,8 @@
             "id": "node-59",
             "processId": "1781161866074-tqm2lpwp",
             "type": "sub",
-            "x": 1057.3334350585938,
-            "y": 506.2220802307129,
+            "x": 2426.5,
+            "y": 1387.0555000305176,
             "label": "Contianer Devaning",
             "hidden": false
           },
@@ -2066,8 +2066,8 @@
             "id": "node-60",
             "processId": "1781161866074-ezvsmhsb",
             "type": "sub",
-            "x": 1057.77783203125,
-            "y": 647.5555953979492,
+            "x": 2426.1109619140625,
+            "y": 1552.5556259155273,
             "label": "Mix Pallet processing",
             "hidden": false
           },
@@ -2075,8 +2075,8 @@
             "id": "node-61",
             "processId": "1781161866074-eh1x1u78",
             "type": "main",
-            "x": 1061.7780456542969,
-            "y": 797.7777557373047,
+            "x": 2429.278076171875,
+            "y": 1714.4444198608398,
             "label": "Check Handling Unit",
             "hidden": false
           }
@@ -2105,6 +2105,54 @@
             "id": "conn-1788249811386-2223x7",
             "from": "node-8",
             "to": "node-21",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788251239571-y8mk7k",
+            "from": "node-21",
+            "to": "node-35",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788251247739-yh3g5j",
+            "from": "node-35",
+            "to": "node-43",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788251250736-qso3n7",
+            "from": "node-43",
+            "to": "node-44",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788251260270-pg3qm6",
+            "from": "node-44",
+            "to": "node-47",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788251264660-n35c16",
+            "from": "node-47",
+            "to": "node-16",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788251267565-jow6cz",
+            "from": "node-4",
+            "to": "node-16",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788251283957-fiz5dp",
+            "from": "node-16",
+            "to": "node-28",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788251288117-mzb1nc",
+            "from": "node-28",
+            "to": "node-40",
             "type": "arrow"
           }
         ],
