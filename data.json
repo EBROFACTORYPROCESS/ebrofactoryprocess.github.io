@@ -1525,9 +1525,9 @@
           {
             "id": "node-0",
             "processId": "1781161866074-ccs1x0d0",
-            "type": "main",
-            "x": 39.33332824707031,
-            "y": 49.333457946777344,
+            "type": "start",
+            "x": 41,
+            "y": 54.33348846435547,
             "label": "Sales Forecast",
             "hidden": false
           },
@@ -1561,7 +1561,7 @@
           {
             "id": "node-4",
             "processId": "1781161866074-183enc0h",
-            "type": "sub",
+            "type": "start",
             "x": 546.2220764160156,
             "y": 57.333099365234375,
             "label": "Consumption PO Creation",
@@ -1896,7 +1896,7 @@
             "processId": "1781161866074-3u1u9c2h",
             "type": "sub",
             "x": 1615.5554809570312,
-            "y": 1526.666732788086,
+            "y": 1689.166763305664,
             "label": "vehicle buy off",
             "hidden": false
           },
@@ -1904,8 +1904,8 @@
             "id": "node-42",
             "processId": "1781161866074-bkpt60ro",
             "type": "sub",
-            "x": 1609.7777404785156,
-            "y": 1687.5556182861328,
+            "x": 2403.1109924316406,
+            "y": 1819.2222900390625,
             "label": "Outbound plan confirmation",
             "hidden": false
           },
@@ -1914,7 +1914,7 @@
             "processId": "1781161866074-xo9ftqqz",
             "type": "sub",
             "x": 276.33319091796875,
-            "y": 499.4443359375,
+            "y": 501.11102294921875,
             "label": "Purchase Requirement Creation",
             "hidden": false
           },
@@ -1994,8 +1994,8 @@
             "id": "node-52",
             "processId": "1781161866074-1d0xkjej",
             "type": "sub",
-            "x": 260,
-            "y": 1090,
+            "x": 1820.8334350585938,
+            "y": 1685.0000305175781,
             "label": "Plant Gate In",
             "hidden": false
           },
@@ -2003,8 +2003,8 @@
             "id": "node-53",
             "processId": "1781161866074-iaxn2051",
             "type": "sub",
-            "x": 420,
-            "y": 1090,
+            "x": 2014.1667175292969,
+            "y": 1690.8334045410156,
             "label": "Plant Gate out",
             "hidden": false
           },
@@ -2012,8 +2012,8 @@
             "id": "node-54",
             "processId": "1781161866074-6tlgun3c",
             "type": "sub",
-            "x": 580,
-            "y": 1090,
+            "x": 1612.5000610351562,
+            "y": 1818.3332138061523,
             "label": "Stage 162",
             "hidden": false
           },
@@ -2021,8 +2021,8 @@
             "id": "node-55",
             "processId": "1781161866074-2ndgfj1w",
             "type": "sub",
-            "x": 740,
-            "y": 1090,
+            "x": 1820.8334045410156,
+            "y": 1817.4999694824219,
             "label": "Compound In",
             "hidden": false
           },
@@ -2039,8 +2039,8 @@
             "id": "node-57",
             "processId": "1781161866074-qnnkix0r",
             "type": "sub",
-            "x": 900,
-            "y": 1090,
+            "x": 2019.1666870117188,
+            "y": 1819.1666717529297,
             "label": "Outbound plan",
             "hidden": false
           },
@@ -2048,8 +2048,8 @@
             "id": "node-58",
             "processId": "1781161866074-tuxvfocc",
             "type": "sub",
-            "x": 100,
-            "y": 1200,
+            "x": 2210.0000915527344,
+            "y": 1821.6666259765625,
             "label": "Compound Out",
             "hidden": false
           },
