@@ -1697,8 +1697,8 @@
             "id": "node-19",
             "processId": "1781161866074-fy2plun1",
             "type": "sub",
-            "x": 155.7636260986328,
-            "y": 1434.514081954956,
+            "x": 162.0136260986328,
+            "y": 1436.5974407196045,
             "label": "BIW Quality Check",
             "hidden": false
           },
@@ -1742,7 +1742,7 @@
             "id": "node-24",
             "processId": "1781161866074-m8ktkpai",
             "type": "sub",
-            "x": 503.31556701660156,
+            "x": 507.4822463989258,
             "y": 1444.3672561645508,
             "label": "BIP Quality Check",
             "hidden": false
@@ -2082,13 +2082,6 @@
           }
         ],
         "connections": [
-          {
-            "id": "conn-1788249319347-91uaz2",
-            "from": "node-0",
-            "to": "node-1",
-            "type": "arrow",
-            "label": "safdsdafasvg"
-          },
           {
             "id": "conn-1788249321250-2rr36d",
             "from": "node-1",
@@ -2453,6 +2446,12 @@
             "id": "conn-1788255912725-yjtjhd",
             "from": "node-58",
             "to": "node-42",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788255958046-a5l442",
+            "from": "node-0",
+            "to": "node-1",
             "type": "arrow"
           }
         ],
