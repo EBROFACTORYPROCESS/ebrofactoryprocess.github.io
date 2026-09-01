@@ -1525,7 +1525,7 @@
           {
             "id": "node-0",
             "processId": "1781161866074-ccs1x0d0",
-            "type": "start",
+            "type": "main",
             "x": 39.33332824707031,
             "y": 49.333457946777344,
             "label": "Sales Forecast",
@@ -1561,7 +1561,7 @@
           {
             "id": "node-4",
             "processId": "1781161866074-183enc0h",
-            "type": "start",
+            "type": "sub",
             "x": 546.2220764160156,
             "y": 57.333099365234375,
             "label": "Consumption PO Creation",
