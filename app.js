@@ -3081,6 +3081,7 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionId) {
     arrowHead.setAttribute('class', 'workflow-arrow-head');
     g.appendChild(arrowHead);
 
+    // --- Add interactive hit area (if in edit mode) ---
     if (currentMode === 'edit') {
         const hitArea = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         hitArea.setAttribute('d', pathData);
@@ -3149,30 +3150,56 @@ function drawArrowSVG(svg, fromEl, toEl, wrapper, color, dash, connectionId) {
         });
     }
 
-    svg.appendChild(g);
-
-    // Add label
+    // --- Add label with background (improved readability) ---
     if (connectionId) {
         const workflow = getWorkflowData();
         const conn = workflow.connections.find(c => c.id === connectionId);
         if (conn && conn.label) {
             const midX = (startX + endX) / 2;
-            const midY = (startY + endY) / 2 - 15;
+            const midY = (startY + endY) / 2 - 20; // offset above the line
 
-            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            text.setAttribute('x', midX);
-            text.setAttribute('y', midY);
-            text.setAttribute('text-anchor', 'middle');
-            text.setAttribute('font-size', '11');
-            text.setAttribute('fill', '#475569');
-            text.setAttribute('font-weight', '500');
-            text.setAttribute('class', 'workflow-arrow-label');
-            text.textContent = conn.label;
-            g.appendChild(text);
+            // Create a group for label + background
+            const labelGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            labelGroup.setAttribute('class', 'workflow-arrow-label-group');
+
+            // Rough text size estimation
+            const fontSize = 11;
+            const text = conn.label || '';
+            const textLength = text.length * fontSize * 0.6; // approximate width
+            const textHeight = fontSize * 1.2;
+
+            // Background rectangle
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rect.setAttribute('x', midX - textLength/2 - 6);
+            rect.setAttribute('y', midY - textHeight/2 - 3);
+            rect.setAttribute('width', textLength + 12);
+            rect.setAttribute('height', textHeight + 6);
+            rect.setAttribute('fill', 'white');
+            rect.setAttribute('rx', '4');
+            rect.setAttribute('ry', '4');
+            rect.setAttribute('opacity', '0.92');
+            rect.setAttribute('stroke', '#e2e8f0');
+            rect.setAttribute('stroke-width', '0.5');
+            labelGroup.appendChild(rect);
+
+            // Label text
+            const textEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textEl.setAttribute('x', midX);
+            textEl.setAttribute('y', midY + fontSize * 0.35); // adjust baseline
+            textEl.setAttribute('text-anchor', 'middle');
+            textEl.setAttribute('font-size', fontSize);
+            textEl.setAttribute('fill', '#475569');
+            textEl.setAttribute('font-weight', '500');
+            textEl.setAttribute('class', 'workflow-arrow-label');
+            textEl.textContent = conn.label;
+            labelGroup.appendChild(textEl);
+
+            g.appendChild(labelGroup);
         }
     }
-}
 
+    svg.appendChild(g);
+}
 // ✅ Delete connection by ID
 function deleteWorkflowConnection(connectionId) {
     if (currentMode !== 'edit') return;
