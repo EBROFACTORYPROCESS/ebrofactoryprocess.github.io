@@ -1526,8 +1526,8 @@
             "id": "node-0",
             "processId": "1781161866074-ccs1x0d0",
             "type": "start",
-            "x": 41,
-            "y": 54.33348846435547,
+            "x": 42.666656494140625,
+            "y": 38.50017547607422,
             "label": "Sales Forecast",
             "hidden": false
           },
@@ -1536,7 +1536,7 @@
             "processId": "1781161866074-0gtup2ma",
             "type": "sub",
             "x": 39.94441223144531,
-            "y": 202.9998779296875,
+            "y": 204.66656494140625,
             "label": "Anual Sales Forecast",
             "hidden": false
           },
@@ -2081,7 +2081,21 @@
             "hidden": false
           }
         ],
-        "connections": [],
+        "connections": [
+          {
+            "id": "conn-1788249319347-91uaz2",
+            "from": "node-0",
+            "to": "node-1",
+            "type": "arrow",
+            "label": "safdsdafasvg"
+          },
+          {
+            "id": "conn-1788249321250-2rr36d",
+            "from": "node-1",
+            "to": "node-34",
+            "type": "arrow"
+          }
+        ],
         "nodeIdCounter": 62
       }
     },
