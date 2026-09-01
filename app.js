@@ -146,6 +146,49 @@ function ensureUniqueNodeIds(workflow) {
         workflow.nodeIdCounter = (workflow.nodeIdCounter || 0) + workflow.nodes.length;
     }
 }
+function enforceSimpleNodeIds(workflow) {
+    if (!workflow || !workflow.nodes || !Array.isArray(workflow.nodes)) return;
+    const nodes = workflow.nodes;
+    const connections = workflow.connections || [];
+
+    // Check if any ID already contains a dash or is not of the form 'node-X'
+    let needsRenumber = false;
+    for (const n of nodes) {
+        if (!n.id || !/^node-\d+$/.test(n.id)) {
+            needsRenumber = true;
+            break;
+        }
+    }
+    if (!needsRenumber) return; // already simple
+
+    // Renumber all nodes
+    const idMap = {};
+    const newNodes = [];
+    let counter = 0;
+    nodes.forEach(n => {
+        const oldId = n.id;
+        const newId = 'node-' + counter++;
+        idMap[oldId] = newId;
+        n.id = newId;
+        newNodes.push(n);
+    });
+
+    // Update connections
+    const validIds = new Set(newNodes.map(n => n.id));
+    const newConnections = connections
+        .map(c => {
+            const from = idMap[c.from] || c.from;
+            const to = idMap[c.to] || c.to;
+            return { ...c, from, to };
+        })
+        .filter(c => validIds.has(c.from) && validIds.has(c.to));
+
+    workflow.nodes = newNodes;
+    workflow.connections = newConnections;
+    // Update counter to the max
+    workflow.nodeIdCounter = counter;
+}
+
 function compareSeq(a, b) {
     const strA = String(a || '0');
     const strB = String(b || '0');
