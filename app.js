@@ -2045,6 +2045,7 @@ function renderApp() {
                             <button class="workflow-btn" id="wfMarkEndBtn">🏁 Mark as End</button>
                         </div>
                         <div class="btn-group">
+                            <button class="workflow-btn" id="wfSyncNodesBtn">🔄 Sync Nodes</button>
                             <button class="workflow-btn" id="wfDeleteNodeBtn">🗑 Delete Node</button>
                             <button class="workflow-btn" id="wfToggleHideBtn">👁️ Hide Node</button>
                         </div>                        
