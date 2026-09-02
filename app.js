@@ -463,7 +463,69 @@ function showTokenSetup() {
         alert('Token cleared');
     }
 }
+function syncNodesForCurrentScenario() {
+    if (currentMode !== 'edit') {
+        alert('Please enter Edit Mode first.');
+        return;
+    }
+    const sc = getCurrentScenario();
+    if (!sc) {
+        alert('No scenario selected.');
+        return;
+    }
+    const processes = sc.processes || [];
+    if (processes.length === 0) {
+        alert('No processes in this scenario.');
+        return;
+    }
+    let nodes = sc.workflow?.nodes || [];
+    // Map existing processId -> node
+    const processNodeMap = {};
+    nodes.forEach(n => { if (n.processId) processNodeMap[n.processId] = n; });
+    const cols = 6, spacingX = 160, spacingY = 110;
+    let addedCount = 0;
+    // Determine starting index for new node IDs
+    let maxCounter = 0;
+    nodes.forEach(n => {
+        const match = n.id.match(/^node-(\d+)$/);
+        if (match) maxCounter = Math.max(maxCounter, parseInt(match[1]) + 1);
+    });
+    let counter = maxCounter || 0;
 
+    processes.forEach((p, idx) => {
+        if (!processNodeMap[p.id]) {
+            const isSub = p.seq && p.seq.includes('.');
+            const node = {
+                id: 'node-' + counter++,
+                processId: p.id,
+                type: isSub ? 'sub' : 'main',
+                x: 100 + (idx % cols) * spacingX,
+                y: 100 + Math.floor(idx / cols) * spacingY,
+                label: p.name || 'Unnamed',
+                hidden: false
+            };
+            nodes.push(node);
+            addedCount++;
+        }
+    });
+
+    if (addedCount === 0) {
+        alert('All processes already have nodes.');
+        return;
+    }
+
+    sc.workflow.nodes = nodes;
+    // Update the counter in workflow
+    if (!sc.workflow) sc.workflow = {};
+    sc.workflow.nodeIdCounter = counter;
+
+    // Save the updated data
+    saveWorkflowData(sc.workflow);
+    // Also update snapshot? saveWorkflowData already calls renderWorkflow, but we may need to save to GitHub.
+    // We'll prompt the user to save manually or auto-save.
+    alert(`✅ Added ${addedCount} nodes. Please click "Save to GitHub" to persist the changes.`);
+    renderWorkflow();
+}
 // ============================
 // 6. Snapshot Management
 // ============================
@@ -3405,7 +3467,7 @@ function bindWorkflowEvents() {
         return;
     }
     workflowEventsBound = true;
-
+    const wfSyncNodesBtn = document.getElementById('wfSyncNodesBtn');
     const wfConnectBtn = document.getElementById('wfConnectBtn');
     const wfClearArrowsBtn = document.getElementById('wfClearArrowsBtn');
     const wfClearAllBtn = document.getElementById('wfClearAllBtn');
@@ -3413,7 +3475,12 @@ function bindWorkflowEvents() {
     const wfZoomIn = document.getElementById('wfZoomIn');
     const wfZoomOut = document.getElementById('wfZoomOut');
     const wfResetView = document.getElementById('wfResetView');
-
+    
+    if (wfSyncNodesBtn) {
+        wfSyncNodesBtn.addEventListener('click', function() {
+            syncNodesForCurrentScenario();
+        });
+    }
     if (wfConnectBtn) {
         wfConnectBtn.addEventListener('click', function() {
             // Toggle connection mode
