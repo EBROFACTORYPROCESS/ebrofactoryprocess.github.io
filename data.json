@@ -3533,7 +3533,32 @@
       ],
       "workflow": {
         "nodes": [],
-        "connections": []
+        "connections": [
+          {
+            "id": "conn-1788355108993-uzl3lp",
+            "from": "node-1",
+            "to": "node-0",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788355110410-zlts88",
+            "from": "node-2",
+            "to": "node-0",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788355111859-gypqha",
+            "from": "node-3",
+            "to": "node-0",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788355142292-rbx0lc",
+            "from": "node-4",
+            "to": "node-0",
+            "type": "arrow"
+          }
+        ]
       }
     }
   ],
