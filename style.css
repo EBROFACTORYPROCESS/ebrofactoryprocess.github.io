@@ -82,7 +82,23 @@
         .list-tag { background: #e2e8f0; padding: 0.2rem 0.6rem; border-radius: 20px; display: inline-flex; align-items: center; gap: 0.5rem; margin: 0.2rem; }
         .master-section { border-top: 1px solid #e2e8f0; margin-top: 1rem; padding-top: 1rem; }
         .add-item { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
-
+       .form-row {
+           display: flex;
+           flex-wrap: wrap;
+           gap: 1rem;
+           align-items: flex-start;
+       }
+       
+       .form-row .field-group {
+           flex: 1 1 200px;
+           min-width: 150px;
+       }
+       
+       /* Ensure sequence and name fields have enough space */
+       #modalSeq, #modalName {
+           width: 100%;
+           box-sizing: border-box;
+       }
 /* Pulse animation for save button */
 @keyframes pulse {
     0% { transform: scale(1); }
