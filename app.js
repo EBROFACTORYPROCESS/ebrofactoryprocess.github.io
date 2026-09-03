@@ -423,6 +423,61 @@ function sortWorkflowNodes(workflow) {
         return (a.id || '').localeCompare(b.id || '');
     });
 }
+function syncWorkflowNodesWithProcesses(scenario) {
+    if (!scenario || !scenario.processes || !scenario.workflow) return;
+    const processes = scenario.processes;
+    const nodes = scenario.workflow.nodes || [];
+    const connections = scenario.workflow.connections || [];
+
+    // Map existing processId → node
+    const processNodeMap = {};
+    nodes.forEach(n => { if (n.processId) processNodeMap[n.processId] = n; });
+
+    // Determine max counter
+    let maxCounter = 0;
+    nodes.forEach(n => {
+        const match = n.id.match(/node-(\d+)/);
+        if (match) maxCounter = Math.max(maxCounter, parseInt(match[1]) + 1);
+    });
+    let counter = maxCounter;
+
+    // Add missing nodes for processes that don't have one
+    const cols = 6, spacingX = 160, spacingY = 110;
+    let idx = 0;
+    const newNodes = [...nodes];
+    processes.forEach(p => {
+        if (!processNodeMap[p.id]) {
+            const isSub = p.seq && p.seq.includes('.');
+            const node = {
+                id: 'node-' + counter++,
+                processId: p.id,
+                type: isSub ? 'sub' : 'main',
+                x: 100 + (idx % cols) * spacingX,
+                y: 100 + Math.floor(idx / cols) * spacingY,
+                label: p.name || 'Unnamed',
+                hidden: false
+            };
+            newNodes.push(node);
+            idx++;
+        }
+    });
+
+    // Remove nodes that no longer have a process
+    const processIds = new Set(processes.map(p => p.id));
+    const filteredNodes = newNodes.filter(n => {
+        if (!n.processId) return true; // keep special nodes (start, end, decision, parallel)
+        return processIds.has(n.processId);
+    });
+
+    // Update scenario
+    scenario.workflow.nodes = filteredNodes;
+    scenario.workflow.nodeIdCounter = counter;
+
+    // Clean up connections that reference deleted nodes
+    const validNodeIds = new Set(filteredNodes.map(n => n.id));
+    scenario.workflow.connections = (scenario.workflow.connections || [])
+        .filter(c => validNodeIds.has(c.from) && validNodeIds.has(c.to));
+}
 // ============================
 // 5. Token Management
 // ============================
@@ -1888,6 +1943,7 @@ function handleProcessImport(e) {
             if (sc) {
                 sc.processes = processes;
                 sc.processes = sortProcesses(sc.processes);
+                syncWorkflowNodesWithProcesses(sc); 
                 renderCurrentView();
             }
             closeImportPreview();
