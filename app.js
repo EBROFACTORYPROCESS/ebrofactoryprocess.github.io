@@ -475,12 +475,31 @@ function syncWorkflowNodesWithProcesses(scenario) {
     });
     let counter = maxCounter;
 
+    // Get set of valid process IDs
+    const processIds = new Set(processes.map(p => p.id));
+
+    // ===== NEW: Remove orphan nodes (nodes whose processId no longer exists) =====
+    // Keep special nodes (start, end, decision, parallel) even if they have no processId
+    const specialTypes = new Set(['start', 'end', 'decision', 'parallel']);
+    const filteredNodes = nodes.filter(n => {
+        // If node has no processId, keep it ONLY if it's a special type
+        if (!n.processId) {
+            return specialTypes.has(n.type);
+        }
+        // If node has a processId, keep it only if that process still exists
+        return processIds.has(n.processId);
+    });
+
+    // Build map of kept nodes
+    const keptProcessNodeMap = {};
+    filteredNodes.forEach(n => { if (n.processId) keptProcessNodeMap[n.processId] = n; });
+
     // Add missing nodes for processes that don't have one
     const cols = 6, spacingX = 160, spacingY = 110;
     let idx = 0;
-    const newNodes = [...nodes];
+    const newNodes = [...filteredNodes];
     processes.forEach(p => {
-        if (!processNodeMap[p.id]) {
+        if (!keptProcessNodeMap[p.id]) {
             const isSub = p.seq && p.seq.includes('.');
             const node = {
                 id: 'node-' + counter++,
@@ -496,21 +515,16 @@ function syncWorkflowNodesWithProcesses(scenario) {
         }
     });
 
-    // Remove nodes that no longer have a process
-    const processIds = new Set(processes.map(p => p.id));
-    const filteredNodes = newNodes.filter(n => {
-        if (!n.processId) return true; // keep special nodes (start, end, decision, parallel)
-        return processIds.has(n.processId);
-    });
-
     // Update scenario
-    scenario.workflow.nodes = filteredNodes;
+    scenario.workflow.nodes = newNodes;
     scenario.workflow.nodeIdCounter = counter;
 
     // Clean up connections that reference deleted nodes
-    const validNodeIds = new Set(filteredNodes.map(n => n.id));
+    const validNodeIds = new Set(newNodes.map(n => n.id));
     scenario.workflow.connections = (scenario.workflow.connections || [])
         .filter(c => validNodeIds.has(c.from) && validNodeIds.has(c.to));
+
+    return newNodes.length; // return count for logging
 }
 // ============================
 // 5. Token Management
