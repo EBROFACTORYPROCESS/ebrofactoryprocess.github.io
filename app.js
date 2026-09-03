@@ -489,7 +489,7 @@ function syncWorkflowNodesWithProcesses(scenario) {
         // If node has a processId, keep it only if that process still exists
         return processIds.has(n.processId);
     });
-
+     const removedCount = originalCount - filteredNodes.length;
     // Build map of kept nodes
     const keptProcessNodeMap = {};
     filteredNodes.forEach(n => { if (n.processId) keptProcessNodeMap[n.processId] = n; });
@@ -525,6 +525,7 @@ function syncWorkflowNodesWithProcesses(scenario) {
         .filter(c => validNodeIds.has(c.from) && validNodeIds.has(c.to));
 
     return newNodes.length; // return count for logging
+    return removedCount;
 }
 // ============================
 // 5. Token Management
@@ -2213,6 +2214,7 @@ function renderApp() {
                         </div>
                         <div class="btn-group">
                             <button class="workflow-btn" id="wfSyncNodesBtn">🔄 Sync Nodes</button>
+                            <button class="icon-btn" id="cleanupOrphanNodesBtn">🧹 Cleanup Nodes</button>
                             <button class="workflow-btn" id="wfDeleteNodeBtn">🗑 Delete Node</button>
                             <button class="workflow-btn" id="wfToggleHideBtn">👁️ Hide Node</button>
                         </div>                        
@@ -2300,7 +2302,18 @@ function bindEvents() {
         collapseState.clear();
         renderCurrentView();
     };
-
+    document.getElementById('cleanupOrphanNodesBtn').addEventListener('click', function() {
+        if (currentMode !== 'edit') return;
+        const sc = getCurrentScenario();
+        if (!sc) return;
+        const removed = syncWorkflowNodesWithProcesses(sc);
+        if (removed > 0) {
+            renderCurrentView();
+            alert(`✅ Removed orphan nodes. ${removed} nodes kept.`);
+        } else {
+            alert('ℹ️ No orphan nodes found.');
+        }
+    });
     document.getElementById('newScenarioBtn').onclick = () => {
         if (currentMode !== 'edit') return;
         let name = prompt('Scenario name:', 'New');
