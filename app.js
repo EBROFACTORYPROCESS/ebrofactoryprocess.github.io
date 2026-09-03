@@ -85,14 +85,13 @@ function generateNodeDiff(oldScenarios, newScenarios) {
     newScenarios.forEach(newSc => {
         const oldSc = oldMap[newSc.id];
         if (!oldSc) {
-            // Entire scenario is new – send the whole thing
             diff[newSc.id] = { _full: true, data: newSc };
             return;
         }
 
         const scenarioDiff = {};
 
-        // ----- Compare processes -----
+        // ----- Compare processes (unchanged) -----
         const oldProcesses = oldSc.processes || [];
         const newProcesses = newSc.processes || [];
 
@@ -103,34 +102,27 @@ function generateNodeDiff(oldScenarios, newScenarios) {
         newProcesses.forEach(p => { if (p.id) newProcMap[p.id] = p; });
 
         const procChanges = {};
-
-        // Check for added/modified processes
         for (const id in newProcMap) {
             const oldProc = oldProcMap[id];
             const newProc = newProcMap[id];
             if (!oldProc) {
-                // New process
                 procChanges[id] = { _added: true, proc: newProc };
                 continue;
             }
-            // Check if any field changed – compare JSON strings
             if (JSON.stringify(oldProc) !== JSON.stringify(newProc)) {
                 procChanges[id] = { _updated: true, proc: newProc };
             }
         }
-
-        // Check for deleted processes (in old but not in new)
         for (const id in oldProcMap) {
             if (!newProcMap[id]) {
                 procChanges[id] = { _deleted: true };
             }
         }
-
         if (Object.keys(procChanges).length > 0) {
             scenarioDiff.processes = procChanges;
         }
 
-        // ----- Compare workflow nodes (existing logic) -----
+        // ----- Compare workflow nodes (FIXED: detect additions, updates, deletions) -----
         const newNodes = newSc.workflow?.nodes || [];
         const oldNodes = oldSc.workflow?.nodes || [];
 
@@ -141,19 +133,35 @@ function generateNodeDiff(oldScenarios, newScenarios) {
         newNodes.forEach(n => { if (n.id) newNodeMap[n.id] = n; });
 
         const nodeChanges = {};
+
+        // Check for updated or added nodes
         for (const id in newNodeMap) {
             const oldNode = oldNodeMap[id];
             const newNode = newNodeMap[id];
-            if (!oldNode) continue;
-
+            if (!oldNode) {
+                // Node is NEW – add it
+                nodeChanges[id] = { _added: true, node: newNode };
+                continue;
+            }
+            // Node exists in both – check for changes
             const changes = {};
             if (newNode.x !== oldNode.x) changes.x = newNode.x;
             if (newNode.y !== oldNode.y) changes.y = newNode.y;
             if (newNode.hidden !== oldNode.hidden) changes.hidden = newNode.hidden;
             if (newNode.type !== oldNode.type) changes.type = newNode.type;
+            if (newNode.label !== oldNode.label) changes.label = newNode.label;
+            // Check other important fields
+            if (newNode.processId !== oldNode.processId) changes.processId = newNode.processId;
 
             if (Object.keys(changes).length > 0) {
                 nodeChanges[id] = changes;
+            }
+        }
+
+        // Check for DELETED nodes (in old but not in new)
+        for (const id in oldNodeMap) {
+            if (!newNodeMap[id]) {
+                nodeChanges[id] = { _deleted: true };
             }
         }
 
@@ -161,7 +169,7 @@ function generateNodeDiff(oldScenarios, newScenarios) {
             scenarioDiff.nodes = nodeChanges;
         }
 
-        // ----- Compare workflow connections (existing logic) -----
+        // ----- Compare workflow connections (unchanged) -----
         const newConnections = newSc.workflow?.connections || [];
         const oldConnections = oldSc.workflow?.connections || [];
 
@@ -193,7 +201,6 @@ function generateNodeDiff(oldScenarios, newScenarios) {
                 connChanges[id] = { _deleted: true };
             }
         }
-
         if (Object.keys(connChanges).length > 0) {
             scenarioDiff.connections = connChanges;
         }
