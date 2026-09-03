@@ -1991,7 +1991,9 @@ function handleProcessImport(e) {
             if (sc) {
                 sc.processes = processes;
                 sc.processes = sortProcesses(sc.processes);
-                syncWorkflowNodesWithProcesses(sc); 
+                // ===== SYNC: Remove orphan nodes and add missing ones =====
+                const nodeCount = syncWorkflowNodesWithProcesses(sc);
+                console.log(`✅ Synced workflow: ${nodeCount} nodes after import`);
                 renderCurrentView();
             }
             closeImportPreview();
@@ -2000,7 +2002,6 @@ function handleProcessImport(e) {
     reader.readAsText(file);
     e.target.value = '';
 }
-
 function showImportPreview(title, summary, headers, rows, cb) {
     let modal = document.getElementById('importPreviewModal');
     document.getElementById('previewSummary').innerText = summary;
