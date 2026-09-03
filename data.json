@@ -92,90 +92,23 @@
       "name": "Manufacturing",
       "processes": [
         {
-          "id": "1781161866074-ccs1x0d0",
+          "id": "1788430168735-wmr6funs",
           "seq": "10",
           "name": "Sales Forecast",
-          "description": "Sales forecast agreed in S&OP meeting",
-          "raci": {
-            "r": [
-              "Sales"
-            ],
-            "a": [],
-            "c": [],
-            "i": []
-          },
-          "businessStatus": "Completed",
-          "system": {
-            "name": "To Be Determined",
-            "status": "Offline",
-            "responsible": ""
-          },
-          "businessDoc": "",
-          "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
-        },
-        {
-          "id": "1781161866074-0gtup2ma",
-          "seq": "10.1",
-          "name": "Anual Sales Forecast",
-          "description": "Maintain anual sales forecast agreed in S&OP meeting",
-          "raci": {
-            "r": [
-              "Sales"
-            ],
-            "a": [],
-            "c": [],
-            "i": []
-          },
-          "businessStatus": "Completed",
-          "system": {
-            "name": "To Be Determined",
-            "status": "Offline",
-            "responsible": ""
-          },
-          "businessDoc": "",
-          "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
-        },
-        {
-          "id": "1781161866074-dr66nph6",
-          "seq": "10.2",
-          "name": "Validate M+3 Sales plan",
-          "description": "Validate & consolidate M+3 Sales plan",
-          "raci": {
-            "r": [
-              "Sales"
-            ],
-            "a": [],
-            "c": [],
-            "i": []
-          },
-          "businessStatus": "Completed",
-          "system": {
-            "name": "To Be Determined",
-            "status": "Offline",
-            "responsible": ""
-          },
-          "businessDoc": "",
-          "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
-        },
-        {
-          "id": "1781161866074-rtnv4m3f",
-          "seq": "10.3",
-          "name": "Create M+3 Subcontract STO",
-          "description": "Create M+3 subcontract STO",
+          "description": "Multi-horizon sales forecasting process that translates market demand into actionable factory planning signals, directly influencing capacity scheduling, material procurement, and subcontract order placement.",
           "raci": {
             "r": [
               "Sales"
             ],
             "a": [
-              "Production Planning"
+              "Sales"
             ],
             "c": [
               "Material Planning"
             ],
-            "i": []
+            "i": [
+              "Production Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -185,20 +118,26 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-uqioisf3",
-          "seq": "10.4",
-          "name": "Maintain M+3 Subcontract STO",
-          "description": "Maintain M+3 Subcontract STO",
+          "id": "1788430168735-v8i8b0jf",
+          "seq": "10.1",
+          "name": "Anual Sales Forecast",
+          "description": "Establishes a high-level 12-month sales projection, serving as the strategic planning baseline for factory capacity reservations, workforce planning, and long-lead material sourcing for the upcoming fiscal year.",
           "raci": {
             "r": [
               "Sales"
             ],
-            "a": [],
-            "c": [],
-            "i": []
+            "a": [
+              "Sales"
+            ],
+            "c": [
+              "Material Planning"
+            ],
+            "i": [
+              "Production Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -208,20 +147,113 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-ylnldwbk",
+          "id": "1788430168735-jm9ij3rd",
+          "seq": "10.2",
+          "name": "M+3 Sales plan",
+          "description": "Generates a rolling 4-month (M+3) sales forecast at a detailed product-family level, providing the tactical demand signal that drives the subsequent subcontract order cycle and raw material purchasing.",
+          "raci": {
+            "r": [
+              "Sales"
+            ],
+            "a": [
+              "Sales"
+            ],
+            "c": [
+              "Material Planning"
+            ],
+            "i": [
+              "Production Planning"
+            ]
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788430168736-utgtwbj9",
+          "seq": "10.3",
+          "name": "Create M+3 Subcontract STO",
+          "description": "Create subcontract Stock Transfer Orders (STO) from the OEM to the factory based on the finalized M+3 sales plan, formally triggering the factory's production and material allocation for the incoming 4th-month window.",
+          "raci": {
+            "r": [
+              "Sales"
+            ],
+            "a": [
+              "Sales"
+            ],
+            "c": [
+              "Material Planning"
+            ],
+            "i": [
+              "Production Planning"
+            ]
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788430168736-5bx8jess",
+          "seq": "10.4",
+          "name": "Maintain M+3 Subcontract STO",
+          "description": "Adjusts existing subcontract STO quantities to reflect real-time sales performance and current on-hand stock levels, aligning open orders with actual market consumption and preventing over/under-production.",
+          "raci": {
+            "r": [
+              "Sales"
+            ],
+            "a": [
+              "Sales"
+            ],
+            "c": [
+              "Material Planning"
+            ],
+            "i": [
+              "Production Planning"
+            ]
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788430168736-ipa9gj5g",
           "seq": "20",
           "name": "Material Requirement Planning",
-          "description": "Procurement of Production parts to support the M+3 production plan",
+          "description": "Systematic planning engine that nets production schedules and safety-stock policies against on-hand inventories, generating procurement proposals to guarantee production continuity and scrap-replenishment supply.",
           "raci": {
             "r": [
               "Material Planning"
             ],
-            "a": [],
-            "c": [],
-            "i": []
+            "a": [
+              "Material Planning"
+            ],
+            "c": [
+              "Production Execution"
+            ],
+            "i": [
+              "Production Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -231,20 +263,26 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/:b:/s/BUSINESSPROCESSCONTROL/IQB_NI9omgquQp368CDytAQfAbyUwZh6gBlP-x4FPGOOma8?email=ybai%40ebrofactory.com&e=re6z81",
           "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/PP/MD02%20MRP%20Operation%20and%20Viewing%20Operation.docx?d=wf18516ea22764ee286a7559f2ac46d6c&csf=1&web=1&e=uGT0Zl",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-xo9ftqqz",
+          "id": "1788430168736-d6bo77n3",
           "seq": "20.1",
-          "name": "Purchase Requirement Creation",
-          "description": "Purchase requirement of parts to ensure the material availability to cover production demands taking into consideration the inventory  stock in transit  safety stock and production consumption.",
+          "name": "Purchase Requirement Generation",
+          "description": "Triggers the MRP system to automatically calculate and propose purchase requisitions (PRs) based on net demand from production orders, safety-stock replenishment needs, and existing open purchase commitments.",
           "raci": {
             "r": [
               "Material Planning"
             ],
-            "a": [],
-            "c": [],
-            "i": []
+            "a": [
+              "Material Planning"
+            ],
+            "c": [
+              "Production Execution"
+            ],
+            "i": [
+              "Production Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -254,20 +292,26 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/:b:/s/BUSINESSPROCESSCONTROL/IQB_NI9omgquQp368CDytAQfAbyUwZh6gBlP-x4FPGOOma8?email=ybai%40ebrofactory.com&e=re6z81",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-2ny3mo1h",
+          "id": "1788430168736-cmobru9i",
           "seq": "20.2",
           "name": "Purchase Requirement Maintenance",
-          "description": "Modify the generated Purchase requirement to cover out of mrp demands.",
+          "description": "Enables material planners to manually review, adjust, or create purchase requisitions to capture off-system demands (e.g., engineer change orders, one-off experimental runs, or urgent demand requests) not covered by the standard MRP netting logic.",
           "raci": {
             "r": [
               "Material Planning"
             ],
-            "a": [],
-            "c": [],
-            "i": []
+            "a": [
+              "Material Planning"
+            ],
+            "c": [
+              "Production Execution"
+            ],
+            "i": [
+              "Production Planning"
+            ]
           },
           "businessStatus": "In Progress",
           "system": {
@@ -277,19 +321,23 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/:b:/s/BUSINESSPROCESSCONTROL/IQB_NI9omgquQp368CDytAQfAbyUwZh6gBlP-x4FPGOOma8?email=ybai%40ebrofactory.com&e=re6z81",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-19ispykb",
+          "id": "1788430168736-dr383iz8",
           "seq": "30",
           "name": "Purchase Execution",
-          "description": "From purchase requirement to Purchase Order submit to supplier",
+          "description": "End-to-end management of procurement workflows, from requisition conversion to supplier settlement, ensuring timely material availability at optimized cost and full trade compliance.",
           "raci": {
             "r": [
               "Purchase"
             ],
-            "a": [],
-            "c": [],
+            "a": [
+              "Purchase"
+            ],
+            "c": [
+              "Material Planning"
+            ],
             "i": []
           },
           "businessStatus": "In Progress",
@@ -300,19 +348,23 @@
           },
           "businessDoc": "",
           "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/MM/Local%20Purchasing%20Order%20PO%20Maintenance.docx?d=w1267b5edf7ad457eb16e2675c8f89658&csf=1&web=1&e=JzqkcF",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-3m91iyan",
+          "id": "1788430168736-yjo9m713",
           "seq": "30.1",
           "name": "PR to PO Creation",
-          "description": "Convert All Purchase Requirement to Purchase order agains supplier",
+          "description": "Converts purchase requisitions into purchase orders by performing source determination, price condition retrieval, and lot-size rounding (upwards to vendor-specified order multiples), ensuring full alignment with production schedules and procurement policies.",
           "raci": {
             "r": [
               "Material Planning"
             ],
-            "a": [],
-            "c": [],
+            "a": [
+              "Purchase"
+            ],
+            "c": [
+              "Material Planning"
+            ],
             "i": []
           },
           "businessStatus": "Not Started",
@@ -323,18 +375,20 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-183enc0h",
+          "id": "1788430168736-4pxunnf4",
           "seq": "30.2",
           "name": "Consumption PO Creation",
-          "description": "Create PO for consumption materials to support the production.",
+          "description": "Generates purchase orders for non-stock / consumable materials (e.g., MRO supplies, indirect goods) based on ad-hoc user requests or predefined consumption triggers, ensuring uninterrupted support for daily production and maintenance activities",
           "raci": {
             "r": [
               "Material Planning"
             ],
-            "a": [],
+            "a": [
+              "Purchase"
+            ],
             "c": [],
             "i": []
           },
@@ -346,19 +400,23 @@
           },
           "businessDoc": "",
           "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/MM/CostCenter%20Consumption.docx?d=w92cb1ace39d64a70b55db1e6137e7af0&csf=1&web=1&e=3knyO3",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-h1s2acz7",
+          "id": "1788430168736-v4y6oooq",
           "seq": "30.3",
           "name": "PO complaince validation",
-          "description": "Purchase order trade and complaincen validation",
+          "description": "Performs mandatory compliance and trade-rule checks on purchase orders prior to approval, mitigating legal, regulatory, and reputational risks.",
           "raci": {
             "r": [
               "Trade & Complaince"
             ],
-            "a": [],
-            "c": [],
+            "a": [
+              "Purchase"
+            ],
+            "c": [
+              "Material Planning"
+            ],
             "i": []
           },
           "businessStatus": "Not Started",
@@ -369,18 +427,20 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-qldukury",
+          "id": "1788430168736-hcb7q7yk",
           "seq": "30.4",
           "name": "PO Approval",
-          "description": "Approval of Purcahse orer release",
+          "description": "Routes purchase orders through the designated authorization workflow for PO release approval.",
           "raci": {
             "r": [
               "Material Planning"
             ],
-            "a": [],
+            "a": [
+              "Purchase"
+            ],
             "c": [],
             "i": []
           },
@@ -392,20 +452,22 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-venywrtc",
+          "id": "1788430168736-sv6ownl2",
           "seq": "30.5",
           "name": "PO Execution",
-          "description": "Execution of released PO to supplier",
+          "description": "Formally transmits approved and released purchase orders to suppliers via the designated channel (e.g., EDI, portal, or email), confirms order acknowledgement, and updates the system with confirmed delivery dates.",
           "raci": {
             "r": [
               "Purchase"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -415,20 +477,22 @@
           },
           "businessDoc": "",
           "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/MM/Local%20Purchasing%20Order%20PO%20Maintenance.docx?d=w1267b5edf7ad457eb16e2675c8f89658&csf=1&web=1&e=6cEICd",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-ychqnhqu",
+          "id": "1788430168736-5pzisghi",
           "seq": "30.6",
           "name": "Invoice Payment",
-          "description": "Payment of Purchase Invoice",
+          "description": "Processes supplier invoices against received purchase orders and goods receipts (three-way matching), resolves discrepancies, and executes timely payment in accordance with contractual terms.",
           "raci": {
             "r": [
-              "Trade & Complaince"
+              "Finance"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -438,20 +502,22 @@
           },
           "businessDoc": "",
           "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/FICO/Procurement%20Settlement%20Process.pdf?csf=1&web=1&e=dw8KEj",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-jidhcv90",
+          "id": "1788430168736-usij6k51",
           "seq": "40",
           "name": "Inbound Delivery Management",
-          "description": "Monitoring shipment status from supplier dispach until goods arrival to the factory canopy.",
+          "description": "End-to-end monitoring and coordination of incoming shipments from supplier dispatch to factory receipt, ensuring full visibility of transit status, regulatory compliance, and timely handover to production warehouses.",
           "raci": {
             "r": [
               "Inbound Logistic"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -461,20 +527,22 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-qeb4gql9",
+          "id": "1788430168736-66hsdzua",
           "seq": "40.1",
           "name": "Inbound Delivery Note Tracking",
-          "description": "Tracking of status, packing list and all key indicators related to inbound delivery like Providor dispach date, shipment tracking number, estimated arrival date, custom clearance status, goods reception date.",
+          "description": "Tracks and maintains all inbound delivery key performance indicators, including supplier dispatch date, shipment tracking number, estimated time of arrival (ETA), customs clearance status, and actual goods receipt date, providing real-time visibility to all downstream stakeholders.",
           "raci": {
             "r": [
               "Inbound Logistic"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -484,20 +552,22 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-mjpctt7i",
+          "id": "1788430168736-hixrd7rd",
           "seq": "40.2",
           "name": "Inb DN Custom Cleaning",
-          "description": "Custom Clearance procedure for EU Import goods",
+          "description": "Executes all mandatory customs declaration and clearance procedures for EU-imported goods, ensuring full compliance with trade regulations, tariff classifications, and documentation requirements to avoid border delays and regulatory penalties.",
           "raci": {
             "r": [
               "Trade & Complaince"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -507,20 +577,22 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-4ssftnw0",
+          "id": "1788430168736-mdgsxpob",
           "seq": "40.3",
           "name": "Goods Receive DJV",
-          "description": "Goods Receive posting in System as reception of goods after custom clearance",
+          "description": "Performs system posting of goods receipt (GR) against the corresponding purchase order and inbound delivery, updating inventory records and financial postings immediately upon successful customs clearance and physical reception in container yard.",
           "raci": {
             "r": [
               "Inbound Logistic"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -530,19 +602,21 @@
           },
           "businessDoc": "",
           "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/SD/Assembling%20Service%20GR%20for%20DJV.docx?d=wf3ec5a8e96594e8688a96a32b049693e&csf=1&web=1&e=HzSsqy",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-p7mbj38j",
+          "id": "1788430168736-m2nf6k03",
           "seq": "40.4",
           "name": "Factory supply transport",
-          "description": "Plan and track Factory goods supply from warehouse",
+          "description": "Plans, schedules, and tracks internal material movements from designated receiving points (Montcada warehouse, Kuehne+Nagel, or the Container Yard) to the respective factory canopy, applying routing rules based on material type to ensure just-in-time (JIT) availability for production operations.",
           "raci": {
             "r": [
               "Material Planning"
             ],
             "a": [],
-            "c": [],
+            "c": [
+              "Material Handling"
+            ],
             "i": []
           },
           "businessStatus": "Completed",
@@ -553,20 +627,22 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-f014ecwp",
+          "id": "1788430168736-6n8idrwu",
           "seq": "50",
           "name": "Factory Goods Reception",
-          "description": "Factory goods reception procedure from canopy to storage unit",
+          "description": "End-to-end physical and system processing of incoming materials from factory canopy receipt to buffer warehouse storage, encompassing container inspection, pallet devaning, repackaging, handling unit validation, and put-away, ensuring accurate inventory records and storage-ready condition for production.",
           "raci": {
             "r": [
               "Material Handling"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -576,20 +652,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-pw6wt8gg",
+          "id": "1788430168736-lp2wlufe",
           "seq": "50.1",
           "name": "Container Reception",
-          "description": "Check container number and condition check, reception confirmation",
+          "description": "Verifies the incoming container number against the shipping documentation, conducts a visual condition inspection for external damage or seal integrity, and confirms physical reception in the system to officially log arrival.",
           "raci": {
             "r": [
               "Material Handling"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -599,20 +677,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-tqm2lpwp",
+          "id": "1788430168736-tc4jhas5",
           "seq": "50.2",
           "name": "Contianer Devaning",
-          "description": "Take out pallte from container, validate handling unit number  and move to processing area.",
+          "description": "Systematically unloads pallets from the container, validates each handling unit number (HU) against the inbound delivery, and physically transfers the pallets to the designated processing area for subsequent handling.",
           "raci": {
             "r": [
               "Material Handling"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -622,20 +702,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-ezvsmhsb",
+          "id": "1788430168736-bfcwjeq5",
           "seq": "50.3",
           "name": "Mix Pallet processing",
-          "description": "Split mix pallet to serval unmix pallets and reprint the label",
+          "description": "Segregates mixed-material pallets into multiple single-material pallets, ensuring correct quantity splits, and prints updated handling unit labels to reflect the newly created unit composition.",
           "raci": {
             "r": [
               "Material Handling"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -645,20 +727,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-eh1x1u78",
+          "id": "1788430168736-2lxluvkg",
           "seq": "50.4",
-          "name": "Check Handling Unit",
-          "description": "Check if goods can store with carton box or need to repack.",
+          "name": "Handling Unit asessment",
+          "description": "Assesses each handling unit to determine whether the goods can be stored in their original carton packaging or require repackaging into appropriate storage containers based on material fragility, size, or stacking requirements.",
           "raci": {
             "r": [
               "Material Handling"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -668,20 +752,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-od5je90c",
+          "id": "1788430168736-jik7qumh",
           "seq": "50.5",
-          "name": "Decanting Handling Unit",
-          "description": "Move goods to corresponding Handling unit and reprint the label.",
+          "name": "Decanting /  Repackaging",
+          "description": "Transfers goods from original handling units into the appropriate storage handling units (cartons, or bins) as determined by the inspection, and prints new labels to reflect the updated packaging configuration.",
           "raci": {
             "r": [
               "Material Handling"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -691,20 +777,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-wmqiq029",
+          "id": "1788430168736-qbkui30i",
           "seq": "50.6",
-          "name": "Put Away Handling Unit",
-          "description": "Place processed handling unit to buffer warehouse.",
+          "name": "Put-Away to Buffer Warehouse",
+          "description": "Moves processed and finalized handling units from the processing area to the designated buffer warehouse storage locations, updating the system with exact bin/rack assignments to enable real-time inventory visibility and downstream picking.",
           "raci": {
             "r": [
               "Material Handling"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -714,20 +802,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-ylgz713e",
+          "id": "1788430168736-d6swxw82",
           "seq": "60",
           "name": "Intralogistic Replenishment",
-          "description": "Intra factory material replenishment in all storage areas, from buffer warehouse to edgeline.",
+          "description": "Systematic intra-factory material replenishment across all storage tiers�from buffer warehouse to kitting areas, SPS stations, and production edgeline�ensuring continuous material availability at the point of use through demand-driven triggers and predefined supply routes.",
           "raci": {
             "r": [
               "Material Handling"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -737,20 +827,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-9bqb366k",
+          "id": "1788430168736-mypc3h6i",
           "seq": "60.1",
           "name": "Kitting Area replenishment",
-          "description": "Transfer handling unit of goods from Bulk warehouse to Kitting area triggered by stock level.",
+          "description": "Transfers handling units of bulk materials from the buffer warehouse to the kitting area,  triggered by minimum stock level thresholds, to ensure uninterrupted assembly kit preparation for production orders.",
           "raci": {
             "r": [
               "Material Handling"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -760,20 +852,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-ya5fyt4v",
+          "id": "1788430168736-tska9ltw",
           "seq": "60.2",
           "name": "SPS Area replenishment",
-          "description": "Transfer handling unit of goods from Bulk warehouse to SPS area triggered by stock level.",
+          "description": "Transfers handling units of bulk materials from the buffer warehouse to the SPS areas,  triggered by minimum stock level thresholds, to maintain continuous feeding of sequenced parts onto AGV racks, which supply the production line in a just-in-sequence flow.",
           "raci": {
             "r": [
               "Material Handling"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -783,20 +877,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-dd1l1q0b",
+          "id": "1788430168736-q4y1mrxv",
           "seq": "60.3",
           "name": "Edgeline Repelnishment",
-          "description": "Transfer handling unit of goods from Kitting, SPS or Bulk warehouse to Edge line according to defined supply path for each material.",
+          "description": "Transfers handling units of materials from the kitting area, SPS area, or directly from the buffer warehouse to the production edgeline, following a predefined supply path per material (based on consumption patterns, material type, and line-side storage constraints), ensuring just-in-time availability for assembly operations.",
           "raci": {
             "r": [
               "Material Handling"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -806,13 +902,13 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-7370a3rs",
+          "id": "1788430168736-gtx78q7y",
           "seq": "70",
           "name": "Production Planning",
-          "description": "Planning of model and quantity of vehicles to be produced in each production line",
+          "description": "Hierarchical production planning process that translates sales demand and firm subcontract orders into a feasible production schedule, from long-term capacity planning through weekly validation to daily execution monitoring, ensuring optimal line utilization and on-time vehicle delivery.",
           "raci": {
             "r": [
               "Production Planning"
@@ -829,19 +925,21 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
           "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP027-MPS-Batch%20management%20data%20for%20MES.pdf?csf=1&web=1&e=HgEvqm",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-uh0vy6ju",
+          "id": "1788430168736-m13181ui",
           "seq": "70.1",
           "name": "M+3 Production Planning",
-          "description": "Rolling sales planning for current month + next 3 month.",
+          "description": "Establishes a rolling production plan covering the current month plus the next three months (M+3), based on the latest sales forecast and confirmed subcontract orders, providing the medium-term view for capacity reservations, workforce planning, and material procurement alignment.",
           "raci": {
             "r": [
               "Sales"
             ],
             "a": [],
-            "c": [],
+            "c": [
+              "Production Planning"
+            ],
             "i": []
           },
           "businessStatus": "Completed",
@@ -852,20 +950,22 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-057dxciv",
+          "id": "1788430168736-eym8axor",
           "seq": "70.2",
           "name": "Monthlyh production plannig",
-          "description": "Rolling monthly planning acording to releaed Subcontract order",
+          "description": "Converts the M+3 production plan into a firm monthly production schedule, aligned with released and confirmed subcontract orders (STOs) from the OEM, defining the precise model mix and quantities to be produced in each production line for the upcoming month.",
           "raci": {
             "r": [
               "Production Planning"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Sales"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -878,17 +978,19 @@
           "notes": ""
         },
         {
-          "id": "1781161866074-urq02d7v",
+          "id": "1788430168736-jtzc8t3v",
           "seq": "70.3",
           "name": "Weekly production validation",
-          "description": "Validate, freeze and release weekly production plan",
+          "description": "Validates, freezes, and formally releases a rolling two-week production sequence, incorporating real-time adjustments for material availability, line capacity constraints, and urgent order changes, ensuring a stable and executable schedule for the upcoming two production weeks",
           "raci": {
             "r": [
               "Production Planning"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Sales"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -898,20 +1000,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
           "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP027-MPS-Batch%20management%20data%20for%20MES.pdf?csf=1&web=1&e=HgEvqm",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-mceygk7n",
+          "id": "1788430168736-7kwxjjb4",
           "seq": "70.4",
           "name": "Daily production monitoring",
-          "description": "Monitor daily production progress, adjust planning forecast base on real production result",
+          "description": "Monitors daily production progress against the planned schedule, tracking key performance indicators (e.g., units produced,  line stoppages), and dynamically adjusts the forecast and sequencing for subsequent days based on actual production results and emerging constraints.",
           "raci": {
             "r": [
               "Production Planning"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Sales"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -921,20 +1025,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
           "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP027-MPS-Batch%20management%20data%20for%20MES.pdf?csf=1&web=1&e=HgEvqm",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-015hc4l6",
+          "id": "1788430168736-pdv1akhf",
           "seq": "80",
           "name": "Body Shop Production",
-          "description": "Production Execution of Body In White generated by CKP production order",
+          "description": "Execution of Body-in-White (BIW) production based on CKD production orders, encompassing MES order generation, quality verification, and handover to the WBS (White Body Storage) system for sequenced supply to Paint Shop operations.",
           "raci": {
             "r": [
               "Production Execution"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Production Planning"
+            ]
           },
           "businessStatus": "In Progress",
           "system": {
@@ -944,20 +1050,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-8srcfxg5",
+          "id": "1788430168736-kiv24c0l",
           "seq": "80.1",
           "name": "Body In White Production",
-          "description": "When MES receive CKP production vehicle planning, generate BIW production order insde MES system.",
+          "description": "Upon receipt of the CKP production vehicle planning schedule, the MES (Manufacturing Execution System) automatically generates and manages BIW production orders, orchestrating the welding, assembly, and quality checks required to produce the bare metal body shell according to the defined model and sequence.",
           "raci": {
             "r": [
               "Production Execution"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Production Planning"
+            ]
           },
           "businessStatus": "Not Started",
           "system": {
@@ -967,20 +1075,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-fy2plun1",
+          "id": "1788430168736-hkglpaso",
           "seq": "80.2",
           "name": "BIW Quality Check",
-          "description": "Quality check for produced BIW before store in WBS",
+          "description": "Performs mandatory quality inspections on each produced BIW shell, verifying dimensional accuracy, weld integrity, and surface quality against defined standards, ensuring that only compliant bodies are released for storage and subsequent Paint Shop processing.",
           "raci": {
             "r": [
               "Parts Quality"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Production Planning"
+            ]
           },
           "businessStatus": "Not Started",
           "system": {
@@ -990,20 +1100,47 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-42bn3t5d",
+          "id": "1788430168736-emvpq5i3",
+          "seq": "80.3",
+          "name": "WBS Reception",
+          "description": "System posting and physical handover of quality-approved BIW units into the WBS (White Body Storage) warehouse management system, updating inventory with precise storage location assignments and making the bodies available for sequenced retrieval by Paint Shop consumption.",
+          "raci": {
+            "r": [
+              "Production Execution"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "Production Planning"
+            ]
+          },
+          "businessStatus": "Not Defined",
+          "system": {
+            "name": "",
+            "status": "",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788430168736-0udge0ao",
           "seq": "90",
           "name": "Paint Shop Production",
-          "description": "Production Execution of Body In White generated by CKP production order",
+          "description": "Execution of painted body production based on CKD production orders, encompassing MES order generation, paint application, quality verification, and handover to the PBS (Painted Body Storage) system for sequenced supply to Trim Shop operations.",
           "raci": {
             "r": [
               "Production Execution"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Production Planning"
+            ]
           },
           "businessStatus": "Not Started",
           "system": {
@@ -1013,20 +1150,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-gx9zcvvy",
+          "id": "1788430168736-rogfioev",
           "seq": "90.1",
           "name": "Body In Paint Production",
-          "description": "When MES receive CKP production, paint shop production order will be generated automatically",
+          "description": "Upon receipt of the CKP production vehicle planning schedule, the MES (Manufacturing Execution System) automatically generates and manages Paint Shop production orders, orchestrating the surface preparation, primer, base coat, clear coat, and curing processes required to produce the painted body shell according to the defined color and sequence.",
           "raci": {
             "r": [
               "Production Execution"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Production Planning"
+            ]
           },
           "businessStatus": "Not Started",
           "system": {
@@ -1036,20 +1175,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-m8ktkpai",
+          "id": "1788430168736-tuf83gub",
           "seq": "90.2",
           "name": "BIP Quality Check",
-          "description": "Quality check for produced BIP beofre store in PBS",
+          "description": "Performs mandatory quality inspections on each produced painted body (BIP), verifying paint thickness, color accuracy, gloss level, and surface defect-free status against defined standards, ensuring that only compliant bodies are released for storage and subsequent Trim Shop processing.",
           "raci": {
             "r": [
               "Parts Quality"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Production Planning"
+            ]
           },
           "businessStatus": "Not Started",
           "system": {
@@ -1059,18 +1200,45 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-pqb1qxoq",
+          "id": "1788430168736-45f28t1x",
+          "seq": "90.3",
+          "name": "PBS RECEPTION",
+          "description": "System posting and physical handover of quality-approved BIP units into the PBS (Painted Body Storage) warehouse management system, updating inventory with precise storage location assignments and making the bodies available for sequenced retrieval by Trim Shop consumption.",
+          "raci": {
+            "r": [
+              "Production Execution"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "Production Planning"
+            ]
+          },
+          "businessStatus": "Not Defined",
+          "system": {
+            "name": "",
+            "status": "",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788430168736-6y7nuwvv",
           "seq": "100",
           "name": "Trim Shop Production",
-          "description": "Production Execution of Trim line",
+          "description": "Assembly execution of painted bodies into complete vehicles, encompassing order execution, critical parts traceability, and offline completion, marking the culmination of the production order lifecycle and handover to final inspection and delivery.",
           "raci": {
             "r": [],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Production Planning"
+            ]
           },
           "businessStatus": "Not Defined",
           "system": {
@@ -1080,20 +1248,22 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-7lt340lo",
+          "id": "1788430168736-jbqxvqpr",
           "seq": "100.1",
           "name": "Vehicle Production",
-          "description": "Execution of planned production order released by production planning team",
+          "description": "Executes the released production orders, orchestrating the assembly of all trim, chassis, powertrain, electrical, and interior components onto the painted body shell in strict sequence, transforming the BIP into a fully assembled vehicle ready for offline testing.",
           "raci": {
             "r": [
               "Production Execution"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Production Planning"
+            ]
           },
           "businessStatus": "Not Started",
           "system": {
@@ -1103,13 +1273,13 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-kyf9mp1b",
+          "id": "1788430168736-pblufyyy",
           "seq": "100.2",
           "name": "Traceibility of important parts",
-          "description": "Tracebility control for specific key parts assembled in the vehicle  (POWERTRAIN, MUFFLER, AIGBAG)",
+          "description": "Enforces mandatory traceability controls for specific safety-critical and regulatory key parts (e.g., airbags, engine control units, batteries, VIN plates) assembled into each vehicle, linking each component's serial number and batch data to the unique vehicle identification number (VIN) to ensure full lifecycle traceability and regulatory compliance.",
           "raci": {
             "r": [
               "Vehicle Quality"
@@ -1126,13 +1296,38 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-7lyat8xk",
+          "id": "1788430168736-luqj0g65",
+          "seq": "100.3",
+          "name": "Vehicle offline",
+          "description": "Confirms the vehicle's physical exit from the Trim Shop production line, serving as the formal milestone that marks the successful completion of the production order for that specific vehicle, triggering system updates for inventory, quality, and downstream processes (final inspection, testing, and shipping).",
+          "raci": {
+            "r": [
+              "Production Execution"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "Production Planning"
+            ]
+          },
+          "businessStatus": "Not Defined",
+          "system": {
+            "name": "",
+            "status": "",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788430168736-n2olum3f",
           "seq": "110",
           "name": "Offline vehicle Test",
-          "description": "Serval test for offline vehicle to assure the vehicle quality",
+          "description": "Comprehensive post-assembly testing and validation of completed vehicles, encompassing visual inspections, dynamic performance tests, system validations (ADAS, 360� camera, brakes, suspension), paint quality checks, and final buy-off, ensuring all vehicles meet stringent quality and safety standards before dispatch to customers.",
           "raci": {
             "r": [
               "Vehicle Quality"
@@ -1149,13 +1344,13 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-oxsqboru",
+          "id": "1788430168736-8b44cn8q",
           "seq": "110.1",
           "name": "Overall inspection",
-          "description": "Overall offline vehicle inspection",
+          "description": "Performs a comprehensive visual and functional inspection of the completed vehicle, covering exterior fit-and-finish, interior trim, panel gaps, fluid levels, and basic electrical functionality, to identify any visible defects or assembly issues prior to dynamic testing.",
           "raci": {
             "r": [
               "Vehicle Quality"
@@ -1172,13 +1367,13 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-ow11wmiq",
+          "id": "1788430168736-o3flhvsn",
           "seq": "110.2",
           "name": "Test Line Validation",
-          "description": "Power, Break? Light, Suspension inspection and test",
+          "description": "Conducts performance tests on the test line, including powertrain, braking system, lighting, and suspension validation, verifying that all critical mechanical and electrical systems operate within specified tolerances and safety parameters.",
           "raci": {
             "r": [
               "Vehicle Quality"
@@ -1195,13 +1390,13 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-54qe2k6f",
+          "id": "1788430168736-1wfq7u9r",
           "seq": "110.3",
           "name": "SPT Validation",
-          "description": "ADAS, 360 Camara test",
+          "description": "Executes specialized validation of advanced driver-assistance systems (ADAS), including adaptive cruise control, lane-keeping assist, collision warning, and 360� surround-view camera calibration, ensuring all sensor-based safety systems are correctly configured and fully functional.",
           "raci": {
             "r": [
               "Vehicle Quality"
@@ -1218,13 +1413,13 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-v1qot6jf",
+          "id": "1788430168736-o4v5xxz9",
           "seq": "110.4",
-          "name": "Dec validation",
-          "description": "Dynamic performance check",
+          "name": "Plant Gate In (Ready for Dispatch)",
+          "description": "Confirms the vehicle's physical movement to the designated loading point within the factory premises, marking the vehicle as ready for dispatch to LA CAMPA and triggering system updates for shipping documentation and carrier scheduling.",
           "raci": {
             "r": [
               "Vehicle Quality"
@@ -1239,15 +1434,15 @@
             "status": "Operational",
             "responsible": ""
           },
-          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
+          "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-5o7fcu8s",
+          "id": "1788430168736-kwcwvsm7",
           "seq": "110.5",
-          "name": "OK line validation",
-          "description": "Paint inspection ^ Validation",
+          "name": "Plant Gate Out (Factory Exit)",
+          "description": "Confirms the vehicle's physical departure from the factory to LA CAMPA",
           "raci": {
             "r": [
               "Vehicle Quality"
@@ -1262,15 +1457,40 @@
             "status": "Operational",
             "responsible": ""
           },
-          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
+          "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-zmri3msl",
+          "id": "1788430168736-dr4ey1vl",
           "seq": "110.6",
-          "name": "Buy-off validation",
-          "description": "Final buy off validation",
+          "name": "CAMPA Arrival",
+          "description": "Confirms the vehicle's physical arrival at LA CAMPA, pending final quality confirmation before handover to the commercial network.",
+          "raci": {
+            "r": [
+              "Vehicle Quality"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "Production Planning"
+            ]
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788430168736-ve4zvc81",
+          "seq": "110.7",
+          "name": "Dec validation",
+          "description": "Performs an additional dynamic performance validation (DEC) on the vehicle, focusing on drivability, acceleration, braking feel, and NVH (Noise, Vibration, Harshness) characteristics, ensuring a refined customer driving experience.",
           "raci": {
             "r": [
               "Vehicle Quality"
@@ -1287,13 +1507,59 @@
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-r0kz9ug7",
+          "id": "1788430168736-fpx4zjom",
+          "seq": "110.8",
+          "name": "OK line validation",
+          "description": "Conducts a final, high-intensity paint and surface quality inspection under specialized lighting conditions, verifying color consistency, gloss uniformity, and the absence of any surface defects (e.g., runs, orange peel, dust inclusions) before customer delivery.",
+          "raci": {
+            "r": [
+              "Vehicle Quality"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788430168736-3u9a9nbk",
+          "seq": "110.9",
+          "name": "Buy-off validation",
+          "description": "Executes the final buy-off validation, serving as the ultimate quality gate where the vehicle is officially certified as meeting all engineering, safety, regulatory, and customer-specification requirements, authorizing release for commercial sale and customer delivery.",
+          "raci": {
+            "r": [
+              "Vehicle Quality"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": ""
+          },
+          "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788430168736-virt0tvq",
           "seq": "120",
           "name": "Buy off vehicle invoice",
-          "description": "Invoice of Buy off vehicle against their corresponding Subcontract order at the end of each month",
+          "description": "End-of-month invoicing process for all buy-off validated vehicles, generating customer invoices against their corresponding subcontract orders (STOs) to formalize the commercial transaction and initiate the payment cycle.",
           "raci": {
             "r": [
               "Finance"
@@ -1310,13 +1576,13 @@
           },
           "businessDoc": "",
           "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/SD/Assembling%20Service%20Billing%20Process.docx?d=wba8a49ecaa3e4c44bca7cf76e2f6ca93&csf=1&web=1&e=sJwNgz",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-t5kzzvwz",
+          "id": "1788430168736-npigbfcf",
           "seq": "130",
           "name": "Vehicle Management",
-          "description": "Buy-Off vehicle management",
+          "description": "End-to-end management of buy-off validated vehicles from factory release to outbound shipment, encompassing physical movement confirmation, compound reception, outbound planning, and dispatch execution, ensuring accurate inventory tracking and timely customer delivery.",
           "raci": {
             "r": [
               "Vehicle Quality"
@@ -1333,20 +1599,22 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-3u1u9c2h",
+          "id": "1788430168736-93y40f8k",
           "seq": "130.1",
           "name": "vehicle buy off",
-          "description": "Buy-off vehicle movement to canopy B confirmation",
+          "description": "Confirms the physical transfer of buy-off validated vehicles to Canopy B (or designated holding area), formally recording the vehicle's release from final quality gates and updating the system status to \"\"Available for Outbound\"\" in preparation for customer dispatch.",
           "raci": {
             "r": [
               "Vehicle Quality"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Production Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -1356,89 +1624,22 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-1d0xkjej",
+          "id": "1788430168736-13xpy39h",
           "seq": "130.2",
-          "name": "Plant Gate In",
-          "description": "Vehicle moved to loading point, ready for dispach",
-          "raci": {
-            "r": [
-              "Vehicle Quality"
-            ],
-            "a": [],
-            "c": [],
-            "i": []
-          },
-          "businessStatus": "Completed",
-          "system": {
-            "name": "KAPTURE",
-            "status": "Operational",
-            "responsible": ""
-          },
-          "businessDoc": "",
-          "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
-        },
-        {
-          "id": "1781161866074-iaxn2051",
-          "seq": "130.3",
-          "name": "Plant Gate out",
-          "description": "Vehicle moved out of factory.",
-          "raci": {
-            "r": [
-              "Vehicle Quality"
-            ],
-            "a": [],
-            "c": [],
-            "i": []
-          },
-          "businessStatus": "Completed",
-          "system": {
-            "name": "KAPTURE",
-            "status": "Operational",
-            "responsible": ""
-          },
-          "businessDoc": "",
-          "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
-        },
-        {
-          "id": "1781161866074-6tlgun3c",
-          "seq": "130.4",
-          "name": "Stage 162",
-          "description": "Vehicle arrived CAMPA, pending confirmation",
-          "raci": {
-            "r": [
-              "Vehicle Quality"
-            ],
-            "a": [],
-            "c": [],
-            "i": []
-          },
-          "businessStatus": "Completed",
-          "system": {
-            "name": "KAPTURE",
-            "status": "Operational",
-            "responsible": ""
-          },
-          "businessDoc": "",
-          "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
-        },
-        {
-          "id": "1781161866074-2ndgfj1w",
-          "seq": "130.5",
           "name": "Compound In",
-          "description": "Compound operator confirm reception of vehicle parked in CAMPA",
+          "description": "Confirms the physical arrival and parking of buy-off vehicles at the CAMPA, with the compound operator verifying vehicle identification, condition, and parking location, and updating the yard management system to reflect accurate inventory positioning.",
           "raci": {
             "r": [
               "Production Planning"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "SALES"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -1448,20 +1649,22 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-qnnkix0r",
-          "seq": "130.6",
+          "id": "1788430168736-yc9jiz6f",
+          "seq": "130.3",
           "name": "Outbound plan",
-          "description": "Compound manager receive outbound plan from DJV",
+          "description": "Receives and reviews the formal outbound shipment plan from subcontracting OEM, detailing the vehicles scheduled for dispatch, assigned carriers, delivery destinations, and required departure timelines.",
           "raci": {
             "r": [
               "Production Planning"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "SALES"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -1471,20 +1674,22 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-tuxvfocc",
-          "seq": "130.7",
+          "id": "1788430168736-0c3mkix2",
+          "seq": "130.4",
           "name": "Compound Out",
-          "description": "Compound operator confirm outbound of vehicle outbound by track",
+          "description": "Confirms the physical loading and departure of vehicles from the CAMPA compound onto outbound transport (trucks, rail, or vessel), with the compound operator verifying vehicle identification, carrier documentation, and loading condition, and updating the yard management system with actual dispatch date and time.",
           "raci": {
             "r": [
               "Production Planning"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "SALES"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -1494,20 +1699,22 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         },
         {
-          "id": "1781161866074-bkpt60ro",
-          "seq": "130.8",
+          "id": "1788430168736-r8i81cyd",
+          "seq": "130.5",
           "name": "Outbound plan confirmation",
-          "description": "Compound manager update outbound plan according to real outbound",
+          "description": "Reconciles and updates the outbound plan against actual vehicle movements, capturing real-time dispatch data, adjusting for any deviations (e.g., rescheduled shipments, last-minute order changes), and closing out completed shipments to provide accurate visibility to commercial and logistics stakeholders.",
           "raci": {
             "r": [
               "Production Planning"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "SALES"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
@@ -1517,7 +1724,7 @@
           },
           "businessDoc": "",
           "userManual": "",
-          "notes": "If face access issue to Business Doc or User Manual, please raise a GLPI IT Request for the access. GLPI Link: https://hubtech.with20.glpi-network.cloud/ServiceCatalog"
+          "notes": ""
         }
       ],
       "workflow": {
