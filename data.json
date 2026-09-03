@@ -2040,7 +2040,7 @@
             "processId": "1788430168736-jtzc8t3v",
             "type": "sub",
             "x": 1551.6667175292969,
-            "y": 493.33331298828125,
+            "y": 501.6666564941406,
             "label": "Weekly production validation",
             "hidden": false
           },
@@ -2048,8 +2048,8 @@
             "id": "node-162",
             "processId": "1788430168736-7kwxjjb4",
             "type": "sub",
-            "x": 1555.0000610351562,
-            "y": 636.666748046875,
+            "x": 1555.83349609375,
+            "y": 640.8334045410156,
             "label": "Daily production monitoring",
             "hidden": false
           },
@@ -2057,8 +2057,8 @@
             "id": "node-163",
             "processId": "1788430168736-pdv1akhf",
             "type": "main",
-            "x": 1284.1667175292969,
-            "y": 808.3333129882812,
+            "x": 1115.83349609375,
+            "y": 811.6665878295898,
             "label": "Body Shop Production",
             "hidden": false
           },
@@ -2066,8 +2066,8 @@
             "id": "node-164",
             "processId": "1788430168736-kiv24c0l",
             "type": "sub",
-            "x": 1285.8333740234375,
-            "y": 969.1666870117188,
+            "x": 1106.666748046875,
+            "y": 971.6666564941406,
             "label": "Body In White Production",
             "hidden": false
           },
@@ -2075,8 +2075,8 @@
             "id": "node-165",
             "processId": "1788430168736-hkglpaso",
             "type": "sub",
-            "x": 1289.1666870117188,
-            "y": 1137.5,
+            "x": 1124.9999694824219,
+            "y": 1137.5000305175781,
             "label": "BIW Quality Check",
             "hidden": false
           },
@@ -2084,8 +2084,8 @@
             "id": "node-166",
             "processId": "1788430168736-emvpq5i3",
             "type": "sub",
-            "x": 1296.6666259765625,
-            "y": 1295.8333129882812,
+            "x": 1363.3333129882812,
+            "y": 969.1666564941406,
             "label": "WBS Reception",
             "hidden": false
           },
@@ -2093,8 +2093,8 @@
             "id": "node-167",
             "processId": "1788430168736-0udge0ao",
             "type": "main",
-            "x": 1546.666748046875,
-            "y": 808.3333435058594,
+            "x": 1582.5000610351562,
+            "y": 819.1666793823242,
             "label": "Paint Shop Production",
             "hidden": false
           },
@@ -2102,8 +2102,8 @@
             "id": "node-168",
             "processId": "1788430168736-rogfioev",
             "type": "sub",
-            "x": 1546.6666412353516,
-            "y": 963.3333282470703,
+            "x": 1574.1666412353516,
+            "y": 960.8333282470703,
             "label": "Body In Paint Production",
             "hidden": false
           },
@@ -2111,8 +2111,8 @@
             "id": "node-169",
             "processId": "1788430168736-tuf83gub",
             "type": "sub",
-            "x": 1561.6665954589844,
-            "y": 1127.4999465942383,
+            "x": 1589.9999694824219,
+            "y": 1130.8332290649414,
             "label": "BIP Quality Check",
             "hidden": false
           },
@@ -2120,8 +2120,8 @@
             "id": "node-170",
             "processId": "1788430168736-45f28t1x",
             "type": "sub",
-            "x": 1559.9999084472656,
-            "y": 1294.1666717529297,
+            "x": 1841.6665954589844,
+            "y": 963.333381652832,
             "label": "PBS RECEPTION",
             "hidden": false
           },
@@ -2129,8 +2129,8 @@
             "id": "node-171",
             "processId": "1788430168736-6y7nuwvv",
             "type": "main",
-            "x": 1788.3333740234375,
-            "y": 814.1666259765625,
+            "x": 2063.3333740234375,
+            "y": 814.9999618530273,
             "label": "Trim Shop Production",
             "hidden": false
           },
@@ -2138,8 +2138,8 @@
             "id": "node-172",
             "processId": "1788430168736-jbqxvqpr",
             "type": "sub",
-            "x": 1804.1667175292969,
-            "y": 963.333251953125,
+            "x": 2069.1666564941406,
+            "y": 959.9998779296875,
             "label": "Vehicle Production",
             "hidden": false
           },
@@ -2147,8 +2147,8 @@
             "id": "node-173",
             "processId": "1788430168736-pblufyyy",
             "type": "sub",
-            "x": 2053.333297729492,
-            "y": 1434.1666870117188,
+            "x": 2037.5000457763672,
+            "y": 1117.500015258789,
             "label": "Traceibility of important parts",
             "hidden": false
           },
@@ -2156,8 +2156,8 @@
             "id": "node-174",
             "processId": "1788430168736-luqj0g65",
             "type": "sub",
-            "x": 1820.833251953125,
-            "y": 1309.9999389648438,
+            "x": 2060.8333740234375,
+            "y": 1273.333267211914,
             "label": "Vehicle offline",
             "hidden": false
           },
@@ -2174,8 +2174,8 @@
             "id": "node-176",
             "processId": "1788430168736-8b44cn8q",
             "type": "sub",
-            "x": 2015.8333740234375,
-            "y": 1163.3333740234375,
+            "x": 2326.666748046875,
+            "y": 1470.0000610351562,
             "label": "Overall inspection",
             "hidden": false
           },
@@ -2201,8 +2201,8 @@
             "id": "node-179",
             "processId": "1788430168736-o4v5xxz9",
             "type": "sub",
-            "x": 2158.3333435058594,
-            "y": 1064.1666870117188,
+            "x": 1769.9999694824219,
+            "y": 1344.1667022705078,
             "label": "Plant Gate In (Ready for Dispatch)",
             "hidden": false
           },
@@ -2246,8 +2246,8 @@
             "id": "node-184",
             "processId": "1788430168736-3u9a9nbk",
             "type": "sub",
-            "x": 2029.166748046875,
-            "y": 928.3334197998047,
+            "x": 2087.5000610351562,
+            "y": 1417.5001220703125,
             "label": "Buy-off validation",
             "hidden": false
           },
@@ -2264,8 +2264,8 @@
             "id": "node-186",
             "processId": "1788430168736-npigbfcf",
             "type": "main",
-            "x": 2009.1666717529297,
-            "y": 1336.6666870117188,
+            "x": 1433.3334197998047,
+            "y": 1365.0000305175781,
             "label": "Vehicle Management",
             "hidden": false
           },
@@ -2316,12 +2316,6 @@
           }
         ],
         "connections": [
-          {
-            "id": "conn-1788431788275-r6v37u",
-            "from": "node-163",
-            "to": "node-167",
-            "type": "arrow"
-          },
           {
             "id": "conn-1788431913984-zkivtr",
             "from": "node-127",
@@ -2404,12 +2398,6 @@
             "id": "conn-1788432701211-vcafr1",
             "from": "node-120",
             "to": "node-121",
-            "type": "arrow"
-          },
-          {
-            "id": "conn-1788434616523-ah5kkr",
-            "from": "node-163",
-            "to": "node-167",
             "type": "arrow"
           },
           {
@@ -2578,6 +2566,72 @@
             "id": "conn-1788435951759-uepx3j",
             "from": "node-152",
             "to": "node-153",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788436417696-cmeb68",
+            "from": "node-163",
+            "to": "node-164",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788436423657-qnd66p",
+            "from": "node-164",
+            "to": "node-165",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788436426928-jdw8tf",
+            "from": "node-165",
+            "to": "node-166",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788436441048-n1xw9s",
+            "from": "node-166",
+            "to": "node-167",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788436498472-vdfzdf",
+            "from": "node-167",
+            "to": "node-168",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788436500328-dislo8",
+            "from": "node-168",
+            "to": "node-169",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788436503872-37t2sj",
+            "from": "node-169",
+            "to": "node-170",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788436522024-5adr7u",
+            "from": "node-170",
+            "to": "node-171",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788436524488-mq7y4q",
+            "from": "node-171",
+            "to": "node-172",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788436528089-ku8h6e",
+            "from": "node-172",
+            "to": "node-173",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788436541378-7keom3",
+            "from": "node-173",
+            "to": "node-174",
             "type": "arrow"
           }
         ],
