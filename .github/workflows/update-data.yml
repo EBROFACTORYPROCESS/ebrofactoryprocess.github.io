@@ -67,7 +67,7 @@ jobs:
                 const scenarioDiff = diff[scId];
 
                 // ==========================================================
-                // NEW: Apply process changes (add, update, delete)
+                // Apply process changes (add, update, delete)
                 // ==========================================================
                 if (scenarioDiff.processes) {
                   const procDiffs = scenarioDiff.processes;
@@ -75,7 +75,6 @@ jobs:
                   for (const procId in procDiffs) {
                     const change = procDiffs[procId];
                     if (change._deleted) {
-                      // Delete process
                       const idx = processes.findIndex(p => p.id === procId);
                       if (idx !== -1) {
                         processes.splice(idx, 1);
@@ -84,10 +83,8 @@ jobs:
                         console.warn(`Process ${procId} not found for deletion`);
                       }
                     } else if (change._added) {
-                      // Add new process
                       const newProc = change.proc;
                       if (!newProc.id) newProc.id = procId;
-                      // Check if already exists
                       if (!processes.some(p => p.id === procId)) {
                         processes.push(newProc);
                         console.log(`Added process ${procId}`);
@@ -95,7 +92,6 @@ jobs:
                         console.warn(`Process ${procId} already exists, skipping add`);
                       }
                     } else if (change._updated) {
-                      // Update existing process
                       const idx = processes.findIndex(p => p.id === procId);
                       if (idx !== -1) {
                         processes[idx] = change.proc;
@@ -109,32 +105,50 @@ jobs:
                 }
 
                 // ==========================================================
-                // Apply node changes
+                // Apply node changes (ADD, UPDATE, DELETE)
                 // ==========================================================
                 if (scenarioDiff.nodes) {
                   for (const nodeId in scenarioDiff.nodes) {
-                    const changes = scenarioDiff.nodes[nodeId];
-                    const node = nodes.find(n => n.id === nodeId);
-                    if (node) {
-                      for (const key in changes) {
-                        node[key] = changes[key];
+                    const change = scenarioDiff.nodes[nodeId];
+                    if (change._deleted) {
+                      const idx = nodes.findIndex(n => n.id === nodeId);
+                      if (idx !== -1) {
+                        nodes.splice(idx, 1);
+                        console.log(`Deleted node ${nodeId}`);
+                      } else {
+                        console.warn(`Node ${nodeId} not found for deletion`);
                       }
-                      console.log(`Updated node ${nodeId}`);
+                    } else if (change._added) {
+                      const newNode = change.node;
+                      if (!newNode.id) newNode.id = nodeId;
+                      if (!nodes.some(n => n.id === nodeId)) {
+                        nodes.push(newNode);
+                        console.log(`Added node ${nodeId}`);
+                      } else {
+                        console.warn(`Node ${nodeId} already exists, skipping add`);
+                      }
                     } else {
-                      console.warn(`Node ${nodeId} not found in scenario ${scId}`);
+                      const node = nodes.find(n => n.id === nodeId);
+                      if (node) {
+                        for (const key in change) {
+                          node[key] = change[key];
+                        }
+                        console.log(`Updated node ${nodeId}`);
+                      } else {
+                        console.warn(`Node ${nodeId} not found for update`);
+                      }
                     }
                   }
                 }
 
                 // ==========================================================
-                // Apply connection changes
+                // Apply connection changes (ADD, UPDATE, DELETE)
                 // ==========================================================
                 if (scenarioDiff.connections) {
                   const connDiffs = scenarioDiff.connections;
                   for (const connId in connDiffs) {
                     const change = connDiffs[connId];
                     if (change._deleted) {
-                      // Remove connection
                       const idx = connections.findIndex(c => c.id === connId);
                       if (idx !== -1) {
                         connections.splice(idx, 1);
@@ -143,10 +157,8 @@ jobs:
                         console.warn(`Connection ${connId} not found for deletion`);
                       }
                     } else if (change._added) {
-                      // Add new connection
                       const newConn = change.conn;
                       if (!newConn.id) newConn.id = connId;
-                      // Check if already exists (avoid duplicates)
                       if (!connections.some(c => c.id === connId)) {
                         connections.push(newConn);
                         console.log(`Added connection ${connId}`);
@@ -154,7 +166,6 @@ jobs:
                         console.warn(`Connection ${connId} already exists, skipping add`);
                       }
                     } else {
-                      // Update existing connection
                       const conn = connections.find(c => c.id === connId);
                       if (conn) {
                         for (const key in change) {
