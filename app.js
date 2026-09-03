@@ -84,11 +84,53 @@ function generateNodeDiff(oldScenarios, newScenarios) {
 
     newScenarios.forEach(newSc => {
         const oldSc = oldMap[newSc.id];
-        if (!oldSc) return;
+        if (!oldSc) {
+            // Entire scenario is new – send the whole thing
+            diff[newSc.id] = { _full: true, data: newSc };
+            return;
+        }
 
         const scenarioDiff = {};
 
-        // ----- Compare nodes -----
+        // ----- Compare processes -----
+        const oldProcesses = oldSc.processes || [];
+        const newProcesses = newSc.processes || [];
+
+        const oldProcMap = {};
+        oldProcesses.forEach(p => { if (p.id) oldProcMap[p.id] = p; });
+
+        const newProcMap = {};
+        newProcesses.forEach(p => { if (p.id) newProcMap[p.id] = p; });
+
+        const procChanges = {};
+
+        // Check for added/modified processes
+        for (const id in newProcMap) {
+            const oldProc = oldProcMap[id];
+            const newProc = newProcMap[id];
+            if (!oldProc) {
+                // New process
+                procChanges[id] = { _added: true, proc: newProc };
+                continue;
+            }
+            // Check if any field changed – compare JSON strings
+            if (JSON.stringify(oldProc) !== JSON.stringify(newProc)) {
+                procChanges[id] = { _updated: true, proc: newProc };
+            }
+        }
+
+        // Check for deleted processes (in old but not in new)
+        for (const id in oldProcMap) {
+            if (!newProcMap[id]) {
+                procChanges[id] = { _deleted: true };
+            }
+        }
+
+        if (Object.keys(procChanges).length > 0) {
+            scenarioDiff.processes = procChanges;
+        }
+
+        // ----- Compare workflow nodes (existing logic) -----
         const newNodes = newSc.workflow?.nodes || [];
         const oldNodes = oldSc.workflow?.nodes || [];
 
@@ -114,14 +156,12 @@ function generateNodeDiff(oldScenarios, newScenarios) {
                 nodeChanges[id] = changes;
             }
         }
-        // (Optional: check for deleted nodes – if oldNode has id not in newNodeMap, treat as deletion)
-        // For simplicity, we ignore deletion; we'll handle full replacement if needed.
 
         if (Object.keys(nodeChanges).length > 0) {
             scenarioDiff.nodes = nodeChanges;
         }
 
-        // ----- Compare connections -----
+        // ----- Compare workflow connections (existing logic) -----
         const newConnections = newSc.workflow?.connections || [];
         const oldConnections = oldSc.workflow?.connections || [];
 
@@ -132,17 +172,13 @@ function generateNodeDiff(oldScenarios, newScenarios) {
         newConnections.forEach(c => { if (c.id) newConnMap[c.id] = c; });
 
         const connChanges = {};
-
-        // Check for added/modified connections
         for (const id in newConnMap) {
             const oldConn = oldConnMap[id];
             const newConn = newConnMap[id];
             if (!oldConn) {
-                // New connection – store the whole connection object
                 connChanges[id] = { _added: true, conn: newConn };
                 continue;
             }
-            // Compare properties: from, to, type, label
             const changes = {};
             if (newConn.from !== oldConn.from) changes.from = newConn.from;
             if (newConn.to !== oldConn.to) changes.to = newConn.to;
@@ -152,8 +188,6 @@ function generateNodeDiff(oldScenarios, newScenarios) {
                 connChanges[id] = changes;
             }
         }
-
-        // Check for deleted connections (in old but not in new)
         for (const id in oldConnMap) {
             if (!newConnMap[id]) {
                 connChanges[id] = { _deleted: true };
