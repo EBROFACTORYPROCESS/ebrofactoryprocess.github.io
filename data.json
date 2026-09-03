@@ -2288,7 +2288,80 @@
             "hidden": false
           }
         ],
-        "connections": [],
+        "connections": [
+          {
+            "id": "conn-1788431788275-p4pxjw",
+            "from": "node-127",
+            "to": "node-132",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788431788275-rra342",
+            "from": "node-132",
+            "to": "node-135",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788431788275-k58l1u",
+            "from": "node-135",
+            "to": "node-142",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788431788275-yrckfc",
+            "from": "node-142",
+            "to": "node-147",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788431788275-nhwsml",
+            "from": "node-147",
+            "to": "node-154",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788431788275-5puhcd",
+            "from": "node-154",
+            "to": "node-158",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788431788275-7938vf",
+            "from": "node-158",
+            "to": "node-163",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788431788275-r6v37u",
+            "from": "node-163",
+            "to": "node-167",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788431788275-w602m4",
+            "from": "node-167",
+            "to": "node-171",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788431788275-bhby2k",
+            "from": "node-171",
+            "to": "node-175",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788431788275-1cj8ak",
+            "from": "node-175",
+            "to": "node-185",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788431788275-9qj6b9",
+            "from": "node-185",
+            "to": "node-186",
+            "type": "arrow"
+          }
+        ],
         "nodeIdCounter": 62
       }
     },
