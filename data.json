@@ -2074,9 +2074,9 @@
           {
             "id": "node-165",
             "processId": "1788430168736-hkglpaso",
-            "type": "end",
+            "type": "sub",
             "x": 1124.9999694824219,
-            "y": 1137.5000305175781,
+            "y": 1139.583351135254,
             "label": "BIW Quality Check",
             "hidden": false
           },
@@ -2174,8 +2174,8 @@
             "id": "node-176",
             "processId": "1788430168736-8b44cn8q",
             "type": "sub",
-            "x": 2079.166748046875,
-            "y": 1614.1667556762695,
+            "x": 2075.000030517578,
+            "y": 1606.8750762939453,
             "label": "Overall inspection",
             "hidden": false
           },
@@ -2183,8 +2183,8 @@
             "id": "node-177",
             "processId": "1788430168736-o3flhvsn",
             "type": "sub",
-            "x": 2079.9998321533203,
-            "y": 1747.500099182129,
+            "x": 2074.791473388672,
+            "y": 1753.750099182129,
             "label": "Test Line Validation",
             "hidden": false
           },
@@ -2192,8 +2192,8 @@
             "id": "node-178",
             "processId": "1788430168736-1wfq7u9r",
             "type": "sub",
-            "x": 2084.1665802001953,
-            "y": 1908.3334045410156,
+            "x": 2072.708221435547,
+            "y": 1913.5418014526367,
             "label": "SPT Validation",
             "hidden": false
           },
@@ -2201,8 +2201,8 @@
             "id": "node-179",
             "processId": "1788430168736-o4v5xxz9",
             "type": "sub",
-            "x": 2044.1665344238281,
-            "y": 2063.3334045410156,
+            "x": 2038.9581756591797,
+            "y": 2066.458366394043,
             "label": "Plant Gate In (Ready for Dispatch)",
             "hidden": false
           },
@@ -2308,7 +2308,7 @@
           {
             "id": "node-191",
             "processId": "1788430168736-r8i81cyd",
-            "type": "sub",
+            "type": "end",
             "x": 3091.250213623047,
             "y": 2240.625039100647,
             "label": "Outbound plan confirmation",
@@ -2770,6 +2770,12 @@
             "id": "conn-1788437359031-h40d1o",
             "from": "node-156",
             "to": "node-157",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788437451622-ulbjl7",
+            "from": "node-190",
+            "to": "node-191",
             "type": "arrow"
           }
         ],
