@@ -49,7 +49,7 @@ jobs:
             let result = JSON.parse(JSON.stringify(currentData)); // clone
 
             // ============================================================
-            // HANDLER: node-diff (node & connection changes by ID)
+            // HANDLER: node-diff (process, node & connection changes by ID)
             // ============================================================
             if (payload.type === "node-diff" && payload.data) {
               const diff = JSON.parse(payload.data);
@@ -66,7 +66,51 @@ jobs:
 
                 const scenarioDiff = diff[scId];
 
-                // --- Apply node changes ---
+                // ==========================================================
+                // NEW: Apply process changes (add, update, delete)
+                // ==========================================================
+                if (scenarioDiff.processes) {
+                  const procDiffs = scenarioDiff.processes;
+                  const processes = scenario.processes || [];
+                  for (const procId in procDiffs) {
+                    const change = procDiffs[procId];
+                    if (change._deleted) {
+                      // Delete process
+                      const idx = processes.findIndex(p => p.id === procId);
+                      if (idx !== -1) {
+                        processes.splice(idx, 1);
+                        console.log(`Deleted process ${procId}`);
+                      } else {
+                        console.warn(`Process ${procId} not found for deletion`);
+                      }
+                    } else if (change._added) {
+                      // Add new process
+                      const newProc = change.proc;
+                      if (!newProc.id) newProc.id = procId;
+                      // Check if already exists
+                      if (!processes.some(p => p.id === procId)) {
+                        processes.push(newProc);
+                        console.log(`Added process ${procId}`);
+                      } else {
+                        console.warn(`Process ${procId} already exists, skipping add`);
+                      }
+                    } else if (change._updated) {
+                      // Update existing process
+                      const idx = processes.findIndex(p => p.id === procId);
+                      if (idx !== -1) {
+                        processes[idx] = change.proc;
+                        console.log(`Updated process ${procId}`);
+                      } else {
+                        console.warn(`Process ${procId} not found for update`);
+                      }
+                    }
+                  }
+                  scenario.processes = processes;
+                }
+
+                // ==========================================================
+                // Apply node changes
+                // ==========================================================
                 if (scenarioDiff.nodes) {
                   for (const nodeId in scenarioDiff.nodes) {
                     const changes = scenarioDiff.nodes[nodeId];
@@ -82,7 +126,9 @@ jobs:
                   }
                 }
 
-                // --- Apply connection changes ---
+                // ==========================================================
+                // Apply connection changes
+                // ==========================================================
                 if (scenarioDiff.connections) {
                   const connDiffs = scenarioDiff.connections;
                   for (const connId in connDiffs) {
