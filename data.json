@@ -1512,7 +1512,7 @@
         {
           "id": "1788430168736-fpx4zjom",
           "seq": "110.8",
-          "name": "OK line validation",
+          "name": "OK Line Validation",
           "description": "Conducts a final, high-intensity paint and surface quality inspection under specialized lighting conditions, verifying color consistency, gloss uniformity, and the absence of any surface defects (e.g., runs, orange peel, dust inclusions) before customer delivery.",
           "raci": {
             "r": [
@@ -1526,7 +1526,7 @@
           "system": {
             "name": "KAPTURE",
             "status": "Operational",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
           "userManual": "",
@@ -1895,8 +1895,8 @@
             "id": "node-145",
             "processId": "1788430168736-mdgsxpob",
             "type": "sub",
-            "x": 90.41664123535156,
-            "y": 1662.7084655761719,
+            "x": 133.08326721191406,
+            "y": 1673.3751525878906,
             "label": "Goods Receive DJV",
             "hidden": false
           },
@@ -1904,8 +1904,8 @@
             "id": "node-146",
             "processId": "1788430168736-m2nf6k03",
             "type": "sub",
-            "x": 78.12503051757812,
-            "y": 1828.9582443237305,
+            "x": 116.79165649414062,
+            "y": 1827.6249923706055,
             "label": "Factory supply transport",
             "hidden": false
           },
