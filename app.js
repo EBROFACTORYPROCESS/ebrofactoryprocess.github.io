@@ -1996,9 +1996,9 @@ function handleProcessImport(e) {
             if (sc) {
                 sc.processes = processes;
                 sc.processes = sortProcesses(sc.processes);
-                // ===== SYNC: Remove orphan nodes and add missing ones =====
-                const nodeCount = syncWorkflowNodesWithProcesses(sc);
-                console.log(`✅ Synced workflow: ${nodeCount} nodes after import`);
+                // Sync workflow nodes (remove orphans, add missing)
+                const removed = syncWorkflowNodesWithProcesses(sc);
+                console.log(`✅ Synced workflow: ${removed} orphan nodes removed`);
                 renderCurrentView();
             }
             closeImportPreview();
