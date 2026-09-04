@@ -152,7 +152,7 @@
         {
           "id": "1788430168735-jm9ij3rd",
           "seq": "10.2",
-          "name": "M+3 Sales plan",
+          "name": "M+3 Sales Plan",
           "description": "Generates a rolling 4-month (M+3) sales forecast at a detailed product-family level, providing the tactical demand signal that drives the subsequent subcontract order cycle and raw material purchasing.",
           "raci": {
             "r": [
@@ -172,7 +172,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -405,7 +405,7 @@
         {
           "id": "1788430168736-v4y6oooq",
           "seq": "30.3",
-          "name": "PO complaince validation",
+          "name": "PO Complaince Validation",
           "description": "Performs mandatory compliance and trade-rule checks on purchase orders prior to approval, mitigating legal, regulatory, and reputational risks.",
           "raci": {
             "r": [
@@ -419,11 +419,11 @@
             ],
             "i": []
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -557,7 +557,7 @@
         {
           "id": "1788430168736-hixrd7rd",
           "seq": "40.2",
-          "name": "Inb DN Custom Cleaning",
+          "name": "Inbound Delivery Note Custom Cleaning",
           "description": "Executes all mandatory customs declaration and clearance procedures for EU-imported goods, ensuring full compliance with trade regulations, tariff classifications, and documentation requirements to avoid border delays and regulatory penalties.",
           "raci": {
             "r": [
@@ -573,7 +573,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -582,7 +582,7 @@
         {
           "id": "1788430168736-mdgsxpob",
           "seq": "40.3",
-          "name": "Goods Receive DJV",
+          "name": "OEM Goods Receive ",
           "description": "Performs system posting of goods receipt (GR) against the corresponding purchase order and inbound delivery, updating inventory records and financial postings immediately upon successful customs clearance and physical reception in container yard.",
           "raci": {
             "r": [
@@ -598,7 +598,7 @@
           "system": {
             "name": "SAP",
             "status": "Operational",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/SD/Assembling%20Service%20GR%20for%20DJV.docx?d=wf3ec5a8e96594e8688a96a32b049693e&csf=1&web=1&e=HzSsqy",
@@ -607,7 +607,7 @@
         {
           "id": "1788430168736-m2nf6k03",
           "seq": "40.4",
-          "name": "Factory supply transport",
+          "name": "Factory Supply Transport",
           "description": "Plans, schedules, and tracks internal material movements from designated receiving points (Montcada warehouse, Kuehne+Nagel, or the Container Yard) to the respective factory canopy, applying routing rules based on material type to ensure just-in-time (JIT) availability for production operations.",
           "raci": {
             "r": [
@@ -623,7 +623,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -732,7 +732,7 @@
         {
           "id": "1788430168736-2lxluvkg",
           "seq": "50.4",
-          "name": "Handling Unit asessment",
+          "name": "Handling Unit Asessment",
           "description": "Assesses each handling unit to determine whether the goods can be stored in their original carton packaging or require repackaging into appropriate storage containers based on material fragility, size, or stacking requirements.",
           "raci": {
             "r": [
@@ -822,7 +822,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "Offline",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -832,7 +832,7 @@
         {
           "id": "1788430168736-mypc3h6i",
           "seq": "60.1",
-          "name": "Kitting Area replenishment",
+          "name": "Kitting Area Replenishment",
           "description": "Transfers handling units of bulk materials from the buffer warehouse to the kitting area,  triggered by minimum stock level thresholds, to ensure uninterrupted assembly kit preparation for production orders.",
           "raci": {
             "r": [
@@ -847,7 +847,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "Offline",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -857,7 +857,7 @@
         {
           "id": "1788430168736-tska9ltw",
           "seq": "60.2",
-          "name": "SPS Area replenishment",
+          "name": "SPS Area Replenishment",
           "description": "Transfers handling units of bulk materials from the buffer warehouse to the SPS areas,  triggered by minimum stock level thresholds, to maintain continuous feeding of sequenced parts onto AGV racks, which supply the production line in a just-in-sequence flow.",
           "raci": {
             "r": [
@@ -872,7 +872,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "Offline",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -897,7 +897,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "Offline",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -955,7 +955,7 @@
         {
           "id": "1788430168736-eym8axor",
           "seq": "70.2",
-          "name": "Monthlyh production plannig",
+          "name": "Monthly Production Plannig",
           "description": "Converts the M+3 production plan into a firm monthly production schedule, aligned with released and confirmed subcontract orders (STOs) from the OEM, defining the precise model mix and quantities to be produced in each production line for the upcoming month.",
           "raci": {
             "r": [
@@ -971,7 +971,7 @@
           "system": {
             "name": "SAP",
             "status": "Work in Porgress",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
           "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP024-MPS-ATP%20Check.pdf?csf=1&web=1&e=Q8bF7d",
@@ -980,7 +980,7 @@
         {
           "id": "1788430168736-jtzc8t3v",
           "seq": "70.3",
-          "name": "Weekly production validation",
+          "name": "Weekly Production Validation",
           "description": "Validates, freezes, and formally releases a rolling two-week production sequence, incorporating real-time adjustments for material availability, line capacity constraints, and urgent order changes, ensuring a stable and executable schedule for the upcoming two production weeks",
           "raci": {
             "r": [
@@ -996,7 +996,7 @@
           "system": {
             "name": "SAP",
             "status": "Work in Porgress",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
           "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP027-MPS-Batch%20management%20data%20for%20MES.pdf?csf=1&web=1&e=HgEvqm",
@@ -1005,7 +1005,7 @@
         {
           "id": "1788430168736-7kwxjjb4",
           "seq": "70.4",
-          "name": "Daily production monitoring",
+          "name": "Daily Production Monitoring",
           "description": "Monitors daily production progress against the planned schedule, tracking key performance indicators (e.g., units produced,  line stoppages), and dynamically adjusts the forecast and sequencing for subsequent days based on actual production results and emerging constraints.",
           "raci": {
             "r": [
@@ -1021,7 +1021,7 @@
           "system": {
             "name": "SAP",
             "status": "Work in Porgress",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
           "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP027-MPS-Batch%20management%20data%20for%20MES.pdf?csf=1&web=1&e=HgEvqm",
@@ -1117,10 +1117,10 @@
               "Production Planning"
             ]
           },
-          "businessStatus": "Not Defined",
+          "businessStatus": "Not Started",
           "system": {
-            "name": "",
-            "status": "",
+            "name": "LEGATO",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "",
@@ -1194,7 +1194,7 @@
           },
           "businessStatus": "Not Started",
           "system": {
-            "name": "KAPTURE",
+            "name": "To Be Determined",
             "status": "Operational",
             "responsible": ""
           },
@@ -1205,7 +1205,7 @@
         {
           "id": "1788430168736-45f28t1x",
           "seq": "90.3",
-          "name": "PBS RECEPTION",
+          "name": "PBS Reception",
           "description": "System posting and physical handover of quality-approved BIP units into the PBS (Painted Body Storage) warehouse management system, updating inventory with precise storage location assignments and making the bodies available for sequenced retrieval by Trim Shop consumption.",
           "raci": {
             "r": [
@@ -1217,10 +1217,10 @@
               "Production Planning"
             ]
           },
-          "businessStatus": "Not Defined",
+          "businessStatus": "Completed",
           "system": {
-            "name": "",
-            "status": "",
+            "name": "LEGATO",
+            "status": "Work in Porgress",
             "responsible": ""
           },
           "businessDoc": "",
@@ -1278,7 +1278,7 @@
         {
           "id": "1788430168736-pblufyyy",
           "seq": "100.2",
-          "name": "Traceibility of important parts",
+          "name": "Traceibility of Important Parts",
           "description": "Enforces mandatory traceability controls for specific safety-critical and regulatory key parts (e.g., airbags, engine control units, batteries, VIN plates) assembled into each vehicle, linking each component's serial number and batch data to the unique vehicle identification number (VIN) to ensure full lifecycle traceability and regulatory compliance.",
           "raci": {
             "r": [
@@ -1292,7 +1292,7 @@
           "system": {
             "name": "KAPTURE",
             "status": "Operational",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
           "userManual": "",
@@ -1301,7 +1301,7 @@
         {
           "id": "1788430168736-luqj0g65",
           "seq": "100.3",
-          "name": "Vehicle offline",
+          "name": "Vehicle Offline",
           "description": "Confirms the vehicle's physical exit from the Trim Shop production line, serving as the formal milestone that marks the successful completion of the production order for that specific vehicle, triggering system updates for inventory, quality, and downstream processes (final inspection, testing, and shipping).",
           "raci": {
             "r": [
@@ -1315,9 +1315,9 @@
           },
           "businessStatus": "Not Defined",
           "system": {
-            "name": "",
-            "status": "",
-            "responsible": ""
+            "name": "KAPTURE",
+            "status": "Operational",
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -1326,7 +1326,7 @@
         {
           "id": "1788430168736-n2olum3f",
           "seq": "110",
-          "name": "Offline vehicle Test",
+          "name": "Offline Vehicle Test",
           "description": "Comprehensive post-assembly testing and validation of completed vehicles, encompassing visual inspections, dynamic performance tests, system validations (ADAS, 360� camera, brakes, suspension), paint quality checks, and final buy-off, ensuring all vehicles meet stringent quality and safety standards before dispatch to customers.",
           "raci": {
             "r": [
@@ -1340,7 +1340,7 @@
           "system": {
             "name": "KAPTURE",
             "status": "Operational",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
           "userManual": "",
@@ -1349,7 +1349,7 @@
         {
           "id": "1788430168736-8b44cn8q",
           "seq": "110.1",
-          "name": "Overall inspection",
+          "name": "Overall Inspection",
           "description": "Performs a comprehensive visual and functional inspection of the completed vehicle, covering exterior fit-and-finish, interior trim, panel gaps, fluid levels, and basic electrical functionality, to identify any visible defects or assembly issues prior to dynamic testing.",
           "raci": {
             "r": [
@@ -1363,7 +1363,7 @@
           "system": {
             "name": "KAPTURE",
             "status": "Operational",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
           "userManual": "",
@@ -1489,7 +1489,7 @@
         {
           "id": "1788430168736-ve4zvc81",
           "seq": "110.7",
-          "name": "Dec validation",
+          "name": "Dec Validation",
           "description": "Performs an additional dynamic performance validation (DEC) on the vehicle, focusing on drivability, acceleration, braking feel, and NVH (Noise, Vibration, Harshness) characteristics, ensuring a refined customer driving experience.",
           "raci": {
             "r": [
@@ -1535,7 +1535,7 @@
         {
           "id": "1788430168736-3u9a9nbk",
           "seq": "110.9",
-          "name": "Buy-off validation",
+          "name": "Buy-off Validation",
           "description": "Executes the final buy-off validation, serving as the ultimate quality gate where the vehicle is officially certified as meeting all engineering, safety, regulatory, and customer-specification requirements, authorizing release for commercial sale and customer delivery.",
           "raci": {
             "r": [
@@ -1558,7 +1558,7 @@
         {
           "id": "1788430168736-virt0tvq",
           "seq": "120",
-          "name": "Buy off vehicle invoice",
+          "name": "Buy-off Vehicle Invoice",
           "description": "End-of-month invoicing process for all buy-off validated vehicles, generating customer invoices against their corresponding subcontract orders (STOs) to formalize the commercial transaction and initiate the payment cycle.",
           "raci": {
             "r": [
@@ -1604,7 +1604,7 @@
         {
           "id": "1788430168736-93y40f8k",
           "seq": "130.1",
-          "name": "vehicle buy off",
+          "name": "Vehicle Buy-off",
           "description": "Confirms the physical transfer of buy-off validated vehicles to Canopy B (or designated holding area), formally recording the vehicle's release from final quality gates and updating the system status to \"\"Available for Outbound\"\" in preparation for customer dispatch.",
           "raci": {
             "r": [
