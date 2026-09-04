@@ -465,29 +465,17 @@ function sortWorkflowNodes(workflow) {
     });
 }
 function syncWorkflowNodesWithProcesses(scenario) {
-    if (!scenario || !scenario.processes || !scenario.workflow) return;
+    if (!scenario || !scenario.processes || !scenario.workflow) return 0;
     const processes = scenario.processes;
     const nodes = scenario.workflow.nodes || [];
     const connections = scenario.workflow.connections || [];
 
-    // Map existing processId → node
-    const processNodeMap = {};
-    nodes.forEach(n => { if (n.processId) processNodeMap[n.processId] = n; });
-
-    // Determine max counter
-    let maxCounter = 0;
-    nodes.forEach(n => {
-        const match = n.id.match(/node-(\d+)/);
-        if (match) maxCounter = Math.max(maxCounter, parseInt(match[1]) + 1);
-    });
-    let counter = maxCounter;
-
     // Get set of valid process IDs
     const processIds = new Set(processes.map(p => p.id));
-
-    // ===== NEW: Remove orphan nodes (nodes whose processId no longer exists) =====
-    // Keep special nodes (start, end, decision, parallel) even if they have no processId
     const specialTypes = new Set(['start', 'end', 'decision', 'parallel']);
+
+    // Filter out orphan nodes (remove nodes whose processId no longer exists)
+    const originalCount = nodes.length;
     const filteredNodes = nodes.filter(n => {
         // If node has no processId, keep it ONLY if it's a special type
         if (!n.processId) {
@@ -496,10 +484,19 @@ function syncWorkflowNodesWithProcesses(scenario) {
         // If node has a processId, keep it only if that process still exists
         return processIds.has(n.processId);
     });
-     const removedCount = originalCount - filteredNodes.length;
+    const removedCount = originalCount - filteredNodes.length;
+
     // Build map of kept nodes
     const keptProcessNodeMap = {};
     filteredNodes.forEach(n => { if (n.processId) keptProcessNodeMap[n.processId] = n; });
+
+    // Determine max counter for new node IDs
+    let maxCounter = 0;
+    filteredNodes.forEach(n => {
+        const match = n.id.match(/node-(\d+)/);
+        if (match) maxCounter = Math.max(maxCounter, parseInt(match[1]) + 1);
+    });
+    let counter = maxCounter;
 
     // Add missing nodes for processes that don't have one
     const cols = 6, spacingX = 160, spacingY = 110;
@@ -531,7 +528,7 @@ function syncWorkflowNodesWithProcesses(scenario) {
     scenario.workflow.connections = (scenario.workflow.connections || [])
         .filter(c => validNodeIds.has(c.from) && validNodeIds.has(c.to));
 
-    return newNodes.length; // return count for logging
+    // Return the count of removed nodes
     return removedCount;
 }
 // ============================
