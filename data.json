@@ -2787,7 +2787,7 @@
       "name": "No qualified parts",
       "processes": [
         {
-          "id": "1788785356243-a9gbw018",
+          "id": "1788785495161-geuzdt1k",
           "seq": "10",
           "name": "Non-Qualified (NG) Parts Detection",
           "description": "Systematic identification and recording of non-qualified (NG) parts across all operational touchpoints,from inbound logistics and intralogistics to body shop and trim shop production,enabling real-time quality feedback, containment actions, and supplier performance tracking. Upon detection, NG parts are physically moved to the designated temporal (temporary) scrap area, and a scrap travel card is completed per material. The travel card must include: material number, time and location of detection, and supervisor sign-off. Collected travel cards are later processed for disposition (scrap disposal or supplier return/claim). NG parts are classified using two distinct travel cards based on defect ownership and validation requirements:�Green Travel Card�(Factory Scrap) for internally generated defects requiring no additional validation before disposal; and�Orange Travel Card�(Supplier Claim) for supplier-related defects requiring mandatory double-check validation by the Production Quality Assurance (PQA) team before claim processing.",
@@ -2812,7 +2812,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356243-hj78csam",
+          "id": "1788785495162-ao5b89fa",
           "seq": "10.1",
           "name": "NG Parts Detection (Body Shop )",
           "description": "Identifies and records non-qualified parts detected during Body Shop production operations (e.g., welding defects, dimensional inaccuracies, surface imperfections), triggering immediate containment actions and system flagging. Detected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). Collected cards are later processed for disposition. NG parts are classified using the two-tier travel card system:�Green Travel Card�(Factory Scrap) for internally generated defects (e.g., handling damage, operator error) requiring no additional validation before disposal; or�Orange Travel Card�(Supplier Claim) for supplier-related defects (e.g., material non-conformance, dimensional deviations) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
@@ -2837,7 +2837,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356243-yht6uspm",
+          "id": "1788785495162-cb4zl4bq",
           "seq": "10.2",
           "name": "NG Parts Detection (Trim Shop)",
           "description": "Identifies and records non-qualified parts detected during Trim Shop assembly operations (e.g., component fitment issues, electrical failures, cosmetic defects), triggering immediate containment actions and system flagging. Detected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). Collected cards are later processed for disposition. NG parts are classified using the two-tier travel card system:�Green Travel Card�(Factory Scrap) for internally generated defects (e.g., installation damage, mishandling) requiring no additional validation before disposal; or�Orange Travel Card�(Supplier Claim) for supplier-related defects (e.g., component electrical failure, material defect, fitment non-conformance) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
@@ -2862,7 +2862,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356243-1irlnaj4",
+          "id": "1788785495162-k2hyzw2p",
           "seq": "10.3",
           "name": "NG Parts Detection( Reception  Area)",
           "description": "Identifies and records non-qualified parts detected during inbound logistics operations,including goods reception, container devaning, and handling unit management,ensuring defective materials are quarantined before entering the production supply chain. Detected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). Collected cards are later processed for disposition. NG parts are classified using the two-tier travel card system:�Green Travel Card�(Factory Scrap) for internally generated defects (e.g., handling damage occurring during internal unloading) requiring no additional validation before disposal; or�Orange Travel Card�(Supplier Claim) for supplier-related defects (e.g., damaged packaging, incorrect quantity, material non-conformance, wrong part number) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
@@ -2887,7 +2887,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356243-r5aep6le",
+          "id": "1788785495162-w41gzt0s",
           "seq": "10.4",
           "name": "NG Parts Detection(Intralogistic Area)",
           "description": "Identifies and records non-qualified parts detected during intralogistics operations,including replenishment, picking, and kitting activities,ensuring defective materials are removed from circulation before reaching the production line. Detected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). Collected cards are later processed for disposition. NG parts are classified using the two-tier travel card system:�Green Travel Card�(Factory Scrap) for internally generated defects (e.g., handling damage, label damage, mishandling during internal transport) requiring no additional validation before disposal; or�Orange Travel Card�(Supplier Claim) for supplier-related defects (e.g., latent material defects not detected at reception) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
@@ -2912,7 +2912,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-r67vv2un",
+          "id": "1788785495162-u0rp4boe",
           "seq": "10.5",
           "name": "NG Parts List",
           "description": "Compiles and maintains a formal, centralized list of all non-qualified (NG) parts detected across all operational touchpoints, with each entry linked to its corresponding assigned vehicle (VIN) where applicable. The NG Parts List serves as the master record for quality analysis, root cause investigation, supplier feedback, and performance tracking, capturing key data fields including: part number, defect description, detection location, detection date, assigned vehicle VIN, travel card classification (Green/Orange), and current disposition status (Quarantine, Rework, Scrap, Claim, Returned, Replaced).",
@@ -2935,7 +2935,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-5l1eqsad",
+          "id": "1788785495162-thzmu8uv",
           "seq": "15",
           "name": "NG Parts Analysis & Feedback",
           "description": "Systematic analysis of NG parts data to identify trends, root causes, and improvement opportunities. For each significant defect pattern, perform formal RCA and develop corrective action plans. Update quality standards, inspection checkpoints, and supplier requirements based on findings.",
@@ -2960,7 +2960,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-7zdasvv0",
+          "id": "1788785495162-37hn8pjo",
           "seq": "15.1",
           "name": "Defect Trend Analysis",
           "description": "Analyzes NG detection data to identify recurring defect patterns, high-impact part numbers, and process areas with highest NG rates. Generates dashboards and reports for quality management review.",
@@ -2985,7 +2985,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-pq4ovuvc",
+          "id": "1788785495162-s3s8nxuq",
           "seq": "15.2",
           "name": "Root Cause Analysis",
           "description": "Performs formal root cause analysis (5 Whys, Ishikawa, 8D methodology) for significant defect patterns. Identifies whether root cause is internal (process, equipment, material handling) or supplier-related.",
@@ -3010,7 +3010,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-bb3y6jwb",
+          "id": "1788785495162-vawezzq6",
           "seq": "15.3",
           "name": "Corrective Action Plan",
           "description": "Develops and tracks corrective action plans for identified root causes. Assigns owners, due dates, and verification methods. Updates process controls, work instructions, or supplier requirements as needed.",
@@ -3035,7 +3035,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-6bkrvvl2",
+          "id": "1788785495162-ro2upcld",
           "seq": "15.4",
           "name": "Supplier Quality Feedback",
           "description": "Communicates defect findings and corrective action requirements to suppliers. Updates supplier scorecards and performance ratings. Triggers supplier development activities for recurring issues.",
@@ -3062,7 +3062,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-a9jplpu0",
+          "id": "1788785495162-1ud9lppr",
           "seq": "15.5",
           "name": "Lessons Learned Repository",
           "description": "Maintains a central repository of defect history, root causes, corrective actions, and preventive measures. Enables knowledge sharing and prevents recurrence of similar defects across programs.",
@@ -3089,7 +3089,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-86msrtkj",
+          "id": "1788785495162-oxyqklj6",
           "seq": "20.2",
           "name": "Move to Quarantine Zone (Supplier Claim)",
           "description": "Routing of non-qualified parts based on their travel card classification.  Orange Travel Card parts (Supplier Claim) are moved to the quarantine zone for PQA validation and subsequent claim processing.",
@@ -3112,7 +3112,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-tdn2n7i3",
+          "id": "1788785495162-otncacaz",
           "seq": "30",
           "name": "Quarantine Zone Management",
           "description": "Centralized management of non-qualified parts held in the quarantine zone, ensuring accurate physical and system reconciliation of incoming NG parts, and facilitating disposition decisions (Supplier Claim vs. Process Scrap) through structured review and classification.",
@@ -3135,7 +3135,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-3b1lg66b",
+          "id": "1788785495162-1er1l69n",
           "seq": "30.1",
           "name": "Non-Qualified Parts Reception",
           "description": "Receives and logs non-qualified parts from all operational areas (Body Shop, Trim Shop, Reception, Intralogistics) into the quarantine zone. Performs consistency checks between physical goods and travel card information (material number, quantity, defect description, classification) to ensure accurate tracking and data integrity.",
@@ -3158,7 +3158,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-3gm81zro",
+          "id": "1788785495162-6wh9s855",
           "seq": "30.2",
           "name": "Providor Claim or Process Scrap",
           "description": "Reviews each quarantined NG part to determine the appropriate disposition path:�Supplier Claim�(defect attributable to supplier) requiring formal claim processing and posible return; or�Process Scrap�(internally generated defect) requiring scrap execution. Decision is based on defect ownership, PQA validation results, and repairability assessment.",
@@ -3181,7 +3181,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-zelux65e",
+          "id": "1788785495162-9355ibwp",
           "seq": "40",
           "name": "Process Scrap management",
           "description": "Structured evaluation and routing of internally generated scrap (Green Travel Card parts and Process Scrap classified from quarantine). Parts are assessed for repairability; repairable parts are routed to Rework Order processing, while non-repairable parts are routed to Scrap Execution.",
@@ -3204,7 +3204,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-e3jddbu6",
+          "id": "1788785495162-ot4lu50w",
           "seq": "40.1",
           "name": "Damange Level Validation",
           "description": "Assesses each internally generated NG part to determine the extent of damage and repairability. Parts are classified as:�Repairable�(can be restored to quality standards through rework) or�Non-Repairable�(must be scrapped). Validation is performed against defined quality and engineering standards.",
@@ -3227,7 +3227,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-g0c2788a",
+          "id": "1788785495162-zjyf13iq",
           "seq": "40.2",
           "name": "Repair List",
           "description": "Compiles and maintains a formal list of repairable parts from the quarantine zone, including part numbers, quantities, defect descriptions, and estimated repair effort. This list serves as the input for Rework Order planning (Process 60).",
@@ -3250,7 +3250,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-qppe7e7k",
+          "id": "1788785495162-p45iavvt",
           "seq": "40.3",
           "name": "Scrap List",
           "description": "Compiles and maintains a formal list of non-repairable parts from the quarantine zone, including part numbers, quantities, defect descriptions, and scrap reason codes. This list serves as the input for Scrap Execution (Process 50).",
@@ -3273,7 +3273,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-2ec967kl",
+          "id": "1788785495162-25c6bnkb",
           "seq": "50",
           "name": "Scrap Execution",
           "description": "End-to-end execution of approved scrap disposal, encompassing factory parts purchasing from OEM,  third-party collection, and evidence receipt, ensuring compliant and auditable disposal of non-repairable materials.",
@@ -3296,7 +3296,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-2343ns0m",
+          "id": "1788785495162-zmh7wl26",
           "seq": "50.1",
           "name": "Sales Order (OEM to Factory)",
           "description": "Creates a formal sales order from OEM to Factory for all parts and quantities listed in the approved Scrap List, initiating the financial and logistical transaction for scrap disposal.",
@@ -3319,7 +3319,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-9xkgodc0",
+          "id": "1788785495162-k22sxujz",
           "seq": "50.2",
           "name": "Invoice Payment",
           "description": "Processes payment of the invoice issued to OEM for the parts to be scrapped, completing the financial transaction for scrap material ownership transfer.",
@@ -3342,7 +3342,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-kmmel1bc",
+          "id": "1788785495162-cv4nrq6p",
           "seq": "50.3",
           "name": "Goods Receive (Factory)",
           "description": "Posts system goods receipt of the to-be-scrapped goods from OEM to Factory, updating inventory records and establishing the material ownership transfer required for third-party scrap collection.",
@@ -3365,7 +3365,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-cbkbhmbe",
+          "id": "1788785495162-z5ipyc7b",
           "seq": "50.4",
           "name": "Notify Scrap 3rd Party",
           "description": "Formally notifies the designated third-party scrap collection vendor of the available scrap materials, providing collection schedule, material list, quantities, and pickup location details.",
@@ -3388,7 +3388,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-eqthpjx5",
+          "id": "1788785495162-jcenoz8x",
           "seq": "50.5",
           "name": "Receive Scrap Evidence",
           "description": "Receives and verifies formal scrap execution evidence from the third-party vendor (e.g., weight tickets, destruction certificates, recycling reports), confirming that scrap has been properly processed and disposed in compliance with environmental and regulatory requirements.",
@@ -3411,7 +3411,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-sb5vr4vr",
+          "id": "1788785495162-58h3onld",
           "seq": "50.6",
           "name": "Goods Issue (Scrap)",
           "description": "Posts formal goods issue for scrapped parts, removing the materials from inventory and closing the scrap transaction in the system upon receipt of confirmed disposal evidence.",
@@ -3434,7 +3434,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-g9ssxzmm",
+          "id": "1788785495162-6dr4evh0",
           "seq": "60",
           "name": "Rework Order",
           "description": "Structured planning and execution of rework activities for repairable non-qualified parts, encompassing order planning, physical transfer to rework area, repair execution, and handover to PQA for final quality validation.",
@@ -3457,7 +3457,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-q08d1f5o",
+          "id": "1788785495162-uc6ieuo1",
           "seq": "60.1",
           "name": "Rework Order Planning",
           "description": "Plans rework orders for all parts listed on the Repair List, defining estimated work dates, required resources, repair procedures, and quality standards to be met. Prioritization is based on production urgency, material criticality, and available capacity.",
@@ -3480,7 +3480,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-gloxljrs",
+          "id": "1788785495162-ll5c6rv7",
           "seq": "60.2",
           "name": "Transfer Request (Quarantine to Rework)",
           "description": "Creates a formal transfer request to move repairable NG parts from the quarantine zone to the designated rework/repair area, specifying part numbers, quantities, and requested transfer date.",
@@ -3503,7 +3503,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-6uv44g85",
+          "id": "1788785495162-hntwhnzc",
           "seq": "60.3",
           "name": "Transfer Execution (Quarantine to Rework)",
           "description": "Physically executes the transfer of repairable parts from the quarantine zone to the rework/repair area, updating system records and confirming receipt at the rework location.",
@@ -3526,7 +3526,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-b2jh70m6",
+          "id": "1788785495162-x17ljsm7",
           "seq": "60.4",
           "name": "Rework Execution",
           "description": "Executes the repair order according to defined procedures, performing the necessary repairs, replacements, or adjustments to restore the part to quality standards. All rework activities are documented for traceability.",
@@ -3549,7 +3549,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-8n289ho9",
+          "id": "1788785495162-tslvmaex",
           "seq": "60.5",
           "name": "Transfer Request (Rework to Validation)",
           "description": "Creates a formal transfer request to move reworked (recovered) parts from the rework area to the PQA validation area for final quality assessment, specifying part numbers, quantities, and rework completion details.",
@@ -3572,7 +3572,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-8ki3fmtr",
+          "id": "1788785495162-7k31kldu",
           "seq": "60.6",
           "name": "Transfer Execution (Rework to Validation)",
           "description": "Physically executes the transfer of reworked parts from the rework area to the PQA validation area, updating system records and confirming receipt at the validation location.",
@@ -3595,7 +3595,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-4j9cbodz",
+          "id": "1788785495162-8gm18jkd",
           "seq": "70",
           "name": "Recovered Parts Validation",
           "description": "Final quality validation of reworked parts to determine if they meet all engineering and quality standards for re-entry into production. Parts that pass validation are transferred to buffer stock; parts that fail are routed to scrap.",
@@ -3618,7 +3618,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-776s0kzr",
+          "id": "1788785495162-bra6cr5f",
           "seq": "70.1",
           "name": "Move to Scrap (Failed Validation)",
           "description": "Identifies reworked parts that still do not meet quality standards after rework. These parts are added to the Scrap List and routed to Process Scrap Management (Process 40) for disposal.",
@@ -3641,7 +3641,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-qoqlu8wy",
+          "id": "1788785495162-qjy9y45i",
           "seq": "70.2",
           "name": "Transfer Request (Validation to Buffer)",
           "description": "Creates a formal transfer request to move successfully validated (qualified) reworked parts from the PQA validation area to buffer stock for production consumption, specifying part numbers, quantities, and quality approval details.",
@@ -3664,7 +3664,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-999qrq4o",
+          "id": "1788785495162-b6vk90wu",
           "seq": "70.3",
           "name": "Transfer Execution (Validation to Buffer)",
           "description": "Physically executes the transfer of qualified reworked parts from the PQA validation area to the designated buffer stock location, updating system records and confirming receipt at the buffer storage area.",
@@ -3687,7 +3687,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-0y0qk639",
+          "id": "1788785495162-joy85zu2",
           "seq": "70.4",
           "name": "Reception of Recovered Stock",
           "description": "Performs formal system posting of recovered stock into buffer inventory, updating stock levels, lot tracking, and availability status for production consumption.",
@@ -3710,7 +3710,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-qfvqohn5",
+          "id": "1788785495162-zudomjnf",
           "seq": "80",
           "name": "Claim Request Processing",
           "description": "Formal processing of supplier claims for non-qualified parts attributed to supplier defects, encompassing claim notification, disposition of defective parts, replacement part requests, and recovery of operational costs.",
@@ -3733,7 +3733,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-d61ugl9j",
+          "id": "1788785495162-3ayyeu4r",
           "seq": "80.1",
           "name": "Open Claim Request to Provider",
           "description": "Formally raises a claim request to the supplier for all parts identified as supplier-related defects (Orange Travel Card parts validated by PQA), providing detailed claim documentation including part numbers, quantities, defect descriptions, and supporting evidence.",
@@ -3756,7 +3756,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-bcj773nq",
+          "id": "1788785495162-rpu32zok",
           "seq": "80.2",
           "name": "Scrap or Return of Defective Parts",
           "description": "Determines the disposition of defective parts under claim: either�Scrap within Factory�(with supplier credit) or�Return to Supplier�(physical return of defective parts for supplier analysis and replacement). Decision is based on supplier agreement, part value, and logistics feasibility.",
@@ -3779,7 +3779,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-txs9ihc8",
+          "id": "1788785495162-7wg9u91q",
           "seq": "80.3",
           "name": "Replacement Parts Request",
           "description": "Formally requests replacement parts from the supplier for all claimed quantities, specifying required part numbers, quantities, delivery timeline, and shipping instructions to ensure timely replenishment of production inventory.",
@@ -3802,7 +3802,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-okw90a4s",
+          "id": "1788785495162-1rhw8nch",
           "seq": "80.4",
           "name": "Operational Cost Charge Request",
           "description": "Formally requests reimbursement from the supplier for additional operational costs incurred due to the defective parts (e.g., rework labor, production downtime, inspection costs, administrative handling), providing detailed cost breakdown and supporting evidence.",
@@ -3825,7 +3825,7 @@
           "notes": ""
         },
         {
-          "id": "1788785356244-irw5v51f",
+          "id": "1788785495162-jzsnjw2i",
           "seq": "80.5",
           "name": "Incoming Parts Registration",
           "description": "Registers the incoming replacement parts shipment into the inbound logistics platform upon supplier claim acceptance, creating a visible tracking record that enables the factory to identify, monitor, and track the shipment from dispatch through to physical arrival and goods reception, ensuring full visibility and proactive planning for downstream logistics and production operations.",
@@ -3846,13 +3846,657 @@
           "businessDoc": "",
           "userManual": "",
           "notes": ""
+        },
+        {
+          "id": "1788785495162-dquzxj1n",
+          "seq": "90",
+          "name": "Supplier Return Execution",
+          "description": "Physical execution of returning defective parts to the supplier, encompassing transfer requests, physical movement to loading area, and formal goods issue posting to complete the return transaction.",
+          "raci": {
+            "r": [
+              "Parts Quality"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-uxie2w8x",
+          "seq": "90.1",
+          "name": "Transfer Request (Return to Supplier)",
+          "description": "Creates a formal transfer request to move defective parts designated for supplier return from the quarantine zone to the loading/dispatch area, specifying part numbers, quantities, supplier details, and requested transfer date.",
+          "raci": {
+            "r": [
+              "Parts Quality"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-aup7ridy",
+          "seq": "90.2",
+          "name": "Transfer Execution (Quarantine to Loading)",
+          "description": "Physically executes the transfer of return parts from the quarantine zone to the loading/dispatch area, updating system records and confirming receipt at the loading location.",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-16b8cbs1",
+          "seq": "90.3",
+          "name": "Goods Issue (Return to Supplier)",
+          "description": "Posts formal goods issue for return parts when the goods are loaded onto transport and leave the factory premises, updating inventory records and closing the return transaction in the system.",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-0w6uzt5q",
+          "seq": "100",
+          "name": "Material Requirement Planning",
+          "description": "Systematic planning engine that nets production schedules and safety-stock policies against on-hand inventories, generating procurement proposals to guarantee production continuity and scrap-replenishment supply.",
+          "raci": {
+            "r": [
+              "Material Planning"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-gkut6q1b",
+          "seq": "100.1",
+          "name": "Purchase Requirement Generation",
+          "description": "Triggers the MRP system to automatically calculate and propose purchase requisitions (PRs) based on net demand from production orders, safety-stock replenishment needs, and existing open purchase commitments.",
+          "raci": {
+            "r": [
+              "Material Planning"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-o3e6kos3",
+          "seq": "100.2",
+          "name": "Purchase Requirement Maintenance",
+          "description": "Enables material planners to manually review, adjust, or create purchase requisitions to capture off-system demands (e.g., engineer change orders, one-off experimental runs, or urgent demand requests) not covered by the standard MRP netting logic.",
+          "raci": {
+            "r": [
+              "Material Planning"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-f5svwyfs",
+          "seq": "110",
+          "name": "Purchase Execution",
+          "description": "End-to-end management of procurement workflows, from requisition conversion to supplier settlement, ensuring timely material availability at optimized cost and full trade compliance.",
+          "raci": {
+            "r": [
+              "Procurement"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-5sl5aenz",
+          "seq": "110.1",
+          "name": "PR to PO Creation",
+          "description": "Converts purchase requisitions into purchase orders by performing source determination, price condition retrieval, and lot-size rounding (upwards to vendor-specified order multiples), ensuring full alignment with production schedules and procurement policies.",
+          "raci": {
+            "r": [
+              "Material Planning"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-afaz3thf",
+          "seq": "110.2",
+          "name": "PO Complaince Validation",
+          "description": "Performs mandatory compliance and trade-rule checks on purchase orders prior to approval, mitigating legal, regulatory, and reputational risks.",
+          "raci": {
+            "r": [
+              "Trade & Complaince"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-44kfgbva",
+          "seq": "110.3",
+          "name": "PO Approval",
+          "description": "Routes purchase orders through the designated authorization workflow for PO release approval.",
+          "raci": {
+            "r": [
+              "Procurement"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-icgjmqpv",
+          "seq": "110.4",
+          "name": "PO Execution",
+          "description": "Formally transmits approved and released purchase orders to suppliers via the designated channel (e.g., EDI, portal, or email), confirms order acknowledgement, and updates the system with confirmed delivery dates.",
+          "raci": {
+            "r": [
+              "Procurement"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-yazx2mkz",
+          "seq": "110.5",
+          "name": "Invoice Payment",
+          "description": "Processes supplier invoices against received purchase orders and goods receipts (three-way matching), resolves discrepancies, and executes timely payment in accordance with contractual terms.",
+          "raci": {
+            "r": [
+              "Finance"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-j8l3rhgb",
+          "seq": "110.6",
+          "name": "Incoming Parts Registration",
+          "description": "Registers the incoming replacement parts shipment into the inbound logistics platform upon supplier PO tracking release, creating a visible tracking record that enables the factory to identify, monitor, and track the shipment from dispatch through to physical arrival and goods reception, ensuring full visibility and proactive planning for downstream logistics and production operations.",
+          "raci": {
+            "r": [
+              "Material Planning"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-cm7jswy4",
+          "seq": "120",
+          "name": "Replacement Parts Reception",
+          "description": "End-to-end tracking and reception of replacement parts from suppliers, encompassing shipment tracking, goods reception, customs clearance (for 3rd countries), and transfer to safety stock for production availability.",
+          "raci": {
+            "r": [
+              "Parts Quality"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-thawtt85",
+          "seq": "120.1",
+          "name": "Shipment tracking",
+          "description": "Receives and monitors shipment notifications from the supplier for replacement parts, tracking key indicators including: shipment list (part numbers, quantities), estimated time of arrival (ETA), carrier details, and tracking numbers to provide real-time visibility to downstream stakeholders.",
+          "raci": {
+            "r": [
+              "Material Planning"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-tsd65uw0",
+          "seq": "120.2",
+          "name": "Goods Reception (Replacement Parts)",
+          "description": "Receives and validates replacement parts against the shipment notification and claim documentation, verifying material numbers, quantities, and condition. Any discrepancies are immediately reported for resolution.",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-gg1zifsb",
+          "seq": "120.3",
+          "name": "Customs Clearance (3rd Countries)",
+          "description": "Executes all mandatory customs declaration and clearance procedures for replacement parts imported from 3rd countries, ensuring full compliance with trade regulations, tariff classifications, and documentation requirements to avoid border delays.",
+          "raci": {
+            "r": [
+              "Trade & Complaince"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-dvcljy37",
+          "seq": "120.4",
+          "name": "Transfer to Safety Stock",
+          "description": "Transfers received and validated replacement parts from the reception area to the designated safety stock location, updating inventory records and making the parts available for production consumption as needed.",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-8t9gpged",
+          "seq": "130",
+          "name": "Replacement Parts ATP Check",
+          "description": "Systematic availability check to determine if replacement parts are available to replace detected non-qualified (NG) parts. ATP (Available-to-Promise) verification is performed across all inventory tiers: factory buffer stock, warehouse safety stock and stock in transit. To identify the optimal sourcing location and ensure timely fulfillment of replacement demand",
+          "raci": {
+            "r": [
+              "Material Planning"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-5o2rkcfc",
+          "seq": "130.1",
+          "name": "Factory ATP Check",
+          "description": "Verifies availability of replacement parts within the factory buffer stock. Checks real-time inventory levels, reserved quantities, and committed allocations to determine if the required parts can be sourced immediately from factory buffer to cover the NG parts shortage.",
+          "raci": {
+            "r": [
+              "Material Planning"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-p0zjmhsf",
+          "seq": "130.2",
+          "name": "Warehouse ATP Check",
+          "description": "Verifies availability of replacement parts within the warehouse safety stock. Checks real-time inventory levels, reserved quantities, and committed allocations to determine if the required parts can be sourced from warehouse safety stock when factory buffer stock is insufficient to cover the NG parts shortage.",
+          "raci": {
+            "r": [
+              "Material Planning"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-lcf4dv7u",
+          "seq": "140",
+          "name": "Replacement Parts Supply Management",
+          "description": "End-to-end process to supply replacement stock to cover material shortages generated by non-qualified (NG) parts detection.  Transfer requests from factory buffer to demanding areas, warehouse-to-factory replenishment, goods issue, goods receipt, and transfer execution, ensuring seamless material flow to maintain production continuity.",
+          "raci": {
+            "r": [
+              "Material Planning"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-0mtkwqlr",
+          "seq": "140.1",
+          "name": "Transfer Request (Factory Buffer to Demanding Area",
+          "description": "Creates a formal transfer request to move replacement parts from the factory buffer stock to the demanding area (e.g., Body Shop, Trim Shop, or Final line). The request includes: required date, material list, quantities, and receiving department, ensuring timely and accurate fulfillment of replacement demand.",
+          "raci": {
+            "r": [
+              "Material Planning"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-msgsszdi",
+          "seq": "140.2",
+          "name": "Transfer Request (Warehouse To Factory )",
+          "description": "Creates a formal transfer request to move replacement parts from the warehouse safety stock to the factory buffer area when buffer stock levels fall below required thresholds. The request includes: required date, material list, quantities, and receiving location, ensuring continuous replenishment of factory buffer to support ongoing replacement demands.",
+          "raci": {
+            "r": [
+              "Material Planning"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-v3nttl1c",
+          "seq": "140.3",
+          "name": "Warehouse Goods Issue",
+          "description": "Executes the physical and system goods issue of replacement parts from the warehouse to the factory buffer area. Posts formal goods issue in the system, updates inventory records, and confirms dispatch of the required material list to the factory.",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-rlkkc77c",
+          "seq": "140.4",
+          "name": "Factory Goods Recept",
+          "description": "Executes the physical and system goods receipt of replacement parts from the warehouse into the factory buffer area. Posts formal goods receipt in the system, updates inventory records, and confirms receipt of the required material list, making the parts available for production consumption.",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788785495162-znaoi27x",
+          "seq": "140.5",
+          "name": "Replacement Parts transfer Execution",
+          "description": "Executes the physical and system transfer of replacement parts from the factory buffer stock to the demanding area. Posts formal goods issue in the system, updates inventory records, and confirms dispatch with key details including: goods issue date, material list, quantities, and receiving department, ensuring full traceability and timely availability at the point of use.",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Started",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
         }
       ],
       "workflow": {
         "nodes": [
           {
             "id": "node-0",
-            "processId": "1788785356243-a9gbw018",
+            "processId": "1788785495161-geuzdt1k",
             "type": "main",
             "x": 100,
             "y": 100,
@@ -3861,7 +4505,7 @@
           },
           {
             "id": "node-1",
-            "processId": "1788785356243-hj78csam",
+            "processId": "1788785495162-ao5b89fa",
             "type": "sub",
             "x": 260,
             "y": 100,
@@ -3870,7 +4514,7 @@
           },
           {
             "id": "node-10",
-            "processId": "1788785356244-6bkrvvl2",
+            "processId": "1788785495162-ro2upcld",
             "type": "sub",
             "x": 740,
             "y": 210,
@@ -3879,7 +4523,7 @@
           },
           {
             "id": "node-11",
-            "processId": "1788785356244-a9jplpu0",
+            "processId": "1788785495162-1ud9lppr",
             "type": "sub",
             "x": 900,
             "y": 210,
@@ -3888,7 +4532,7 @@
           },
           {
             "id": "node-12",
-            "processId": "1788785356244-86msrtkj",
+            "processId": "1788785495162-oxyqklj6",
             "type": "sub",
             "x": 100,
             "y": 320,
@@ -3897,7 +4541,7 @@
           },
           {
             "id": "node-13",
-            "processId": "1788785356244-tdn2n7i3",
+            "processId": "1788785495162-otncacaz",
             "type": "main",
             "x": 260,
             "y": 320,
@@ -3906,7 +4550,7 @@
           },
           {
             "id": "node-14",
-            "processId": "1788785356244-3b1lg66b",
+            "processId": "1788785495162-1er1l69n",
             "type": "sub",
             "x": 420,
             "y": 320,
@@ -3915,7 +4559,7 @@
           },
           {
             "id": "node-15",
-            "processId": "1788785356244-3gm81zro",
+            "processId": "1788785495162-6wh9s855",
             "type": "sub",
             "x": 580,
             "y": 320,
@@ -3924,7 +4568,7 @@
           },
           {
             "id": "node-16",
-            "processId": "1788785356244-zelux65e",
+            "processId": "1788785495162-9355ibwp",
             "type": "main",
             "x": 740,
             "y": 320,
@@ -3933,7 +4577,7 @@
           },
           {
             "id": "node-17",
-            "processId": "1788785356244-e3jddbu6",
+            "processId": "1788785495162-ot4lu50w",
             "type": "sub",
             "x": 900,
             "y": 320,
@@ -3942,7 +4586,7 @@
           },
           {
             "id": "node-18",
-            "processId": "1788785356244-g0c2788a",
+            "processId": "1788785495162-zjyf13iq",
             "type": "sub",
             "x": 100,
             "y": 430,
@@ -3951,7 +4595,7 @@
           },
           {
             "id": "node-19",
-            "processId": "1788785356244-qppe7e7k",
+            "processId": "1788785495162-p45iavvt",
             "type": "sub",
             "x": 260,
             "y": 430,
@@ -3960,7 +4604,7 @@
           },
           {
             "id": "node-2",
-            "processId": "1788785356243-yht6uspm",
+            "processId": "1788785495162-cb4zl4bq",
             "type": "sub",
             "x": 420,
             "y": 100,
@@ -3969,7 +4613,7 @@
           },
           {
             "id": "node-20",
-            "processId": "1788785356244-2ec967kl",
+            "processId": "1788785495162-25c6bnkb",
             "type": "main",
             "x": 420,
             "y": 430,
@@ -3978,7 +4622,7 @@
           },
           {
             "id": "node-21",
-            "processId": "1788785356244-2343ns0m",
+            "processId": "1788785495162-zmh7wl26",
             "type": "sub",
             "x": 580,
             "y": 430,
@@ -3987,7 +4631,7 @@
           },
           {
             "id": "node-22",
-            "processId": "1788785356244-9xkgodc0",
+            "processId": "1788785495162-k22sxujz",
             "type": "sub",
             "x": 740,
             "y": 430,
@@ -3996,7 +4640,7 @@
           },
           {
             "id": "node-23",
-            "processId": "1788785356244-kmmel1bc",
+            "processId": "1788785495162-cv4nrq6p",
             "type": "sub",
             "x": 900,
             "y": 430,
@@ -4005,7 +4649,7 @@
           },
           {
             "id": "node-24",
-            "processId": "1788785356244-cbkbhmbe",
+            "processId": "1788785495162-z5ipyc7b",
             "type": "sub",
             "x": 100,
             "y": 540,
@@ -4014,7 +4658,7 @@
           },
           {
             "id": "node-25",
-            "processId": "1788785356244-eqthpjx5",
+            "processId": "1788785495162-jcenoz8x",
             "type": "sub",
             "x": 260,
             "y": 540,
@@ -4023,7 +4667,7 @@
           },
           {
             "id": "node-26",
-            "processId": "1788785356244-sb5vr4vr",
+            "processId": "1788785495162-58h3onld",
             "type": "sub",
             "x": 420,
             "y": 540,
@@ -4032,7 +4676,7 @@
           },
           {
             "id": "node-27",
-            "processId": "1788785356244-g9ssxzmm",
+            "processId": "1788785495162-6dr4evh0",
             "type": "main",
             "x": 580,
             "y": 540,
@@ -4041,7 +4685,7 @@
           },
           {
             "id": "node-28",
-            "processId": "1788785356244-q08d1f5o",
+            "processId": "1788785495162-uc6ieuo1",
             "type": "sub",
             "x": 740,
             "y": 540,
@@ -4050,7 +4694,7 @@
           },
           {
             "id": "node-29",
-            "processId": "1788785356244-gloxljrs",
+            "processId": "1788785495162-ll5c6rv7",
             "type": "sub",
             "x": 900,
             "y": 540,
@@ -4059,7 +4703,7 @@
           },
           {
             "id": "node-3",
-            "processId": "1788785356243-1irlnaj4",
+            "processId": "1788785495162-k2hyzw2p",
             "type": "sub",
             "x": 580,
             "y": 100,
@@ -4068,7 +4712,7 @@
           },
           {
             "id": "node-30",
-            "processId": "1788785356244-6uv44g85",
+            "processId": "1788785495162-hntwhnzc",
             "type": "sub",
             "x": 100,
             "y": 650,
@@ -4077,7 +4721,7 @@
           },
           {
             "id": "node-31",
-            "processId": "1788785356244-b2jh70m6",
+            "processId": "1788785495162-x17ljsm7",
             "type": "sub",
             "x": 260,
             "y": 650,
@@ -4086,7 +4730,7 @@
           },
           {
             "id": "node-32",
-            "processId": "1788785356244-8n289ho9",
+            "processId": "1788785495162-tslvmaex",
             "type": "sub",
             "x": 420,
             "y": 650,
@@ -4095,7 +4739,7 @@
           },
           {
             "id": "node-33",
-            "processId": "1788785356244-8ki3fmtr",
+            "processId": "1788785495162-7k31kldu",
             "type": "sub",
             "x": 580,
             "y": 650,
@@ -4104,7 +4748,7 @@
           },
           {
             "id": "node-34",
-            "processId": "1788785356244-4j9cbodz",
+            "processId": "1788785495162-8gm18jkd",
             "type": "main",
             "x": 740,
             "y": 650,
@@ -4113,7 +4757,7 @@
           },
           {
             "id": "node-35",
-            "processId": "1788785356244-776s0kzr",
+            "processId": "1788785495162-bra6cr5f",
             "type": "sub",
             "x": 900,
             "y": 650,
@@ -4122,7 +4766,7 @@
           },
           {
             "id": "node-36",
-            "processId": "1788785356244-qoqlu8wy",
+            "processId": "1788785495162-qjy9y45i",
             "type": "sub",
             "x": 100,
             "y": 760,
@@ -4131,7 +4775,7 @@
           },
           {
             "id": "node-37",
-            "processId": "1788785356244-999qrq4o",
+            "processId": "1788785495162-b6vk90wu",
             "type": "sub",
             "x": 260,
             "y": 760,
@@ -4140,7 +4784,7 @@
           },
           {
             "id": "node-38",
-            "processId": "1788785356244-0y0qk639",
+            "processId": "1788785495162-joy85zu2",
             "type": "sub",
             "x": 420,
             "y": 760,
@@ -4149,7 +4793,7 @@
           },
           {
             "id": "node-39",
-            "processId": "1788785356244-qfvqohn5",
+            "processId": "1788785495162-zudomjnf",
             "type": "main",
             "x": 580,
             "y": 760,
@@ -4158,7 +4802,7 @@
           },
           {
             "id": "node-4",
-            "processId": "1788785356243-r5aep6le",
+            "processId": "1788785495162-w41gzt0s",
             "type": "sub",
             "x": 740,
             "y": 100,
@@ -4167,7 +4811,7 @@
           },
           {
             "id": "node-40",
-            "processId": "1788785356244-d61ugl9j",
+            "processId": "1788785495162-3ayyeu4r",
             "type": "sub",
             "x": 740,
             "y": 760,
@@ -4176,7 +4820,7 @@
           },
           {
             "id": "node-41",
-            "processId": "1788785356244-bcj773nq",
+            "processId": "1788785495162-rpu32zok",
             "type": "sub",
             "x": 900,
             "y": 760,
@@ -4185,7 +4829,7 @@
           },
           {
             "id": "node-42",
-            "processId": "1788785356244-txs9ihc8",
+            "processId": "1788785495162-7wg9u91q",
             "type": "sub",
             "x": 100,
             "y": 870,
@@ -4194,7 +4838,7 @@
           },
           {
             "id": "node-43",
-            "processId": "1788785356244-okw90a4s",
+            "processId": "1788785495162-1rhw8nch",
             "type": "sub",
             "x": 260,
             "y": 870,
@@ -4203,7 +4847,7 @@
           },
           {
             "id": "node-44",
-            "processId": "1788785356244-irw5v51f",
+            "processId": "1788785495162-jzsnjw2i",
             "type": "sub",
             "x": 420,
             "y": 870,
@@ -4212,7 +4856,7 @@
           },
           {
             "id": "node-5",
-            "processId": "1788785356244-r67vv2un",
+            "processId": "1788785495162-u0rp4boe",
             "type": "sub",
             "x": 900,
             "y": 100,
@@ -4221,7 +4865,7 @@
           },
           {
             "id": "node-6",
-            "processId": "1788785356244-5l1eqsad",
+            "processId": "1788785495162-thzmu8uv",
             "type": "main",
             "x": 100,
             "y": 210,
@@ -4230,7 +4874,7 @@
           },
           {
             "id": "node-7",
-            "processId": "1788785356244-7zdasvv0",
+            "processId": "1788785495162-37hn8pjo",
             "type": "sub",
             "x": 260,
             "y": 210,
@@ -4239,7 +4883,7 @@
           },
           {
             "id": "node-8",
-            "processId": "1788785356244-pq4ovuvc",
+            "processId": "1788785495162-s3s8nxuq",
             "type": "sub",
             "x": 420,
             "y": 210,
@@ -4248,11 +4892,263 @@
           },
           {
             "id": "node-9",
-            "processId": "1788785356244-bb3y6jwb",
+            "processId": "1788785495162-vawezzq6",
             "type": "sub",
             "x": 580,
             "y": 210,
             "label": "Corrective Action Plan",
+            "hidden": false
+          },
+          {
+            "id": "node-45",
+            "processId": "1788785495162-dquzxj1n",
+            "type": "main",
+            "x": 580,
+            "y": 870,
+            "label": "Supplier Return Execution",
+            "hidden": false
+          },
+          {
+            "id": "node-46",
+            "processId": "1788785495162-uxie2w8x",
+            "type": "sub",
+            "x": 740,
+            "y": 870,
+            "label": "Transfer Request (Return to Supplier)",
+            "hidden": false
+          },
+          {
+            "id": "node-47",
+            "processId": "1788785495162-aup7ridy",
+            "type": "sub",
+            "x": 900,
+            "y": 870,
+            "label": "Transfer Execution (Quarantine to Loading)",
+            "hidden": false
+          },
+          {
+            "id": "node-48",
+            "processId": "1788785495162-16b8cbs1",
+            "type": "sub",
+            "x": 100,
+            "y": 980,
+            "label": "Goods Issue (Return to Supplier)",
+            "hidden": false
+          },
+          {
+            "id": "node-49",
+            "processId": "1788785495162-0w6uzt5q",
+            "type": "main",
+            "x": 260,
+            "y": 980,
+            "label": "Material Requirement Planning",
+            "hidden": false
+          },
+          {
+            "id": "node-50",
+            "processId": "1788785495162-gkut6q1b",
+            "type": "sub",
+            "x": 420,
+            "y": 980,
+            "label": "Purchase Requirement Generation",
+            "hidden": false
+          },
+          {
+            "id": "node-51",
+            "processId": "1788785495162-o3e6kos3",
+            "type": "sub",
+            "x": 580,
+            "y": 980,
+            "label": "Purchase Requirement Maintenance",
+            "hidden": false
+          },
+          {
+            "id": "node-52",
+            "processId": "1788785495162-f5svwyfs",
+            "type": "main",
+            "x": 740,
+            "y": 980,
+            "label": "Purchase Execution",
+            "hidden": false
+          },
+          {
+            "id": "node-53",
+            "processId": "1788785495162-5sl5aenz",
+            "type": "sub",
+            "x": 900,
+            "y": 980,
+            "label": "PR to PO Creation",
+            "hidden": false
+          },
+          {
+            "id": "node-54",
+            "processId": "1788785495162-afaz3thf",
+            "type": "sub",
+            "x": 100,
+            "y": 1090,
+            "label": "PO Complaince Validation",
+            "hidden": false
+          },
+          {
+            "id": "node-55",
+            "processId": "1788785495162-44kfgbva",
+            "type": "sub",
+            "x": 260,
+            "y": 1090,
+            "label": "PO Approval",
+            "hidden": false
+          },
+          {
+            "id": "node-56",
+            "processId": "1788785495162-icgjmqpv",
+            "type": "sub",
+            "x": 420,
+            "y": 1090,
+            "label": "PO Execution",
+            "hidden": false
+          },
+          {
+            "id": "node-57",
+            "processId": "1788785495162-yazx2mkz",
+            "type": "sub",
+            "x": 580,
+            "y": 1090,
+            "label": "Invoice Payment",
+            "hidden": false
+          },
+          {
+            "id": "node-58",
+            "processId": "1788785495162-j8l3rhgb",
+            "type": "sub",
+            "x": 740,
+            "y": 1090,
+            "label": "Incoming Parts Registration",
+            "hidden": false
+          },
+          {
+            "id": "node-59",
+            "processId": "1788785495162-cm7jswy4",
+            "type": "main",
+            "x": 900,
+            "y": 1090,
+            "label": "Replacement Parts Reception",
+            "hidden": false
+          },
+          {
+            "id": "node-60",
+            "processId": "1788785495162-thawtt85",
+            "type": "sub",
+            "x": 100,
+            "y": 1200,
+            "label": "Shipment tracking",
+            "hidden": false
+          },
+          {
+            "id": "node-61",
+            "processId": "1788785495162-tsd65uw0",
+            "type": "sub",
+            "x": 260,
+            "y": 1200,
+            "label": "Goods Reception (Replacement Parts)",
+            "hidden": false
+          },
+          {
+            "id": "node-62",
+            "processId": "1788785495162-gg1zifsb",
+            "type": "sub",
+            "x": 420,
+            "y": 1200,
+            "label": "Customs Clearance (3rd Countries)",
+            "hidden": false
+          },
+          {
+            "id": "node-63",
+            "processId": "1788785495162-dvcljy37",
+            "type": "sub",
+            "x": 580,
+            "y": 1200,
+            "label": "Transfer to Safety Stock",
+            "hidden": false
+          },
+          {
+            "id": "node-64",
+            "processId": "1788785495162-8t9gpged",
+            "type": "main",
+            "x": 740,
+            "y": 1200,
+            "label": "Replacement Parts ATP Check",
+            "hidden": false
+          },
+          {
+            "id": "node-65",
+            "processId": "1788785495162-5o2rkcfc",
+            "type": "sub",
+            "x": 900,
+            "y": 1200,
+            "label": "Factory ATP Check",
+            "hidden": false
+          },
+          {
+            "id": "node-66",
+            "processId": "1788785495162-p0zjmhsf",
+            "type": "sub",
+            "x": 100,
+            "y": 1310,
+            "label": "Warehouse ATP Check",
+            "hidden": false
+          },
+          {
+            "id": "node-67",
+            "processId": "1788785495162-lcf4dv7u",
+            "type": "main",
+            "x": 260,
+            "y": 1310,
+            "label": "Replacement Parts Supply Management",
+            "hidden": false
+          },
+          {
+            "id": "node-68",
+            "processId": "1788785495162-0mtkwqlr",
+            "type": "sub",
+            "x": 420,
+            "y": 1310,
+            "label": "Transfer Request (Factory Buffer to Demanding Area",
+            "hidden": false
+          },
+          {
+            "id": "node-69",
+            "processId": "1788785495162-msgsszdi",
+            "type": "sub",
+            "x": 580,
+            "y": 1310,
+            "label": "Transfer Request (Warehouse To Factory )",
+            "hidden": false
+          },
+          {
+            "id": "node-70",
+            "processId": "1788785495162-v3nttl1c",
+            "type": "sub",
+            "x": 740,
+            "y": 1310,
+            "label": "Warehouse Goods Issue",
+            "hidden": false
+          },
+          {
+            "id": "node-71",
+            "processId": "1788785495162-rlkkc77c",
+            "type": "sub",
+            "x": 900,
+            "y": 1310,
+            "label": "Factory Goods Recept",
+            "hidden": false
+          },
+          {
+            "id": "node-72",
+            "processId": "1788785495162-znaoi27x",
+            "type": "sub",
+            "x": 100,
+            "y": 1420,
+            "label": "Replacement Parts transfer Execution",
             "hidden": false
           }
         ],
