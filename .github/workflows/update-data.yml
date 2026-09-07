@@ -46,25 +46,42 @@ jobs:
             const payload = JSON.parse(fs.readFileSync("payload.json", "utf8"));
             console.log("Payload type:", payload.type);
 
-            let result = JSON.parse(JSON.stringify(currentData)); // clone
+            let result = JSON.parse(JSON.stringify(currentData));
 
-            // ============================================================
-            // HANDLER: node-diff (process, node & connection changes by ID)
-            // ============================================================
             if (payload.type === "node-diff" && payload.data) {
               const diff = JSON.parse(payload.data);
               console.log("Applying node-diff by ID");
               for (const scId in diff) {
-                const scenario = result.scenarios.find(s => s.id === scId);
+                const scenarioDiff = diff[scId];
+                let scenario = result.scenarios.find(s => s.id === scId);
+
+                // ==========================================================
+                // Handle NEW SCENARIO (full data)
+                // ==========================================================
+                if (scenarioDiff._full) {
+                  const newScenario = scenarioDiff.data;
+                  if (!result.scenarios.some(s => s.id === newScenario.id)) {
+                    result.scenarios.push(newScenario);
+                    console.log(`Added new scenario: ${newScenario.id} (${newScenario.name})`);
+                  } else {
+                    // Update existing scenario with full data
+                    const idx = result.scenarios.findIndex(s => s.id === newScenario.id);
+                    if (idx !== -1) {
+                      result.scenarios[idx] = newScenario;
+                      console.log(`Updated scenario ${newScenario.id} with full data`);
+                    }
+                  }
+                  continue; // Skip other changes for this scenario
+                }
+
                 if (!scenario) {
                   console.warn("Scenario not found:", scId);
                   continue;
                 }
+
                 if (!scenario.workflow) scenario.workflow = { nodes: [], connections: [] };
                 const nodes = scenario.workflow.nodes || [];
                 const connections = scenario.workflow.connections || [];
-
-                const scenarioDiff = diff[scId];
 
                 // ==========================================================
                 // Apply process changes (add, update, delete)
@@ -79,8 +96,6 @@ jobs:
                       if (idx !== -1) {
                         processes.splice(idx, 1);
                         console.log(`Deleted process ${procId}`);
-                      } else {
-                        console.warn(`Process ${procId} not found for deletion`);
                       }
                     } else if (change._added) {
                       const newProc = change.proc;
@@ -88,16 +103,12 @@ jobs:
                       if (!processes.some(p => p.id === procId)) {
                         processes.push(newProc);
                         console.log(`Added process ${procId}`);
-                      } else {
-                        console.warn(`Process ${procId} already exists, skipping add`);
                       }
                     } else if (change._updated) {
                       const idx = processes.findIndex(p => p.id === procId);
                       if (idx !== -1) {
                         processes[idx] = change.proc;
                         console.log(`Updated process ${procId}`);
-                      } else {
-                        console.warn(`Process ${procId} not found for update`);
                       }
                     }
                   }
@@ -115,8 +126,6 @@ jobs:
                       if (idx !== -1) {
                         nodes.splice(idx, 1);
                         console.log(`Deleted node ${nodeId}`);
-                      } else {
-                        console.warn(`Node ${nodeId} not found for deletion`);
                       }
                     } else if (change._added) {
                       const newNode = change.node;
@@ -124,8 +133,6 @@ jobs:
                       if (!nodes.some(n => n.id === nodeId)) {
                         nodes.push(newNode);
                         console.log(`Added node ${nodeId}`);
-                      } else {
-                        console.warn(`Node ${nodeId} already exists, skipping add`);
                       }
                     } else {
                       const node = nodes.find(n => n.id === nodeId);
@@ -134,8 +141,6 @@ jobs:
                           node[key] = change[key];
                         }
                         console.log(`Updated node ${nodeId}`);
-                      } else {
-                        console.warn(`Node ${nodeId} not found for update`);
                       }
                     }
                   }
@@ -153,8 +158,6 @@ jobs:
                       if (idx !== -1) {
                         connections.splice(idx, 1);
                         console.log(`Deleted connection ${connId}`);
-                      } else {
-                        console.warn(`Connection ${connId} not found for deletion`);
                       }
                     } else if (change._added) {
                       const newConn = change.conn;
@@ -162,8 +165,6 @@ jobs:
                       if (!connections.some(c => c.id === connId)) {
                         connections.push(newConn);
                         console.log(`Added connection ${connId}`);
-                      } else {
-                        console.warn(`Connection ${connId} already exists, skipping add`);
                       }
                     } else {
                       const conn = connections.find(c => c.id === connId);
@@ -172,8 +173,6 @@ jobs:
                           conn[key] = change[key];
                         }
                         console.log(`Updated connection ${connId}`);
-                      } else {
-                        console.warn(`Connection ${connId} not found for update`);
                       }
                     }
                   }
