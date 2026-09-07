@@ -77,14 +77,30 @@ const columnNames = {
 function genId() {
     return Date.now() + '-' + Math.random().toString(36).substr(2, 8);
 }
-    function generateNodeDiff(oldScenarios, newScenarios) {
+function generateNodeDiff(oldScenarios, newScenarios) {
     const diff = {};
     const oldMap = {};
     oldScenarios.forEach(s => { oldMap[s.id] = s; });
 
+    // ============================================================
+    // Check for DELETED scenarios (in old but not in new)
+    // ============================================================
+    const newIds = new Set(newScenarios.map(s => s.id));
+    for (const oldId in oldMap) {
+        if (!newIds.has(oldId)) {
+            // Scenario was deleted
+            diff[oldId] = { _deleted: true };
+            console.log(`Scenario ${oldId} was deleted`);
+        }
+    }
+
+    // ============================================================
+    // Process new scenarios (added or updated)
+    // ============================================================
     newScenarios.forEach(newSc => {
         const oldSc = oldMap[newSc.id];
         if (!oldSc) {
+            // New scenario – send full data
             diff[newSc.id] = { _full: true, data: newSc };
             return;
         }
@@ -92,10 +108,13 @@ function genId() {
         const scenarioDiff = {};
 
         // ============================================================
-        // NEW: Compare scenario-level properties (name, etc.)
+        // Compare scenario-level properties (name, etc.)
         // ============================================================
         const scenarioChanges = {};
-        if (newSc.name !== oldSc.name) scenarioChanges.name = newSc.name;
+        if (newSc.name !== oldSc.name) {
+            scenarioChanges.name = newSc.name;
+            console.log(`Scenario ${newSc.id} name changed: "${oldSc.name}" → "${newSc.name}"`);
+        }
         // Add other scenario-level properties if needed
         if (Object.keys(scenarioChanges).length > 0) {
             scenarioDiff._scenario = scenarioChanges;
