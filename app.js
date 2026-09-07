@@ -2384,7 +2384,7 @@ function bindEvents() {
             //lastSnapshot = JSON.parse(JSON.stringify(appData));
             //saveSnapshot(lastSnapshot);
             // =========================================
-            console.log(`✅ Scenario renamed to "${nn.trim()}". Click "Save to GitHub" to persist.
+            console.log(`✅ Scenario renamed to "${nn.trim()}". Click "Save to GitHub" to persist.`);
         }
     };
 
