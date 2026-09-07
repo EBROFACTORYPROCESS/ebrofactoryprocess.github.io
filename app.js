@@ -2305,6 +2305,10 @@ function bindEvents() {
         appData.currentScenarioId = e.target.value;
         collapseState.clear();
         renderCurrentView();
+        // ===== IMPORTANT: Update the snapshot =====
+        lastSnapshot = JSON.parse(JSON.stringify(appData));
+        saveSnapshot(lastSnapshot);
+        // =========================================
     };
     document.getElementById('cleanupOrphanNodesBtn').addEventListener('click', function() {
         if (currentMode !== 'edit') return;
@@ -2323,10 +2327,20 @@ function bindEvents() {
         let name = prompt('Scenario name:', 'New');
         if (name) {
             let id = genId();
-            appData.scenarios.push({ id, name, processes: [] });
+            appData.scenarios.push({ 
+                id, 
+                name, 
+                processes: [], 
+                workflow: { nodes: [], connections: [] } 
+            });
             appData.currentScenarioId = id;
+            // ===== IMPORTANT: Update the snapshot =====
+            lastSnapshot = JSON.parse(JSON.stringify(appData));
+            saveSnapshot(lastSnapshot);
+            // =========================================
             refreshScenarioDropdown();
             renderCurrentView();
+            alert(`✅ Scenario "${name}" created. Click "Save to GitHub" to persist it.`);
         }
     };
 
@@ -2338,6 +2352,10 @@ function bindEvents() {
             if (nn) sc.name = nn;
             refreshScenarioDropdown();
             renderCurrentView();
+            // ===== IMPORTANT: Update the snapshot =====
+            lastSnapshot = JSON.parse(JSON.stringify(appData));
+            saveSnapshot(lastSnapshot);
+            // =========================================
         }
     };
 
@@ -2347,20 +2365,25 @@ function bindEvents() {
             alert('❌ Cannot delete the last scenario.');
             return;
         }
-
+    
         const sc = getCurrentScenario();
         if (!sc) return;
-
+    
         const confirmMsg = `⚠️ Delete scenario "${sc.name}"?\n\nThis will permanently delete ALL processes within this scenario.`;
         if (!confirm(confirmMsg)) return;
-
+    
         appData.scenarios = appData.scenarios.filter(s => s.id !== appData.currentScenarioId);
         appData.currentScenarioId = appData.scenarios[0].id;
-
+    
         collapseState.clear();
         refreshScenarioDropdown();
         renderCurrentView();
-
+    
+        // ===== IMPORTANT: Update the snapshot =====
+        lastSnapshot = JSON.parse(JSON.stringify(appData));
+        saveSnapshot(lastSnapshot);
+        // =========================================
+    
         const saveBtn = document.getElementById('saveDataBtn');
         if (saveBtn) {
             saveBtn.style.animation = 'pulse 0.5s ease 3';
