@@ -55,23 +55,20 @@ jobs:
                 const scenarioDiff = diff[scId];
                 let scenario = result.scenarios.find(s => s.id === scId);
 
-                // ==========================================================
                 // Handle NEW SCENARIO (full data)
-                // ==========================================================
                 if (scenarioDiff._full) {
                   const newScenario = scenarioDiff.data;
                   if (!result.scenarios.some(s => s.id === newScenario.id)) {
                     result.scenarios.push(newScenario);
                     console.log(`Added new scenario: ${newScenario.id} (${newScenario.name})`);
                   } else {
-                    // Update existing scenario with full data
                     const idx = result.scenarios.findIndex(s => s.id === newScenario.id);
                     if (idx !== -1) {
                       result.scenarios[idx] = newScenario;
                       console.log(`Updated scenario ${newScenario.id} with full data`);
                     }
                   }
-                  continue; // Skip other changes for this scenario
+                  continue;
                 }
 
                 if (!scenario) {
@@ -79,13 +76,21 @@ jobs:
                   continue;
                 }
 
+                // ==========================================================
+                // Apply scenario-level changes (name, etc.)
+                // ==========================================================
+                if (scenarioDiff._scenario) {
+                  for (const key in scenarioDiff._scenario) {
+                    scenario[key] = scenarioDiff._scenario[key];
+                    console.log(`Updated scenario ${scId}: ${key} = ${scenarioDiff._scenario[key]}`);
+                  }
+                }
+
                 if (!scenario.workflow) scenario.workflow = { nodes: [], connections: [] };
                 const nodes = scenario.workflow.nodes || [];
                 const connections = scenario.workflow.connections || [];
 
-                // ==========================================================
-                // Apply process changes (add, update, delete)
-                // ==========================================================
+                // Apply process changes
                 if (scenarioDiff.processes) {
                   const procDiffs = scenarioDiff.processes;
                   const processes = scenario.processes || [];
@@ -115,9 +120,7 @@ jobs:
                   scenario.processes = processes;
                 }
 
-                // ==========================================================
-                // Apply node changes (ADD, UPDATE, DELETE)
-                // ==========================================================
+                // Apply node changes
                 if (scenarioDiff.nodes) {
                   for (const nodeId in scenarioDiff.nodes) {
                     const change = scenarioDiff.nodes[nodeId];
@@ -146,9 +149,7 @@ jobs:
                   }
                 }
 
-                // ==========================================================
-                // Apply connection changes (ADD, UPDATE, DELETE)
-                // ==========================================================
+                // Apply connection changes
                 if (scenarioDiff.connections) {
                   const connDiffs = scenarioDiff.connections;
                   for (const connId in connDiffs) {
@@ -181,18 +182,12 @@ jobs:
               fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
               console.log("✅ Node-diff applied successfully");
 
-            // ============================================================
-            // HANDLER: diff (legacy jsondiffpatch)
-            // ============================================================
             } else if (payload.type === "diff" && payload.data) {
               const diff = JSON.parse(payload.data);
               result = jsondiffpatch.patch(currentData, diff);
               fs.writeFileSync("data.json", JSON.stringify(result, null, 2));
               console.log("✅ Patch applied successfully");
 
-            // ============================================================
-            // HANDLER: gist (legacy)
-            // ============================================================
             } else if (payload.type === "gist" && payload.gist_id) {
               console.log("Gist mode not implemented in this version, falling back to diff");
               if (payload.data) {
@@ -204,9 +199,6 @@ jobs:
                 console.log("⚠️ No data in gist payload");
               }
 
-            // ============================================================
-            // HANDLER: full (complete overwrite)
-            // ============================================================
             } else if (payload.type === "full" && payload.data) {
               const newData = JSON.parse(payload.data);
               fs.writeFileSync("data.json", JSON.stringify(newData, null, 2));
