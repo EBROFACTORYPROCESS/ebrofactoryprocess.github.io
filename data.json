@@ -2787,7 +2787,7 @@
       "name": "Non-Qualified Parts",
       "processes": [
         {
-          "id": "1788786975984-fchof7pq",
+          "id": "1788790531539-cgqlr8yk",
           "seq": "10",
           "name": "Non-Qualified (NG) Parts Detection",
           "description": "Systematic identification and recording of non-qualified (NG) parts across all operational touchpoints,from inbound logistics and intralogistics to body shop and trim shop production,enabling real-time quality feedback, containment actions, and supplier performance tracking. Upon detection, NG parts are physically moved to the designated temporal (temporary) scrap area, and a scrap travel card is completed per material. The travel card must include: material number, time and location of detection, and supervisor sign-off. Collected travel cards are later processed for disposition (scrap disposal or supplier return/claim). NG parts are classified using two distinct travel cards based on defect ownership and validation requirements:�Green Travel Card�(Factory Scrap) for internally generated defects requiring no additional validation before disposal; and�Orange Travel Card�(Supplier Claim) for supplier-related defects requiring mandatory double-check validation by the Production Quality Assurance (PQA) team before claim processing.",
@@ -2812,7 +2812,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-5l9t9e13",
+          "id": "1788790531539-op5j6ous",
           "seq": "10.1",
           "name": "NG Parts Detection (Body Shop )",
           "description": "Identifies and records non-qualified parts detected during Body Shop production operations (e.g., welding defects, dimensional inaccuracies, surface imperfections), triggering immediate containment actions and system flagging. Detected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). Collected cards are later processed for disposition. NG parts are classified using the two-tier travel card system:�Green Travel Card�(Factory Scrap) for internally generated defects (e.g., handling damage, operator error) requiring no additional validation before disposal; or�Orange Travel Card�(Supplier Claim) for supplier-related defects (e.g., material non-conformance, dimensional deviations) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
@@ -2837,7 +2837,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-vvtvprhk",
+          "id": "1788790531539-hdt91ndw",
           "seq": "10.2",
           "name": "NG Parts Detection (Trim Shop)",
           "description": "Identifies and records non-qualified parts detected during Trim Shop assembly operations (e.g., component fitment issues, electrical failures, cosmetic defects), triggering immediate containment actions and system flagging. Detected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). Collected cards are later processed for disposition. NG parts are classified using the two-tier travel card system:�Green Travel Card�(Factory Scrap) for internally generated defects (e.g., installation damage, mishandling) requiring no additional validation before disposal; or�Orange Travel Card�(Supplier Claim) for supplier-related defects (e.g., component electrical failure, material defect, fitment non-conformance) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
@@ -2862,7 +2862,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-9ac1qk5h",
+          "id": "1788790531539-cbnoukpz",
           "seq": "10.3",
           "name": "NG Parts Detection( Reception  Area)",
           "description": "Identifies and records non-qualified parts detected during inbound logistics operations,including goods reception, container devaning, and handling unit management,ensuring defective materials are quarantined before entering the production supply chain. Detected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). Collected cards are later processed for disposition. NG parts are classified using the two-tier travel card system:�Green Travel Card�(Factory Scrap) for internally generated defects (e.g., handling damage occurring during internal unloading) requiring no additional validation before disposal; or�Orange Travel Card�(Supplier Claim) for supplier-related defects (e.g., damaged packaging, incorrect quantity, material non-conformance, wrong part number) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
@@ -2887,7 +2887,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-vdnkslis",
+          "id": "1788790531539-er9r8i94",
           "seq": "10.4",
           "name": "NG Parts Detection(Intralogistic Area)",
           "description": "Identifies and records non-qualified parts detected during intralogistics operations,including replenishment, picking, and kitting activities,ensuring defective materials are removed from circulation before reaching the production line. Detected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). Collected cards are later processed for disposition. NG parts are classified using the two-tier travel card system:�Green Travel Card�(Factory Scrap) for internally generated defects (e.g., handling damage, label damage, mishandling during internal transport) requiring no additional validation before disposal; or�Orange Travel Card�(Supplier Claim) for supplier-related defects (e.g., latent material defects not detected at reception) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
@@ -2912,7 +2912,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-7fss8d6s",
+          "id": "1788790531539-s3w1jto6",
           "seq": "10.5",
           "name": "NG Parts List",
           "description": "Compiles and maintains a formal, centralized list of all non-qualified (NG) parts detected across all operational touchpoints, with each entry linked to its corresponding assigned vehicle (VIN) where applicable. The NG Parts List serves as the master record for quality analysis, root cause investigation, supplier feedback, and performance tracking, capturing key data fields including: part number, defect description, detection location, detection date, assigned vehicle VIN, travel card classification (Green/Orange), and current disposition status (Quarantine, Rework, Scrap, Claim, Returned, Replaced).",
@@ -2935,7 +2935,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-2farim1p",
+          "id": "1788790531539-ojvw8wmm",
           "seq": "15",
           "name": "NG Parts Analysis & Feedback",
           "description": "Systematic analysis of NG parts data to identify trends, root causes, and improvement opportunities. For each significant defect pattern, perform formal RCA and develop corrective action plans. Update quality standards, inspection checkpoints, and supplier requirements based on findings.",
@@ -2958,7 +2958,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-36q31tvi",
+          "id": "1788790531539-2x3ehi68",
           "seq": "15.1",
           "name": "Defect Trend Analysis",
           "description": "Analyzes NG detection data to identify recurring defect patterns, high-impact part numbers, and process areas with highest NG rates. Generates dashboards and reports for quality management review.",
@@ -2981,7 +2981,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-k9uu8slv",
+          "id": "1788790531539-4q3r516p",
           "seq": "15.2",
           "name": "Root Cause Analysis",
           "description": "Performs formal root cause analysis (5 Whys, Ishikawa, 8D methodology) for significant defect patterns. Identifies whether root cause is internal (process, equipment, material handling) or supplier-related.",
@@ -3004,7 +3004,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-tr82qpua",
+          "id": "1788790531539-g99ibm2h",
           "seq": "15.3",
           "name": "Corrective Action Plan",
           "description": "Develops and tracks corrective action plans for identified root causes. Assigns owners, due dates, and verification methods. Updates process controls, work instructions, or supplier requirements as needed.",
@@ -3027,7 +3027,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-awpm7rlt",
+          "id": "1788790531539-sau86d35",
           "seq": "15.4",
           "name": "Supplier Quality Feedback",
           "description": "Communicates defect findings and corrective action requirements to suppliers. Updates supplier scorecards and performance ratings. Triggers supplier development activities for recurring issues.",
@@ -3052,7 +3052,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-zqa2nn9m",
+          "id": "1788790531539-gc1p0bgn",
           "seq": "15.5",
           "name": "Lessons Learned Repository",
           "description": "Maintains a central repository of defect history, root causes, corrective actions, and preventive measures. Enables knowledge sharing and prevents recurrence of similar defects across programs.",
@@ -3079,7 +3079,57 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-twu7o2jv",
+          "id": "1788790531539-6nvmg2zv",
+          "seq": "20",
+          "name": "NG Parts Movement",
+          "description": "Physical segregation and routing of non-qualified parts based on their travel card classification.�Green Travel Card�parts (Factory Scrap) are moved to the designated scrap holding area for disposal processing.�Orange Travel Card�parts (Supplier Claim) are moved to the quarantine zone for PQA validation and subsequent claim processing.",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "Material Planning"
+            ]
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "WMS",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788790531539-dy9bdo48",
+          "seq": "20.1",
+          "name": "Move to Quarantine Zone (Factory Scrap)",
+          "description": "Routing of non-qualified parts based on their travel card classification.  Green Travel Card�parts (Factory Scrap) are moved to the designated scrap holding area for disposal processing",
+          "raci": {
+            "r": [
+              "Environment"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "Material Planning"
+            ]
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "WMS",
+            "status": "Work in Porgress",
+            "responsible": ""
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788790531539-eibj1lwi",
           "seq": "20.2",
           "name": "Move to Quarantine Zone (Supplier Claim)",
           "description": "Routing of non-qualified parts based on their travel card classification.  Orange Travel Card parts (Supplier Claim) are moved to the quarantine zone for PQA validation and subsequent claim processing.",
@@ -3104,7 +3154,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-nwfvnnva",
+          "id": "1788790531539-7en8l0jl",
           "seq": "30",
           "name": "Quarantine Zone Management",
           "description": "Centralized management of non-qualified parts held in the quarantine zone, ensuring accurate physical and system reconciliation of incoming NG parts, and facilitating disposition decisions (Supplier Claim vs. Process Scrap) through structured review and classification.",
@@ -3127,7 +3177,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-owgafcan",
+          "id": "1788790531539-2oe0gz3a",
           "seq": "30.1",
           "name": "Non-Qualified Parts Reception",
           "description": "Receives and logs non-qualified parts from all operational areas (Body Shop, Trim Shop, Reception, Intralogistics) into the quarantine zone. Performs consistency checks between physical goods and travel card information (material number, quantity, defect description, classification) to ensure accurate tracking and data integrity.",
@@ -3150,7 +3200,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-elixuedo",
+          "id": "1788790531539-s5l22exx",
           "seq": "30.2",
           "name": "Providor Claim or Process Scrap",
           "description": "Reviews each quarantined NG part to determine the appropriate disposition path:�Supplier Claim�(defect attributable to supplier) requiring formal claim processing and posible return; or�Process Scrap�(internally generated defect) requiring scrap execution. Decision is based on defect ownership, PQA validation results, and repairability assessment.",
@@ -3173,7 +3223,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-dfr2t6de",
+          "id": "1788790531539-toqmfyzk",
           "seq": "40",
           "name": "Process Scrap management",
           "description": "Structured evaluation and routing of internally generated scrap (Green Travel Card parts and Process Scrap classified from quarantine). Parts are assessed for repairability; repairable parts are routed to Rework Order processing, while non-repairable parts are routed to Scrap Execution.",
@@ -3196,7 +3246,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-dbksqd54",
+          "id": "1788790531539-g5eixym9",
           "seq": "40.1",
           "name": "Damange Level Validation",
           "description": "Assesses each internally generated NG part to determine the extent of damage and repairability. Parts are classified as:�Repairable�(can be restored to quality standards through rework) or�Non-Repairable�(must be scrapped). Validation is performed against defined quality and engineering standards.",
@@ -3219,7 +3269,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-hg0aqf58",
+          "id": "1788790531539-b27p3pyz",
           "seq": "40.2",
           "name": "Repair List",
           "description": "Compiles and maintains a formal list of repairable parts from the quarantine zone, including part numbers, quantities, defect descriptions, and estimated repair effort. This list serves as the input for Rework Order planning (Process 60).",
@@ -3242,7 +3292,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-hf9brdxt",
+          "id": "1788790531539-aeiqtdgl",
           "seq": "40.3",
           "name": "Scrap List",
           "description": "Compiles and maintains a formal list of non-repairable parts from the quarantine zone, including part numbers, quantities, defect descriptions, and scrap reason codes. This list serves as the input for Scrap Execution (Process 50).",
@@ -3265,7 +3315,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-7t0w4sno",
+          "id": "1788790531539-l2zq5nnj",
           "seq": "50",
           "name": "Scrap Execution",
           "description": "End-to-end execution of approved scrap disposal, encompassing factory parts purchasing from OEM,  third-party collection, and evidence receipt, ensuring compliant and auditable disposal of non-repairable materials.",
@@ -3288,7 +3338,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-3d093t9h",
+          "id": "1788790531539-4km2salc",
           "seq": "50.1",
           "name": "Sales Order (OEM to Factory)",
           "description": "Creates a formal sales order from OEM to Factory for all parts and quantities listed in the approved Scrap List, initiating the financial and logistical transaction for scrap disposal.",
@@ -3311,7 +3361,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-4akcgez8",
+          "id": "1788790531539-4fp4fp46",
           "seq": "50.2",
           "name": "Invoice Payment",
           "description": "Processes payment of the invoice issued to OEM for the parts to be scrapped, completing the financial transaction for scrap material ownership transfer.",
@@ -3334,7 +3384,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-np3ll505",
+          "id": "1788790531539-wuhw2ura",
           "seq": "50.3",
           "name": "Goods Receive (Factory)",
           "description": "Posts system goods receipt of the to-be-scrapped goods from OEM to Factory, updating inventory records and establishing the material ownership transfer required for third-party scrap collection.",
@@ -3357,7 +3407,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-f3cc7il5",
+          "id": "1788790531539-s8q9byrv",
           "seq": "50.4",
           "name": "Notify Scrap 3rd Party",
           "description": "Formally notifies the designated third-party scrap collection vendor of the available scrap materials, providing collection schedule, material list, quantities, and pickup location details.",
@@ -3380,7 +3430,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-pac3hzub",
+          "id": "1788790531539-g1u4nmfg",
           "seq": "50.5",
           "name": "Receive Scrap Evidence",
           "description": "Receives and verifies formal scrap execution evidence from the third-party vendor (e.g., weight tickets, destruction certificates, recycling reports), confirming that scrap has been properly processed and disposed in compliance with environmental and regulatory requirements.",
@@ -3403,7 +3453,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-8jg6a4o3",
+          "id": "1788790531539-wkw1juoo",
           "seq": "50.6",
           "name": "Goods Issue (Scrap)",
           "description": "Posts formal goods issue for scrapped parts, removing the materials from inventory and closing the scrap transaction in the system upon receipt of confirmed disposal evidence.",
@@ -3426,7 +3476,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-q9qmotcd",
+          "id": "1788790531539-bha5w65m",
           "seq": "60",
           "name": "Rework Order",
           "description": "Structured planning and execution of rework activities for repairable non-qualified parts, encompassing order planning, physical transfer to rework area, repair execution, and handover to PQA for final quality validation.",
@@ -3449,7 +3499,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-lwwjdxtl",
+          "id": "1788790531539-vhm0pklt",
           "seq": "60.1",
           "name": "Rework Order Planning",
           "description": "Plans rework orders for all parts listed on the Repair List, defining estimated work dates, required resources, repair procedures, and quality standards to be met. Prioritization is based on production urgency, material criticality, and available capacity.",
@@ -3472,7 +3522,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-98v8r5mj",
+          "id": "1788790531539-d6sxpnv8",
           "seq": "60.2",
           "name": "Transfer Request (Quarantine to Rework)",
           "description": "Creates a formal transfer request to move repairable NG parts from the quarantine zone to the designated rework/repair area, specifying part numbers, quantities, and requested transfer date.",
@@ -3495,7 +3545,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-ixl6bfb1",
+          "id": "1788790531539-vqjvclu1",
           "seq": "60.3",
           "name": "Transfer Execution (Quarantine to Rework)",
           "description": "Physically executes the transfer of repairable parts from the quarantine zone to the rework/repair area, updating system records and confirming receipt at the rework location.",
@@ -3518,7 +3568,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-8aiirhyp",
+          "id": "1788790531539-vayflftv",
           "seq": "60.4",
           "name": "Rework Execution",
           "description": "Executes the repair order according to defined procedures, performing the necessary repairs, replacements, or adjustments to restore the part to quality standards. All rework activities are documented for traceability.",
@@ -3541,7 +3591,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-1zffq0gq",
+          "id": "1788790531539-8ik54z6b",
           "seq": "60.5",
           "name": "Transfer Request (Rework to Validation)",
           "description": "Creates a formal transfer request to move reworked (recovered) parts from the rework area to the PQA validation area for final quality assessment, specifying part numbers, quantities, and rework completion details.",
@@ -3564,7 +3614,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-ukpj1jbg",
+          "id": "1788790531539-x2ec116i",
           "seq": "60.6",
           "name": "Transfer Execution (Rework to Validation)",
           "description": "Physically executes the transfer of reworked parts from the rework area to the PQA validation area, updating system records and confirming receipt at the validation location.",
@@ -3587,7 +3637,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-8ea2pna0",
+          "id": "1788790531539-u3mbr7go",
           "seq": "70",
           "name": "Recovered Parts Validation",
           "description": "Final quality validation of reworked parts to determine if they meet all engineering and quality standards for re-entry into production. Parts that pass validation are transferred to buffer stock; parts that fail are routed to scrap.",
@@ -3610,7 +3660,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-tvyta13k",
+          "id": "1788790531539-lxhtpn9v",
           "seq": "70.1",
           "name": "Move to Scrap (Failed Validation)",
           "description": "Identifies reworked parts that still do not meet quality standards after rework. These parts are added to the Scrap List and routed to Process Scrap Management (Process 40) for disposal.",
@@ -3633,7 +3683,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-es5lbodz",
+          "id": "1788790531539-r7oyd5ns",
           "seq": "70.2",
           "name": "Transfer Request (Validation to Buffer)",
           "description": "Creates a formal transfer request to move successfully validated (qualified) reworked parts from the PQA validation area to buffer stock for production consumption, specifying part numbers, quantities, and quality approval details.",
@@ -3656,7 +3706,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-3jtmrtrf",
+          "id": "1788790531539-r966wiys",
           "seq": "70.3",
           "name": "Transfer Execution (Validation to Buffer)",
           "description": "Physically executes the transfer of qualified reworked parts from the PQA validation area to the designated buffer stock location, updating system records and confirming receipt at the buffer storage area.",
@@ -3679,7 +3729,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-g1vt0530",
+          "id": "1788790531539-ezv99r3d",
           "seq": "70.4",
           "name": "Reception of Recovered Stock",
           "description": "Performs formal system posting of recovered stock into buffer inventory, updating stock levels, lot tracking, and availability status for production consumption.",
@@ -3702,7 +3752,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-0ikc001g",
+          "id": "1788790531539-59r0l7g2",
           "seq": "80",
           "name": "Claim Request Processing",
           "description": "Formal processing of supplier claims for non-qualified parts attributed to supplier defects, encompassing claim notification, disposition of defective parts, replacement part requests, and recovery of operational costs.",
@@ -3725,7 +3775,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-25x287ij",
+          "id": "1788790531539-d2gd8632",
           "seq": "80.1",
           "name": "Open Claim Request to Provider",
           "description": "Formally raises a claim request to the supplier for all parts identified as supplier-related defects (Orange Travel Card parts validated by PQA), providing detailed claim documentation including part numbers, quantities, defect descriptions, and supporting evidence.",
@@ -3748,7 +3798,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-fabacehz",
+          "id": "1788790531539-ugsfbw6z",
           "seq": "80.2",
           "name": "Scrap or Return of Defective Parts",
           "description": "Determines the disposition of defective parts under claim: either�Scrap within Factory�(with supplier credit) or�Return to Supplier�(physical return of defective parts for supplier analysis and replacement). Decision is based on supplier agreement, part value, and logistics feasibility.",
@@ -3771,7 +3821,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-jsg4d1rp",
+          "id": "1788790531539-qel2qzac",
           "seq": "80.3",
           "name": "Replacement Parts Request",
           "description": "Formally requests replacement parts from the supplier for all claimed quantities, specifying required part numbers, quantities, delivery timeline, and shipping instructions to ensure timely replenishment of production inventory.",
@@ -3794,7 +3844,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-bpw10ez4",
+          "id": "1788790531539-b4lpj1w1",
           "seq": "80.4",
           "name": "Operational Cost Charge Request",
           "description": "Formally requests reimbursement from the supplier for additional operational costs incurred due to the defective parts (e.g., rework labor, production downtime, inspection costs, administrative handling), providing detailed cost breakdown and supporting evidence.",
@@ -3817,7 +3867,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-lfnmya9g",
+          "id": "1788790531539-tf10y4gd",
           "seq": "80.5",
           "name": "Incoming Parts Registration",
           "description": "Registers the incoming replacement parts shipment into the inbound logistics platform upon supplier claim acceptance, creating a visible tracking record that enables the factory to identify, monitor, and track the shipment from dispatch through to physical arrival and goods reception, ensuring full visibility and proactive planning for downstream logistics and production operations.",
@@ -3840,7 +3890,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-whyfsdw9",
+          "id": "1788790531539-cmwc08rz",
           "seq": "90",
           "name": "Supplier Return Execution",
           "description": "Physical execution of returning defective parts to the supplier, encompassing transfer requests, physical movement to loading area, and formal goods issue posting to complete the return transaction.",
@@ -3863,7 +3913,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-b2acs09a",
+          "id": "1788790531539-8tv4emyc",
           "seq": "90.1",
           "name": "Transfer Request (Return to Supplier)",
           "description": "Creates a formal transfer request to move defective parts designated for supplier return from the quarantine zone to the loading/dispatch area, specifying part numbers, quantities, supplier details, and requested transfer date.",
@@ -3886,7 +3936,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-r7vy5xxr",
+          "id": "1788790531539-hpgo23bo",
           "seq": "90.2",
           "name": "Transfer Execution (Quarantine to Loading)",
           "description": "Physically executes the transfer of return parts from the quarantine zone to the loading/dispatch area, updating system records and confirming receipt at the loading location.",
@@ -3909,7 +3959,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-mxyxlcnr",
+          "id": "1788790531539-ddmym4sg",
           "seq": "90.3",
           "name": "Goods Issue (Return to Supplier)",
           "description": "Posts formal goods issue for return parts when the goods are loaded onto transport and leave the factory premises, updating inventory records and closing the return transaction in the system.",
@@ -3932,7 +3982,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-jlg6u8uz",
+          "id": "1788790531539-33g0vgsq",
           "seq": "100",
           "name": "Material Requirement Planning",
           "description": "Systematic planning engine that nets production schedules and safety-stock policies against on-hand inventories, generating procurement proposals to guarantee production continuity and scrap-replenishment supply.",
@@ -3955,7 +4005,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-npgucemm",
+          "id": "1788790531539-2kgn9tpa",
           "seq": "100.1",
           "name": "Purchase Requirement Generation",
           "description": "Triggers the MRP system to automatically calculate and propose purchase requisitions (PRs) based on net demand from production orders, safety-stock replenishment needs, and existing open purchase commitments.",
@@ -3978,7 +4028,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-j231ruq8",
+          "id": "1788790531539-cbs4c5ui",
           "seq": "100.2",
           "name": "Purchase Requirement Maintenance",
           "description": "Enables material planners to manually review, adjust, or create purchase requisitions to capture off-system demands (e.g., engineer change orders, one-off experimental runs, or urgent demand requests) not covered by the standard MRP netting logic.",
@@ -4001,7 +4051,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-wgasqaee",
+          "id": "1788790531539-va376zu1",
           "seq": "110",
           "name": "Purchase Execution",
           "description": "End-to-end management of procurement workflows, from requisition conversion to supplier settlement, ensuring timely material availability at optimized cost and full trade compliance.",
@@ -4024,7 +4074,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-x8mu8ird",
+          "id": "1788790531539-s0ba51jh",
           "seq": "110.1",
           "name": "PR to PO Creation",
           "description": "Converts purchase requisitions into purchase orders by performing source determination, price condition retrieval, and lot-size rounding (upwards to vendor-specified order multiples), ensuring full alignment with production schedules and procurement policies.",
@@ -4047,7 +4097,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-379fpe9c",
+          "id": "1788790531539-p2dgfz5t",
           "seq": "110.2",
           "name": "PO Complaince Validation",
           "description": "Performs mandatory compliance and trade-rule checks on purchase orders prior to approval, mitigating legal, regulatory, and reputational risks.",
@@ -4070,7 +4120,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-tflgrp5c",
+          "id": "1788790531539-4aosg28r",
           "seq": "110.3",
           "name": "PO Approval",
           "description": "Routes purchase orders through the designated authorization workflow for PO release approval.",
@@ -4093,7 +4143,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-3fkq9x2s",
+          "id": "1788790531539-lca84fwx",
           "seq": "110.4",
           "name": "PO Execution",
           "description": "Formally transmits approved and released purchase orders to suppliers via the designated channel (e.g., EDI, portal, or email), confirms order acknowledgement, and updates the system with confirmed delivery dates.",
@@ -4116,7 +4166,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-lotgpbz8",
+          "id": "1788790531539-b3xgv0fm",
           "seq": "110.5",
           "name": "Invoice Payment",
           "description": "Processes supplier invoices against received purchase orders and goods receipts (three-way matching), resolves discrepancies, and executes timely payment in accordance with contractual terms.",
@@ -4139,7 +4189,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-9d4av7in",
+          "id": "1788790531539-ywnjgtuh",
           "seq": "110.6",
           "name": "Incoming Parts Registration",
           "description": "Registers the incoming replacement parts shipment into the inbound logistics platform upon supplier PO tracking release, creating a visible tracking record that enables the factory to identify, monitor, and track the shipment from dispatch through to physical arrival and goods reception, ensuring full visibility and proactive planning for downstream logistics and production operations.",
@@ -4162,7 +4212,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-brfpu63k",
+          "id": "1788790531539-ambe46xn",
           "seq": "120",
           "name": "Replacement Parts Reception",
           "description": "End-to-end tracking and reception of replacement parts from suppliers, encompassing shipment tracking, goods reception, customs clearance (for 3rd countries), and transfer to safety stock for production availability.",
@@ -4185,7 +4235,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-0rmsn604",
+          "id": "1788790531539-o18eqtgs",
           "seq": "120.1",
           "name": "Shipment tracking",
           "description": "Receives and monitors shipment notifications from the supplier for replacement parts, tracking key indicators including: shipment list (part numbers, quantities), estimated time of arrival (ETA), carrier details, and tracking numbers to provide real-time visibility to downstream stakeholders.",
@@ -4208,7 +4258,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-9h0uf3zm",
+          "id": "1788790531539-hvv98cr7",
           "seq": "120.2",
           "name": "Goods Reception (Replacement Parts)",
           "description": "Receives and validates replacement parts against the shipment notification and claim documentation, verifying material numbers, quantities, and condition. Any discrepancies are immediately reported for resolution.",
@@ -4231,7 +4281,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-ihuu9z3f",
+          "id": "1788790531539-rzz5leun",
           "seq": "120.3",
           "name": "Customs Clearance (3rd Countries)",
           "description": "Executes all mandatory customs declaration and clearance procedures for replacement parts imported from 3rd countries, ensuring full compliance with trade regulations, tariff classifications, and documentation requirements to avoid border delays.",
@@ -4254,7 +4304,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-kkpmg1lm",
+          "id": "1788790531539-up558v6k",
           "seq": "120.4",
           "name": "Transfer to Safety Stock",
           "description": "Transfers received and validated replacement parts from the reception area to the designated safety stock location, updating inventory records and making the parts available for production consumption as needed.",
@@ -4277,7 +4327,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-6imcjs74",
+          "id": "1788790531539-aolh79ft",
           "seq": "130",
           "name": "Replacement Parts ATP Check",
           "description": "Systematic availability check to determine if replacement parts are available to replace detected non-qualified (NG) parts. ATP (Available-to-Promise) verification is performed across all inventory tiers: factory buffer stock, warehouse safety stock and stock in transit. To identify the optimal sourcing location and ensure timely fulfillment of replacement demand",
@@ -4300,7 +4350,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-88zxi98e",
+          "id": "1788790531539-t1r1f344",
           "seq": "130.1",
           "name": "Factory ATP Check",
           "description": "Verifies availability of replacement parts within the factory buffer stock. Checks real-time inventory levels, reserved quantities, and committed allocations to determine if the required parts can be sourced immediately from factory buffer to cover the NG parts shortage.",
@@ -4323,7 +4373,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-1b74qfe1",
+          "id": "1788790531539-vomcy7sd",
           "seq": "130.2",
           "name": "Warehouse ATP Check",
           "description": "Verifies availability of replacement parts within the warehouse safety stock. Checks real-time inventory levels, reserved quantities, and committed allocations to determine if the required parts can be sourced from warehouse safety stock when factory buffer stock is insufficient to cover the NG parts shortage.",
@@ -4346,7 +4396,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-ow065egy",
+          "id": "1788790531539-7kwtrhmx",
           "seq": "140",
           "name": "Replacement Parts Supply Management",
           "description": "End-to-end process to supply replacement stock to cover material shortages generated by non-qualified (NG) parts detection.  Transfer requests from factory buffer to demanding areas, warehouse-to-factory replenishment, goods issue, goods receipt, and transfer execution, ensuring seamless material flow to maintain production continuity.",
@@ -4369,7 +4419,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-b09dpula",
+          "id": "1788790531539-ywoev5gm",
           "seq": "140.1",
           "name": "Transfer Request (Factory Buffer to Demanding Area",
           "description": "Creates a formal transfer request to move replacement parts from the factory buffer stock to the demanding area (e.g., Body Shop, Trim Shop, or Final line). The request includes: required date, material list, quantities, and receiving department, ensuring timely and accurate fulfillment of replacement demand.",
@@ -4392,7 +4442,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-q1fheidm",
+          "id": "1788790531539-hroctf44",
           "seq": "140.2",
           "name": "Transfer Request (Warehouse To Factory )",
           "description": "Creates a formal transfer request to move replacement parts from the warehouse safety stock to the factory buffer area when buffer stock levels fall below required thresholds. The request includes: required date, material list, quantities, and receiving location, ensuring continuous replenishment of factory buffer to support ongoing replacement demands.",
@@ -4415,7 +4465,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-h8fizk79",
+          "id": "1788790531539-qwgejgxg",
           "seq": "140.3",
           "name": "Warehouse Goods Issue",
           "description": "Executes the physical and system goods issue of replacement parts from the warehouse to the factory buffer area. Posts formal goods issue in the system, updates inventory records, and confirms dispatch of the required material list to the factory.",
@@ -4438,7 +4488,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-0j51h3s0",
+          "id": "1788790531539-f7z8xk3d",
           "seq": "140.4",
           "name": "Factory Goods Recept",
           "description": "Executes the physical and system goods receipt of replacement parts from the warehouse into the factory buffer area. Posts formal goods receipt in the system, updates inventory records, and confirms receipt of the required material list, making the parts available for production consumption.",
@@ -4461,7 +4511,7 @@
           "notes": ""
         },
         {
-          "id": "1788786975984-zfoa9sq1",
+          "id": "1788790531539-5uv1glef",
           "seq": "140.5",
           "name": "Replacement Parts transfer Execution",
           "description": "Executes the physical and system transfer of replacement parts from the factory buffer stock to the demanding area. Posts formal goods issue in the system, updates inventory records, and confirms dispatch with key details including: goods issue date, material list, quantities, and receiving department, ensuring full traceability and timely availability at the point of use.",
@@ -4488,657 +4538,675 @@
         "nodes": [
           {
             "id": "node-0",
-            "processId": "1788786975984-fchof7pq",
-            "type": "start",
-            "x": 8.444351196289062,
-            "y": 199.55558013916016,
+            "processId": "1788790531539-cgqlr8yk",
+            "type": "main",
+            "x": 100,
+            "y": 100,
             "label": "Non-Qualified (NG) Parts Detection",
             "hidden": false
           },
           {
             "id": "node-1",
-            "processId": "1788786975984-5l9t9e13",
+            "processId": "1788790531539-op5j6ous",
             "type": "sub",
-            "x": 336.4444580078125,
-            "y": 25.333343505859375,
+            "x": 260,
+            "y": 100,
             "label": "NG Parts Detection (Body Shop )",
             "hidden": false
           },
           {
             "id": "node-10",
-            "processId": "1788786975984-awpm7rlt",
+            "processId": "1788790531539-sau86d35",
             "type": "sub",
-            "x": 1879.5554809570312,
-            "y": 20.666595458984375,
+            "x": 740,
+            "y": 210,
             "label": "Supplier Quality Feedback",
             "hidden": false
           },
           {
             "id": "node-11",
-            "processId": "1788786975984-zqa2nn9m",
+            "processId": "1788790531539-gc1p0bgn",
             "type": "sub",
-            "x": 2129.33349609375,
-            "y": 20.66668701171875,
+            "x": 900,
+            "y": 210,
             "label": "Lessons Learned Repository",
             "hidden": false
           },
           {
             "id": "node-12",
-            "processId": "1788786975984-twu7o2jv",
-            "type": "sub",
-            "x": 1564.2962951660154,
-            "y": 432.29624430338555,
-            "label": "Move to Quarantine Zone (Supplier Claim)",
+            "processId": "1788790531539-6nvmg2zv",
+            "type": "main",
+            "x": 100,
+            "y": 320,
+            "label": "NG Parts Movement",
             "hidden": false
           },
           {
             "id": "node-13",
-            "processId": "1788786975984-nwfvnnva",
-            "type": "main",
-            "x": 1318.962910970052,
-            "y": 469.62956746419263,
-            "label": "Quarantine Zone Management",
+            "processId": "1788790531539-dy9bdo48",
+            "type": "sub",
+            "x": 260,
+            "y": 320,
+            "label": "Move to Quarantine Zone (Factory Scrap)",
             "hidden": false
           },
           {
             "id": "node-14",
-            "processId": "1788786975984-owgafcan",
+            "processId": "1788790531539-eibj1lwi",
             "type": "sub",
-            "x": 1553.629821777344,
-            "y": 578.9629414876302,
-            "label": "Non-Qualified Parts Reception",
+            "x": 420,
+            "y": 320,
+            "label": "Move to Quarantine Zone (Supplier Claim)",
             "hidden": false
           },
           {
             "id": "node-15",
-            "processId": "1788786975984-elixuedo",
-            "type": "sub",
-            "x": 1910.6666463216147,
-            "y": 382.222178141276,
-            "label": "Providor Claim or Process Scrap",
+            "processId": "1788790531539-7en8l0jl",
+            "type": "main",
+            "x": 580,
+            "y": 320,
+            "label": "Quarantine Zone Management",
             "hidden": false
           },
           {
             "id": "node-16",
-            "processId": "1788786975984-dfr2t6de",
-            "type": "main",
-            "x": 1851.407455444336,
-            "y": 239.99996948242202,
-            "label": "Process Scrap management",
+            "processId": "1788790531539-2oe0gz3a",
+            "type": "sub",
+            "x": 740,
+            "y": 320,
+            "label": "Non-Qualified Parts Reception",
             "hidden": false
           },
           {
             "id": "node-17",
-            "processId": "1788786975984-dbksqd54",
+            "processId": "1788790531539-s5l22exx",
             "type": "sub",
-            "x": 871.5555419921875,
-            "y": 352.8888854980469,
-            "label": "Damange Level Validation",
+            "x": 900,
+            "y": 320,
+            "label": "Providor Claim or Process Scrap",
             "hidden": false
           },
           {
             "id": "node-18",
-            "processId": "1788786975984-hg0aqf58",
-            "type": "sub",
-            "x": 1049.3334045410156,
-            "y": 312.66663360595703,
-            "label": "Repair List",
+            "processId": "1788790531539-toqmfyzk",
+            "type": "main",
+            "x": 100,
+            "y": 430,
+            "label": "Process Scrap management",
             "hidden": false
           },
           {
             "id": "node-19",
-            "processId": "1788786975984-hf9brdxt",
+            "processId": "1788790531539-g5eixym9",
             "type": "sub",
-            "x": 1215.5556030273438,
-            "y": 321.5555419921875,
-            "label": "Scrap List",
+            "x": 260,
+            "y": 430,
+            "label": "Damange Level Validation",
             "hidden": false
           },
           {
             "id": "node-2",
-            "processId": "1788786975984-vvtvprhk",
+            "processId": "1788790531539-hdt91ndw",
             "type": "sub",
-            "x": 333.77777099609375,
-            "y": 150.66665649414062,
+            "x": 420,
+            "y": 100,
             "label": "NG Parts Detection (Trim Shop)",
             "hidden": false
           },
           {
             "id": "node-20",
-            "processId": "1788786975984-7t0w4sno",
-            "type": "main",
-            "x": 1462.6666870117188,
-            "y": 285.1111602783203,
-            "label": "Scrap Execution",
+            "processId": "1788790531539-b27p3pyz",
+            "type": "sub",
+            "x": 420,
+            "y": 430,
+            "label": "Repair List",
             "hidden": false
           },
           {
             "id": "node-21",
-            "processId": "1788786975984-3d093t9h",
+            "processId": "1788790531539-aeiqtdgl",
             "type": "sub",
-            "x": 1836.8888244628904,
-            "y": 539.6295776367189,
-            "label": "Sales Order (OEM to Factory)",
+            "x": 580,
+            "y": 430,
+            "label": "Scrap List",
             "hidden": false
           },
           {
             "id": "node-22",
-            "processId": "1788786975984-4akcgez8",
-            "type": "sub",
-            "x": 1251.9999389648438,
-            "y": 581.1111755371094,
-            "label": "Invoice Payment",
+            "processId": "1788790531539-l2zq5nnj",
+            "type": "main",
+            "x": 740,
+            "y": 430,
+            "label": "Scrap Execution",
             "hidden": false
           },
           {
             "id": "node-23",
-            "processId": "1788786975984-np3ll505",
+            "processId": "1788790531539-4km2salc",
             "type": "sub",
-            "x": 1112.444580078125,
-            "y": 444.2221984863281,
-            "label": "Goods Receive (Factory)",
+            "x": 900,
+            "y": 430,
+            "label": "Sales Order (OEM to Factory)",
             "hidden": false
           },
           {
             "id": "node-24",
-            "processId": "1788786975984-f3cc7il5",
+            "processId": "1788790531539-4fp4fp46",
             "type": "sub",
             "x": 100,
+            "y": 540,
+            "label": "Invoice Payment",
+            "hidden": false
+          },
+          {
+            "id": "node-25",
+            "processId": "1788790531539-wuhw2ura",
+            "type": "sub",
+            "x": 260,
+            "y": 540,
+            "label": "Goods Receive (Factory)",
+            "hidden": false
+          },
+          {
+            "id": "node-26",
+            "processId": "1788790531539-s8q9byrv",
+            "type": "sub",
+            "x": 420,
             "y": 540,
             "label": "Notify Scrap 3rd Party",
             "hidden": false
           },
           {
-            "id": "node-25",
-            "processId": "1788786975984-pac3hzub",
+            "id": "node-27",
+            "processId": "1788790531539-g1u4nmfg",
             "type": "sub",
-            "x": 260,
+            "x": 580,
             "y": 540,
             "label": "Receive Scrap Evidence",
             "hidden": false
           },
           {
-            "id": "node-26",
-            "processId": "1788786975984-8jg6a4o3",
+            "id": "node-28",
+            "processId": "1788790531539-wkw1juoo",
             "type": "sub",
-            "x": 420,
+            "x": 740,
             "y": 540,
             "label": "Goods Issue (Scrap)",
             "hidden": false
           },
           {
-            "id": "node-27",
-            "processId": "1788786975984-q9qmotcd",
+            "id": "node-29",
+            "processId": "1788790531539-bha5w65m",
             "type": "main",
-            "x": 580,
+            "x": 900,
             "y": 540,
             "label": "Rework Order",
             "hidden": false
           },
           {
-            "id": "node-28",
-            "processId": "1788786975984-lwwjdxtl",
-            "type": "sub",
-            "x": 740,
-            "y": 540,
-            "label": "Rework Order Planning",
-            "hidden": false
-          },
-          {
-            "id": "node-29",
-            "processId": "1788786975984-98v8r5mj",
-            "type": "sub",
-            "x": 900,
-            "y": 540,
-            "label": "Transfer Request (Quarantine to Rework)",
-            "hidden": false
-          },
-          {
             "id": "node-3",
-            "processId": "1788786975984-9ac1qk5h",
+            "processId": "1788790531539-cbnoukpz",
             "type": "sub",
-            "x": 331.111083984375,
-            "y": 278.6666793823242,
+            "x": 580,
+            "y": 100,
             "label": "NG Parts Detection( Reception  Area)",
             "hidden": false
           },
           {
             "id": "node-30",
-            "processId": "1788786975984-ixl6bfb1",
+            "processId": "1788790531539-vhm0pklt",
             "type": "sub",
             "x": 100,
+            "y": 650,
+            "label": "Rework Order Planning",
+            "hidden": false
+          },
+          {
+            "id": "node-31",
+            "processId": "1788790531539-d6sxpnv8",
+            "type": "sub",
+            "x": 260,
+            "y": 650,
+            "label": "Transfer Request (Quarantine to Rework)",
+            "hidden": false
+          },
+          {
+            "id": "node-32",
+            "processId": "1788790531539-vqjvclu1",
+            "type": "sub",
+            "x": 420,
             "y": 650,
             "label": "Transfer Execution (Quarantine to Rework)",
             "hidden": false
           },
           {
-            "id": "node-31",
-            "processId": "1788786975984-8aiirhyp",
+            "id": "node-33",
+            "processId": "1788790531539-vayflftv",
             "type": "sub",
-            "x": 260,
+            "x": 580,
             "y": 650,
             "label": "Rework Execution",
             "hidden": false
           },
           {
-            "id": "node-32",
-            "processId": "1788786975984-1zffq0gq",
+            "id": "node-34",
+            "processId": "1788790531539-8ik54z6b",
             "type": "sub",
-            "x": 420,
+            "x": 740,
             "y": 650,
             "label": "Transfer Request (Rework to Validation)",
             "hidden": false
           },
           {
-            "id": "node-33",
-            "processId": "1788786975984-ukpj1jbg",
+            "id": "node-35",
+            "processId": "1788790531539-x2ec116i",
             "type": "sub",
-            "x": 580,
+            "x": 900,
             "y": 650,
             "label": "Transfer Execution (Rework to Validation)",
             "hidden": false
           },
           {
-            "id": "node-34",
-            "processId": "1788786975984-8ea2pna0",
+            "id": "node-36",
+            "processId": "1788790531539-u3mbr7go",
             "type": "main",
-            "x": 740,
-            "y": 650,
+            "x": 100,
+            "y": 760,
             "label": "Recovered Parts Validation",
             "hidden": false
           },
           {
-            "id": "node-35",
-            "processId": "1788786975984-tvyta13k",
+            "id": "node-37",
+            "processId": "1788790531539-lxhtpn9v",
             "type": "sub",
-            "x": 900,
-            "y": 650,
+            "x": 260,
+            "y": 760,
             "label": "Move to Scrap (Failed Validation)",
             "hidden": false
           },
           {
-            "id": "node-36",
-            "processId": "1788786975984-es5lbodz",
+            "id": "node-38",
+            "processId": "1788790531539-r7oyd5ns",
             "type": "sub",
-            "x": 100,
+            "x": 420,
             "y": 760,
             "label": "Transfer Request (Validation to Buffer)",
             "hidden": false
           },
           {
-            "id": "node-37",
-            "processId": "1788786975984-3jtmrtrf",
+            "id": "node-39",
+            "processId": "1788790531539-r966wiys",
             "type": "sub",
-            "x": 260,
+            "x": 580,
             "y": 760,
             "label": "Transfer Execution (Validation to Buffer)",
             "hidden": false
           },
           {
-            "id": "node-38",
-            "processId": "1788786975984-g1vt0530",
-            "type": "sub",
-            "x": 420,
-            "y": 760,
-            "label": "Reception of Recovered Stock",
-            "hidden": false
-          },
-          {
-            "id": "node-39",
-            "processId": "1788786975984-0ikc001g",
-            "type": "main",
-            "x": 580,
-            "y": 760,
-            "label": "Claim Request Processing",
-            "hidden": false
-          },
-          {
             "id": "node-4",
-            "processId": "1788786975984-vdnkslis",
+            "processId": "1788790531539-er9r8i94",
             "type": "sub",
-            "x": 329.33331298828125,
-            "y": 401.3333435058594,
+            "x": 740,
+            "y": 100,
             "label": "NG Parts Detection(Intralogistic Area)",
             "hidden": false
           },
           {
             "id": "node-40",
-            "processId": "1788786975984-25x287ij",
+            "processId": "1788790531539-ezv99r3d",
             "type": "sub",
             "x": 740,
             "y": 760,
-            "label": "Open Claim Request to Provider",
+            "label": "Reception of Recovered Stock",
             "hidden": false
           },
           {
             "id": "node-41",
-            "processId": "1788786975984-fabacehz",
-            "type": "sub",
+            "processId": "1788790531539-59r0l7g2",
+            "type": "main",
             "x": 900,
             "y": 760,
-            "label": "Scrap or Return of Defective Parts",
+            "label": "Claim Request Processing",
             "hidden": false
           },
           {
             "id": "node-42",
-            "processId": "1788786975984-jsg4d1rp",
+            "processId": "1788790531539-d2gd8632",
             "type": "sub",
             "x": 100,
+            "y": 870,
+            "label": "Open Claim Request to Provider",
+            "hidden": false
+          },
+          {
+            "id": "node-43",
+            "processId": "1788790531539-ugsfbw6z",
+            "type": "sub",
+            "x": 260,
+            "y": 870,
+            "label": "Scrap or Return of Defective Parts",
+            "hidden": false
+          },
+          {
+            "id": "node-44",
+            "processId": "1788790531539-qel2qzac",
+            "type": "sub",
+            "x": 420,
             "y": 870,
             "label": "Replacement Parts Request",
             "hidden": false
           },
           {
-            "id": "node-43",
-            "processId": "1788786975984-bpw10ez4",
+            "id": "node-45",
+            "processId": "1788790531539-b4lpj1w1",
             "type": "sub",
-            "x": 260,
+            "x": 580,
             "y": 870,
             "label": "Operational Cost Charge Request",
             "hidden": false
           },
           {
-            "id": "node-44",
-            "processId": "1788786975984-lfnmya9g",
+            "id": "node-46",
+            "processId": "1788790531539-tf10y4gd",
             "type": "sub",
-            "x": 420,
+            "x": 740,
             "y": 870,
             "label": "Incoming Parts Registration",
             "hidden": false
           },
           {
-            "id": "node-45",
-            "processId": "1788786975984-whyfsdw9",
+            "id": "node-47",
+            "processId": "1788790531539-cmwc08rz",
             "type": "main",
-            "x": 580,
+            "x": 900,
             "y": 870,
             "label": "Supplier Return Execution",
             "hidden": false
           },
           {
-            "id": "node-46",
-            "processId": "1788786975984-b2acs09a",
+            "id": "node-48",
+            "processId": "1788790531539-8tv4emyc",
             "type": "sub",
-            "x": 740,
-            "y": 870,
+            "x": 100,
+            "y": 980,
             "label": "Transfer Request (Return to Supplier)",
             "hidden": false
           },
           {
-            "id": "node-47",
-            "processId": "1788786975984-r7vy5xxr",
+            "id": "node-49",
+            "processId": "1788790531539-hpgo23bo",
             "type": "sub",
-            "x": 900,
-            "y": 870,
+            "x": 260,
+            "y": 980,
             "label": "Transfer Execution (Quarantine to Loading)",
             "hidden": false
           },
           {
-            "id": "node-48",
-            "processId": "1788786975984-mxyxlcnr",
-            "type": "sub",
-            "x": 100,
-            "y": 980,
-            "label": "Goods Issue (Return to Supplier)",
-            "hidden": false
-          },
-          {
-            "id": "node-49",
-            "processId": "1788786975984-jlg6u8uz",
-            "type": "main",
-            "x": 260,
-            "y": 980,
-            "label": "Material Requirement Planning",
-            "hidden": false
-          },
-          {
             "id": "node-5",
-            "processId": "1788786975984-7fss8d6s",
+            "processId": "1788790531539-s3w1jto6",
             "type": "sub",
-            "x": 717.7777709960938,
-            "y": 198.66661834716797,
+            "x": 900,
+            "y": 100,
             "label": "NG Parts List",
             "hidden": false
           },
           {
             "id": "node-50",
-            "processId": "1788786975984-npgucemm",
+            "processId": "1788790531539-ddmym4sg",
             "type": "sub",
             "x": 420,
             "y": 980,
-            "label": "Purchase Requirement Generation",
+            "label": "Goods Issue (Return to Supplier)",
             "hidden": false
           },
           {
             "id": "node-51",
-            "processId": "1788786975984-j231ruq8",
-            "type": "sub",
+            "processId": "1788790531539-33g0vgsq",
+            "type": "main",
             "x": 580,
             "y": 980,
-            "label": "Purchase Requirement Maintenance",
+            "label": "Material Requirement Planning",
             "hidden": false
           },
           {
             "id": "node-6",
-            "processId": "1788786975984-2farim1p",
+            "processId": "1788790531539-ojvw8wmm",
             "type": "main",
-            "x": 911.5556335449219,
-            "y": 25.999984741210938,
+            "x": 100,
+            "y": 210,
             "label": "NG Parts Analysis & Feedback",
             "hidden": false
           },
           {
             "id": "node-7",
-            "processId": "1788786975984-36q31tvi",
+            "processId": "1788790531539-2x3ehi68",
             "type": "sub",
-            "x": 1199.5556335449219,
-            "y": 25.111251831054688,
+            "x": 260,
+            "y": 210,
             "label": "Defect Trend Analysis",
             "hidden": false
           },
           {
             "id": "node-8",
-            "processId": "1788786975984-k9uu8slv",
+            "processId": "1788790531539-4q3r516p",
             "type": "sub",
-            "x": 1421.7779541015625,
-            "y": 24.22216796875,
+            "x": 420,
+            "y": 210,
             "label": "Root Cause Analysis",
             "hidden": false
           },
           {
             "id": "node-9",
-            "processId": "1788786975984-tr82qpua",
+            "processId": "1788790531539-g99ibm2h",
             "type": "sub",
-            "x": 1644,
-            "y": 23.333396911621094,
+            "x": 580,
+            "y": 210,
             "label": "Corrective Action Plan",
             "hidden": false
           },
           {
             "id": "node-52",
-            "processId": "1788786975984-wgasqaee",
-            "type": "main",
+            "processId": "1788790531539-2kgn9tpa",
+            "type": "sub",
             "x": 740,
             "y": 980,
-            "label": "Purchase Execution",
+            "label": "Purchase Requirement Generation",
             "hidden": false
           },
           {
             "id": "node-53",
-            "processId": "1788786975984-x8mu8ird",
+            "processId": "1788790531539-cbs4c5ui",
             "type": "sub",
             "x": 900,
             "y": 980,
-            "label": "PR to PO Creation",
+            "label": "Purchase Requirement Maintenance",
             "hidden": false
           },
           {
             "id": "node-54",
-            "processId": "1788786975984-379fpe9c",
-            "type": "sub",
+            "processId": "1788790531539-va376zu1",
+            "type": "main",
             "x": 100,
+            "y": 1090,
+            "label": "Purchase Execution",
+            "hidden": false
+          },
+          {
+            "id": "node-55",
+            "processId": "1788790531539-s0ba51jh",
+            "type": "sub",
+            "x": 260,
+            "y": 1090,
+            "label": "PR to PO Creation",
+            "hidden": false
+          },
+          {
+            "id": "node-56",
+            "processId": "1788790531539-p2dgfz5t",
+            "type": "sub",
+            "x": 420,
             "y": 1090,
             "label": "PO Complaince Validation",
             "hidden": false
           },
           {
-            "id": "node-55",
-            "processId": "1788786975984-tflgrp5c",
+            "id": "node-57",
+            "processId": "1788790531539-4aosg28r",
             "type": "sub",
-            "x": 260,
+            "x": 580,
             "y": 1090,
             "label": "PO Approval",
             "hidden": false
           },
           {
-            "id": "node-56",
-            "processId": "1788786975984-3fkq9x2s",
+            "id": "node-58",
+            "processId": "1788790531539-lca84fwx",
             "type": "sub",
-            "x": 420,
+            "x": 740,
             "y": 1090,
             "label": "PO Execution",
             "hidden": false
           },
           {
-            "id": "node-57",
-            "processId": "1788786975984-lotgpbz8",
+            "id": "node-59",
+            "processId": "1788790531539-b3xgv0fm",
             "type": "sub",
-            "x": 580,
+            "x": 900,
             "y": 1090,
             "label": "Invoice Payment",
             "hidden": false
           },
           {
-            "id": "node-58",
-            "processId": "1788786975984-9d4av7in",
+            "id": "node-60",
+            "processId": "1788790531539-ywnjgtuh",
             "type": "sub",
-            "x": 740,
-            "y": 1090,
+            "x": 100,
+            "y": 1200,
             "label": "Incoming Parts Registration",
             "hidden": false
           },
           {
-            "id": "node-59",
-            "processId": "1788786975984-brfpu63k",
+            "id": "node-61",
+            "processId": "1788790531539-ambe46xn",
             "type": "main",
-            "x": 900,
-            "y": 1090,
+            "x": 260,
+            "y": 1200,
             "label": "Replacement Parts Reception",
             "hidden": false
           },
           {
-            "id": "node-60",
-            "processId": "1788786975984-0rmsn604",
+            "id": "node-62",
+            "processId": "1788790531539-o18eqtgs",
             "type": "sub",
-            "x": 100,
+            "x": 420,
             "y": 1200,
             "label": "Shipment tracking",
             "hidden": false
           },
           {
-            "id": "node-61",
-            "processId": "1788786975984-9h0uf3zm",
+            "id": "node-63",
+            "processId": "1788790531539-hvv98cr7",
             "type": "sub",
-            "x": 260,
+            "x": 580,
             "y": 1200,
             "label": "Goods Reception (Replacement Parts)",
             "hidden": false
           },
           {
-            "id": "node-62",
-            "processId": "1788786975984-ihuu9z3f",
+            "id": "node-64",
+            "processId": "1788790531539-rzz5leun",
             "type": "sub",
-            "x": 420,
+            "x": 740,
             "y": 1200,
             "label": "Customs Clearance (3rd Countries)",
             "hidden": false
           },
           {
-            "id": "node-63",
-            "processId": "1788786975984-kkpmg1lm",
+            "id": "node-65",
+            "processId": "1788790531539-up558v6k",
             "type": "sub",
-            "x": 580,
+            "x": 900,
             "y": 1200,
             "label": "Transfer to Safety Stock",
             "hidden": false
           },
           {
-            "id": "node-64",
-            "processId": "1788786975984-6imcjs74",
+            "id": "node-66",
+            "processId": "1788790531539-aolh79ft",
             "type": "main",
-            "x": 740,
-            "y": 1200,
+            "x": 100,
+            "y": 1310,
             "label": "Replacement Parts ATP Check",
             "hidden": false
           },
           {
-            "id": "node-65",
-            "processId": "1788786975984-88zxi98e",
+            "id": "node-67",
+            "processId": "1788790531539-t1r1f344",
             "type": "sub",
-            "x": 900,
-            "y": 1200,
+            "x": 260,
+            "y": 1310,
             "label": "Factory ATP Check",
             "hidden": false
           },
           {
-            "id": "node-66",
-            "processId": "1788786975984-1b74qfe1",
+            "id": "node-68",
+            "processId": "1788790531539-vomcy7sd",
             "type": "sub",
-            "x": 100,
+            "x": 420,
             "y": 1310,
             "label": "Warehouse ATP Check",
             "hidden": false
           },
           {
-            "id": "node-67",
-            "processId": "1788786975984-ow065egy",
+            "id": "node-69",
+            "processId": "1788790531539-7kwtrhmx",
             "type": "main",
-            "x": 260,
+            "x": 580,
             "y": 1310,
             "label": "Replacement Parts Supply Management",
             "hidden": false
           },
           {
-            "id": "node-68",
-            "processId": "1788786975984-b09dpula",
+            "id": "node-70",
+            "processId": "1788790531539-ywoev5gm",
             "type": "sub",
-            "x": 420,
+            "x": 740,
             "y": 1310,
             "label": "Transfer Request (Factory Buffer to Demanding Area",
             "hidden": false
           },
           {
-            "id": "node-69",
-            "processId": "1788786975984-q1fheidm",
+            "id": "node-71",
+            "processId": "1788790531539-hroctf44",
             "type": "sub",
-            "x": 580,
+            "x": 900,
             "y": 1310,
             "label": "Transfer Request (Warehouse To Factory )",
             "hidden": false
           },
           {
-            "id": "node-70",
-            "processId": "1788786975984-h8fizk79",
+            "id": "node-72",
+            "processId": "1788790531539-qwgejgxg",
             "type": "sub",
-            "x": 740,
-            "y": 1310,
+            "x": 100,
+            "y": 1420,
             "label": "Warehouse Goods Issue",
             "hidden": false
           },
           {
-            "id": "node-71",
-            "processId": "1788786975984-0j51h3s0",
+            "id": "node-73",
+            "processId": "1788790531539-f7z8xk3d",
             "type": "sub",
-            "x": 900,
-            "y": 1310,
+            "x": 260,
+            "y": 1420,
             "label": "Factory Goods Recept",
             "hidden": false
           },
           {
-            "id": "node-72",
-            "processId": "1788786975984-zfoa9sq1",
+            "id": "node-74",
+            "processId": "1788790531539-5uv1glef",
             "type": "sub",
-            "x": 100,
+            "x": 420,
             "y": 1420,
             "label": "Replacement Parts transfer Execution",
             "hidden": false
