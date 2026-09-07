@@ -4,7 +4,7 @@
 
 console.log('✅ app.js loaded');
 
-// ============================
+// ============================v
 // 1. Constants & State
 // ============================
 
@@ -82,21 +82,16 @@ function generateNodeDiff(oldScenarios, newScenarios) {
     const oldMap = {};
     oldScenarios.forEach(s => { oldMap[s.id] = s; });
 
-    // ============================================================
     // Check for DELETED scenarios (in old but not in new)
-    // ============================================================
     const newIds = new Set(newScenarios.map(s => s.id));
     for (const oldId in oldMap) {
         if (!newIds.has(oldId)) {
-            // Scenario was deleted
             diff[oldId] = { _deleted: true };
             console.log(`Scenario ${oldId} was deleted`);
         }
     }
 
-    // ============================================================
     // Process new scenarios (added or updated)
-    // ============================================================
     newScenarios.forEach(newSc => {
         const oldSc = oldMap[newSc.id];
         if (!oldSc) {
@@ -111,13 +106,21 @@ function generateNodeDiff(oldScenarios, newScenarios) {
         // Compare scenario-level properties (name, etc.)
         // ============================================================
         const scenarioChanges = {};
+        
+        // Log the values for debugging
+        console.log(`Comparing scenario "${newSc.id}": old name="${oldSc.name}", new name="${newSc.name}"`);
+        
         if (newSc.name !== oldSc.name) {
             scenarioChanges.name = newSc.name;
-            console.log(`Scenario ${newSc.id} name changed: "${oldSc.name}" → "${newSc.name}"`);
+            console.log(`✅ Scenario ${newSc.id} name changed: "${oldSc.name}" → "${newSc.name}"`);
         }
-        // Add other scenario-level properties if needed
+        
+        // Add other scenario-level properties if needed (e.g., description, etc.)
+        // if (newSc.description !== oldSc.description) scenarioChanges.description = newSc.description;
+
         if (Object.keys(scenarioChanges).length > 0) {
             scenarioDiff._scenario = scenarioChanges;
+            console.log(`Added scenario changes for ${newSc.id}:`, scenarioChanges);
         }
 
         // ----- Compare processes -----
@@ -228,9 +231,13 @@ function generateNodeDiff(oldScenarios, newScenarios) {
 
         if (Object.keys(scenarioDiff).length > 0) {
             diff[newSc.id] = scenarioDiff;
+            console.log(`✅ Diff created for scenario ${newSc.id} with changes:`, Object.keys(scenarioDiff));
+        } else {
+            console.log(`ℹ️ No changes detected for scenario ${newSc.id}`);
         }
     });
 
+    console.log('📊 Final diff:', JSON.stringify(diff, null, 2));
     return diff;
 }
 function escapeHtml(str) {
