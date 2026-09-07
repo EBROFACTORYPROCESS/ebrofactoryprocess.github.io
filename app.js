@@ -77,7 +77,7 @@ const columnNames = {
 function genId() {
     return Date.now() + '-' + Math.random().toString(36).substr(2, 8);
 }
-function generateNodeDiff(oldScenarios, newScenarios) {
+    function generateNodeDiff(oldScenarios, newScenarios) {
     const diff = {};
     const oldMap = {};
     oldScenarios.forEach(s => { oldMap[s.id] = s; });
@@ -91,7 +91,17 @@ function generateNodeDiff(oldScenarios, newScenarios) {
 
         const scenarioDiff = {};
 
-        // ----- Compare processes (unchanged) -----
+        // ============================================================
+        // NEW: Compare scenario-level properties (name, etc.)
+        // ============================================================
+        const scenarioChanges = {};
+        if (newSc.name !== oldSc.name) scenarioChanges.name = newSc.name;
+        // Add other scenario-level properties if needed
+        if (Object.keys(scenarioChanges).length > 0) {
+            scenarioDiff._scenario = scenarioChanges;
+        }
+
+        // ----- Compare processes -----
         const oldProcesses = oldSc.processes || [];
         const newProcesses = newSc.processes || [];
 
@@ -122,7 +132,7 @@ function generateNodeDiff(oldScenarios, newScenarios) {
             scenarioDiff.processes = procChanges;
         }
 
-        // ----- Compare workflow nodes (FIXED: detect additions, updates, deletions) -----
+        // ----- Compare workflow nodes -----
         const newNodes = newSc.workflow?.nodes || [];
         const oldNodes = oldSc.workflow?.nodes || [];
 
@@ -133,43 +143,35 @@ function generateNodeDiff(oldScenarios, newScenarios) {
         newNodes.forEach(n => { if (n.id) newNodeMap[n.id] = n; });
 
         const nodeChanges = {};
-
-        // Check for updated or added nodes
         for (const id in newNodeMap) {
             const oldNode = oldNodeMap[id];
             const newNode = newNodeMap[id];
             if (!oldNode) {
-                // Node is NEW – add it
                 nodeChanges[id] = { _added: true, node: newNode };
                 continue;
             }
-            // Node exists in both – check for changes
             const changes = {};
             if (newNode.x !== oldNode.x) changes.x = newNode.x;
             if (newNode.y !== oldNode.y) changes.y = newNode.y;
             if (newNode.hidden !== oldNode.hidden) changes.hidden = newNode.hidden;
             if (newNode.type !== oldNode.type) changes.type = newNode.type;
             if (newNode.label !== oldNode.label) changes.label = newNode.label;
-            // Check other important fields
             if (newNode.processId !== oldNode.processId) changes.processId = newNode.processId;
 
             if (Object.keys(changes).length > 0) {
                 nodeChanges[id] = changes;
             }
         }
-
-        // Check for DELETED nodes (in old but not in new)
         for (const id in oldNodeMap) {
             if (!newNodeMap[id]) {
                 nodeChanges[id] = { _deleted: true };
             }
         }
-
         if (Object.keys(nodeChanges).length > 0) {
             scenarioDiff.nodes = nodeChanges;
         }
 
-        // ----- Compare workflow connections (unchanged) -----
+        // ----- Compare workflow connections -----
         const newConnections = newSc.workflow?.connections || [];
         const oldConnections = oldSc.workflow?.connections || [];
 
