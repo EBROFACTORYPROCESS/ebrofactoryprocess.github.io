@@ -4489,9 +4489,9 @@
           {
             "id": "node-0",
             "processId": "1788786975984-fchof7pq",
-            "type": "main",
-            "x": 100,
-            "y": 100,
+            "type": "start",
+            "x": 8.444351196289062,
+            "y": 199.55558013916016,
             "label": "Non-Qualified (NG) Parts Detection",
             "hidden": false
           },
@@ -4499,8 +4499,8 @@
             "id": "node-1",
             "processId": "1788786975984-5l9t9e13",
             "type": "sub",
-            "x": 260,
-            "y": 100,
+            "x": 336.4444580078125,
+            "y": 25.333343505859375,
             "label": "NG Parts Detection (Body Shop )",
             "hidden": false
           },
@@ -4508,8 +4508,8 @@
             "id": "node-10",
             "processId": "1788786975984-awpm7rlt",
             "type": "sub",
-            "x": 740,
-            "y": 210,
+            "x": 1879.5554809570312,
+            "y": 20.666595458984375,
             "label": "Supplier Quality Feedback",
             "hidden": false
           },
@@ -4517,8 +4517,8 @@
             "id": "node-11",
             "processId": "1788786975984-zqa2nn9m",
             "type": "sub",
-            "x": 900,
-            "y": 210,
+            "x": 2129.33349609375,
+            "y": 20.66668701171875,
             "label": "Lessons Learned Repository",
             "hidden": false
           },
@@ -4526,8 +4526,8 @@
             "id": "node-12",
             "processId": "1788786975984-twu7o2jv",
             "type": "sub",
-            "x": 100,
-            "y": 320,
+            "x": 1564.2962951660154,
+            "y": 432.29624430338555,
             "label": "Move to Quarantine Zone (Supplier Claim)",
             "hidden": false
           },
@@ -4535,8 +4535,8 @@
             "id": "node-13",
             "processId": "1788786975984-nwfvnnva",
             "type": "main",
-            "x": 260,
-            "y": 320,
+            "x": 1318.962910970052,
+            "y": 469.62956746419263,
             "label": "Quarantine Zone Management",
             "hidden": false
           },
@@ -4544,8 +4544,8 @@
             "id": "node-14",
             "processId": "1788786975984-owgafcan",
             "type": "sub",
-            "x": 420,
-            "y": 320,
+            "x": 1553.629821777344,
+            "y": 578.9629414876302,
             "label": "Non-Qualified Parts Reception",
             "hidden": false
           },
@@ -4553,8 +4553,8 @@
             "id": "node-15",
             "processId": "1788786975984-elixuedo",
             "type": "sub",
-            "x": 580,
-            "y": 320,
+            "x": 1910.6666463216147,
+            "y": 382.222178141276,
             "label": "Providor Claim or Process Scrap",
             "hidden": false
           },
@@ -4562,8 +4562,8 @@
             "id": "node-16",
             "processId": "1788786975984-dfr2t6de",
             "type": "main",
-            "x": 740,
-            "y": 320,
+            "x": 1851.407455444336,
+            "y": 239.99996948242202,
             "label": "Process Scrap management",
             "hidden": false
           },
@@ -4571,8 +4571,8 @@
             "id": "node-17",
             "processId": "1788786975984-dbksqd54",
             "type": "sub",
-            "x": 900,
-            "y": 320,
+            "x": 871.5555419921875,
+            "y": 352.8888854980469,
             "label": "Damange Level Validation",
             "hidden": false
           },
@@ -4580,8 +4580,8 @@
             "id": "node-18",
             "processId": "1788786975984-hg0aqf58",
             "type": "sub",
-            "x": 100,
-            "y": 430,
+            "x": 1049.3334045410156,
+            "y": 312.66663360595703,
             "label": "Repair List",
             "hidden": false
           },
@@ -4589,8 +4589,8 @@
             "id": "node-19",
             "processId": "1788786975984-hf9brdxt",
             "type": "sub",
-            "x": 260,
-            "y": 430,
+            "x": 1215.5556030273438,
+            "y": 321.5555419921875,
             "label": "Scrap List",
             "hidden": false
           },
@@ -4598,8 +4598,8 @@
             "id": "node-2",
             "processId": "1788786975984-vvtvprhk",
             "type": "sub",
-            "x": 420,
-            "y": 100,
+            "x": 333.77777099609375,
+            "y": 150.66665649414062,
             "label": "NG Parts Detection (Trim Shop)",
             "hidden": false
           },
@@ -4607,8 +4607,8 @@
             "id": "node-20",
             "processId": "1788786975984-7t0w4sno",
             "type": "main",
-            "x": 420,
-            "y": 430,
+            "x": 1462.6666870117188,
+            "y": 285.1111602783203,
             "label": "Scrap Execution",
             "hidden": false
           },
@@ -4616,8 +4616,8 @@
             "id": "node-21",
             "processId": "1788786975984-3d093t9h",
             "type": "sub",
-            "x": 580,
-            "y": 430,
+            "x": 1836.8888244628904,
+            "y": 539.6295776367189,
             "label": "Sales Order (OEM to Factory)",
             "hidden": false
           },
@@ -4625,8 +4625,8 @@
             "id": "node-22",
             "processId": "1788786975984-4akcgez8",
             "type": "sub",
-            "x": 740,
-            "y": 430,
+            "x": 1251.9999389648438,
+            "y": 581.1111755371094,
             "label": "Invoice Payment",
             "hidden": false
           },
@@ -4634,8 +4634,8 @@
             "id": "node-23",
             "processId": "1788786975984-np3ll505",
             "type": "sub",
-            "x": 900,
-            "y": 430,
+            "x": 1112.444580078125,
+            "y": 444.2221984863281,
             "label": "Goods Receive (Factory)",
             "hidden": false
           },
@@ -4697,8 +4697,8 @@
             "id": "node-3",
             "processId": "1788786975984-9ac1qk5h",
             "type": "sub",
-            "x": 580,
-            "y": 100,
+            "x": 331.111083984375,
+            "y": 278.6666793823242,
             "label": "NG Parts Detection( Reception  Area)",
             "hidden": false
           },
@@ -4796,8 +4796,8 @@
             "id": "node-4",
             "processId": "1788786975984-vdnkslis",
             "type": "sub",
-            "x": 740,
-            "y": 100,
+            "x": 329.33331298828125,
+            "y": 401.3333435058594,
             "label": "NG Parts Detection(Intralogistic Area)",
             "hidden": false
           },
@@ -4895,8 +4895,8 @@
             "id": "node-5",
             "processId": "1788786975984-7fss8d6s",
             "type": "sub",
-            "x": 900,
-            "y": 100,
+            "x": 717.7777709960938,
+            "y": 198.66661834716797,
             "label": "NG Parts List",
             "hidden": false
           },
@@ -4922,8 +4922,8 @@
             "id": "node-6",
             "processId": "1788786975984-2farim1p",
             "type": "main",
-            "x": 100,
-            "y": 210,
+            "x": 911.5556335449219,
+            "y": 25.999984741210938,
             "label": "NG Parts Analysis & Feedback",
             "hidden": false
           },
@@ -4931,8 +4931,8 @@
             "id": "node-7",
             "processId": "1788786975984-36q31tvi",
             "type": "sub",
-            "x": 260,
-            "y": 210,
+            "x": 1199.5556335449219,
+            "y": 25.111251831054688,
             "label": "Defect Trend Analysis",
             "hidden": false
           },
@@ -4940,8 +4940,8 @@
             "id": "node-8",
             "processId": "1788786975984-k9uu8slv",
             "type": "sub",
-            "x": 420,
-            "y": 210,
+            "x": 1421.7779541015625,
+            "y": 24.22216796875,
             "label": "Root Cause Analysis",
             "hidden": false
           },
@@ -4949,8 +4949,8 @@
             "id": "node-9",
             "processId": "1788786975984-tr82qpua",
             "type": "sub",
-            "x": 580,
-            "y": 210,
+            "x": 1644,
+            "y": 23.333396911621094,
             "label": "Corrective Action Plan",
             "hidden": false
           },
@@ -5144,7 +5144,92 @@
             "hidden": false
           }
         ],
-        "connections": []
+        "connections": [
+          {
+            "id": "conn-1788790023109-fg9cvc",
+            "from": "node-0",
+            "to": "node-1",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788790025799-whj3wl",
+            "from": "node-0",
+            "to": "node-2",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788790027958-b7xjro",
+            "from": "node-0",
+            "to": "node-3",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788790030141-juxfze",
+            "from": "node-0",
+            "to": "node-4",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788790033885-pfub57",
+            "from": "node-1",
+            "to": "node-5",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788790037205-dzm4i7",
+            "from": "node-2",
+            "to": "node-5",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788790038949-tvgdmt",
+            "from": "node-3",
+            "to": "node-5",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788790041398-7k1y6g",
+            "from": "node-4",
+            "to": "node-5",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788790096062-e6tyl4",
+            "from": "node-5",
+            "to": "node-6",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788790097910-p6kbjy",
+            "from": "node-6",
+            "to": "node-7",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788790100221-q9gbhv",
+            "from": "node-7",
+            "to": "node-8",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788790101998-zcfcgw",
+            "from": "node-8",
+            "to": "node-9",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788790103942-qw5fao",
+            "from": "node-9",
+            "to": "node-10",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788790141438-mfuc8l",
+            "from": "node-10",
+            "to": "node-11",
+            "type": "arrow"
+          }
+        ]
       }
     },
     {
