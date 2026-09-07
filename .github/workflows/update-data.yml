@@ -53,9 +53,24 @@ jobs:
               console.log("Applying node-diff by ID");
               for (const scId in diff) {
                 const scenarioDiff = diff[scId];
-                let scenario = result.scenarios.find(s => s.id === scId);
 
+                // ==========================================================
+                // Handle SCENARIO DELETION
+                // ==========================================================
+                if (scenarioDiff._deleted) {
+                  const idx = result.scenarios.findIndex(s => s.id === scId);
+                  if (idx !== -1) {
+                    result.scenarios.splice(idx, 1);
+                    console.log(`Deleted scenario: ${scId}`);
+                  } else {
+                    console.warn(`Scenario ${scId} not found for deletion`);
+                  }
+                  continue;
+                }
+
+                // ==========================================================
                 // Handle NEW SCENARIO (full data)
+                // ==========================================================
                 if (scenarioDiff._full) {
                   const newScenario = scenarioDiff.data;
                   if (!result.scenarios.some(s => s.id === newScenario.id)) {
@@ -71,6 +86,7 @@ jobs:
                   continue;
                 }
 
+                let scenario = result.scenarios.find(s => s.id === scId);
                 if (!scenario) {
                   console.warn("Scenario not found:", scId);
                   continue;
