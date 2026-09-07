@@ -2363,8 +2363,8 @@ function bindEvents() {
             });
             appData.currentScenarioId = id;
             // ===== IMPORTANT: Update the snapshot =====
-            lastSnapshot = JSON.parse(JSON.stringify(appData));
-            saveSnapshot(lastSnapshot);
+            //lastSnapshot = JSON.parse(JSON.stringify(appData));
+            //saveSnapshot(lastSnapshot);
             // =========================================
             refreshScenarioDropdown();
             renderCurrentView();
@@ -2381,9 +2381,10 @@ function bindEvents() {
             refreshScenarioDropdown();
             renderCurrentView();
             // ===== IMPORTANT: Update the snapshot =====
-            lastSnapshot = JSON.parse(JSON.stringify(appData));
-            saveSnapshot(lastSnapshot);
+            //lastSnapshot = JSON.parse(JSON.stringify(appData));
+            //saveSnapshot(lastSnapshot);
             // =========================================
+            console.log(`✅ Scenario renamed to "${nn.trim()}". Click "Save to GitHub" to persist.
         }
     };
 
@@ -2408,8 +2409,8 @@ function bindEvents() {
         renderCurrentView();
     
         // ===== IMPORTANT: Update the snapshot =====
-        lastSnapshot = JSON.parse(JSON.stringify(appData));
-        saveSnapshot(lastSnapshot);
+        //lastSnapshot = JSON.parse(JSON.stringify(appData));
+        //saveSnapshot(lastSnapshot);
         // =========================================
     
         const saveBtn = document.getElementById('saveDataBtn');
