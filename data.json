@@ -2790,7 +2790,7 @@
           "id": "1788790531539-cgqlr8yk",
           "seq": "10",
           "name": "Non-Qualified (NG) Parts Detection",
-          "description": "Systematic identification and recording of non-qualified (NG) parts across all operational touchpoints,from inbound logistics and intralogistics to body shop and trim shop production,enabling real-time quality feedback, containment actions, and supplier performance tracking. Upon detection, NG parts are physically moved to the designated temporal (temporary) scrap area, and a scrap travel card is completed per material. The travel card must include: material number, time and location of detection, and supervisor sign-off. Collected travel cards are later processed for disposition (scrap disposal or supplier return/claim). NG parts are classified using two distinct travel cards based on defect ownership and validation requirements:�Green Travel Card�(Factory Scrap) for internally generated defects requiring no additional validation before disposal; and�Orange Travel Card�(Supplier Claim) for supplier-related defects requiring mandatory double-check validation by the Production Quality Assurance (PQA) team before claim processing.",
+          "description": "Systematic identification and recording of non-qualified (NG) parts across all operational touchpoints,from inbound logistics and intralogistics to body shop and trim shop production,enabling real-time quality feedback, containment actions, and supplier performance tracking. Upon detection, NG parts are physically moved to the designated temporal (temporary) scrap area, and a scrap travel card is completed per material. The travel card must include: material number, time and location of detection, and supervisor sign-off. Collected travel cards are later processed for disposition (scrap disposal or supplier return/claim). NG parts are classified using two distinct travel cards based on defect ownership and validation requirements: Green Travel Card (Factory Scrap) for internally generated defects requiring no additional validation before disposal; and Orange Travel Card (Supplier Claim) for supplier-related defects requiring mandatory double-check validation by the Production Quality Assurance (PQA) team before claim processing.",
           "raci": {
             "r": [
               "Production Exucution"
@@ -2805,7 +2805,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -2815,7 +2815,7 @@
           "id": "1788790531539-op5j6ous",
           "seq": "10.1",
           "name": "NG Parts Detection (Body Shop )",
-          "description": "Identifies and records non-qualified parts detected during Body Shop production operations (e.g., welding defects, dimensional inaccuracies, surface imperfections), triggering immediate containment actions and system flagging. Detected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). Collected cards are later processed for disposition. NG parts are classified using the two-tier travel card system:�Green Travel Card�(Factory Scrap) for internally generated defects (e.g., handling damage, operator error) requiring no additional validation before disposal; or�Orange Travel Card�(Supplier Claim) for supplier-related defects (e.g., material non-conformance, dimensional deviations) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
+          "description": "Identifies and records non-qualified parts detected during Body Shop production operations (e.g., welding defects, dimensional inaccuracies, surface imperfections), triggering immediate containment actions and system flagging. Detected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). Collected cards are later processed for disposition. NG parts are classified using the two-tier travel card system: Green Travel Card (Factory Scrap) for internally generated defects (e.g., handling damage, operator error) requiring no additional validation before disposal; or Orange Travel Card (Supplier Claim) for supplier-related defects (e.g., material non-conformance, dimensional deviations) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
           "raci": {
             "r": [
               "Production Execution (Body)"
@@ -2830,7 +2830,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -2840,7 +2840,7 @@
           "id": "1788790531539-hdt91ndw",
           "seq": "10.2",
           "name": "NG Parts Detection (Trim Shop)",
-          "description": "Identifies and records non-qualified parts detected during Trim Shop assembly operations (e.g., component fitment issues, electrical failures, cosmetic defects), triggering immediate containment actions and system flagging. Detected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). Collected cards are later processed for disposition. NG parts are classified using the two-tier travel card system:�Green Travel Card�(Factory Scrap) for internally generated defects (e.g., installation damage, mishandling) requiring no additional validation before disposal; or�Orange Travel Card�(Supplier Claim) for supplier-related defects (e.g., component electrical failure, material defect, fitment non-conformance) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
+          "description": "Identifies and records non-qualified parts detected during Trim Shop assembly operations (e.g., component fitment issues, electrical failures, cosmetic defects), triggering immediate containment actions and system flagging. Detected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). Collected cards are later processed for disposition. NG parts are classified using the two-tier travel card system: Green Travel Card (Factory Scrap) for internally generated defects (e.g., installation damage, mishandling) requiring no additional validation before disposal; or Orange Travel Card (Supplier Claim) for supplier-related defects (e.g., component electrical failure, material defect, fitment non-conformance) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
           "raci": {
             "r": [
               "Production Execution (Trim)"
@@ -2855,7 +2855,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -2865,7 +2865,7 @@
           "id": "1788790531539-cbnoukpz",
           "seq": "10.3",
           "name": "NG Parts Detection( Reception  Area)",
-          "description": "Identifies and records non-qualified parts detected during inbound logistics operations,including goods reception, container devaning, and handling unit management,ensuring defective materials are quarantined before entering the production supply chain. Detected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). Collected cards are later processed for disposition. NG parts are classified using the two-tier travel card system:�Green Travel Card�(Factory Scrap) for internally generated defects (e.g., handling damage occurring during internal unloading) requiring no additional validation before disposal; or�Orange Travel Card�(Supplier Claim) for supplier-related defects (e.g., damaged packaging, incorrect quantity, material non-conformance, wrong part number) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
+          "description": "Identifies and records non-qualified parts detected during inbound logistics operations,including goods reception, container devaning, and handling unit management,ensuring defective materials are quarantined before entering the production supply chain. Detected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). Collected cards are later processed for disposition. NG parts are classified using the two-tier travel card system: Green Travel Card (Factory Scrap) for internally generated defects (e.g., handling damage occurring during internal unloading) requiring no additional validation before disposal; or Orange Travel Card (Supplier Claim) for supplier-related defects (e.g., damaged packaging, incorrect quantity, material non-conformance, wrong part number) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
           "raci": {
             "r": [
               "Material Handling"
@@ -2880,7 +2880,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
