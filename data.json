@@ -4260,29 +4260,6 @@
         {
           "id": "1788790531539-hvv98cr7",
           "seq": "120.2",
-          "name": "Goods Reception (Replacement Parts)",
-          "description": "Receives and validates replacement parts against the shipment notification and claim documentation, verifying material numbers, quantities, and condition. Any discrepancies are immediately reported for resolution.",
-          "raci": {
-            "r": [
-              "Material Handling"
-            ],
-            "a": [],
-            "c": [],
-            "i": []
-          },
-          "businessStatus": "Completed",
-          "system": {
-            "name": "To Be Determined",
-            "status": "Offline",
-            "responsible": ""
-          },
-          "businessDoc": "",
-          "userManual": "",
-          "notes": ""
-        },
-        {
-          "id": "1788790531539-rzz5leun",
-          "seq": "120.3",
           "name": "Customs Clearance (3rd Countries)",
           "description": "Executes all mandatory customs declaration and clearance procedures for replacement parts imported from 3rd countries, ensuring full compliance with trade regulations, tariff classifications, and documentation requirements to avoid border delays.",
           "raci": {
@@ -4291,13 +4268,40 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
+          },
+          "businessDoc": "",
+          "userManual": "",
+          "notes": ""
+        },
+        {
+          "id": "1788790531539-rzz5leun",
+          "seq": "120.3",
+          "name": "Goods Reception (Replacement Parts)",
+          "description": "Receives and validates replacement parts against the shipment notification and claim documentation, verifying material numbers, quantities, and condition. Any discrepancies are immediately reported for resolution.",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "Material Planning"
+            ]
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -4513,7 +4517,7 @@
         {
           "id": "1788790531539-5uv1glef",
           "seq": "140.5",
-          "name": "Replacement Parts transfer Execution",
+          "name": "Transfer Execution (Factory Buffer to Demanding Area)",
           "description": "Executes the physical and system transfer of replacement parts from the factory buffer stock to the demanding area. Posts formal goods issue in the system, updates inventory records, and confirms dispatch with key details including: goods issue date, material list, quantities, and receiving department, ensuring full traceability and timely availability at the point of use.",
           "raci": {
             "r": [
@@ -4527,7 +4531,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -4558,8 +4562,8 @@
             "id": "node-10",
             "processId": "1788790531539-sau86d35",
             "type": "sub",
-            "x": 2282.3014613560267,
-            "y": 160.20640345982144,
+            "x": 1805.6348353794642,
+            "y": 136.03973170689176,
             "label": "Supplier Quality Feedback",
             "hidden": false
           },
@@ -4567,8 +4571,8 @@
             "id": "node-11",
             "processId": "1788790531539-gc1p0bgn",
             "type": "end",
-            "x": 2538.047799246651,
-            "y": 160.8095376150948,
+            "x": 2062.2144252232133,
+            "y": 135.80956813267292,
             "label": "Lessons Learned Repository",
             "hidden": false
           },
@@ -4576,8 +4580,8 @@
             "id": "node-12",
             "processId": "1788790531539-6nvmg2zv",
             "type": "main",
-            "x": 872.4443359375,
-            "y": 562.3810032435825,
+            "x": 876.6110229492188,
+            "y": 559.8809422084263,
             "label": "NG Parts Movement",
             "hidden": false
           },
@@ -4585,8 +4589,8 @@
             "id": "node-13",
             "processId": "1788790531539-dy9bdo48",
             "type": "sub",
-            "x": 191.58718872070324,
-            "y": 564.4602944510324,
+            "x": 212.4205017089845,
+            "y": 565.2936379568918,
             "label": "Move to Quarantine Zone (Factory Scrap)",
             "hidden": false
           },
@@ -4594,8 +4598,8 @@
             "id": "node-14",
             "processId": "1788790531539-eibj1lwi",
             "type": "sub",
-            "x": 1301.825491768976,
-            "y": 563.269823346819,
+            "x": 1309.325491768976,
+            "y": 560.769823346819,
             "label": "Move to Quarantine Zone (Supplier Claim)",
             "hidden": false
           },
@@ -4630,8 +4634,8 @@
             "id": "node-18",
             "processId": "1788790531539-toqmfyzk",
             "type": "main",
-            "x": 231.38092041015636,
-            "y": 910.0794808523979,
+            "x": 258.8809509277345,
+            "y": 907.5794884817924,
             "label": "Process Scrap management",
             "hidden": false
           },
@@ -4639,8 +4643,8 @@
             "id": "node-19",
             "processId": "1788790531539-g5eixym9",
             "type": "sub",
-            "x": 233.87311444963728,
-            "y": 1108.444425310408,
+            "x": 261.3731144496373,
+            "y": 1119.2777535574783,
             "label": "Damange Level Validation",
             "hidden": false
           },
@@ -4657,8 +4661,8 @@
             "id": "node-20",
             "processId": "1788790531539-b27p3pyz",
             "type": "sub",
-            "x": 635.2539803641196,
-            "y": 1107.9523424421054,
+            "x": 277.7540108816977,
+            "y": 1296.2856401715976,
             "label": "Repair List",
             "hidden": false
           },
@@ -4666,8 +4670,8 @@
             "id": "node-21",
             "processId": "1788790531539-aeiqtdgl",
             "type": "sub",
-            "x": 251.98426818847574,
-            "y": 1362.9363730294376,
+            "x": 587.8176727294914,
+            "y": 1121.2697775704532,
             "label": "Scrap List",
             "hidden": false
           },
@@ -4675,8 +4679,8 @@
             "id": "node-22",
             "processId": "1788790531539-l2zq5nnj",
             "type": "main",
-            "x": 251.25388881138338,
-            "y": 1545.1904296875014,
+            "x": 832.9204995291568,
+            "y": 1122.6904449462904,
             "label": "Scrap Execution",
             "hidden": false
           },
@@ -4684,8 +4688,8 @@
             "id": "node-23",
             "processId": "1788790531539-4km2salc",
             "type": "sub",
-            "x": 222.27005876813678,
-            "y": 1709.1430162702304,
+            "x": 1090.6035243443087,
+            "y": 1124.9763368879062,
             "label": "Sales Order (OEM to Factory)",
             "hidden": false
           },
@@ -4693,8 +4697,8 @@
             "id": "node-24",
             "processId": "1788790531539-4fp4fp46",
             "type": "end",
-            "x": 563.5080653599337,
-            "y": 1710.015760149278,
+            "x": 1401.0080958775118,
+            "y": 1125.8491036551375,
             "label": "Invoice Payment",
             "hidden": false
           },
@@ -4702,8 +4706,8 @@
             "id": "node-25",
             "processId": "1788790531539-wuhw2ura",
             "type": "sub",
-            "x": 242.01577758788932,
-            "y": 1864.6826019287134,
+            "x": 1107.8491516113268,
+            "y": 1282.182609558108,
             "label": "Goods Receive (Factory)",
             "hidden": false
           },
@@ -4711,8 +4715,8 @@
             "id": "node-26",
             "processId": "1788790531539-s8q9byrv",
             "type": "sub",
-            "x": 249.41256713867216,
-            "y": 2031.4604383196177,
+            "x": 1112.7459716796877,
+            "y": 1453.1271405901255,
             "label": "Notify Scrap 3rd Party",
             "hidden": false
           },
@@ -4720,8 +4724,8 @@
             "id": "node-27",
             "processId": "1788790531539-g1u4nmfg",
             "type": "sub",
-            "x": 246.82558332170757,
-            "y": 2193.761686052599,
+            "x": 1110.1588810511998,
+            "y": 1638.7617623465444,
             "label": "Receive Scrap Evidence",
             "hidden": false
           },
@@ -4729,8 +4733,8 @@
             "id": "node-28",
             "processId": "1788790531539-wkw1juoo",
             "type": "end",
-            "x": 260.5556117466509,
-            "y": 2361.3016444615005,
+            "x": 1118.8890315464555,
+            "y": 1812.968300955641,
             "label": "Goods Issue (Scrap)",
             "hidden": false
           },
@@ -4738,8 +4742,8 @@
             "id": "node-29",
             "processId": "1788790531539-bha5w65m",
             "type": "main",
-            "x": 1031.0794198172416,
-            "y": 1111.2221396310042,
+            "x": 277.74610682896036,
+            "y": 1447.0554373604964,
             "label": "Rework Order",
             "hidden": false
           },
@@ -4756,8 +4760,8 @@
             "id": "node-30",
             "processId": "1788790531539-vhm0pklt",
             "type": "sub",
-            "x": 1275.9999847412114,
-            "y": 1114.0953630719864,
+            "x": 266.0000610351567,
+            "y": 1590.7620653424942,
             "label": "Rework Order Planning",
             "hidden": false
           },
@@ -4765,8 +4769,8 @@
             "id": "node-31",
             "processId": "1788790531539-d6sxpnv8",
             "type": "sub",
-            "x": 1229.190730503628,
-            "y": 1274.6031079973488,
+            "x": 215.85743277413576,
+            "y": 1739.6030774797707,
             "label": "Transfer Request (Quarantine to Rework)",
             "hidden": false
           },
@@ -4774,8 +4778,8 @@
             "id": "node-32",
             "processId": "1788790531539-vqjvclu1",
             "type": "sub",
-            "x": 851.2065429687503,
-            "y": 1276.7936194283607,
+            "x": 211.2065582275394,
+            "y": 1897.6269171578529,
             "label": "Transfer Execution (Quarantine to Rework)",
             "hidden": false
           },
@@ -4783,8 +4787,8 @@
             "id": "node-33",
             "processId": "1788790531539-vayflftv",
             "type": "sub",
-            "x": 919.2539978027339,
-            "y": 1438.0318123953678,
+            "x": 280.92068481445267,
+            "y": 2063.865140642438,
             "label": "Rework Execution",
             "hidden": false
           },
@@ -4792,8 +4796,8 @@
             "id": "node-34",
             "processId": "1788790531539-8ik54z6b",
             "type": "sub",
-            "x": 1221.952619280135,
-            "y": 1436.8095223563064,
+            "x": 221.9526497977131,
+            "y": 2211.80946132115,
             "label": "Transfer Request (Rework to Validation)",
             "hidden": false
           },
@@ -4801,8 +4805,8 @@
             "id": "node-35",
             "processId": "1788790531539-x2ec116i",
             "type": "sub",
-            "x": 1217.5873064313616,
-            "y": 1606.9047698974596,
+            "x": 217.58739798409601,
+            "y": 2362.7380065917955,
             "label": "Transfer Execution (Rework to Validation)",
             "hidden": false
           },
@@ -4810,8 +4814,8 @@
             "id": "node-36",
             "processId": "1788790531539-u3mbr7go",
             "type": "main",
-            "x": 906.6667349679124,
-            "y": 1607.1271798270134,
+            "x": 685.0000479561936,
+            "y": 2361.293863024035,
             "label": "Recovered Parts Validation",
             "hidden": false
           },
@@ -4819,8 +4823,8 @@
             "id": "node-37",
             "processId": "1788790531539-lxhtpn9v",
             "type": "sub",
-            "x": 489.6667000906796,
-            "y": 1453.5239682878778,
+            "x": 663.8334481375546,
+            "y": 2061.857311793737,
             "label": "Move to Scrap (Failed Validation)",
             "hidden": false
           },
@@ -4828,8 +4832,8 @@
             "id": "node-38",
             "processId": "1788790531539-r7oyd5ns",
             "type": "sub",
-            "x": 871.5079171316972,
-            "y": 1824.3649117606008,
+            "x": 991.5079171316972,
+            "y": 2361.0315835135307,
             "label": "Transfer Request (Validation to Buffer)",
             "hidden": false
           },
@@ -4837,8 +4841,8 @@
             "id": "node-39",
             "processId": "1788790531539-r966wiys",
             "type": "sub",
-            "x": 865.1904078892304,
-            "y": 1996.7936597551613,
+            "x": 986.8570338657928,
+            "y": 2545.1269651140483,
             "label": "Transfer Execution (Validation to Buffer)",
             "hidden": false
           },
@@ -4855,8 +4859,8 @@
             "id": "node-40",
             "processId": "1788790531539-ezv99r3d",
             "type": "sub",
-            "x": 898.1270228794634,
-            "y": 2166.333378383091,
+            "x": 1372.2937709263383,
+            "y": 2543.0000653948096,
             "label": "Reception of Recovered Stock",
             "hidden": false
           },
@@ -4864,8 +4868,8 @@
             "id": "node-41",
             "processId": "1788790531539-59r0l7g2",
             "type": "main",
-            "x": 1728.206281389509,
-            "y": 908.063620431084,
+            "x": 1519.0395943777903,
+            "y": 907.2302769252246,
             "label": "Claim Request Processing",
             "hidden": false
           },
@@ -4873,8 +4877,8 @@
             "id": "node-42",
             "processId": "1788790531539-d2gd8632",
             "type": "sub",
-            "x": 2000.095132010325,
-            "y": 908.1905626569473,
+            "x": 1805.9284449986062,
+            "y": 906.5239061628067,
             "label": "Open Claim Request to Provider",
             "hidden": false
           },
@@ -4882,8 +4886,8 @@
             "id": "node-43",
             "processId": "1788790531539-ugsfbw6z",
             "type": "sub",
-            "x": 1991.2855834960953,
-            "y": 1143.3492562430256,
+            "x": 1797.1188354492203,
+            "y": 1451.6825463431232,
             "label": "Scrap or Return of Defective Parts",
             "hidden": false
           },
@@ -4891,8 +4895,8 @@
             "id": "node-44",
             "processId": "1788790531539-qel2qzac",
             "type": "sub",
-            "x": 2378.9680524553564,
-            "y": 905.762063162668,
+            "x": 2209.801426478794,
+            "y": 907.4287196568087,
             "label": "Replacement Parts Request",
             "hidden": false
           },
@@ -4900,17 +4904,17 @@
             "id": "node-45",
             "processId": "1788790531539-b4lpj1w1",
             "type": "sub",
-            "x": 2363.269775390626,
-            "y": 1097.5080152239125,
+            "x": 1798.2698364257822,
+            "y": 1617.5079923357289,
             "label": "Operational Cost Charge Request",
             "hidden": false
           },
           {
             "id": "node-46",
             "processId": "1788790531539-tf10y4gd",
-            "type": "end",
-            "x": 2381.8570731026794,
-            "y": 1280.460331508093,
+            "type": "sub",
+            "x": 2476.023760114398,
+            "y": 907.1269880022337,
             "label": "Incoming Parts Registration",
             "hidden": false
           },
@@ -4918,8 +4922,8 @@
             "id": "node-47",
             "processId": "1788790531539-cmwc08rz",
             "type": "main",
-            "x": 2012.984157017297,
-            "y": 1357.8094177246116,
+            "x": 2140.4842790876096,
+            "y": 1451.142730712893,
             "label": "Supplier Return Execution",
             "hidden": false
           },
@@ -4927,8 +4931,8 @@
             "id": "node-48",
             "processId": "1788790531539-8tv4emyc",
             "type": "sub",
-            "x": 1977.3016095842627,
-            "y": 1538.8572191510884,
+            "x": 2108.134922572544,
+            "y": 1638.8573641095845,
             "label": "Transfer Request (Return to Supplier)",
             "hidden": false
           },
@@ -4936,8 +4940,8 @@
             "id": "node-49",
             "processId": "1788790531539-hpgo23bo",
             "type": "sub",
-            "x": 1959.5711669921866,
-            "y": 1700.3334742954796,
+            "x": 2092.071228027343,
+            "y": 1802.0001384190148,
             "label": "Transfer Execution (Quarantine to Loading)",
             "hidden": false
           },
@@ -4945,8 +4949,8 @@
             "id": "node-5",
             "processId": "1788790531539-s3w1jto6",
             "type": "sub",
-            "x": 872.4444580078125,
-            "y": 162.22225952148438,
+            "x": 876.611083984375,
+            "y": 344.72227478027344,
             "label": "NG Parts List",
             "hidden": false
           },
@@ -4954,8 +4958,8 @@
             "id": "node-50",
             "processId": "1788790531539-ddmym4sg",
             "type": "end",
-            "x": 1992.6032104492206,
-            "y": 1866.1903599330378,
+            "x": 2127.6033935546893,
+            "y": 1952.02365766253,
             "label": "Goods Issue (Return to Supplier)",
             "hidden": false
           },
@@ -4963,8 +4967,8 @@
             "id": "node-51",
             "processId": "1788790531539-33g0vgsq",
             "type": "main",
-            "x": 1569.3966456821986,
-            "y": 1975.349190848214,
+            "x": 2921.896554129464,
+            "y": 347.01597704206165,
             "label": "Material Requirement Planning",
             "hidden": false
           },
@@ -4972,8 +4976,8 @@
             "id": "node-6",
             "processId": "1788790531539-ojvw8wmm",
             "type": "main",
-            "x": 1300.889068603515,
-            "y": 161.39683314732142,
+            "x": 845.8890686035149,
+            "y": 138.89681788853235,
             "label": "NG Parts Analysis & Feedback",
             "hidden": false
           },
@@ -4981,8 +4985,8 @@
             "id": "node-7",
             "processId": "1788790531539-2x3ehi68",
             "type": "sub",
-            "x": 1581.269936697824,
-            "y": 161.39684840611048,
+            "x": 1150.436684744699,
+            "y": 135.5635277884347,
             "label": "Defect Trend Analysis",
             "hidden": false
           },
@@ -4990,8 +4994,8 @@
             "id": "node-8",
             "processId": "1788790531539-4q3r516p",
             "type": "sub",
-            "x": 1809.7777622767862,
-            "y": 160.2063729422433,
+            "x": 1363.944449288505,
+            "y": 136.0397164481027,
             "label": "Root Cause Analysis",
             "hidden": false
           },
@@ -4999,8 +5003,8 @@
             "id": "node-9",
             "processId": "1788790531539-g99ibm2h",
             "type": "sub",
-            "x": 2032.9680698939726,
-            "y": 158.71436636788502,
+            "x": 1586.3013828822538,
+            "y": 135.38103049142018,
             "label": "Corrective Action Plan",
             "hidden": false
           },
@@ -5008,8 +5012,8 @@
             "id": "node-52",
             "processId": "1788790531539-2kgn9tpa",
             "type": "sub",
-            "x": 3075.4445103236603,
-            "y": 1092.6983991350448,
+            "x": 3177.111380440848,
+            "y": 346.8650403703964,
             "label": "Purchase Requirement Generation",
             "hidden": false
           },
@@ -5017,8 +5021,8 @@
             "id": "node-53",
             "processId": "1788790531539-cbs4c5ui",
             "type": "sub",
-            "x": 2663.5555419921875,
-            "y": 1540.0000610351562,
+            "x": 3455.2221069335938,
+            "y": 346.6668014526367,
             "label": "Purchase Requirement Maintenance",
             "hidden": false
           },
@@ -5026,17 +5030,17 @@
             "id": "node-54",
             "processId": "1788790531539-va376zu1",
             "type": "main",
-            "x": 2215.476139613559,
-            "y": 2361.428571428573,
+            "x": 3705.476078578403,
+            "y": 497.2618806021569,
             "label": "Purchase Execution",
-            "hidden": false
+            "hidden": true
           },
           {
             "id": "node-55",
             "processId": "1788790531539-s0ba51jh",
             "type": "sub",
-            "x": 1538.5711887904586,
-            "y": 1665.0000217982713,
+            "x": 3502.7378758021773,
+            "y": 499.16675458635723,
             "label": "PR to PO Creation",
             "hidden": false
           },
@@ -5044,8 +5048,8 @@
             "id": "node-56",
             "processId": "1788790531539-p2dgfz5t",
             "type": "sub",
-            "x": 1631.9046892438619,
-            "y": 1201.904754638672,
+            "x": 3242.737941196987,
+            "y": 496.904853820801,
             "label": "PO Complaince Validation",
             "hidden": false
           },
@@ -5053,8 +5057,8 @@
             "id": "node-57",
             "processId": "1788790531539-4aosg28r",
             "type": "sub",
-            "x": 1714.5239257812505,
-            "y": 1582.8570992606037,
+            "x": 3260.3572082519536,
+            "y": 657.0237404959553,
             "label": "PO Approval",
             "hidden": false
           },
@@ -5062,8 +5066,8 @@
             "id": "node-58",
             "processId": "1788790531539-lca84fwx",
             "type": "sub",
-            "x": 2887.6188877650666,
-            "y": 1386.4285278320322,
+            "x": 3511.7856052943634,
+            "y": 660.5952377319345,
             "label": "PO Execution",
             "hidden": false
           },
@@ -5071,8 +5075,8 @@
             "id": "node-59",
             "processId": "1788790531539-b3xgv0fm",
             "type": "sub",
-            "x": 2101.190447126117,
-            "y": 2068.571412222726,
+            "x": 3752.023760114398,
+            "y": 661.0713969639369,
             "label": "Invoice Payment",
             "hidden": false
           },
@@ -5080,8 +5084,8 @@
             "id": "node-60",
             "processId": "1788790531539-ywnjgtuh",
             "type": "sub",
-            "x": 1816.6667175292976,
-            "y": 2061.904667445592,
+            "x": 3490.833221435548,
+            "y": 901.9046712602894,
             "label": "Incoming Parts Registration",
             "hidden": false
           },
@@ -5089,8 +5093,8 @@
             "id": "node-61",
             "processId": "1788790531539-ambe46xn",
             "type": "main",
-            "x": 1936.190359933035,
-            "y": 2383.333456856865,
+            "x": 2963.6904514857697,
+            "y": 905.0001820155562,
             "label": "Replacement Parts Reception",
             "hidden": false
           },
@@ -5098,8 +5102,8 @@
             "id": "node-62",
             "processId": "1788790531539-o18eqtgs",
             "type": "sub",
-            "x": 2320.0001307896205,
-            "y": 2182.142846243723,
+            "x": 2991.666726248605,
+            "y": 1072.1430369785862,
             "label": "Shipment tracking",
             "hidden": false
           },
@@ -5107,8 +5111,8 @@
             "id": "node-63",
             "processId": "1788790531539-hvv98cr7",
             "type": "sub",
-            "x": 1584.7620064871653,
-            "y": 1385.7143075125557,
+            "x": 2949.761884416853,
+            "y": 1238.2143304007393,
             "label": "Goods Reception (Replacement Parts)",
             "hidden": false
           },
@@ -5116,17 +5120,17 @@
             "id": "node-64",
             "processId": "1788790531539-rzz5leun",
             "type": "sub",
-            "x": 2875.7141985212056,
-            "y": 2096.428516932898,
+            "x": 2942.380824497768,
+            "y": 1396.42848641532,
             "label": "Customs Clearance (3rd Countries)",
             "hidden": false
           },
           {
             "id": "node-65",
             "processId": "1788790531539-up558v6k",
-            "type": "sub",
-            "x": 2713.095179966518,
-            "y": 1176.1904907226562,
+            "type": "end",
+            "x": 2983.9285539899556,
+            "y": 1548.690517425537,
             "label": "Transfer to Safety Stock",
             "hidden": false
           },
@@ -5134,8 +5138,8 @@
             "id": "node-66",
             "processId": "1788790531539-aolh79ft",
             "type": "main",
-            "x": 2885.714285714285,
-            "y": 1768.3333478655131,
+            "x": 1307.3808811732692,
+            "y": 344.1667905535014,
             "label": "Replacement Parts ATP Check",
             "hidden": false
           },
@@ -5143,8 +5147,8 @@
             "id": "node-67",
             "processId": "1788790531539-t1r1f344",
             "type": "sub",
-            "x": 2098.095136369977,
-            "y": 2209.9999891008665,
+            "x": 1801.42841884068,
+            "y": 345.8333326067259,
             "label": "Factory ATP Check",
             "hidden": false
           },
@@ -5152,8 +5156,8 @@
             "id": "node-68",
             "processId": "1788790531539-vomcy7sd",
             "type": "sub",
-            "x": 1884.2856706891746,
-            "y": 2190.952333722795,
+            "x": 2405.952327183315,
+            "y": 346.7857611519944,
             "label": "Warehouse ATP Check",
             "hidden": false
           },
@@ -5161,17 +5165,17 @@
             "id": "node-69",
             "processId": "1788790531539-7kwtrhmx",
             "type": "main",
-            "x": 1508.5714285714298,
-            "y": 1843.3333260672441,
+            "x": 2111.904939923969,
+            "y": 433.3334138052812,
             "label": "Replacement Parts Supply Management",
-            "hidden": false
+            "hidden": true
           },
           {
             "id": "node-70",
             "processId": "1788790531539-ywoev5gm",
             "type": "sub",
-            "x": 2555.476161411831,
-            "y": 1920.7143293108254,
+            "x": 1721.3095659528467,
+            "y": 546.5477033342629,
             "label": "Transfer Request (Factory Buffer to Demanding Area",
             "hidden": false
           },
@@ -5179,8 +5183,8 @@
             "id": "node-71",
             "processId": "1788790531539-hroctf44",
             "type": "sub",
-            "x": 2301.190534319198,
-            "y": 1520.7143293108268,
+            "x": 2353.690595354354,
+            "y": 719.0477109636588,
             "label": "Transfer Request (Warehouse To Factory )",
             "hidden": false
           },
@@ -5188,8 +5192,8 @@
             "id": "node-72",
             "processId": "1788790531539-qwgejgxg",
             "type": "sub",
-            "x": 1683.3334350585947,
-            "y": 2218.8096291678303,
+            "x": 2125.833526611329,
+            "y": 719.6429879324787,
             "label": "Warehouse Goods Issue",
             "hidden": false
           },
@@ -5197,8 +5201,8 @@
             "id": "node-73",
             "processId": "1788790531539-f7z8xk3d",
             "type": "sub",
-            "x": 2587.3810250418537,
-            "y": 2073.5714285714294,
+            "x": 2130.7145211356037,
+            "y": 554.4048636300231,
             "label": "Factory Goods Recept",
             "hidden": false
           },
@@ -5206,8 +5210,8 @@
             "id": "node-74",
             "processId": "1788790531539-5uv1glef",
             "type": "sub",
-            "x": 2659.285670689173,
-            "y": 865.2381352015898,
+            "x": 1720.118937901087,
+            "y": 717.7382420131132,
             "label": "Replacement Parts transfer Execution",
             "hidden": false
           }
@@ -5247,7 +5251,8 @@
             "id": "conn-1788790738797-yvqgzb",
             "from": "node-2",
             "to": "node-5",
-            "type": "arrow"
+            "type": "arrow",
+            "label": "NG PARTS LISTING"
           },
           {
             "id": "conn-1788790740023-qofkvs",
@@ -5461,12 +5466,6 @@
             "label": "NO QUALIFIED"
           },
           {
-            "id": "conn-1788792354827-gzlkyl",
-            "from": "node-37",
-            "to": "node-21",
-            "type": "arrow"
-          },
-          {
             "id": "conn-1788792666113-jbo9fl",
             "from": "node-17",
             "to": "node-18",
@@ -5504,13 +5503,6 @@
             "from": "node-41",
             "to": "node-42",
             "type": "arrow"
-          },
-          {
-            "id": "conn-1788793163813-xfz7li",
-            "from": "node-9",
-            "to": "node-42",
-            "type": "arrow",
-            "label": "FEEDBACK TO SUPPLIER"
           },
           {
             "id": "conn-1788793198798-8c8fo0",
@@ -5552,15 +5544,177 @@
             "label": "CLAIM PARTS"
           },
           {
-            "id": "conn-1788793445794-8gn6xx",
+            "id": "conn-1788850106218-zsla2s",
+            "from": "node-43",
+            "to": "node-26",
+            "type": "arrow",
+            "label": "IF LOCAL SCRAP"
+          },
+          {
+            "id": "conn-1788850187219-c2oajj",
             "from": "node-44",
+            "to": "node-46",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788850202545-vp8m69",
+            "from": "node-43",
             "to": "node-45",
             "type": "arrow"
           },
           {
-            "id": "conn-1788793447100-bnp3py",
-            "from": "node-45",
-            "to": "node-46",
+            "id": "conn-1788850331018-7ef63n",
+            "from": "node-37",
+            "to": "node-21",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788850759187-hlrwi0",
+            "from": "node-5",
+            "to": "node-66",
+            "type": "arrow",
+            "label": "REPLACEMENT PARTS SUPPLY"
+          },
+          {
+            "id": "conn-1788850851692-zj1t87",
+            "from": "node-66",
+            "to": "node-67",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788851090798-yo313k",
+            "from": "node-67",
+            "to": "node-70",
+            "type": "arrow",
+            "label": "IF AVAILABLE IN FACTORY"
+          },
+          {
+            "id": "conn-1788851160506-vvsztk",
+            "from": "node-67",
+            "to": "node-68",
+            "type": "arrow",
+            "label": "IF NO AVAILABLE IN FACTORY"
+          },
+          {
+            "id": "conn-1788851291401-muaqp9",
+            "from": "node-68",
+            "to": "node-71",
+            "type": "arrow",
+            "label": "IF AVAILABLE IN WAREHOUSE"
+          },
+          {
+            "id": "conn-1788851421078-jfcjyt",
+            "from": "node-70",
+            "to": "node-74",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788851485768-8h0usl",
+            "from": "node-71",
+            "to": "node-72",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788851490599-6jqddk",
+            "from": "node-72",
+            "to": "node-73",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788851496159-elzxxt",
+            "from": "node-73",
+            "to": "node-70",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788851704166-745sq4",
+            "from": "node-68",
+            "to": "node-51",
+            "type": "arrow",
+            "label": "MRP RUN TO COVER NEEDS AND BUILD UP SAFETY STOCK"
+          },
+          {
+            "id": "conn-1788851767070-pnu3oq",
+            "from": "node-51",
+            "to": "node-52",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788851768741-2swjgk",
+            "from": "node-52",
+            "to": "node-53",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788851857062-lyyo3k",
+            "from": "node-53",
+            "to": "node-55",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788851928270-7b9yeu",
+            "from": "node-55",
+            "to": "node-56",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788851932221-wzz77n",
+            "from": "node-56",
+            "to": "node-57",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788851936254-lmmcyp",
+            "from": "node-57",
+            "to": "node-58",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788851939902-d9tind",
+            "from": "node-58",
+            "to": "node-60",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788851945679-junvnk",
+            "from": "node-58",
+            "to": "node-59",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788852259591-z274hw",
+            "from": "node-60",
+            "to": "node-61",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788852261982-dsbmb0",
+            "from": "node-46",
+            "to": "node-61",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788852271989-vgnlbx",
+            "from": "node-61",
+            "to": "node-62",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788852274222-ek8x95",
+            "from": "node-62",
+            "to": "node-63",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788852286046-ukm7cl",
+            "from": "node-63",
+            "to": "node-64",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1788852289566-pfeq2q",
+            "from": "node-64",
+            "to": "node-65",
             "type": "arrow"
           }
         ]
