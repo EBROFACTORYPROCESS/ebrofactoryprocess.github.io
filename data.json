@@ -2002,7 +2002,7 @@
           {
             "id": "node-157",
             "processId": "1788430168736-q4y1mrxv",
-            "type": "sub",
+            "type": "end",
             "x": 1143.3331451416016,
             "y": 1691.8749694824219,
             "label": "Edgeline Repelnishment",
@@ -2047,9 +2047,9 @@
           {
             "id": "node-162",
             "processId": "1788430168736-7kwxjjb4",
-            "type": "sub",
-            "x": 1555.83349609375,
-            "y": 640.8334045410156,
+            "type": "end",
+            "x": 1554.1668701171875,
+            "y": 642.5000610351562,
             "label": "Daily production monitoring",
             "hidden": false
           },
