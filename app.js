@@ -77,6 +77,16 @@ const columnNames = {
 function genId() {
     return Date.now() + '-' + Math.random().toString(36).substr(2, 8);
 }
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"]/g, m => {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        if (m === '"') return '&quot;';
+        return m;
+    });
+}
 function generateNodeDiff(oldData, newData) {
     const diff = {};
     
