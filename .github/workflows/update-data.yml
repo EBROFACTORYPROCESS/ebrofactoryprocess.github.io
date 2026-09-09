@@ -91,7 +91,41 @@ jobs:
                   console.warn("Scenario not found:", scId);
                   continue;
                 }
-
+                // ============================================================
+                // Apply master data changes (ADDED)
+                // ============================================================
+                if (diff._master) {
+                    const masterChanges = diff._master;
+                    for (const key in masterChanges) {
+                        const change = masterChanges[key];
+                        if (change._added) {
+                            if (!result[key]) result[key] = [];
+                            change._added.forEach(item => {
+                                // Check if item already exists (avoid duplicates)
+                                const exists = result[key].some(existing => JSON.stringify(existing) === JSON.stringify(item));
+                                if (!exists) {
+                                    result[key].push(item);
+                                    console.log(`Added to ${key}:`, item);
+                                }
+                            });
+                        }
+                        if (change._removed) {
+                            if (result[key]) {
+                                change._removed.forEach(item => {
+                                    const idx = result[key].findIndex(existing => JSON.stringify(existing) === JSON.stringify(item));
+                                    if (idx !== -1) {
+                                        result[key].splice(idx, 1);
+                                        console.log(`Removed from ${key}:`, item);
+                                    }
+                                });
+                            }
+                        }
+                        if (change._updated) {
+                            result[key] = change._updated;
+                            console.log(`Updated ${key}`);
+                        }
+                    }
+                }
                 // ==========================================================
                 // Apply scenario-level changes (name, etc.)
                 // ==========================================================
