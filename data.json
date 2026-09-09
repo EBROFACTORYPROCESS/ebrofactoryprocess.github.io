@@ -199,8 +199,8 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "To Be Determined",
-            "status": "Offline",
+            "name": "SAP",
+            "status": "Completed",
             "responsible": ""
           },
           "businessDoc": "",
@@ -228,8 +228,8 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "To Be Determined",
-            "status": "Offline",
+            "name": "SAP",
+            "status": "Completed",
             "responsible": ""
           },
           "businessDoc": "",
@@ -255,10 +255,10 @@
               "Production Planning"
             ]
           },
-          "businessStatus": "Completed",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "SAP",
-            "status": "Work in Porgress",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/:b:/s/BUSINESSPROCESSCONTROL/IQB_NI9omgquQp368CDytAQfAbyUwZh6gBlP-x4FPGOOma8?email=ybai%40ebrofactory.com&e=re6z81",
@@ -284,10 +284,10 @@
               "Production Planning"
             ]
           },
-          "businessStatus": "Completed",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "SAP",
-            "status": "Work in Porgress",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/:b:/s/BUSINESSPROCESSCONTROL/IQB_NI9omgquQp368CDytAQfAbyUwZh6gBlP-x4FPGOOma8?email=ybai%40ebrofactory.com&e=re6z81",
@@ -313,10 +313,10 @@
               "Production Planning"
             ]
           },
-          "businessStatus": "In Progress",
+          "businessStatus": "Completed",
           "system": {
             "name": "SAP",
-            "status": "Work in Porgress",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/:b:/s/BUSINESSPROCESSCONTROL/IQB_NI9omgquQp368CDytAQfAbyUwZh6gBlP-x4FPGOOma8?email=ybai%40ebrofactory.com&e=re6z81",
@@ -367,10 +367,10 @@
             ],
             "i": []
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "SAP",
-            "status": "Work in Porgress",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "",
@@ -395,7 +395,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "SAP",
-            "status": "Work in Porgress",
+            "status": "Operational",
             "responsible": ""
           },
           "businessDoc": "",
@@ -419,7 +419,7 @@
             ],
             "i": []
           },
-          "businessStatus": "Not Defined",
+          "businessStatus": "Completed",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
@@ -446,8 +446,8 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "SAP",
-            "status": "Work in Porgress",
+            "name": "To Be Determined",
+            "status": "Offline",
             "responsible": ""
           },
           "businessDoc": "",
@@ -472,7 +472,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "SAP",
-            "status": "Work in Porgress",
+            "status": "Completed",
             "responsible": ""
           },
           "businessDoc": "",
@@ -497,7 +497,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "SAP",
-            "status": "Work in Porgress",
+            "status": "Completed",
             "responsible": ""
           },
           "businessDoc": "",
@@ -621,8 +621,8 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "To Be Determined",
-            "status": "Offline",
+            "name": "WMS",
+            "status": "Work in Porgress",
             "responsible": "test14"
           },
           "businessDoc": "",
@@ -646,7 +646,7 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "LES",
+            "name": "WMS",
             "status": "Work in Porgress",
             "responsible": ""
           },
@@ -671,7 +671,7 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "LES",
+            "name": "WMS",
             "status": "Work in Porgress",
             "responsible": ""
           },
@@ -696,7 +696,7 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "LES",
+            "name": "WMS",
             "status": "Work in Porgress",
             "responsible": ""
           },
@@ -721,8 +721,8 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "LES",
-            "status": "Work in Porgress",
+            "name": "WMS",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -746,7 +746,7 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "LES",
+            "name": "WMS",
             "status": "Work in Porgress",
             "responsible": ""
           },
@@ -771,8 +771,8 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "LES",
-            "status": "Work in Porgress",
+            "name": "WMS",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -796,7 +796,7 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "LES",
+            "name": "WMS",
             "status": "Work in Porgress",
             "responsible": ""
           },
@@ -822,7 +822,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "To Be Implemented",
+            "status": "Work in Porgress",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -847,7 +847,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "To Be Implemented",
+            "status": "Work in Porgress",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -872,7 +872,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "To Be Implemented",
+            "status": "Work in Porgress",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -897,7 +897,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "To Be Implemented",
+            "status": "Work in Porgress",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -919,8 +919,8 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "SAP",
-            "status": "Work in Porgress",
+            "name": "OFFLINE",
+            "status": "Offline",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
@@ -944,7 +944,7 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "To Be Determined",
+            "name": "OFFLINE",
             "status": "Offline",
             "responsible": ""
           },
@@ -969,8 +969,8 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "SAP",
-            "status": "Work in Porgress",
+            "name": "OFFLINE",
+            "status": "Offline",
             "responsible": "test14"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
@@ -994,8 +994,8 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "SAP",
-            "status": "Work in Porgress",
+            "name": "OFFLINE",
+            "status": "Offline",
             "responsible": "test14"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
@@ -1019,7 +1019,7 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "SAP",
+            "name": "LEGATO",
             "status": "Work in Porgress",
             "responsible": "test14"
           },
@@ -1044,8 +1044,8 @@
           },
           "businessStatus": "In Progress",
           "system": {
-            "name": "MES",
-            "status": "Work in Porgress",
+            "name": "LEGATO",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
@@ -1067,10 +1067,10 @@
               "Production Planning"
             ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "In Progress",
           "system": {
-            "name": "MES",
-            "status": "Work in Porgress",
+            "name": "LEGATO",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
@@ -1092,10 +1092,10 @@
               "Production Planning"
             ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "In Progress",
           "system": {
-            "name": "To Be Determined",
-            "status": "Offline",
+            "name": "KAPTURE",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "",
@@ -1117,7 +1117,7 @@
               "Production Planning"
             ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "In Progress",
           "system": {
             "name": "LEGATO",
             "status": "To Be Implemented",
@@ -1142,10 +1142,10 @@
               "Production Planning"
             ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "In Progress",
           "system": {
-            "name": "MES",
-            "status": "Work in Porgress",
+            "name": "LEGATO",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
@@ -1167,10 +1167,10 @@
               "Production Planning"
             ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "In Progress",
           "system": {
-            "name": "MES",
-            "status": "Work in Porgress",
+            "name": "LEGATO",
+            "status": "To Be Implemented",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
@@ -1192,10 +1192,10 @@
               "Production Planning"
             ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Completed",
           "system": {
-            "name": "To Be Determined",
-            "status": "Operational",
+            "name": "KAPTURE",
+            "status": "Completed",
             "responsible": ""
           },
           "businessDoc": "",
@@ -1233,17 +1233,20 @@
           "name": "Trim Shop Production",
           "description": "Assembly execution of painted bodies into complete vehicles, encompassing order execution, critical parts traceability, and offline completion, marking the culmination of the production order lifecycle and handover to final inspection and delivery.",
           "raci": {
-            "r": [],
+            "r": [
+              "Production Execution (Trim)",
+              "Production Execution"
+            ],
             "a": [],
             "c": [],
             "i": [
               "Production Planning"
             ]
           },
-          "businessStatus": "Not Defined",
+          "businessStatus": "Completed",
           "system": {
-            "name": "MES",
-            "status": "Work in Porgress",
+            "name": "LEGATO",
+            "status": "Operational",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
@@ -1265,10 +1268,10 @@
               "Production Planning"
             ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Completed",
           "system": {
-            "name": "MES",
-            "status": "Work in Porgress",
+            "name": "LEGATO",
+            "status": "Operational",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
@@ -1313,7 +1316,7 @@
               "Production Planning"
             ]
           },
-          "businessStatus": "Not Defined",
+          "businessStatus": "Completed",
           "system": {
             "name": "KAPTURE",
             "status": "Operational",
@@ -1571,7 +1574,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "SAP",
-            "status": "Work in Porgress",
+            "status": "Completed",
             "responsible": ""
           },
           "businessDoc": "",
@@ -1668,7 +1671,7 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "To Be Determined",
+            "name": "OFFLINE",
             "status": "Offline",
             "responsible": ""
           },
@@ -1718,7 +1721,7 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "To Be Determined",
+            "name": "OFFLINE",
             "status": "Offline",
             "responsible": ""
           },
