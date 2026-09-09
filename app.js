@@ -77,13 +77,74 @@ const columnNames = {
 function genId() {
     return Date.now() + '-' + Math.random().toString(36).substr(2, 8);
 }
-function generateNodeDiff(oldScenarios, newScenarios) {
+function generateNodeDiff(oldData, newData) {
     const diff = {};
+    
+    // ============================================================
+    // NEW: Compare Master Data (root-level properties)
+    // ============================================================
+    const masterKeys = ['departments', 'sysNameList', 'sysStatusList', 'sysRespList', 'businessStatuses', 'importanceList', 'urgencyList'];
+    const masterDiff = {};
+    
+    for (const key of masterKeys) {
+        const oldVal = oldData[key] || [];
+        const newVal = newData[key] || [];
+        
+        // Compare arrays
+        if (Array.isArray(oldVal) && Array.isArray(newVal)) {
+            const oldSet = new Set(oldVal.map(item => JSON.stringify(item)));
+            const newSet = new Set(newVal.map(item => JSON.stringify(item)));
+            
+            const added = [];
+            const removed = [];
+            
+            // Find added items
+            newVal.forEach(item => {
+                const stringified = JSON.stringify(item);
+                if (!oldSet.has(stringified)) {
+                    added.push(item);
+                }
+            });
+            
+            // Find removed items
+            oldVal.forEach(item => {
+                const stringified = JSON.stringify(item);
+                if (!newSet.has(stringified)) {
+                    removed.push(item);
+                }
+            });
+            
+            if (added.length > 0 || removed.length > 0) {
+                masterDiff[key] = {};
+                if (added.length > 0) masterDiff[key]._added = added;
+                if (removed.length > 0) masterDiff[key]._removed = removed;
+            }
+        } else if (typeof oldVal === 'object' && typeof newVal === 'object') {
+            // For objects, compare as JSON
+            if (JSON.stringify(oldVal) !== JSON.stringify(newVal)) {
+                masterDiff[key] = { _updated: newVal };
+            }
+        } else {
+            // For primitive values
+            if (oldVal !== newVal) {
+                masterDiff[key] = { _updated: newVal };
+            }
+        }
+    }
+    
+    if (Object.keys(masterDiff).length > 0) {
+        diff._master = masterDiff;
+        console.log('📊 Master data changes detected:', Object.keys(masterDiff));
+    }
+    
+    // ============================================================
+    // YOUR EXISTING LOGIC BELOW (UNCHANGED)
+    // ============================================================
     const oldMap = {};
-    oldScenarios.forEach(s => { oldMap[s.id] = s; });
+    (oldData.scenarios || []).forEach(s => { oldMap[s.id] = s; });
 
     // Check for DELETED scenarios (in old but not in new)
-    const newIds = new Set(newScenarios.map(s => s.id));
+    const newIds = new Set((newData.scenarios || []).map(s => s.id));
     for (const oldId in oldMap) {
         if (!newIds.has(oldId)) {
             diff[oldId] = { _deleted: true };
@@ -92,7 +153,7 @@ function generateNodeDiff(oldScenarios, newScenarios) {
     }
 
     // Process new scenarios (added or updated)
-    newScenarios.forEach(newSc => {
+    (newData.scenarios || []).forEach(newSc => {
         const oldSc = oldMap[newSc.id];
         if (!oldSc) {
             // New scenario – send full data
@@ -239,16 +300,6 @@ function generateNodeDiff(oldScenarios, newScenarios) {
 
     console.log('📊 Final diff:', JSON.stringify(diff, null, 2));
     return diff;
-}
-function escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/[&<>"]/g, m => {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        if (m === '"') return '&quot;';
-        return m;
-    });
 }
 function ensureUniqueNodeIds(workflow) {
     if (!workflow || !workflow.nodes) return;
@@ -803,7 +854,7 @@ async function saveDataToGitHub(data) {
             console.log('📌 Current first node:', currNode);
         }
         // Generate custom diff using node IDs (stable)
-        const diff = generateNodeDiff(lastSnapshot.scenarios, data.scenarios);
+        const diff = generateNodeDiff(lastSnapshot.scenarios, data);
         if (!diff || Object.keys(diff).length === 0) {
             alert('ℹ️ No changes detected. Nothing to save.');
             isSaving = false;
