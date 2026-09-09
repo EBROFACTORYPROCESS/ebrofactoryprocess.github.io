@@ -3096,10 +3096,10 @@
               "Material Planning"
             ]
           },
-          "businessStatus": "In Progress",
+          "businessStatus": "Not Defined",
           "system": {
-            "name": "WMS",
-            "status": "Work in Porgress",
+            "name": "To Be Determined",
+            "status": "Offline",
             "responsible": ""
           },
           "businessDoc": "",
@@ -3121,10 +3121,10 @@
               "Material Planning"
             ]
           },
-          "businessStatus": "In Progress",
+          "businessStatus": "Not Defined",
           "system": {
-            "name": "WMS",
-            "status": "Work in Porgress",
+            "name": "To Be Determined",
+            "status": "Offline",
             "responsible": ""
           },
           "businessDoc": "",
@@ -3146,10 +3146,10 @@
               "Material Planning"
             ]
           },
-          "businessStatus": "In Progress",
+          "businessStatus": "Not Defined",
           "system": {
-            "name": "WMS",
-            "status": "Work in Porgress",
+            "name": "To Be Determined",
+            "status": "Offline",
             "responsible": ""
           },
           "businessDoc": "",
@@ -3169,7 +3169,7 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "In Progress",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
@@ -3192,7 +3192,7 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "In Progress",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
@@ -3215,7 +3215,7 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "In Progress",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
@@ -3238,7 +3238,7 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "In Progress",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
@@ -3261,7 +3261,7 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "In Progress",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
@@ -3284,7 +3284,7 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "In Progress",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
@@ -3330,7 +3330,7 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Completed",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
@@ -3353,9 +3353,9 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Not Defined",
           "system": {
-            "name": "SAP",
+            "name": "To Be Determined",
             "status": "Offline",
             "responsible": ""
           },
@@ -3376,9 +3376,9 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Not Defined",
           "system": {
-            "name": "SAP",
+            "name": "To Be Determined",
             "status": "Offline",
             "responsible": ""
           },
@@ -3401,7 +3401,7 @@
           },
           "businessStatus": "Not Started",
           "system": {
-            "name": "SAP",
+            "name": "To Be Determined",
             "status": "Offline",
             "responsible": ""
           },
@@ -3468,10 +3468,10 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "Completed",
+          "businessStatus": "Not Defined",
           "system": {
-            "name": "SAP",
-            "status": "Work in Porgress",
+            "name": "To Be Determined",
+            "status": "Offline",
             "responsible": ""
           },
           "businessDoc": "",
@@ -3562,7 +3562,7 @@
           },
           "businessStatus": "Not Started",
           "system": {
-            "name": "WMS",
+            "name": "To Be Determined",
             "status": "Offline",
             "responsible": ""
           },
@@ -3652,10 +3652,10 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "Completed",
+          "businessStatus": "Not Defined",
           "system": {
-            "name": "LES",
-            "status": "Work in Porgress",
+            "name": "To Be Determined",
+            "status": "Offline",
             "responsible": ""
           },
           "businessDoc": "",
@@ -3675,10 +3675,10 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "Completed",
+          "businessStatus": "Not Defined",
           "system": {
-            "name": "LES",
-            "status": "Work in Porgress",
+            "name": "To Be Determined",
+            "status": "Offline",
             "responsible": ""
           },
           "businessDoc": "",
@@ -3698,10 +3698,10 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "Completed",
+          "businessStatus": "Not Defined",
           "system": {
-            "name": "LES",
-            "status": "Work in Porgress",
+            "name": "To Be Determined",
+            "status": "Offline",
             "responsible": ""
           },
           "businessDoc": "",
@@ -3721,10 +3721,10 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "Completed",
+          "businessStatus": "Not Defined",
           "system": {
-            "name": "LES",
-            "status": "Work in Porgress",
+            "name": "To Be Determined",
+            "status": "Offline",
             "responsible": ""
           },
           "businessDoc": "",
