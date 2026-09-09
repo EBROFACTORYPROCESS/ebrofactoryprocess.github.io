@@ -775,7 +775,7 @@ function generateDiff(oldData, newData) {
 }
 
 function generateSimpleDiff(oldData, newData) {
-    const diff = generateNodeDiff(lastSnapshot.scenarios, data.scenarios);
+    const diff = generateNodeDiff(lastSnapshot, data);
     if (!diff || Object.keys(diff).length === 0) {
         alert('ℹ️ No changes detected. Nothing to save.');
         // ... cleanup
@@ -864,7 +864,7 @@ async function saveDataToGitHub(data) {
             console.log('📌 Current first node:', currNode);
         }
         // Generate custom diff using node IDs (stable)
-        const diff = generateNodeDiff(lastSnapshot.scenarios, data);
+        const diff = generateNodeDiff(lastSnapshot, data);
         if (!diff || Object.keys(diff).length === 0) {
             alert('ℹ️ No changes detected. Nothing to save.');
             isSaving = false;
