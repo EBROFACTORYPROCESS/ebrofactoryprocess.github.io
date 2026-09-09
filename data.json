@@ -3307,7 +3307,7 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "In Progress",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
@@ -3744,10 +3744,10 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "Completed",
+          "businessStatus": "Not Defined",
           "system": {
-            "name": "LES",
-            "status": "Work in Porgress",
+            "name": "To Be Determined",
+            "status": "Offline",
             "responsible": ""
           },
           "businessDoc": "",
@@ -3816,7 +3816,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "To Be Determined",
-            "status": "offline",
+            "status": "Offline",
             "responsible": ""
           },
           "businessDoc": "",
@@ -3830,17 +3830,19 @@
           "description": "Formally requests replacement parts from the supplier for all claimed quantities, specifying required part numbers, quantities, delivery timeline, and shipping instructions to ensure timely replenishment of production inventory.",
           "raci": {
             "r": [
-              "Parts Quality"
+              "Material Planning"
             ],
             "a": [],
-            "c": [],
+            "c": [
+              "Parts Quality"
+            ],
             "i": []
           },
           "businessStatus": "Completed",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3882,10 +3884,10 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "In Progress",
           "system": {
             "name": "GLPI",
-            "status": "Work in Porgress",
+            "status": "Completed",
             "responsible": ""
           },
           "businessDoc": "",
@@ -3908,7 +3910,7 @@
           "businessStatus": "Not Started",
           "system": {
             "name": "To Be Determined",
-            "status": "offline",
+            "status": "Offline",
             "responsible": ""
           },
           "businessDoc": "",
@@ -3977,7 +3979,7 @@
           "businessStatus": "Not Started",
           "system": {
             "name": "To Be Determined",
-            "status": "offline",
+            "status": "Offline",
             "responsible": ""
           },
           "businessDoc": "",
@@ -4206,8 +4208,8 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "To Be Determined",
-            "status": "Offline",
+            "name": "GLPI",
+            "status": "Completed",
             "responsible": ""
           },
           "businessDoc": "",
