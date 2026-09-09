@@ -919,7 +919,7 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "OFFLINE",
+            "name": "To Be Determined",
             "status": "Offline",
             "responsible": ""
           },
@@ -944,7 +944,7 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "OFFLINE",
+            "name": "To Be Determined",
             "status": "Offline",
             "responsible": ""
           },
@@ -969,7 +969,7 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "OFFLINE",
+            "name": "To Be Determined",
             "status": "Offline",
             "responsible": "test14"
           },
@@ -994,7 +994,7 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "OFFLINE",
+            "name": "To Be Determined",
             "status": "Offline",
             "responsible": "test14"
           },
@@ -1671,7 +1671,7 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "OFFLINE",
+            "name": "To Be Determined",
             "status": "Offline",
             "responsible": ""
           },
@@ -1721,7 +1721,7 @@
           },
           "businessStatus": "Completed",
           "system": {
-            "name": "OFFLINE",
+            "name": "To Be Determined",
             "status": "Offline",
             "responsible": ""
           },
