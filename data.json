@@ -3221,7 +3221,7 @@
           "id": "1788790531539-s5l22exx",
           "seq": "30.2",
           "name": "Providor Claim or Process Scrap",
-          "description": "Reviews each quarantined NG part to determine the appropriate disposition path:�Supplier Claim�(defect attributable to supplier) requiring formal claim processing and posible return; or�Process Scrap�(internally generated defect) requiring scrap execution. Decision is based on defect ownership, PQA validation results, and repairability assessment.",
+          "description": "Reviews each quarantined NG part to determine the appropriate disposition path: \n- SUPPLIER CLAIM:  (defect attributable to supplier) requiring formal claim processing and posible return. \n- PROCESS SCRAP: (internally generated defect) requiring scrap execution. \n\nDecision is based on defect ownership, PQA validation results, and repairability assessment.",
           "raci": {
             "r": [
               "Parts Quality"
@@ -3234,7 +3234,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3251,13 +3251,15 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
