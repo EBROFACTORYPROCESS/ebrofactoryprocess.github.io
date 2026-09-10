@@ -3273,20 +3273,23 @@
           "id": "1788790531539-g5eixym9",
           "seq": "40.1",
           "name": "Damange Level Validation",
-          "description": "Assesses each internally generated NG part to determine the extent of damage and repairability. Parts are classified as:�Repairable�(can be restored to quality standards through rework) or�Non-Repairable�(must be scrapped). Validation is performed against defined quality and engineering standards.",
+          "description": "Assesses each internally generated NG part to determine the extent of damage and repairability. \n\nParts are classified as: \n- Repairable (can be restored to quality standards through rework) \n- Non-Repairable (must be scrapped). \n\nValidation is performed against defined quality and engineering standards.",
           "raci": {
             "r": [
               "Parts Quality"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning",
+              "Environment"
+            ]
           },
           "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3303,13 +3306,16 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Production Execution",
+              "Material Planning"
+            ]
           },
           "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3326,13 +3332,16 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning",
+              "Environment"
+            ]
           },
           "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3355,7 +3364,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3368,17 +3377,21 @@
           "description": "Creates a formal sales order from OEM to Factory for all parts and quantities listed in the approved Scrap List, initiating the financial and logistical transaction for scrap disposal.",
           "raci": {
             "r": [
-              "Finance"
+              "Finance",
+              "Purchase "
             ],
             "a": [],
-            "c": [],
+            "c": [
+              "Material Planning",
+              "Environment"
+            ],
             "i": []
           },
           "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3391,17 +3404,22 @@
           "description": "Processes payment of the invoice issued to OEM for the parts to be scrapped, completing the financial transaction for scrap material ownership transfer.",
           "raci": {
             "r": [
-              "Finance"
+              "Finance",
+              "Finance & Controlling"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Purchase ",
+              "Material Planning",
+              "Environment"
+            ]
           },
           "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3418,13 +3436,15 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Environment"
+            ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3441,13 +3461,15 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3464,13 +3486,15 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Completed",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3487,13 +3511,15 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Finance & Controlling"
+            ]
           },
           "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3510,13 +3536,15 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3535,11 +3563,11 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3552,17 +3580,20 @@
           "description": "Creates a formal transfer request to move repairable NG parts from the quarantine zone to the designated rework/repair area, specifying part numbers, quantities, and requested transfer date.",
           "raci": {
             "r": [
-              "Production Execution"
+              "Parts Quality"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Handling",
+              "Material Planning"
+            ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3949,13 +3980,15 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Handling"
+            ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
