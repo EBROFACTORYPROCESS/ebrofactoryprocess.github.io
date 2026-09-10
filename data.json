@@ -22,7 +22,6 @@
     "Environment",
     "BOM Management",
     "All",
-    "test1"
   ],
   "importanceList": [],
   "urgencyList": [],
@@ -37,7 +36,6 @@
     "SPS",
     "WMS",
     "To Be Determined",
-    "test12"
   ],
   "sysStatusList": [
     {
@@ -60,13 +58,9 @@
       "value": "Work in Porgress",
       "color": "yellow"
     },
-    {
-      "value": "test13",
-      "color": "default"
-    }
   ],
   "sysRespList": [
-    "test14"
+      "EBRO IT"
   ],
   "businessStatuses": [
     {
@@ -81,10 +75,6 @@
       "value": "Completed",
       "color": "green"
     },
-    {
-      "value": "test15",
-      "color": "default"
-    }
   ],
   "scenarios": [
     {
