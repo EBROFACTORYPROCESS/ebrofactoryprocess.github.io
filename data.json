@@ -2899,7 +2899,7 @@
           "id": "1788790531539-er9r8i94",
           "seq": "10.4",
           "name": "NG Parts Detection(Intralogistic Area)",
-          "description": "Identifies and records non-qualified parts detected during intralogistics operations,including replenishment, picking, and kitting activities,ensuring defective materials are removed from circulation before reaching the production line. Detected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). Collected cards are later processed for disposition. NG parts are classified using the two-tier travel card system:�Green Travel Card�(Factory Scrap) for internally generated defects (e.g., handling damage, label damage, mishandling during internal transport) requiring no additional validation before disposal; or�Orange Travel Card�(Supplier Claim) for supplier-related defects (e.g., latent material defects not detected at reception) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
+          "description": "Identifies and records non-qualified parts detected during intralogistics operations(replenishment, picking, kitting activities). Ensuring defective materials are removed from circulation before reaching the production line. \n\nDetected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off).\n\nNG parts are classified using the two-tier travel card system:\n- Green Travel Card (Factory Scrap) for internally generated defects (e.g., handling damage, label damage, mishandling during internal transport) requiring no additional validation before disposal. \n- Orange Travel Card(Supplier Claim) for supplier-related defects (e.g., latent material defects not detected at reception) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
           "raci": {
             "r": [
               "Material Handling"
@@ -2908,13 +2908,15 @@
               "Parts Quality"
             ],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "In Progress",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
