@@ -3096,7 +3096,7 @@
           "id": "1788790531539-6nvmg2zv",
           "seq": "20",
           "name": "NG Parts Movement",
-          "description": "Physical segregation and routing of non-qualified parts based on their travel card classification.�Green Travel Card�parts (Factory Scrap) are moved to the designated scrap holding area for disposal processing.�Orange Travel Card�parts (Supplier Claim) are moved to the quarantine zone for PQA validation and subsequent claim processing.",
+          "description": "Physical segregation and routing of non-qualified parts based on their travel card classification:\n- Green Travel Card parts (Factory Scrap) are moved to the designated scrap holding area for disposal processing.\n- Orange Travel Card parts (Supplier Claim) are moved to the quarantine zone for PQA validation and subsequent claim processing.",
           "raci": {
             "r": [
               "Material Handling"
@@ -3104,14 +3104,15 @@
             "a": [],
             "c": [],
             "i": [
-              "Material Planning"
+              "Material Planning",
+              "Environment"
             ]
           },
           "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3121,7 +3122,7 @@
           "id": "1788790531539-dy9bdo48",
           "seq": "20.1",
           "name": "Move to Quarantine Zone (Factory Scrap)",
-          "description": "Routing of non-qualified parts based on their travel card classification.  Green Travel Card�parts (Factory Scrap) are moved to the designated scrap holding area for disposal processing",
+          "description": "Routing of non-qualified parts based on their travel card classification.  Green Travel Card parts (Factory Scrap) are moved to the designated scrap holding area for disposal processing.",
           "raci": {
             "r": [
               "Environment"
@@ -3136,7 +3137,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3161,7 +3162,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3178,13 +3179,16 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning",
+              "Environment"
+            ]
           },
           "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "test14"
           },
           "businessDoc": "",
           "userManual": "",
