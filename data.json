@@ -61,7 +61,7 @@
     }
   ],
   "sysRespList": [
-      "EBRO IT"
+    "EBRO IT"
   ],
   "businessStatuses": [
     {
@@ -2983,7 +2983,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3830,7 +3830,7 @@
           "id": "1788790531539-59r0l7g2",
           "seq": "80",
           "name": "Claim Request Processing",
-          "description": "Formal processing of supplier claims for non-qualified parts attributed to supplier defects, encompassing claim notification, disposition of defective parts, replacement part requests, and recovery of operational costs.",
+          "description": "Formal processing of supplier claims for non-qualified parts attributed to supplier defects, encompassing claim notification, disposition of defective parts, replacement part requests, and charge operational costs.",
           "raci": {
             "r": [
               "Parts Quality"
@@ -3843,7 +3843,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3866,7 +3866,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3876,7 +3876,7 @@
           "id": "1788790531539-ugsfbw6z",
           "seq": "80.2",
           "name": "Scrap or Return of Defective Parts",
-          "description": "Determines the disposition of defective parts under claim: either-Scrap within Factory-(with supplier credit) or-Return to Supplier-(physical return of defective parts for supplier analysis and replacement). Decision is based on supplier agreement, part value, and logistics feasibility.",
+          "description": "Determines the disposition of defective parts under claim: either-Scrap within Factory-(with supplier credit) or Return to Supplier (physical return of defective parts for supplier analysis and replacement). \nDecision is based on supplier agreement, part value, and logistics feasibility.",
           "raci": {
             "r": [
               "Parts Quality"
@@ -3885,11 +3885,11 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "Completed",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3899,7 +3899,7 @@
           "id": "1788790531539-qel2qzac",
           "seq": "80.3",
           "name": "Replacement Parts Request",
-          "description": "Formally requests replacement parts from the supplier for all claimed quantities, specifying required part numbers, quantities, delivery timeline, and shipping instructions to ensure timely replenishment of production inventory.",
+          "description": "Formally requests replacement parts from the supplier for claimed quantities, specifying required part numbers, quantities, estimated delivery time, and shipping instructions to ensure timely replenishment of production inventory.",
           "raci": {
             "r": [
               "Material Planning"
@@ -3924,20 +3924,22 @@
           "id": "1788790531539-b4lpj1w1",
           "seq": "80.4",
           "name": "Operational Cost Charge Request",
-          "description": "Formally requests reimbursement from the supplier for additional operational costs incurred due to the defective parts (e.g., rework labor, production downtime, inspection costs, administrative handling), providing detailed cost breakdown and supporting evidence.",
+          "description": "Formally requests charge from the supplier for operations cost incurred due to the defective parts (e.g., rework labor, production downtime, inspection costs, administrative handling), providing detailed cost breakdown and supporting evidence.",
           "raci": {
             "r": [
-              "Parts Quality"
+              "Finance & Controlling"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Parts Quality"
+            ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Completed",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3954,13 +3956,15 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "In Progress",
           "system": {
             "name": "GLPI",
             "status": "Completed",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -4025,13 +4029,16 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Parts Quality",
+              "Material Planning"
+            ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -4048,13 +4055,16 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning",
+              "Parts Quality"
+            ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -4077,7 +4087,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
