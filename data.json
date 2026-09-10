@@ -3721,13 +3721,15 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning"
+            ]
           },
           "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3744,13 +3746,16 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Environment",
+              "Material Planning"
+            ]
           },
           "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3767,13 +3772,16 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning",
+              "Material Handling"
+            ]
           },
           "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3813,13 +3821,15 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Handling"
+            ]
           },
           "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
