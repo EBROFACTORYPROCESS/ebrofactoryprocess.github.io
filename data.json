@@ -3444,7 +3444,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": "test14"
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3554,20 +3554,23 @@
           "id": "1788790531539-vhm0pklt",
           "seq": "60.1",
           "name": "Rework Order Planning",
-          "description": "Plans rework orders for all parts listed on the Repair List, defining estimated work dates, required resources, repair procedures, and quality standards to be met. Prioritization is based on production urgency, material criticality, and available capacity.",
+          "description": "Plans rework orders for all parts listed on the Repair List, defining estimated work dates, required resources, repair procedures, and quality standards to be met. \nPrioritization is based on production urgency, material criticality, and available capacity.",
           "raci": {
             "r": [
               "Production Execution"
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning",
+              "Parts Quality"
+            ]
           },
           "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": "test14"
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3593,7 +3596,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": "test14"
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3609,14 +3612,19 @@
               "Material Handling"
             ],
             "a": [],
-            "c": [],
-            "i": []
+            "c": [
+              "Parts Quality"
+            ],
+            "i": [
+              "Material Planning",
+              "Production Execution"
+            ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3633,13 +3641,16 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning",
+              "Parts Quality"
+            ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3655,14 +3666,19 @@
               "Production Execution"
             ],
             "a": [],
-            "c": [],
-            "i": []
+            "c": [
+              "Production Execution"
+            ],
+            "i": [
+              "Material Handling",
+              "Material Planning"
+            ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
-            "status": "offline",
-            "responsible": ""
+            "status": "Operational",
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
@@ -3679,13 +3695,16 @@
             ],
             "a": [],
             "c": [],
-            "i": []
+            "i": [
+              "Material Planning",
+              "Parts Quality"
+            ]
           },
-          "businessStatus": "Not Started",
+          "businessStatus": "Not Defined",
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "",
           "userManual": "",
