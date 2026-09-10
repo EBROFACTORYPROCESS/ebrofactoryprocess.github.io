@@ -4,7 +4,7 @@
     "Production Planning",
     "Material Planning",
     "Material Handling",
-    "Purchase ",
+    "Purchase",
     "Production Execution",
     "Production Execution (Body)",
     "Production Execution (Paint)",
@@ -15,7 +15,7 @@
     "Production Engineering (Trim) ",
     "Trade & Compliance",
     "Finance & Controlling",
-    "Inbound Logistic ",
+    "Inbound Logistic",
     "Outbound Logistic",
     "Parts Quality",
     "Vehicle Quality",
@@ -86,7 +86,7 @@
           "id": "1788430168735-wmr6funs",
           "seq": "10",
           "name": "Sales Forecast",
-          "description": "Multi-horizon sales forecasting process that translates market demand into actionable factory planning signals, directly influencing capacity scheduling, material Purchase, and subcontract order placement.",
+          "description": "Multi-horizon Sales forecasting process that translates market demand into actionable factory planning signals, directly influencing capacity scheduling, material Purchase, and subcontract order placement.",
           "raci": {
             "r": [
               "Sales"
@@ -115,7 +115,7 @@
           "id": "1788430168735-v8i8b0jf",
           "seq": "10.1",
           "name": "Annual Sales Forecast",
-          "description": "Establishes a high-level 12-month sales projection, serving as the strategic planning baseline for factory capacity reservations, workforce planning, and long-lead material sourcing for the upcoming fiscal year.",
+          "description": "Establishes a high-level 12-month Sales projection, serving as the strategic planning baseline for factory capacity reservations, workforce planning, and long-lead material sourcing for the upcoming fiscal year.",
           "raci": {
             "r": [
               "Sales"
@@ -144,7 +144,7 @@
           "id": "1788430168735-jm9ij3rd",
           "seq": "10.2",
           "name": "M+3 Sales Plan",
-          "description": "Generates a rolling 4-month (M+3) sales forecast at a detailed product-family level, providing the tactical demand signal that drives the subsequent subcontract order cycle and raw material purchasing.",
+          "description": "Generates a rolling 4-month (M+3) Sales forecast at a detailed product-family level, providing the tactical demand signal that drives the subsequent subcontract order cycle and raw material purchasing.",
           "raci": {
             "r": [
               "Sales"
@@ -173,7 +173,7 @@
           "id": "1788430168736-utgtwbj9",
           "seq": "10.3",
           "name": "Create M+3 Subcontract STO",
-          "description": "Create subcontract Stock Transfer Orders (STO) from the OEM to the factory based on the finalized M+3 sales plan, formally triggering the factory's production and material allocation for the incoming 4th-month window.",
+          "description": "Create subcontract Stock Transfer Orders (STO) from the OEM to the factory based on the finalized M+3 Sales plan, formally triggering the factory's production and material allocation for the incoming 4th-month window.",
           "raci": {
             "r": [
               "Sales"
@@ -202,7 +202,7 @@
           "id": "1788430168736-5bx8jess",
           "seq": "10.4",
           "name": "Maintain M+3 Subcontract STO",
-          "description": "Adjusts existing subcontract STO quantities to reflect real-time sales performance and current on-hand stock levels, aligning open orders with actual market consumption and preventing over/under-production.",
+          "description": "Adjusts existing subcontract STO quantities to reflect real-time Sales performance and current on-hand stock levels, aligning open orders with actual market consumption and preventing over/under-production.",
           "raci": {
             "r": [
               "Sales"
@@ -899,7 +899,7 @@
           "id": "1788430168736-gtx78q7y",
           "seq": "70",
           "name": "Production Planning",
-          "description": "Hierarchical production planning process that translates sales demand and firm subcontract orders into a feasible production schedule, from long-term capacity planning through weekly validation to daily execution monitoring, ensuring optimal line utilization and on-time vehicle delivery.",
+          "description": "Hierarchical production planning process that translates Sales demand and firm subcontract orders into a feasible production schedule, from long-term capacity planning through weekly validation to daily execution monitoring, ensuring optimal line utilization and on-time vehicle delivery.",
           "raci": {
             "r": [
               "Production Planning"
@@ -922,7 +922,7 @@
           "id": "1788430168736-m13181ui",
           "seq": "70.1",
           "name": "M+3 Production Planning",
-          "description": "Establishes a rolling production plan covering the current month plus the next three months (M+3), based on the latest sales forecast and confirmed subcontract orders, providing the medium-term view for capacity reservations, workforce planning, and material Purchase alignment.",
+          "description": "Establishes a rolling production plan covering the current month plus the next three months (M+3), based on the latest Sales forecast and confirmed subcontract orders, providing the medium-term view for capacity reservations, workforce planning, and material Purchase alignment.",
           "raci": {
             "r": [
               "Sales"
@@ -1599,7 +1599,7 @@
           "id": "1788430168736-93y40f8k",
           "seq": "130.1",
           "name": "Vehicle Buy-off",
-          "description": "Confirms the physical transfer of buy-off validated vehicles to Canopy B (or designated holding area), formally recording the vehicle's release from final quality gates and updating the system status to \"\"Available for Outbound\"\" in preparation for customer dispatch.",
+          "description": "Confirms the physical transfer of buy-off validated vehicles to Canopy B (or designated holding area), formally recording the vehicle's release from final quality gates and updating the system status to \"Available for Outbound\" in preparation for customer dispatch.",
           "raci": {
             "r": [
               "Vehicle Quality"
@@ -1632,7 +1632,7 @@
             "a": [],
             "c": [],
             "i": [
-              "SALES"
+              "Sales"
             ]
           },
           "businessStatus": "Completed",
@@ -1657,7 +1657,7 @@
             "a": [],
             "c": [],
             "i": [
-              "SALES"
+              "Sales"
             ]
           },
           "businessStatus": "Completed",
@@ -1682,7 +1682,7 @@
             "a": [],
             "c": [],
             "i": [
-              "SALES"
+              "Sales"
             ]
           },
           "businessStatus": "Completed",
@@ -1707,7 +1707,7 @@
             "a": [],
             "c": [],
             "i": [
-              "SALES"
+              "Sales"
             ]
           },
           "businessStatus": "Completed",
@@ -2812,7 +2812,7 @@
         {
           "id": "1788790531539-op5j6ous",
           "seq": "10.1",
-          "name": "NG Parts Detection (Body Shop )",
+          "name": "NG Parts Detection (Body Shop)",
           "description": "Identifies and records non-qualified parts detected during Body Shop production operations (e.g., welding defects, dimensional inaccuracies, surface imperfections).\n\nDetected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). \n\nNG parts are classified using the two-tier travel card system: \n- Green Travel Card (Factory Scrap) for internally generated defects (e.g., handling damage, operator error) requiring no additional validation before disposal. \n- Orange Travel Card (Supplier Claim) for supplier-related defects (e.g., material non-conformance, dimensional deviations) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
           "raci": {
             "r": [
@@ -3365,11 +3365,11 @@
           "id": "1788790531539-4km2salc",
           "seq": "50.1",
           "name": "Sales Order (OEM to Factory)",
-          "description": "Creates a formal sales order from OEM to Factory for all parts and quantities listed in the approved Scrap List, initiating the financial and logistical transaction for scrap disposal.",
+          "description": "Creates a formal Sales order from OEM to Factory for all parts and quantities listed in the approved Scrap List, initiating the financial and logistical transaction for scrap disposal.",
           "raci": {
             "r": [
               "Finance",
-              "Purchase "
+              "Purchase"
             ],
             "a": [],
             "c": [
@@ -3401,7 +3401,7 @@
             "a": [],
             "c": [],
             "i": [
-              "Purchase ",
+              "Purchase",
               "Material Planning",
               "Environment"
             ]
@@ -4504,7 +4504,7 @@
         {
           "id": "1788790531539-ywoev5gm",
           "seq": "140.1",
-          "name": "Transfer Request (Factory Buffer to Demanding Area",
+          "name": "Transfer Request (Factory Buffer to Demanding Area)",
           "description": "Creates a formal transfer request to move replacement parts from the factory buffer stock to the demanding area (e.g., Body Shop, Trim Shop, or Final line). The request includes: required date, material list, quantities, and receiving department, ensuring timely and accurate fulfillment of replacement demand.",
           "raci": {
             "r": [
@@ -4634,7 +4634,7 @@
             "type": "sub",
             "x": 434.22210693359375,
             "y": 35.11112976074219,
-            "label": "NG Parts Detection (Body Shop )",
+            "label": "NG Parts Detection (Body Shop)",
             "hidden": false
           },
           {
