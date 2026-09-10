@@ -35,6 +35,7 @@
     "SCADA",
     "SPS",
     "WMS",
+    "GLPI",
     "To Be Determined",
   ],
   "sysStatusList": [
@@ -85,7 +86,7 @@
           "id": "1788430168735-wmr6funs",
           "seq": "10",
           "name": "Sales Forecast",
-          "description": "Multi-horizon sales forecasting process that translates market demand into actionable factory planning signals, directly influencing capacity scheduling, material procurement, and subcontract order placement.",
+          "description": "Multi-horizon sales forecasting process that translates market demand into actionable factory planning signals, directly influencing capacity scheduling, material Purchase, and subcontract order placement.",
           "raci": {
             "r": [
               "Sales"
@@ -230,7 +231,7 @@
           "id": "1788430168736-ipa9gj5g",
           "seq": "20",
           "name": "Material Requirement Planning",
-          "description": "Systematic planning engine that nets production schedules and safety-stock policies against on-hand inventories, generating procurement proposals to guarantee production continuity and scrap-replenishment supply.",
+          "description": "Systematic planning engine that nets production schedules and safety-stock policies against on-hand inventories, generating Purchase proposals to guarantee production continuity and scrap-replenishment supply.",
           "raci": {
             "r": [
               "Material Planning"
@@ -317,7 +318,7 @@
           "id": "1788430168736-dr383iz8",
           "seq": "30",
           "name": "Purchase Execution",
-          "description": "End-to-end management of procurement workflows, from requisition conversion to supplier settlement, ensuring timely material availability at optimized cost and full trade compliance.",
+          "description": "End-to-end management of Purchase workflows, from requisition conversion to supplier settlement, ensuring timely material availability at optimized cost and full trade compliance.",
           "raci": {
             "r": [
               "Purchase"
@@ -344,7 +345,7 @@
           "id": "1788430168736-yjo9m713",
           "seq": "30.1",
           "name": "PR to PO Creation",
-          "description": "Converts purchase requisitions into purchase orders by performing source determination, price condition retrieval, and lot-size rounding (upwards to vendor-specified order multiples), ensuring full alignment with production schedules and procurement policies.",
+          "description": "Converts purchase requisitions into purchase orders by performing source determination, price condition retrieval, and lot-size rounding (upwards to vendor-specified order multiples), ensuring full alignment with production schedules and Purchase policies.",
           "raci": {
             "r": [
               "Material Planning"
@@ -491,7 +492,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/FICO/Procurement%20Settlement%20Process.pdf?csf=1&web=1&e=dw8KEj",
+          "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/FICO/Purchase%20Settlement%20Process.pdf?csf=1&web=1&e=dw8KEj",
           "notes": ""
         },
         {
@@ -921,7 +922,7 @@
           "id": "1788430168736-m13181ui",
           "seq": "70.1",
           "name": "M+3 Production Planning",
-          "description": "Establishes a rolling production plan covering the current month plus the next three months (M+3), based on the latest sales forecast and confirmed subcontract orders, providing the medium-term view for capacity reservations, workforce planning, and material procurement alignment.",
+          "description": "Establishes a rolling production plan covering the current month plus the next three months (M+3), based on the latest sales forecast and confirmed subcontract orders, providing the medium-term view for capacity reservations, workforce planning, and material Purchase alignment.",
           "raci": {
             "r": [
               "Sales"
@@ -4063,7 +4064,7 @@
           "id": "1788790531539-33g0vgsq",
           "seq": "100",
           "name": "Material Requirement Planning",
-          "description": "Systematic planning engine that nets production schedules and safety-stock policies against on-hand inventories, generating procurement proposals to guarantee production continuity and scrap-replenishment supply.",
+          "description": "Systematic planning engine that nets production schedules and safety-stock policies against on-hand inventories, generating Purchase proposals to guarantee production continuity and scrap-replenishment supply.",
           "raci": {
             "r": [
               "Material Planning"
@@ -4132,10 +4133,10 @@
           "id": "1788790531539-va376zu1",
           "seq": "110",
           "name": "Purchase Execution",
-          "description": "End-to-end management of procurement workflows, from requisition conversion to supplier settlement, ensuring timely material availability at optimized cost and full trade compliance.",
+          "description": "End-to-end management of Purchase workflows, from requisition conversion to supplier settlement, ensuring timely material availability at optimized cost and full trade compliance.",
           "raci": {
             "r": [
-              "Procurement"
+              "Purchase"
             ],
             "a": [],
             "c": [],
@@ -4155,7 +4156,7 @@
           "id": "1788790531539-s0ba51jh",
           "seq": "110.1",
           "name": "PR to PO Creation",
-          "description": "Converts purchase requisitions into purchase orders by performing source determination, price condition retrieval, and lot-size rounding (upwards to vendor-specified order multiples), ensuring full alignment with production schedules and procurement policies.",
+          "description": "Converts purchase requisitions into purchase orders by performing source determination, price condition retrieval, and lot-size rounding (upwards to vendor-specified order multiples), ensuring full alignment with production schedules and Purchase policies.",
           "raci": {
             "r": [
               "Material Planning"
@@ -4204,7 +4205,7 @@
           "description": "Routes purchase orders through the designated authorization workflow for PO release approval.",
           "raci": {
             "r": [
-              "Procurement"
+              "Purchase"
             ],
             "a": [],
             "c": [],
@@ -4227,7 +4228,7 @@
           "description": "Formally transmits approved and released purchase orders to suppliers via the designated channel (e.g., EDI, portal, or email), confirms order acknowledgement, and updates the system with confirmed delivery dates.",
           "raci": {
             "r": [
-              "Procurement"
+              "Purchase"
             ],
             "a": [],
             "c": [],
