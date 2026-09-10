@@ -108,13 +108,13 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788430168735-v8i8b0jf",
           "seq": "10.1",
-          "name": "Anual Sales Forecast",
+          "name": "Annual Sales Forecast",
           "description": "Establishes a high-level 12-month sales projection, serving as the strategic planning baseline for factory capacity reservations, workforce planning, and long-lead material sourcing for the upcoming fiscal year.",
           "raci": {
             "r": [
@@ -137,7 +137,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -166,7 +166,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -195,7 +195,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -224,7 +224,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -253,7 +253,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/:b:/s/BUSINESSPROCESSCONTROL/IQB_NI9omgquQp368CDytAQfAbyUwZh6gBlP-x4FPGOOma8?email=ybai%40ebrofactory.com&e=re6z81",
-          "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/PP/MD02%20MRP%20Operation%20and%20Viewing%20Operation.docx?d=wf18516ea22764ee286a7559f2ac46d6c&csf=1&web=1&e=uGT0Zl",
+          "userMAnnual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/PP/MD02%20MRP%20Operation%20and%20Viewing%20Operation.docx?d=wf18516ea22764ee286a7559f2ac46d6c&csf=1&web=1&e=uGT0Zl",
           "notes": ""
         },
         {
@@ -282,14 +282,14 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/:b:/s/BUSINESSPROCESSCONTROL/IQB_NI9omgquQp368CDytAQfAbyUwZh6gBlP-x4FPGOOma8?email=ybai%40ebrofactory.com&e=re6z81",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788430168736-cmobru9i",
           "seq": "20.2",
           "name": "Purchase Requirement Maintenance",
-          "description": "Enables material planners to manually review, adjust, or create purchase requisitions to capture off-system demands (e.g., engineer change orders, one-off experimental runs, or urgent demand requests) not covered by the standard MRP netting logic.",
+          "description": "Enables material planners to mAnnually review, adjust, or create purchase requisitions to capture off-system demands (e.g., engineer change orders, one-off experimental runs, or urgent demand requests) not covered by the standard MRP netting logic.",
           "raci": {
             "r": [
               "Material Planning"
@@ -311,7 +311,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/:b:/s/BUSINESSPROCESSCONTROL/IQB_NI9omgquQp368CDytAQfAbyUwZh6gBlP-x4FPGOOma8?email=ybai%40ebrofactory.com&e=re6z81",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -338,7 +338,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/MM/Local%20Purchasing%20Order%20PO%20Maintenance.docx?d=w1267b5edf7ad457eb16e2675c8f89658&csf=1&web=1&e=JzqkcF",
+          "userMAnnual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/MM/Local%20Purchasing%20Order%20PO%20Maintenance.docx?d=w1267b5edf7ad457eb16e2675c8f89658&csf=1&web=1&e=JzqkcF",
           "notes": ""
         },
         {
@@ -365,7 +365,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -390,7 +390,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/MM/CostCenter%20Consumption.docx?d=w92cb1ace39d64a70b55db1e6137e7af0&csf=1&web=1&e=3knyO3",
+          "userMAnnual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/MM/CostCenter%20Consumption.docx?d=w92cb1ace39d64a70b55db1e6137e7af0&csf=1&web=1&e=3knyO3",
           "notes": ""
         },
         {
@@ -417,7 +417,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -442,7 +442,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -467,7 +467,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/MM/Local%20Purchasing%20Order%20PO%20Maintenance.docx?d=w1267b5edf7ad457eb16e2675c8f89658&csf=1&web=1&e=6cEICd",
+          "userMAnnual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/MM/Local%20Purchasing%20Order%20PO%20Maintenance.docx?d=w1267b5edf7ad457eb16e2675c8f89658&csf=1&web=1&e=6cEICd",
           "notes": ""
         },
         {
@@ -492,7 +492,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/FICO/Purchase%20Settlement%20Process.pdf?csf=1&web=1&e=dw8KEj",
+          "userMAnnual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/FICO/Purchase%20Settlement%20Process.pdf?csf=1&web=1&e=dw8KEj",
           "notes": ""
         },
         {
@@ -517,7 +517,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -542,7 +542,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -567,14 +567,14 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788430168736-mdgsxpob",
           "seq": "40.3",
           "name": "OEM Goods Receive ",
-          "description": "Performs system posting of goods receipt (GR) against the corresponding purchase order and inbound delivery, updating inventory records and financial postings immediately upon successful customs clearance and physical reception in container yard.",
+          "description": "Performs system posting of goods receipt (GR) against the corresponding purchase order and inbound delivery, updating inventory records and financial postings immediately upon successful customs clearance and physical Receiption in container yard.",
           "raci": {
             "r": [
               "Inbound Logistic"
@@ -592,7 +592,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/SD/Assembling%20Service%20GR%20for%20DJV.docx?d=wf3ec5a8e96594e8688a96a32b049693e&csf=1&web=1&e=HzSsqy",
+          "userMAnnual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/SD/Assembling%20Service%20GR%20for%20DJV.docx?d=wf3ec5a8e96594e8688a96a32b049693e&csf=1&web=1&e=HzSsqy",
           "notes": ""
         },
         {
@@ -617,14 +617,14 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788430168736-6n8idrwu",
           "seq": "50",
-          "name": "Factory Goods Reception",
-          "description": "End-to-end physical and system processing of incoming materials from factory canopy receipt to buffer warehouse storage, encompassing container inspection, pallet devaning, repackaging, handling unit validation, and put-away, ensuring accurate inventory records and storage-ready condition for production.",
+          "name": "Factory Goods Receiption",
+          "description": "End-to-end physical and system processing of incoming materials from factory canopy receipt to buffer warehouse storage, encompassing container inspection, pallet Devanning, repackaging, handling unit validation, and put-away, ensuring accurate inventory records and storage-ready condition for production.",
           "raci": {
             "r": [
               "Material Handling"
@@ -642,14 +642,14 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788430168736-lp2wlufe",
           "seq": "50.1",
-          "name": "Container Reception",
-          "description": "Verifies the incoming container number against the shipping documentation, conducts a visual condition inspection for external damage or seal integrity, and confirms physical reception in the system to officially log arrival.",
+          "name": "Container Receiption",
+          "description": "Verifies the incoming container number against the shipping documentation, conducts a visual condition inspection for external damage or seal integrity, and confirms physical Receiption in the system to officially log arrival.",
           "raci": {
             "r": [
               "Material Handling"
@@ -667,13 +667,13 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788430168736-tc4jhas5",
           "seq": "50.2",
-          "name": "Contianer Devaning",
+          "name": "Container Devanning",
           "description": "Systematically unloads pallets from the container, validates each handling unit number (HU) against the inbound delivery, and physically transfers the pallets to the designated processing area for subsequent handling.",
           "raci": {
             "r": [
@@ -692,7 +692,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -717,13 +717,13 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788430168736-2lxluvkg",
           "seq": "50.4",
-          "name": "Handling Unit Asessment",
+          "name": "Handling Unit Assessment",
           "description": "Assesses each handling unit to determine whether the goods can be stored in their original carton packaging or require repackaging into appropriate storage containers based on material fragility, size, or stacking requirements.",
           "raci": {
             "r": [
@@ -742,7 +742,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -767,7 +767,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -792,7 +792,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -817,7 +817,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -842,7 +842,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -867,13 +867,13 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788430168736-q4y1mrxv",
           "seq": "60.3",
-          "name": "Edgeline Repelnishment",
+          "name": "Edgeline Replenishment",
           "description": "Transfers handling units of materials from the kitting area, SPS area, or directly from the buffer warehouse to the production edgeline, following a predefined supply path per material (based on consumption patterns, material type, and line-side storage constraints), ensuring just-in-time availability for assembly operations.",
           "raci": {
             "r": [
@@ -892,7 +892,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -915,7 +915,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
-          "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP027-MPS-Batch%20management%20data%20for%20MES.pdf?csf=1&web=1&e=HgEvqm",
+          "userMAnnual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP027-MPS-Batch%20management%20data%20for%20MES.pdf?csf=1&web=1&e=HgEvqm",
           "notes": ""
         },
         {
@@ -940,13 +940,13 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788430168736-eym8axor",
           "seq": "70.2",
-          "name": "Monthly Production Plannig",
+          "name": "Monthly Production Planning",
           "description": "Converts the M+3 production plan into a firm monthly production schedule, aligned with released and confirmed subcontract orders (STOs) from the OEM, defining the precise model mix and quantities to be produced in each production line for the upcoming month.",
           "raci": {
             "r": [
@@ -965,7 +965,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
-          "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP024-MPS-ATP%20Check.pdf?csf=1&web=1&e=Q8bF7d",
+          "userMAnnual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP024-MPS-ATP%20Check.pdf?csf=1&web=1&e=Q8bF7d",
           "notes": ""
         },
         {
@@ -990,7 +990,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
-          "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP027-MPS-Batch%20management%20data%20for%20MES.pdf?csf=1&web=1&e=HgEvqm",
+          "userMAnnual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP027-MPS-Batch%20management%20data%20for%20MES.pdf?csf=1&web=1&e=HgEvqm",
           "notes": ""
         },
         {
@@ -1015,7 +1015,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
-          "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP027-MPS-Batch%20management%20data%20for%20MES.pdf?csf=1&web=1&e=HgEvqm",
+          "userMAnnual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP027-MPS-Batch%20management%20data%20for%20MES.pdf?csf=1&web=1&e=HgEvqm",
           "notes": ""
         },
         {
@@ -1040,7 +1040,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1065,7 +1065,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1090,13 +1090,13 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788430168736-emvpq5i3",
           "seq": "80.3",
-          "name": "WBS Reception",
+          "name": "WBS Receiption",
           "description": "System posting and physical handover of quality-approved BIW units into the WBS (White Body Storage) warehouse management system, updating inventory with precise storage location assignments and making the bodies available for sequenced retrieval by Paint Shop consumption.",
           "raci": {
             "r": [
@@ -1115,7 +1115,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1140,7 +1140,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1165,7 +1165,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1190,13 +1190,13 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788430168736-45f28t1x",
           "seq": "90.3",
-          "name": "PBS Reception",
+          "name": "PBS Receiption",
           "description": "System posting and physical handover of quality-approved BIP units into the PBS (Painted Body Storage) warehouse management system, updating inventory with precise storage location assignments and making the bodies available for sequenced retrieval by Trim Shop consumption.",
           "raci": {
             "r": [
@@ -1215,7 +1215,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1241,7 +1241,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1266,13 +1266,13 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30%2F374%2E01%2DR30%280%29%5FProceso%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FR00%2FR30",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788430168736-pblufyyy",
           "seq": "100.2",
-          "name": "Traceibility of Important Parts",
+          "name": "Traceability of Important Parts",
           "description": "Enforces mandatory traceability controls for specific safety-critical and regulatory key parts (e.g., airbags, engine control units, batteries, VIN plates) assembled into each vehicle, linking each component's serial number and batch data to the unique vehicle identification number (VIN) to ensure full lifecycle traceability and regulatory compliance.",
           "raci": {
             "r": [
@@ -1289,7 +1289,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1314,7 +1314,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1337,7 +1337,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1360,7 +1360,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1383,7 +1383,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1406,7 +1406,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1429,7 +1429,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1452,7 +1452,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1477,7 +1477,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1500,7 +1500,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1523,7 +1523,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1546,7 +1546,7 @@
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00%2F151%2E02%5FZ00%20%2800%29%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FZ00%2FZ00",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1569,14 +1569,14 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/SD/Assembling%20Service%20Billing%20Process.docx?d=wba8a49ecaa3e4c44bca7cf76e2f6ca93&csf=1&web=1&e=sJwNgz",
+          "userMAnnual": "https://dhubautomotive.sharepoint.com/:w:/r/sites/EbroIT/Docuentos%20SAP/SD/Assembling%20Service%20Billing%20Process.docx?d=wba8a49ecaa3e4c44bca7cf76e2f6ca93&csf=1&web=1&e=sJwNgz",
           "notes": ""
         },
         {
           "id": "1788430168736-npigbfcf",
           "seq": "130",
           "name": "Vehicle Management",
-          "description": "End-to-end management of buy-off validated vehicles from factory release to outbound shipment, encompassing physical movement confirmation, compound reception, outbound planning, and dispatch execution, ensuring accurate inventory tracking and timely customer delivery.",
+          "description": "End-to-end management of buy-off validated vehicles from factory release to outbound shipment, encompassing physical movement confirmation, compound Receiption, outbound planning, and dispatch execution, ensuring accurate inventory tracking and timely customer delivery.",
           "raci": {
             "r": [
               "Vehicle Quality"
@@ -1592,7 +1592,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1617,7 +1617,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1642,7 +1642,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1667,7 +1667,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1692,7 +1692,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -1717,7 +1717,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         }
       ],
@@ -1738,7 +1738,7 @@
             "type": "sub",
             "x": 312.5,
             "y": 23.333404541015625,
-            "label": "Anual Sales Forecast",
+            "label": "Annual Sales Forecast",
             "hidden": false
           },
           {
@@ -1909,7 +1909,7 @@
             "type": "main",
             "x": 500.8330307006836,
             "y": 1809.1666069030762,
-            "label": "Factory Goods Reception",
+            "label": "Factory Goods Receiption",
             "hidden": false
           },
           {
@@ -1918,7 +1918,7 @@
             "type": "sub",
             "x": 513.9584350585938,
             "y": 1666.6667022705078,
-            "label": "Container Reception",
+            "label": "Container Receiption",
             "hidden": false
           },
           {
@@ -1927,7 +1927,7 @@
             "type": "sub",
             "x": 514.3749847412109,
             "y": 1513.750087738037,
-            "label": "Contianer Devaning",
+            "label": "Container Devanning",
             "hidden": false
           },
           {
@@ -1945,7 +1945,7 @@
             "type": "sub",
             "x": 500.6251220703125,
             "y": 1201.6666278839111,
-            "label": "Handling Unit asessment",
+            "label": "Handling Unit Assessment",
             "hidden": false
           },
           {
@@ -1999,7 +1999,7 @@
             "type": "end",
             "x": 1143.3331451416016,
             "y": 1691.8749694824219,
-            "label": "Edgeline Repelnishment",
+            "label": "Edgeline Replenishment",
             "hidden": false
           },
           {
@@ -2026,7 +2026,7 @@
             "type": "sub",
             "x": 1634.9997253417969,
             "y": 346.6665954589844,
-            "label": "Monthlyh production plannig",
+            "label": "Monthlyh production Planning",
             "hidden": false
           },
           {
@@ -2080,7 +2080,7 @@
             "type": "sub",
             "x": 1363.3333129882812,
             "y": 969.1666564941406,
-            "label": "WBS Reception",
+            "label": "WBS Receiption",
             "hidden": false
           },
           {
@@ -2116,7 +2116,7 @@
             "type": "sub",
             "x": 1841.6665954589844,
             "y": 963.333381652832,
-            "label": "PBS RECEPTION",
+            "label": "PBS ReceiptION",
             "hidden": false
           },
           {
@@ -2143,7 +2143,7 @@
             "type": "sub",
             "x": 2039.1667938232422,
             "y": 1122.500015258789,
-            "label": "Traceibility of important parts",
+            "label": "Traceability of important parts",
             "hidden": false
           },
           {
@@ -2791,7 +2791,7 @@
           "description": "Systematic identification and recording of non-qualified (NG) parts across all operational touchpoints.\n\nNG parts are classified using two distinct travel cards based on defect ownership and validation requirements: \n- Green Travel Card (Factory Scrap) for internally generated defects requiring no additional validation before disposal.\n- Orange Travel Card (Supplier Claim) for supplier-related defects requiring mandatory double-check validation by the Production Quality Assurance (PQA) team before claim processing.",
           "raci": {
             "r": [
-              "Production Exucution"
+              "Production Execution"
             ],
             "a": [
               "Parts Quality"
@@ -2806,7 +2806,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -2833,7 +2833,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -2860,14 +2860,14 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788790531539-cbnoukpz",
           "seq": "10.3",
-          "name": "NG Parts Detection( Reception  Area)",
-          "description": "Identifies and records non-qualified parts detected during inbound logistics operations,including goods reception, container devaning, and handling unit management,ensuring defective materials are quarantined before entering the production supply chain. \n\nDetected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). \n\nNG parts are classified using the two-tier travel card system: \n- Green Travel Card (Factory Scrap) for internally generated defects (e.g., handling damage occurring during internal unloading) requiring no additional validation before disposal.\n- Orange Travel Card (Supplier Claim) for supplier-related defects (e.g., damaged packaging, incorrect quantity, material non-conformance, wrong part number) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
+          "name": "NG Parts Detection( Receiption  Area)",
+          "description": "Identifies and records non-qualified parts detected during inbound logistics operations,including goods Receiption, container Devanning, and handling unit management,ensuring defective materials are quarantined before entering the production supply chain. \n\nDetected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off). \n\nNG parts are classified using the two-tier travel card system: \n- Green Travel Card (Factory Scrap) for internally generated defects (e.g., handling damage occurring during internal unloading) requiring no additional validation before disposal.\n- Orange Travel Card (Supplier Claim) for supplier-related defects (e.g., damaged packaging, incorrect quantity, material non-conformance, wrong part number) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
           "raci": {
             "r": [
               "Material Handling"
@@ -2887,14 +2887,14 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788790531539-er9r8i94",
           "seq": "10.4",
           "name": "NG Parts Detection(Intralogistic Area)",
-          "description": "Identifies and records non-qualified parts detected during intralogistics operations(replenishment, picking, kitting activities). Ensuring defective materials are removed from circulation before reaching the production line. \n\nDetected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off).\n\nNG parts are classified using the two-tier travel card system:\n- Green Travel Card (Factory Scrap) for internally generated defects (e.g., handling damage, label damage, mishandling during internal transport) requiring no additional validation before disposal. \n- Orange Travel Card(Supplier Claim) for supplier-related defects (e.g., latent material defects not detected at reception) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
+          "description": "Identifies and records non-qualified parts detected during intralogistics operations(replenishment, picking, kitting activities). Ensuring defective materials are removed from circulation before reaching the production line. \n\nDetected NG parts are physically moved to the designated temporal scrap area, and a scrap travel card is completed per material (containing material number, time and location of detection, and supervisor sign-off).\n\nNG parts are classified using the two-tier travel card system:\n- Green Travel Card (Factory Scrap) for internally generated defects (e.g., handling damage, label damage, mishandling during internal transport) requiring no additional validation before disposal. \n- Orange Travel Card(Supplier Claim) for supplier-related defects (e.g., latent material defects not detected at Receiption) requiring mandatory double-check validation by Production Quality Assurance (PQA) before supplier return or claim processing.",
           "raci": {
             "r": [
               "Material Handling"
@@ -2914,7 +2914,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -2940,7 +2940,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -2963,7 +2963,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -2986,7 +2986,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3009,7 +3009,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3032,7 +3032,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3057,7 +3057,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3084,7 +3084,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3110,7 +3110,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3135,7 +3135,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3160,7 +3160,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3186,14 +3186,14 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788790531539-2oe0gz3a",
           "seq": "30.1",
-          "name": "Non-Qualified Parts Reception",
-          "description": "Receives and logs non-qualified parts from all operational areas (Body Shop, Trim Shop, Reception, Intralogistics) into the quarantine zone. Performs consistency checks between physical goods and travel card information (material number, quantity, defect description, classification) to ensure accurate tracking and data integrity.",
+          "name": "Non-Qualified Parts Receiption",
+          "description": "Receives and logs non-qualified parts from all operational areas (Body Shop, Trim Shop, Receiption, Intralogistics) into the quarantine zone. Performs consistency checks between physical goods and travel card information (material number, quantity, defect description, classification) to ensure accurate tracking and data integrity.",
           "raci": {
             "r": [
               "Parts Quality"
@@ -3209,13 +3209,13 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788790531539-s5l22exx",
           "seq": "30.2",
-          "name": "Providor Claim or Process Scrap",
+          "name": "Provider Claim or Process Scrap",
           "description": "Reviews each quarantined NG part to determine the appropriate disposition path: \n- SUPPLIER CLAIM:  (defect attributable to supplier) requiring formal claim processing and posible return. \n- PROCESS SCRAP: (internally generated defect) requiring scrap execution. \n\nDecision is based on defect ownership, PQA validation results, and repairability assessment.",
           "raci": {
             "r": [
@@ -3232,7 +3232,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3257,13 +3257,13 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788790531539-g5eixym9",
           "seq": "40.1",
-          "name": "Damange Level Validation",
+          "name": "Damage Level Validation",
           "description": "Assesses each internally generated NG part to determine the extent of damage and repairability. \n\nParts are classified as: \n- Repairable (can be restored to quality standards through rework) \n- Non-Repairable (must be scrapped). \n\nValidation is performed against defined quality and engineering standards.",
           "raci": {
             "r": [
@@ -3283,7 +3283,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3309,7 +3309,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3335,7 +3335,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3358,7 +3358,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3385,7 +3385,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3413,7 +3413,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3438,7 +3438,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3463,7 +3463,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3488,7 +3488,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3513,7 +3513,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3538,7 +3538,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3564,7 +3564,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3590,7 +3590,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3618,7 +3618,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3644,7 +3644,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3672,7 +3672,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3698,7 +3698,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3723,7 +3723,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3749,7 +3749,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3775,7 +3775,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3798,13 +3798,13 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788790531539-ezv99r3d",
           "seq": "70.4",
-          "name": "Reception of Recovered Stock",
+          "name": "Receiption of Recovered Stock",
           "description": "Performs formal system posting of recovered stock into buffer inventory, updating stock levels, lot tracking, and availability status for production consumption.",
           "raci": {
             "r": [
@@ -3823,7 +3823,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3846,7 +3846,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3869,7 +3869,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3892,7 +3892,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3917,7 +3917,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3940,14 +3940,14 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788790531539-tf10y4gd",
           "seq": "80.5",
           "name": "Incoming Parts Registration",
-          "description": "Registers the incoming replacement parts shipment into the inbound logistics platform upon supplier claim acceptance, creating a visible tracking record that enables the factory to identify, monitor, and track the shipment from dispatch through to physical arrival and goods reception, ensuring full visibility and proactive planning for downstream logistics and production operations.",
+          "description": "Registers the incoming replacement parts shipment into the inbound logistics platform upon supplier claim acceptance, creating a visible tracking record that enables the factory to identify, monitor, and track the shipment from dispatch through to physical arrival and goods Receiption, ensuring full visibility and proactive planning for downstream logistics and production operations.",
           "raci": {
             "r": [
               "Parts Quality"
@@ -3963,7 +3963,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -3986,7 +3986,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4011,7 +4011,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4034,7 +4034,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4057,7 +4057,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4080,7 +4080,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4103,14 +4103,14 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788790531539-cbs4c5ui",
           "seq": "100.2",
           "name": "Purchase Requirement Maintenance",
-          "description": "Enables material planners to manually review, adjust, or create purchase requisitions to capture off-system demands (e.g., engineer change orders, one-off experimental runs, or urgent demand requests) not covered by the standard MRP netting logic.",
+          "description": "Enables material planners to mAnnually review, adjust, or create purchase requisitions to capture off-system demands (e.g., engineer change orders, one-off experimental runs, or urgent demand requests) not covered by the standard MRP netting logic.",
           "raci": {
             "r": [
               "Material Planning"
@@ -4126,7 +4126,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4149,7 +4149,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4172,7 +4172,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4195,7 +4195,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4218,7 +4218,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4241,7 +4241,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4264,14 +4264,14 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788790531539-ywnjgtuh",
           "seq": "110.6",
           "name": "Incoming Parts Registration",
-          "description": "Registers the incoming replacement parts shipment into the inbound logistics platform upon supplier PO tracking release, creating a visible tracking record that enables the factory to identify, monitor, and track the shipment from dispatch through to physical arrival and goods reception, ensuring full visibility and proactive planning for downstream logistics and production operations.",
+          "description": "Registers the incoming replacement parts shipment into the inbound logistics platform upon supplier PO tracking release, creating a visible tracking record that enables the factory to identify, monitor, and track the shipment from dispatch through to physical arrival and goods Receiption, ensuring full visibility and proactive planning for downstream logistics and production operations.",
           "raci": {
             "r": [
               "Material Planning"
@@ -4287,14 +4287,14 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788790531539-ambe46xn",
           "seq": "120",
-          "name": "Replacement Parts Reception",
-          "description": "End-to-end tracking and reception of replacement parts from suppliers, encompassing shipment tracking, goods reception, customs clearance (for 3rd countries), and transfer to safety stock for production availability.",
+          "name": "Replacement Parts Receiption",
+          "description": "End-to-end tracking and Receiption of replacement parts from suppliers, encompassing shipment tracking, goods Receiption, customs clearance (for 3rd countries), and transfer to safety stock for production availability.",
           "raci": {
             "r": [
               "Parts Quality"
@@ -4310,7 +4310,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4333,7 +4333,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4358,13 +4358,13 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788790531539-rzz5leun",
           "seq": "120.3",
-          "name": "Goods Reception (Replacement Parts)",
+          "name": "Goods Receiption (Replacement Parts)",
           "description": "Receives and validates replacement parts against the shipment notification and claim documentation, verifying material numbers, quantities, and condition. Any discrepancies are immediately reported for resolution.",
           "raci": {
             "r": [
@@ -4383,14 +4383,14 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788790531539-up558v6k",
           "seq": "120.4",
           "name": "Transfer to Safety Stock",
-          "description": "Transfers received and validated replacement parts from the reception area to the designated safety stock location, updating inventory records and making the parts available for production consumption as needed.",
+          "description": "Transfers received and validated replacement parts from the Receiption area to the designated safety stock location, updating inventory records and making the parts available for production consumption as needed.",
           "raci": {
             "r": [
               "Material Handling"
@@ -4406,7 +4406,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4429,7 +4429,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4452,7 +4452,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4475,7 +4475,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4498,7 +4498,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4521,7 +4521,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4544,7 +4544,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4567,13 +4567,13 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
           "id": "1788790531539-f7z8xk3d",
           "seq": "140.4",
-          "name": "Factory Goods Recept",
+          "name": "Factory Goods Receipt",
           "description": "Executes the physical and system goods receipt of replacement parts from the warehouse into the factory buffer area. Posts formal goods receipt in the system, updates inventory records, and confirms receipt of the required material list, making the parts available for production consumption.",
           "raci": {
             "r": [
@@ -4590,7 +4590,7 @@
             "responsible": ""
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         },
         {
@@ -4613,7 +4613,7 @@
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
-          "userManual": "",
+          "userMAnnual": "",
           "notes": ""
         }
       ],
@@ -4697,7 +4697,7 @@
             "type": "sub",
             "x": 1048.9680175781248,
             "y": 745.7141898018972,
-            "label": "Non-Qualified Parts Reception",
+            "label": "Non-Qualified Parts Receiption",
             "hidden": false
           },
           {
@@ -4706,7 +4706,7 @@
             "type": "sub",
             "x": 1041.7304774693087,
             "y": 909.7143075125559,
-            "label": "Providor Claim or Process Scrap",
+            "label": "Provider Claim or Process Scrap",
             "hidden": false
           },
           {
@@ -4724,7 +4724,7 @@
             "type": "sub",
             "x": 261.3731144496373,
             "y": 1119.2777535574783,
-            "label": "Damange Level Validation",
+            "label": "Damage Level Validation",
             "hidden": false
           },
           {
@@ -4832,7 +4832,7 @@
             "type": "sub",
             "x": 423.5556640625,
             "y": 284.88890075683594,
-            "label": "NG Parts Detection( Reception  Area)",
+            "label": "NG Parts Detection( Receiption  Area)",
             "hidden": false
           },
           {
@@ -4940,7 +4940,7 @@
             "type": "sub",
             "x": 1372.2937709263383,
             "y": 2543.0000653948096,
-            "label": "Reception of Recovered Stock",
+            "label": "Receiption of Recovered Stock",
             "hidden": false
           },
           {
@@ -5174,7 +5174,7 @@
             "type": "main",
             "x": 2963.6904514857697,
             "y": 905.0001820155562,
-            "label": "Replacement Parts Reception",
+            "label": "Replacement Parts Receiption",
             "hidden": false
           },
           {
@@ -5192,7 +5192,7 @@
             "type": "sub",
             "x": 2949.761884416853,
             "y": 1238.2143304007393,
-            "label": "Goods Reception (Replacement Parts)",
+            "label": "Goods Receiption (Replacement Parts)",
             "hidden": false
           },
           {
@@ -5282,7 +5282,7 @@
             "type": "sub",
             "x": 2130.7145211356037,
             "y": 554.4048636300231,
-            "label": "Factory Goods Recept",
+            "label": "Factory Goods Receipt",
             "hidden": false
           },
           {
