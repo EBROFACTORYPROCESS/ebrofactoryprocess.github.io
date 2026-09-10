@@ -9,11 +9,11 @@
     "Production Execution (Body)",
     "Production Execution (Paint)",
     "Production Execution (Trim)",
-    "Production Enginnering ",
-    "Production Enginnering (Body)",
-    "Production Enginnering (Paint)",
-    "Production Enginnering (Trim) ",
-    "Trade & Complaince",
+    "Production Engineering ",
+    "Production Engineering (Body)",
+    "Production Engineering (Paint)",
+    "Production Engineering (Trim) ",
+    "Trade & Compliance",
     "Finance & Controlling",
     "Inbound Logistic ",
     "Outbound Logistic",
@@ -55,7 +55,7 @@
       "color": "red"
     },
     {
-      "value": "Work in Porgress",
+      "value": "Work in Progress",
       "color": "yellow"
     },
   ],
@@ -333,7 +333,7 @@
           "businessStatus": "In Progress",
           "system": {
             "name": "SAP",
-            "status": "Work in Porgress",
+            "status": "Work in Progress",
             "responsible": ""
           },
           "businessDoc": "",
@@ -395,11 +395,11 @@
         {
           "id": "1788430168736-v4y6oooq",
           "seq": "30.3",
-          "name": "PO Complaince Validation",
+          "name": "PO Compliance Validation",
           "description": "Performs mandatory compliance and trade-rule checks on purchase orders prior to approval, mitigating legal, regulatory, and reputational risks.",
           "raci": {
             "r": [
-              "Trade & Complaince"
+              "Trade & Compliance"
             ],
             "a": [
               "Purchase"
@@ -551,7 +551,7 @@
           "description": "Executes all mandatory customs declaration and clearance procedures for EU-imported goods, ensuring full compliance with trade regulations, tariff classifications, and documentation requirements to avoid border delays and regulatory penalties.",
           "raci": {
             "r": [
-              "Trade & Complaince"
+              "Trade & Compliance"
             ],
             "a": [],
             "c": [],
@@ -612,7 +612,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "Work in Porgress",
+            "status": "Work in Progress",
             "responsible": "EBRO IT"
           },
           "businessDoc": "",
@@ -637,7 +637,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "Work in Porgress",
+            "status": "Work in Progress",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -662,7 +662,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "Work in Porgress",
+            "status": "Work in Progress",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -687,7 +687,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "Work in Porgress",
+            "status": "Work in Progress",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -737,7 +737,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "Work in Porgress",
+            "status": "Work in Progress",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -787,7 +787,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "Work in Porgress",
+            "status": "Work in Progress",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -812,7 +812,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "Work in Porgress",
+            "status": "Work in Progress",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -837,7 +837,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "Work in Porgress",
+            "status": "Work in Progress",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -862,7 +862,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "Work in Porgress",
+            "status": "Work in Progress",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -887,7 +887,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "WMS",
-            "status": "Work in Porgress",
+            "status": "Work in Progress",
             "responsible": ""
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/General/Business%20Process/Document%20Management/04%20Procesos/Y00/Y60/suministro%20de%20materiales%20a%20linea.pdf",
@@ -1010,7 +1010,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "LEGATO",
-            "status": "Work in Porgress",
+            "status": "Work in Progress",
             "responsible": "EBRO IT"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
@@ -1210,7 +1210,7 @@
           "businessStatus": "Completed",
           "system": {
             "name": "LEGATO",
-            "status": "Work in Porgress",
+            "status": "Work in Progress",
             "responsible": ""
           },
           "businessDoc": "",
@@ -1827,7 +1827,7 @@
             "type": "sub",
             "x": 75.83348083496094,
             "y": 664.9999694824219,
-            "label": "PO complaince validation",
+            "label": "PO Compliance validation",
             "hidden": false
           },
           {
@@ -4177,11 +4177,11 @@
         {
           "id": "1788790531539-p2dgfz5t",
           "seq": "110.2",
-          "name": "PO Complaince Validation",
+          "name": "PO Compliance Validation",
           "description": "Performs mandatory compliance and trade-rule checks on purchase orders prior to approval, mitigating legal, regulatory, and reputational risks.",
           "raci": {
             "r": [
-              "Trade & Complaince"
+              "Trade & Compliance"
             ],
             "a": [],
             "c": [],
@@ -4342,7 +4342,7 @@
           "description": "Executes all mandatory customs declaration and clearance procedures for replacement parts imported from 3rd countries, ensuring full compliance with trade regulations, tariff classifications, and documentation requirements to avoid border delays.",
           "raci": {
             "r": [
-              "Trade & Complaince"
+              "Trade & Compliance"
             ],
             "a": [],
             "c": [],
@@ -5128,7 +5128,7 @@
             "type": "sub",
             "x": 3242.737941196987,
             "y": 496.904853820801,
-            "label": "PO Complaince Validation",
+            "label": "PO Compliance Validation",
             "hidden": false
           },
           {
