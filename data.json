@@ -898,7 +898,7 @@
         {
           "id": "1788430168736-gtx78q7y",
           "seq": "70",
-          "name": "Production Planning",
+          "name": "Production Capacity Planning",
           "description": "Hierarchical production planning process that translates Sales demand and firm subcontract orders into a feasible production schedule, from long-term capacity planning through weekly validation to daily execution monitoring, ensuring optimal line utilization and on-time vehicle delivery.",
           "raci": {
             "r": [
@@ -912,7 +912,7 @@
           "system": {
             "name": "To Be Determined",
             "status": "Offline",
-            "responsible": ""
+            "responsible": "EBRO IT"
           },
           "businessDoc": "https://dhubautomotive.sharepoint.com/sites/BUSINESSPROCESSCONTROL/Shared%20Documents/Forms/AllItems.aspx?viewid=282c8ffc%2Da725%2D4ebe%2D84b5%2D05e7b7b55913&id=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10%2F370101Y10%20%281%29%20%2D%20PROGRAMACION%20%20DE%20LA%20PRODUCCI%C3%93N%2Epdf&parent=%2Fsites%2FBUSINESSPROCESSCONTROL%2FShared%20Documents%2FGeneral%2FBusiness%20Process%2FDocument%20Management%2F04%20Procesos%2FY00%2FY10",
           "userManual": "https://dhubautomotive.sharepoint.com/:b:/r/sites/EbroIT/Docuentos%20SAP/PP/ZPP027-MPS-Batch%20management%20data%20for%20MES.pdf?csf=1&web=1&e=HgEvqm",
