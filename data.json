@@ -2006,8 +2006,8 @@
             "id": "node-158",
             "processId": "1788430168736-gtx78q7y",
             "type": "main",
-            "x": 1444.1666564941406,
-            "y": 200.0000228881836,
+            "x": 1382.5000305175781,
+            "y": 201.66670989990234,
             "label": "Production Planning",
             "hidden": false
           },
@@ -2051,8 +2051,8 @@
             "id": "node-163",
             "processId": "1788430168736-pdv1akhf",
             "type": "main",
-            "x": 1117.5001525878906,
-            "y": 823.3332748413086,
+            "x": 1118.3334655761719,
+            "y": 699.166618347168,
             "label": "Body Shop Production",
             "hidden": false
           },
@@ -2123,8 +2123,8 @@
             "id": "node-171",
             "processId": "1788430168736-6y7nuwvv",
             "type": "main",
-            "x": 2020.8334350585938,
-            "y": 802.4999618530273,
+            "x": 2021.6669311523438,
+            "y": 768.3332748413086,
             "label": "Trim Shop Production",
             "hidden": false
           },
@@ -2775,6 +2775,20 @@
             "from": "node-190",
             "to": "node-191",
             "type": "arrow"
+          },
+          {
+            "id": "conn-1789482504964-87djht",
+            "from": "node-162",
+            "to": "node-163",
+            "type": "arrow",
+            "label": "Plan Production (CKD)"
+          },
+          {
+            "id": "conn-1789482566065-y946bz",
+            "from": "node-162",
+            "to": "node-171",
+            "type": "arrow",
+            "label": "Plan Production (SKD / DKD)"
           }
         ],
         "nodeIdCounter": 62
