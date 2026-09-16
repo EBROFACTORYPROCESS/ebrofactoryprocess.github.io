@@ -2060,8 +2060,8 @@
             "id": "node-164",
             "processId": "1788430168736-kiv24c0l",
             "type": "sub",
-            "x": 1106.666748046875,
-            "y": 971.6666564941406,
+            "x": 1108.3334045410156,
+            "y": 985,
             "label": "Body In White Production",
             "hidden": false
           },
@@ -2070,7 +2070,7 @@
             "processId": "1788430168736-hkglpaso",
             "type": "sub",
             "x": 1124.1666259765625,
-            "y": 1120.4166641235352,
+            "y": 1161.2500381469727,
             "label": "BIW Quality Check",
             "hidden": false
           },
@@ -2078,8 +2078,8 @@
             "id": "node-166",
             "processId": "1788430168736-emvpq5i3",
             "type": "sub",
-            "x": 1363.3333129882812,
-            "y": 969.1666564941406,
+            "x": 1383.3333129882812,
+            "y": 947.4999694824219,
             "label": "WBS Receipt",
             "hidden": false
           },
@@ -2087,8 +2087,8 @@
             "id": "node-167",
             "processId": "1788430168736-0udge0ao",
             "type": "main",
-            "x": 1582.5000610351562,
-            "y": 819.1666793823242,
+            "x": 1647.5000610351562,
+            "y": 840.0000228881836,
             "label": "Paint Shop Production",
             "hidden": false
           },
@@ -2096,8 +2096,8 @@
             "id": "node-168",
             "processId": "1788430168736-rogfioev",
             "type": "sub",
-            "x": 1574.1666412353516,
-            "y": 960.8333282470703,
+            "x": 1639.1666412353516,
+            "y": 986.6666717529297,
             "label": "Body In Paint Production",
             "hidden": false
           },
@@ -2105,8 +2105,8 @@
             "id": "node-169",
             "processId": "1788430168736-tuf83gub",
             "type": "sub",
-            "x": 1589.9999694824219,
-            "y": 1130.8332290649414,
+            "x": 1654.1666564941406,
+            "y": 1156.6665420532227,
             "label": "BIP Quality Check",
             "hidden": false
           },
@@ -2114,8 +2114,8 @@
             "id": "node-170",
             "processId": "1788430168736-45f28t1x",
             "type": "sub",
-            "x": 1841.6665954589844,
-            "y": 963.333381652832,
+            "x": 1902.4999084472656,
+            "y": 934.1667251586914,
             "label": "PBS Receipt",
             "hidden": false
           },
@@ -2123,8 +2123,8 @@
             "id": "node-171",
             "processId": "1788430168736-6y7nuwvv",
             "type": "main",
-            "x": 2021.6669311523438,
-            "y": 768.3332748413086,
+            "x": 2132.5003051757812,
+            "y": 693.3332443237305,
             "label": "Trim Shop Production",
             "hidden": false
           },
@@ -2132,8 +2132,8 @@
             "id": "node-172",
             "processId": "1788430168736-jbqxvqpr",
             "type": "sub",
-            "x": 2069.1666564941406,
-            "y": 959.9998779296875,
+            "x": 2182.4999084472656,
+            "y": 964.1665344238281,
             "label": "Vehicle Production",
             "hidden": false
           },
@@ -2141,8 +2141,8 @@
             "id": "node-173",
             "processId": "1788430168736-pblufyyy",
             "type": "sub",
-            "x": 2039.1667938232422,
-            "y": 1122.500015258789,
+            "x": 2152.500045776367,
+            "y": 1148.3333282470703,
             "label": "Traceability of important parts",
             "hidden": false
           },
@@ -2150,8 +2150,8 @@
             "id": "node-174",
             "processId": "1788430168736-luqj0g65",
             "type": "sub",
-            "x": 2070.0001831054688,
-            "y": 1283.3332061767578,
+            "x": 2185.8334350585938,
+            "y": 1337.4998626708984,
             "label": "Vehicle offline",
             "hidden": false
           },
@@ -2159,8 +2159,8 @@
             "id": "node-175",
             "processId": "1788430168736-n2olum3f",
             "type": "main",
-            "x": 2070.0000915527344,
-            "y": 1446.6668243408203,
+            "x": 2175.8334045410156,
+            "y": 1615.0001525878906,
             "label": "Offline vehicle Test",
             "hidden": false
           },
@@ -2168,8 +2168,8 @@
             "id": "node-176",
             "processId": "1788430168736-8b44cn8q",
             "type": "sub",
-            "x": 2070.000030517578,
-            "y": 1604.3750762939453,
+            "x": 1860.8334045410156,
+            "y": 1616.8750457763672,
             "label": "Overall inspection",
             "hidden": false
           },
@@ -2177,8 +2177,8 @@
             "id": "node-177",
             "processId": "1788430168736-o3flhvsn",
             "type": "sub",
-            "x": 2071.458221435547,
-            "y": 1758.750099182129,
+            "x": 1862.2915954589844,
+            "y": 1822.0834121704102,
             "label": "Test Line Validation",
             "hidden": false
           },
@@ -2186,8 +2186,8 @@
             "id": "node-178",
             "processId": "1788430168736-1wfq7u9r",
             "type": "sub",
-            "x": 2072.708221435547,
-            "y": 1913.5418014526367,
+            "x": 1863.5415344238281,
+            "y": 2060.2084884643555,
             "label": "SPT Validation",
             "hidden": false
           },
@@ -2195,7 +2195,7 @@
             "id": "node-179",
             "processId": "1788430168736-o4v5xxz9",
             "type": "sub",
-            "x": 2033.1249237060547,
+            "x": 2061.458297729492,
             "y": 2060.6250534057617,
             "label": "Plant Gate In (Ready for Dispatch)",
             "hidden": false
@@ -2214,7 +2214,7 @@
             "processId": "1788430168736-dr4ey1vl",
             "type": "sub",
             "x": 2385.8333740234375,
-            "y": 1906.6666564941406,
+            "y": 1892.5000457763672,
             "label": "CAMPA Arrival",
             "hidden": false
           },
@@ -2624,7 +2624,8 @@
             "id": "conn-1788436702489-fyrz9z",
             "from": "node-174",
             "to": "node-175",
-            "type": "arrow"
+            "type": "arrow",
+            "label": "VEHICLE QUALITY TEST START"
           },
           {
             "id": "conn-1788436936828-412a6b",
@@ -2654,12 +2655,6 @@
             "id": "conn-1788436949405-0dblic",
             "from": "node-179",
             "to": "node-180",
-            "type": "arrow"
-          },
-          {
-            "id": "conn-1788436968430-f8tout",
-            "from": "node-180",
-            "to": "node-181",
             "type": "arrow"
           },
           {
@@ -2789,6 +2784,12 @@
             "to": "node-171",
             "type": "arrow",
             "label": "Plan Production (SKD / DKD)"
+          },
+          {
+            "id": "conn-1789542774095-gz9opt",
+            "from": "node-180",
+            "to": "node-181",
+            "type": "arrow"
           }
         ],
         "nodeIdCounter": 62
