@@ -3938,8 +3938,8 @@
         {
           "id": "1788790531539-b4lpj1w1",
           "seq": "80.4",
-          "name": "Operational Cost Charge Request",
-          "description": "Formally requests charge from the supplier for operations cost incurred due to the defective parts (e.g., rework labor, production downtime, inspection costs, administrative handling), providing detailed cost breakdown and supporting evidence.",
+          "name": "Operational Cost Charge",
+          "description": "Formally charge from the supplier for operations cost generated due to the defective parts (e.g., rework labor, production downtime, inspection costs, administrative handling), providing detailed cost breakdown and supporting evidence.",
           "raci": {
             "r": [
               "Finance & Controlling"
@@ -4962,7 +4962,7 @@
           {
             "id": "node-40",
             "processId": "1788790531539-ezv99r3d",
-            "type": "sub",
+            "type": "end",
             "x": 1372.2937709263383,
             "y": 2543.0000653948096,
             "label": "Receipt of Recovered Stock",
