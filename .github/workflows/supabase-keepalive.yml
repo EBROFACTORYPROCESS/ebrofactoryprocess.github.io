@@ -10,8 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          curl -s -o /dev/null -w "%{http_code}" \
-            "https://你的PROJECT_URL.supabase.co/rest/v1/keepalive?select=*&limit=1" \
-            -H "apikey: 你的ANON_KEY" \
-            -H "Authorization: Bearer 你的ANON_KEY"
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${SUPABASE_URL}/rest/v1/keepalive?select=*&limit=1" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
+          
+          echo "HTTP Status: ${HTTP_CODE}"
+          
+          if [ "${HTTP_CODE}" != "200" ]; then
+            echo "❌ Supabase keep-alive failed with status ${HTTP_CODE}"
+            exit 1
+          fi
+          
+          echo "✅ Supabase keep-alive succeeded"
