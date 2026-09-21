@@ -1,0 +1,17 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    - cron: '0 6 */6 * *'   # 每 6 天运行一次（UTC 6:00）
+  workflow_dispatch:         # 允许手动触发测试
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" \
+            "https://你的PROJECT_URL.supabase.co/rest/v1/keepalive?select=*&limit=1" \
+            -H "apikey: 你的ANON_KEY" \
+            -H "Authorization: Bearer 你的ANON_KEY"
