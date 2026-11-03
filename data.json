@@ -6007,6 +6007,135 @@
           "notes": "",
           "businessDoc": "",
           "userManual": ""
+        },
+        {
+          "id": "1793716625596-smnalonh",
+          "seq": "30",
+          "name": " LOGISTIC OPERATIONAL MEETING",
+          "description": "Conduct the weekly cross-functional review to confirm detection and analysis results, agree on impacts and actions, and follow up on open items.\n\n\n- W+2 Review\n  Review changes and findings identified for next 2 weeks. Confirm analysis result, list operative actions & assign owner.\n\n\n- W+1 Follow uP\n  Action list progress review & incident discussion.",
+          "raci": {
+            "r": [
+              "BOM Management"
+            ],
+            "a": [
+              "Material Planning",
+              "Material Handling",
+              "Production Planning"
+            ],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "To Be Implemented",
+            "responsible": "EBRO IT"
+          },
+          "notes": "Stakeholders: MHE, MHO, PF, PC.\n",
+          "businessDoc": "",
+          "userManual": ""
+        },
+        {
+          "id": "1793717137919-f3cc46id",
+          "seq": "30.1",
+          "name": "W+2  REVIEW",
+          "description": "Weekly meeting to review changes identified for next two weeks production.\n\nConfirm analysis outputs, Maintain meeting minutes and an action log with owners and due dates.\n\n",
+          "raci": {
+            "r": [
+              "BOM Management"
+            ],
+            "a": [
+              "Production Planning",
+              "Material Handling",
+              "Material Planning"
+            ],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Defined",
+          "system": {
+            "name": "To Be Determined",
+            "status": "To Be Implemented",
+            "responsible": "EBRO IT"
+          },
+          "notes": "Output: W+2 review minutes, decision log, and action tracker.",
+          "businessDoc": "",
+          "userManual": ""
+        },
+        {
+          "id": "1793717319242-8lf0ehlo",
+          "seq": "30.2",
+          "name": "W+1 FOLLOW UP",
+          "description": "Follow up on actions and open items from W+2, confirm closure or escalation, and update the action tracker.",
+          "raci": {
+            "r": [
+              "BOM Management"
+            ],
+            "a": [
+              "Material Handling",
+              "Material Planning",
+              "Production Planning"
+            ],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "To Be Implemented",
+            "responsible": "EBRO IT"
+          },
+          "notes": "",
+          "businessDoc": "",
+          "userManual": ""
+        },
+        {
+          "id": "1793717431094-c16ws34f",
+          "seq": "40",
+          "name": "LOGISTIC ADAPTION LIST",
+          "description": "The Act phase converts the validated analysis into controlled system and physical changes, ensuring that master data, warehouse systems, and line-side systems (PTZ and DINAMICA) are updated and verified before the Engineering Change (EC) takes effect, and that the sequence of vehicles and surplus parts are managed to support a clean run-out.",
+          "raci": {
+            "r": [
+              "Material Handling",
+              "Material Planning",
+              "Production Planning"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "To Be Implemented",
+            "responsible": "EBRO IT"
+          },
+          "notes": "",
+          "businessDoc": "",
+          "userManual": ""
+        },
+        {
+          "id": "1793717586290-fp9n0mu2",
+          "seq": "40.1",
+          "name": "MASTER DATA UPDATE",
+          "description": "Update the Factory Master Data Excel file to reflect the approved changes from the Analyse phase, maintaining data integrity and full traceability of every revision.\n\nApply the approved Part Number, quantity, version, and batch-related changes to the Factory Master Data file.\n\nValidate the updated data against the Analyse outputs before release.\n\nRetain historical versions as backup copies, applying a consistent version-naming and retention convention so that any prior state can be retrieved and audited.\n",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Defined",
+          "system": {
+            "name": "To Be Determined",
+            "status": "To Be Implemented",
+            "responsible": "EBRO IT"
+          },
+          "notes": "INPUT: WEYMAN/M0/M1 list\nOutput: UPDATED MASTER DATA FILE",
+          "businessDoc": "",
+          "userManual": ""
         }
       ],
       "workflow": {
