@@ -6092,7 +6092,7 @@
         {
           "id": "1793717431094-c16ws34f",
           "seq": "40",
-          "name": "LOGISTIC ADAPTION LIST",
+          "name": "LOGISTIC MASTER DATA READYNESS",
           "description": "The Act phase converts the validated analysis into controlled system and physical changes, ensuring that master data, warehouse systems, and line-side systems (PTZ and DINAMICA) are updated and verified before the Engineering Change (EC) takes effect, and that the sequence of vehicles and surplus parts are managed to support a clean run-out.",
           "raci": {
             "r": [
@@ -6127,7 +6127,7 @@
             "c": [],
             "i": []
           },
-          "businessStatus": "Not Defined",
+          "businessStatus": "Completed",
           "system": {
             "name": "To Be Determined",
             "status": "To Be Implemented",
@@ -6136,11 +6136,309 @@
           "notes": "INPUT: WEYMAN/M0/M1 list\nOutput: UPDATED MASTER DATA FILE",
           "businessDoc": "",
           "userManual": ""
+        },
+        {
+          "id": "1793717890349-hqm3qere",
+          "seq": "40.2",
+          "name": "WMS Update",
+          "description": "Update the Warehouse Management System on new parts number, description, storage ubication, supply path & all required Master Data for correct WMS funciton.\n\nConfirm that WMS data is aligned with the released Factory Master Data and record the update evidence (date, user, scope of change).\n",
+          "raci": {
+            "r": [],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Defined",
+          "system": {
+            "name": "To Be Determined",
+            "status": "To Be Implemented",
+            "responsible": "EBRO IT"
+          },
+          "notes": "Action required: Define the Key User of the IT system who will be responsible for overseeing master data maintenance accordingly, including ownership of WMS and GIMMS updates, access rights, and data validation.",
+          "businessDoc": "",
+          "userManual": ""
+        },
+        {
+          "id": "1793718039481-azm0xh0w",
+          "seq": "40.3",
+          "name": "PTZ Update",
+          "description": "Execute the physical actions required in the Pick-to-Light (PTZ) system and perform a readiness check to confirm that the system is correctly configured and operational for the change.\n\nApply the required physical/configuration changes to the PTZ system in line with the approved Master Data.\n\nConduct a readiness check (verification of pick locations, light signals, part-to-location mapping, and operator confirmation) before the change goes live.\n\nRecord any deviations, resolve or escalate them, and document sign-off of readiness.\n",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "To Be Implemented",
+            "responsible": "EBRO IT"
+          },
+          "notes": "Output: PTZ change execution record, readiness check checklist, and sign-off.",
+          "businessDoc": "",
+          "userManual": ""
+        },
+        {
+          "id": "1793718111865-0me5yx6f",
+          "seq": "40.4",
+          "name": " DINAMICA Physical Changes ",
+          "description": "Execute the physical actions required in the DINAMICA system and perform a readiness check to confirm that the system is correctly set up and operational for the change.\n\nApply the required physical changes to the DINAMICA system in line with the approved Master Data.\n\nConduct a readiness check and confirm system readiness before the change takes effect.\n\nRecord deviations, resolve or escalate, and document sign-off of readiness.\n\nOutput: DINAMICA change execution record, readiness check checklist, and sign-off.",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "To Be Implemented",
+            "responsible": "EBRO IT"
+          },
+          "notes": "Owner: Alberto Bonilla\nOutput: DINAMICA change execution record, readiness check checklist, and sign-of",
+          "businessDoc": "",
+          "userManual": ""
+        },
+        {
+          "id": "1793718246155-h41arix2",
+          "seq": "50",
+          "name": "CUT NUMBER ",
+          "description": "Define and introduce the Cut Number that determines the sequence in which vehicles enter the Engineering Change (EC), ensuring a controlled and traceable switchover.\n\n- Derive the Cut Number from the inventory position of the Edge line and EDT.\n\n- Establish the sequence number of first vehicles entering the EC.\n\n- Communicate the Cut Number to the relevant stakeholders.\n\n",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": "EBRO IT"
+          },
+          "notes": "Output: defined Cut Number, first vehicle sequence number with EC introduction.\nOwner: Yolanda",
+          "businessDoc": "",
+          "userManual": ""
+        },
+        {
+          "id": "1793718495747-9vlonmz4",
+          "seq": "60",
+          "name": "Surplus / Run-Out Management ",
+          "description": "Manage surplus parts generated by the change and execute the run-out to avoid obsolete or excess inventory at the point of changeover.\n\n- Using the same inventory output (Edge line and EDT) referenced in 3.5, estimate the surplus parts resulting from the change.\n\n- Move surplus parts to a temporary return area, pending further actions (disposition, return to supplier, rework, or scrap).\n\n- Track surplus quantities and status, and confirm run-out completion in line with the Cut Number.\n\n\n",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": "EBRO IT"
+          },
+          "notes": "Owner: Yolanda\nOutput: surplus parts estimate, temporary return area transfer record, run-out status tracker, and closure confirmation.\n",
+          "businessDoc": "",
+          "userManual": ""
         }
       ],
       "workflow": {
-        "nodes": [],
-        "connections": []
+        "nodes": [
+          {
+            "id": "node-0",
+            "processId": "1793714228501-1c9thu7m",
+            "type": "main",
+            "x": 541.4814758300781,
+            "y": -1.481475830078125,
+            "label": "ECN RECEPTION",
+            "hidden": false
+          },
+          {
+            "id": "node-1",
+            "processId": "1793714795040-g86eerqz",
+            "type": "sub",
+            "x": 260,
+            "y": 100,
+            "label": "ECN VERIFICATION",
+            "hidden": false
+          },
+          {
+            "id": "node-10",
+            "processId": "1793717431094-c16ws34f",
+            "type": "main",
+            "x": 740,
+            "y": 210,
+            "label": "LOGISTIC MASTER DATA READYNESS",
+            "hidden": false
+          },
+          {
+            "id": "node-11",
+            "processId": "1793717586290-fp9n0mu2",
+            "type": "sub",
+            "x": 900,
+            "y": 210,
+            "label": "MASTER DATA UPDATE",
+            "hidden": false
+          },
+          {
+            "id": "node-12",
+            "processId": "1793717890349-hqm3qere",
+            "type": "sub",
+            "x": 100,
+            "y": 320,
+            "label": "WMS Update",
+            "hidden": false
+          },
+          {
+            "id": "node-13",
+            "processId": "1793718039481-azm0xh0w",
+            "type": "sub",
+            "x": 260,
+            "y": 320,
+            "label": "PTZ Update",
+            "hidden": false
+          },
+          {
+            "id": "node-14",
+            "processId": "1793718111865-0me5yx6f",
+            "type": "sub",
+            "x": 420,
+            "y": 320,
+            "label": " DINAMICA Physical Changes ",
+            "hidden": false
+          },
+          {
+            "id": "node-15",
+            "processId": "1793718246155-h41arix2",
+            "type": "main",
+            "x": 580,
+            "y": 320,
+            "label": "CUT NUMBER ",
+            "hidden": false
+          },
+          {
+            "id": "node-16",
+            "processId": "1793718495747-9vlonmz4",
+            "type": "main",
+            "x": 740,
+            "y": 320,
+            "label": "Surplus / Run-Out Management ",
+            "hidden": false
+          },
+          {
+            "id": "node-2",
+            "processId": "1793714464200-exey23p7",
+            "type": "sub",
+            "x": 420,
+            "y": 100,
+            "label": "PACKING LIST COMPARATION",
+            "hidden": false
+          },
+          {
+            "id": "node-3",
+            "processId": "1793714299601-5vz79rsd",
+            "type": "main",
+            "x": 580,
+            "y": 100,
+            "label": "WEYMAN ANALYSIS",
+            "hidden": false
+          },
+          {
+            "id": "node-4",
+            "processId": "1793715311977-axi0rg22",
+            "type": "sub",
+            "x": 740,
+            "y": 100,
+            "label": "PART NUMBER CHANGES",
+            "hidden": false
+          },
+          {
+            "id": "node-5",
+            "processId": "1793715744179-cw35dt3d",
+            "type": "sub",
+            "x": 900,
+            "y": 100,
+            "label": "SAME PART NUM, INTERNAL CHANGE",
+            "hidden": false
+          },
+          {
+            "id": "node-6",
+            "processId": "1793715899653-u9n5b8gz",
+            "type": "sub",
+            "x": 100,
+            "y": 210,
+            "label": "BATCH LIST CONSISTENCY CHECK",
+            "hidden": false
+          },
+          {
+            "id": "node-7",
+            "processId": "1793716625596-smnalonh",
+            "type": "main",
+            "x": 260,
+            "y": 210,
+            "label": " LOGISTIC OPERATIONAL MEETING",
+            "hidden": false
+          },
+          {
+            "id": "node-8",
+            "processId": "1793717137919-f3cc46id",
+            "type": "sub",
+            "x": 420,
+            "y": 210,
+            "label": "W+2  REVIEW",
+            "hidden": false
+          },
+          {
+            "id": "node-9",
+            "processId": "1793717319242-8lf0ehlo",
+            "type": "sub",
+            "x": 580,
+            "y": 210,
+            "label": "W+1 FOLLOW UP",
+            "hidden": false
+          }
+        ],
+        "connections": [
+          {
+            "id": "conn-1793718593752-d2relm",
+            "from": "node-0",
+            "to": "node-3",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1793718593752-eftjp1",
+            "from": "node-3",
+            "to": "node-7",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1793718593752-f3pmtj",
+            "from": "node-7",
+            "to": "node-10",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1793718593752-b6y1an",
+            "from": "node-10",
+            "to": "node-15",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1793718593752-4ru87x",
+            "from": "node-15",
+            "to": "node-16",
+            "type": "arrow"
+          }
+        ]
       }
     }
   ],
