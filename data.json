@@ -5840,7 +5840,7 @@
         {
           "id": "1793714228501-1c9thu7m",
           "seq": "10",
-          "name": "ECN RECEPTION",
+          "name": "ECN Reception",
           "description": "Receive and register the factory related production models ECN from IDMS, confirm that the information is complete and traceable, and resume the key change data before passing it to all implicated stakeholders via email. ",
           "raci": {
             "r": [
@@ -5863,7 +5863,7 @@
         {
           "id": "1793714795040-g86eerqz",
           "seq": "10.1",
-          "name": "ECN VERIFICATION",
+          "name": "ECN Verification",
           "description": "Verify Part Number, Batch ID, and Content of the Change\n1 - Confirm that the Part Number and Batch ID are present, correctly formatted, and consistent with the MWO content.\n2 - Review the described change for completeness and clarity.\n3 - Flag missing, inconsistent, or unclear information and route it for correction before further processing.\n",
           "raci": {
             "r": [
@@ -5888,7 +5888,7 @@
         {
           "id": "1793714464200-exey23p7",
           "seq": "10.2",
-          "name": "PACKING LIST COMPARATION",
+          "name": "PACKING LIST Cross Check",
           "description": "Use PowerBI to compare the current batch shipments packing list against the relevant reference or previous version, identify deviations, and produce an exception list for analysis.\n\n1.2.1 Detect Changes in Part Numbers\n\nCompare new versus existing Part Numbers and flag additions, deletions, substitutions, or mismatches.\n\nCross-check detected Part Number changes against the MWO where applicable.\n\n1.2.2 Detect Changes in Parts Quantities\n\nCompare planned versus actual or previous versus current quantities.\n\nIdentify and quantify variances, noting affected parts, batches, and potential impact.\n\n",
           "raci": {
             "r": [
@@ -5915,8 +5915,8 @@
         {
           "id": "1793714299601-5vz79rsd",
           "seq": "20",
-          "name": "WEYMAN ANALYSIS",
-          "description": "Receive the ECN and perform implication analysis base on implicated prodution line. (M0 / M1)\n",
+          "name": "LINE IMPACT Analysis (MH)",
+          "description": " (WEYMAN ) Receive the ECN and perform implication analysis base on implicated prodution line. (M0 / M1)\n",
           "raci": {
             "r": [
               "Material Handling"
@@ -5940,7 +5940,7 @@
         {
           "id": "1793715311977-axi0rg22",
           "seq": "20.1",
-          "name": "PART NUMBER CHANGES",
+          "name": "PART NUMBER Changes",
           "description": "Analysis report comapring New Part Numbers vs Old Part Numbers",
           "raci": {
             "r": [
@@ -5963,7 +5963,7 @@
         {
           "id": "1793715744179-cw35dt3d",
           "seq": "20.2",
-          "name": "SAME PART NUM, INTERNAL CHANGE",
+          "name": "NO PART NUMBER Change",
           "description": "PART NUMBER NOT CHANGED, MATERIAL VERSION UPDATED FROM ONE VERSION TO OTHER.\n(SOFTWARE VERSION UPDATE, TIER 2 PARTS UPDATE, NEW STICKER IN THE PART,ETC)",
           "raci": {
             "r": [
@@ -5986,7 +5986,7 @@
         {
           "id": "1793715899653-u9n5b8gz",
           "seq": "20.3",
-          "name": "BATCH LIST CONSISTENCY CHECK",
+          "name": "BATCH LIST Consistency Check",
           "description": "CHECK THE AFFECTED BACTH LIST. \nANALYSE SALES BATCHES AFFECTED BY THE ECN. \nENSURING CONSISTENCY BETWEEN MULTI BATCH, TO ACHIEVE FIFO CONSUMPTION OF MIXED BATCHES.",
           "raci": {
             "r": [
@@ -6011,7 +6011,7 @@
         {
           "id": "1793716625596-smnalonh",
           "seq": "30",
-          "name": " LOGISTIC OPERATIONAL MEETING",
+          "name": "Weekly LOGISTIC OP Meeting",
           "description": "Conduct the weekly cross-functional review to confirm detection and analysis results, agree on impacts and actions, and follow up on open items.\n\n\n- W+2 Review\n  Review changes and findings identified for next 2 weeks. Confirm analysis result, list operative actions & assign owner.\n\n\n- W+1 Follow uP\n  Action list progress review & incident discussion.",
           "raci": {
             "r": [
@@ -6038,7 +6038,7 @@
         {
           "id": "1793717137919-f3cc46id",
           "seq": "30.1",
-          "name": "W+2  REVIEW",
+          "name": "W+2 Review",
           "description": "Weekly meeting to review changes identified for next two weeks production.\n\nConfirm analysis outputs, Maintain meeting minutes and an action log with owners and due dates.\n\n",
           "raci": {
             "r": [
@@ -6065,7 +6065,7 @@
         {
           "id": "1793717319242-8lf0ehlo",
           "seq": "30.2",
-          "name": "W+1 FOLLOW UP",
+          "name": "W+1 Follow-Up",
           "description": "Follow up on actions and open items from W+2, confirm closure or escalation, and update the action tracker.",
           "raci": {
             "r": [
@@ -6092,7 +6092,7 @@
         {
           "id": "1793717431094-c16ws34f",
           "seq": "40",
-          "name": "LOGISTIC MASTER DATA READYNESS",
+          "name": "Master Data Readyness",
           "description": "The Act phase converts the validated analysis into controlled system and physical changes, ensuring that master data, warehouse systems, and line-side systems (PTZ and DINAMICA) are updated and verified before the Engineering Change (EC) takes effect, and that the sequence of vehicles and surplus parts are managed to support a clean run-out.",
           "raci": {
             "r": [
@@ -6117,7 +6117,7 @@
         {
           "id": "1793717586290-fp9n0mu2",
           "seq": "40.1",
-          "name": "MASTER DATA UPDATE",
+          "name": "MASTER DATA LIST Update",
           "description": "Update the Factory Master Data Excel file to reflect the approved changes from the Analyse phase, maintaining data integrity and full traceability of every revision.\n\nApply the approved Part Number, quantity, version, and batch-related changes to the Factory Master Data file.\n\nValidate the updated data against the Analyse outputs before release.\n\nRetain historical versions as backup copies, applying a consistent version-naming and retention convention so that any prior state can be retrieved and audited.\n",
           "raci": {
             "r": [
@@ -6207,7 +6207,7 @@
         {
           "id": "1793718246155-h41arix2",
           "seq": "50",
-          "name": "CUT NUMBER ",
+          "name": "CUT NUMBER Introduction",
           "description": "Define and introduce the Cut Number that determines the sequence in which vehicles enter the Engineering Change (EC), ensuring a controlled and traceable switchover.\n\n- Derive the Cut Number from the inventory position of the Edge line and EDT.\n\n- Establish the sequence number of first vehicles entering the EC.\n\n- Communicate the Cut Number to the relevant stakeholders.\n\n",
           "raci": {
             "r": [
@@ -6230,7 +6230,7 @@
         {
           "id": "1793718495747-9vlonmz4",
           "seq": "60",
-          "name": "Surplus / Run-Out Management ",
+          "name": "SURPLUS / RUN-OUT Management ",
           "description": "Manage surplus parts generated by the change and execute the run-out to avoid obsolete or excess inventory at the point of changeover.\n\n- Using the same inventory output (Edge line and EDT) referenced in 3.5, estimate the surplus parts resulting from the change.\n\n- Move surplus parts to a temporary return area, pending further actions (disposition, return to supplier, rework, or scrap).\n\n- Track surplus quantities and status, and confirm run-out completion in line with the Cut Number.\n\n\n",
           "raci": {
             "r": [
