@@ -6257,8 +6257,8 @@
             "id": "node-0",
             "processId": "1793714228501-1c9thu7m",
             "type": "main",
-            "x": 541.4814758300781,
-            "y": -1.481475830078125,
+            "x": 114.07403564453125,
+            "y": 221.4814453125,
             "label": "ECN RECEPTION",
             "hidden": false
           },
@@ -6266,8 +6266,8 @@
             "id": "node-1",
             "processId": "1793714795040-g86eerqz",
             "type": "sub",
-            "x": 260,
-            "y": 100,
+            "x": 108.888916015625,
+            "y": 382.51853942871094,
             "label": "ECN VERIFICATION",
             "hidden": false
           },
@@ -6275,8 +6275,8 @@
             "id": "node-10",
             "processId": "1793717431094-c16ws34f",
             "type": "main",
-            "x": 740,
-            "y": 210,
+            "x": 1372.4866812569733,
+            "y": 217.40756007603258,
             "label": "LOGISTIC MASTER DATA READYNESS",
             "hidden": false
           },
@@ -6284,8 +6284,8 @@
             "id": "node-11",
             "processId": "1793717586290-fp9n0mu2",
             "type": "sub",
-            "x": 900,
-            "y": 210,
+            "x": 1421.1851632254466,
+            "y": 396.64565168108277,
             "label": "MASTER DATA UPDATE",
             "hidden": false
           },
@@ -6293,8 +6293,8 @@
             "id": "node-12",
             "processId": "1793717890349-hqm3qere",
             "type": "sub",
-            "x": 100,
-            "y": 320,
+            "x": 1312.5713849748886,
+            "y": 579.8729575020926,
             "label": "WMS Update",
             "hidden": false
           },
@@ -6302,8 +6302,8 @@
             "id": "node-13",
             "processId": "1793718039481-azm0xh0w",
             "type": "sub",
-            "x": 260,
-            "y": 320,
+            "x": 1442.8360203334257,
+            "y": 711.1111580984932,
             "label": "PTZ Update",
             "hidden": false
           },
@@ -6311,8 +6311,8 @@
             "id": "node-14",
             "processId": "1793718111865-0me5yx6f",
             "type": "sub",
-            "x": 420,
-            "y": 320,
+            "x": 1549.6508963448664,
+            "y": 577.0579463413782,
             "label": " DINAMICA Physical Changes ",
             "hidden": false
           },
@@ -6320,8 +6320,8 @@
             "id": "node-15",
             "processId": "1793718246155-h41arix2",
             "type": "main",
-            "x": 580,
-            "y": 320,
+            "x": 1851.2168927873877,
+            "y": 215.87302725655658,
             "label": "CUT NUMBER ",
             "hidden": false
           },
@@ -6329,8 +6329,8 @@
             "id": "node-16",
             "processId": "1793718495747-9vlonmz4",
             "type": "main",
-            "x": 740,
-            "y": 320,
+            "x": 2229.9471522739946,
+            "y": 216.82526288713723,
             "label": "Surplus / Run-Out Management ",
             "hidden": false
           },
@@ -6338,8 +6338,8 @@
             "id": "node-2",
             "processId": "1793714464200-exey23p7",
             "type": "sub",
-            "x": 420,
-            "y": 100,
+            "x": 74.66664123535156,
+            "y": 517.4815368652344,
             "label": "PACKING LIST COMPARATION",
             "hidden": false
           },
@@ -6347,8 +6347,8 @@
             "id": "node-3",
             "processId": "1793714299601-5vz79rsd",
             "type": "main",
-            "x": 580,
-            "y": 100,
+            "x": 514.2220458984375,
+            "y": 220.59247589111328,
             "label": "WEYMAN ANALYSIS",
             "hidden": false
           },
@@ -6356,8 +6356,8 @@
             "id": "node-4",
             "processId": "1793715311977-axi0rg22",
             "type": "sub",
-            "x": 740,
-            "y": 100,
+            "x": 375.25933837890625,
+            "y": 394.22217559814453,
             "label": "PART NUMBER CHANGES",
             "hidden": false
           },
@@ -6365,8 +6365,8 @@
             "id": "node-5",
             "processId": "1793715744179-cw35dt3d",
             "type": "sub",
-            "x": 900,
-            "y": 100,
+            "x": 612.5927124023438,
+            "y": 392.14808654785156,
             "label": "SAME PART NUM, INTERNAL CHANGE",
             "hidden": false
           },
@@ -6374,8 +6374,8 @@
             "id": "node-6",
             "processId": "1793715899653-u9n5b8gz",
             "type": "sub",
-            "x": 100,
-            "y": 210,
+            "x": 466.8149108886719,
+            "y": 564.8147735595703,
             "label": "BATCH LIST CONSISTENCY CHECK",
             "hidden": false
           },
@@ -6383,8 +6383,8 @@
             "id": "node-7",
             "processId": "1793716625596-smnalonh",
             "type": "main",
-            "x": 260,
-            "y": 210,
+            "x": 917.7779235839844,
+            "y": 219.18526458740234,
             "label": " LOGISTIC OPERATIONAL MEETING",
             "hidden": false
           },
@@ -6392,8 +6392,8 @@
             "id": "node-8",
             "processId": "1793717137919-f3cc46id",
             "type": "sub",
-            "x": 420,
-            "y": 210,
+            "x": 977.0369873046875,
+            "y": 393.5554962158203,
             "label": "W+2  REVIEW",
             "hidden": false
           },
@@ -6401,41 +6401,114 @@
             "id": "node-9",
             "processId": "1793717319242-8lf0ehlo",
             "type": "sub",
-            "x": 580,
-            "y": 210,
+            "x": 977.0369873046875,
+            "y": 566.0001373291016,
             "label": "W+1 FOLLOW UP",
             "hidden": false
           }
         ],
         "connections": [
           {
-            "id": "conn-1793718593752-d2relm",
+            "id": "conn-1793718691322-bq84hm",
+            "from": "node-0",
+            "to": "node-1",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1793718701045-vqc0ef",
+            "from": "node-1",
+            "to": "node-2",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1793718748309-17xwhn",
             "from": "node-0",
             "to": "node-3",
+            "type": "arrow",
+            "label": "LINE IMPACT ANALYSE"
+          },
+          {
+            "id": "conn-1793718824961-zuigk9",
+            "from": "node-3",
+            "to": "node-4",
             "type": "arrow"
           },
           {
-            "id": "conn-1793718593752-eftjp1",
+            "id": "conn-1793718826706-nrvowz",
+            "from": "node-3",
+            "to": "node-5",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1793718828785-qlf16w",
+            "from": "node-3",
+            "to": "node-6",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1793718895466-c3vs5g",
             "from": "node-3",
             "to": "node-7",
-            "type": "arrow"
+            "type": "arrow",
+            "label": "IMPLICATED ACTIONS"
           },
           {
-            "id": "conn-1793718593752-f3pmtj",
+            "id": "conn-1793718926196-6omo4z",
+            "from": "node-7",
+            "to": "node-8",
+            "type": "arrow",
+            "label": "ACTION LIST GENERATION"
+          },
+          {
+            "id": "conn-1793718952014-xf00q8",
+            "from": "node-8",
+            "to": "node-9",
+            "type": "arrow",
+            "label": "ACTION LIST TRACKING"
+          },
+          {
+            "id": "conn-1793719183764-q68keg",
             "from": "node-7",
             "to": "node-10",
-            "type": "arrow"
+            "type": "arrow",
+            "label": "READYNESS CHECK"
           },
           {
-            "id": "conn-1793718593752-b6y1an",
+            "id": "conn-1793719235168-i53ecv",
             "from": "node-10",
             "to": "node-15",
+            "type": "arrow",
+            "label": "EC INTRODUCTION"
+          },
+          {
+            "id": "conn-1793719249050-8olrg8",
+            "from": "node-15",
+            "to": "node-16",
+            "type": "arrow",
+            "label": "POST INTRODUCTION"
+          },
+          {
+            "id": "conn-1793719278723-63l1g4",
+            "from": "node-10",
+            "to": "node-11",
             "type": "arrow"
           },
           {
-            "id": "conn-1793718593752-4ru87x",
-            "from": "node-15",
-            "to": "node-16",
+            "id": "conn-1793719298234-j02m2s",
+            "from": "node-11",
+            "to": "node-12",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1793719301001-zewary",
+            "from": "node-11",
+            "to": "node-13",
+            "type": "arrow"
+          },
+          {
+            "id": "conn-1793719303028-pkbhsz",
+            "from": "node-11",
+            "to": "node-14",
             "type": "arrow"
           }
         ]
