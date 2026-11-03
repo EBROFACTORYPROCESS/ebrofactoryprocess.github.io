@@ -5836,7 +5836,179 @@
     {
       "id": "1793713954774-yoqljmp4",
       "name": "Engineering Change",
-      "processes": [],
+      "processes": [
+        {
+          "id": "1793714228501-1c9thu7m",
+          "seq": "10",
+          "name": "ECN RECEPTION",
+          "description": "Receive and register the factory related production models ECN from IDMS, confirm that the information is complete and traceable, and resume the key change data before passing it to all implicated stakeholders via email. ",
+          "raci": {
+            "r": [
+              "BOM Management"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": "EBRO IT"
+          },
+          "notes": "",
+          "businessDoc": "",
+          "userManual": ""
+        },
+        {
+          "id": "1793714795040-g86eerqz",
+          "seq": "10.1",
+          "name": "ECN VERIFICATION",
+          "description": "Verify Part Number, Batch ID, and Content of the Change\n1 - Confirm that the Part Number and Batch ID are present, correctly formatted, and consistent with the MWO content.\n2 - Review the described change for completeness and clarity.\n3 - Flag missing, inconsistent, or unclear information and route it for correction before further processing.\n",
+          "raci": {
+            "r": [
+              "BOM Management"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "All"
+            ]
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": "EBRO IT"
+          },
+          "notes": "Input: IDMS ECN Notification\nOutput: ECN Analyses info summary Email",
+          "businessDoc": "",
+          "userManual": ""
+        },
+        {
+          "id": "1793714464200-exey23p7",
+          "seq": "10.2",
+          "name": "PACKING LIST COMPARATION",
+          "description": "Use PowerBI to compare the current batch shipments packing list against the relevant reference or previous version, identify deviations, and produce an exception list for analysis.\n\n1.2.1 Detect Changes in Part Numbers\n\nCompare new versus existing Part Numbers and flag additions, deletions, substitutions, or mismatches.\n\nCross-check detected Part Number changes against the MWO where applicable.\n\n1.2.2 Detect Changes in Parts Quantities\n\nCompare planned versus actual or previous versus current quantities.\n\nIdentify and quantify variances, noting affected parts, batches, and potential impact.\n\n",
+          "raci": {
+            "r": [
+              "Inbound Logistic"
+            ],
+            "a": [],
+            "c": [
+              "Inbound Logistic"
+            ],
+            "i": [
+              "All"
+            ]
+          },
+          "businessStatus": "Completed",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": "EBRO IT"
+          },
+          "notes": "Input: Packing List from Custom Clearance.\nOutput: Material Change/Exception List",
+          "businessDoc": "",
+          "userManual": ""
+        },
+        {
+          "id": "1793714299601-5vz79rsd",
+          "seq": "20",
+          "name": "WEYMAN ANALYSIS",
+          "description": "Receive the ECN and perform implication analysis base on implicated prodution line. (M0 / M1)\n",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [
+              "BOM Management"
+            ],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": "EBRO IT"
+          },
+          "notes": "Input: ECN Email\nOutput: M0/M1 List — Owners: Alberto / KiKo",
+          "businessDoc": "",
+          "userManual": ""
+        },
+        {
+          "id": "1793715311977-axi0rg22",
+          "seq": "20.1",
+          "name": "PART NUMBER CHANGES",
+          "description": "Analysis report comapring New Part Numbers vs Old Part Numbers",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "In Progress",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": "EBRO IT"
+          },
+          "notes": "",
+          "businessDoc": "",
+          "userManual": ""
+        },
+        {
+          "id": "1793715744179-cw35dt3d",
+          "seq": "20.2",
+          "name": "SAME PART NUM, INTERNAL CHANGE",
+          "description": "PART NUMBER NOT CHANGED, MATERIAL VERSION UPDATED FROM ONE VERSION TO OTHER.\n(SOFTWARE VERSION UPDATE, TIER 2 PARTS UPDATE, NEW STICKER IN THE PART,ETC)",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": []
+          },
+          "businessStatus": "Not Defined",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": "EBRO IT"
+          },
+          "notes": "",
+          "businessDoc": "",
+          "userManual": ""
+        },
+        {
+          "id": "1793715899653-u9n5b8gz",
+          "seq": "20.3",
+          "name": "BATCH LIST CONSISTENCY CHECK",
+          "description": "CHECK THE AFFECTED BACTH LIST. \nANALYSE SALES BATCHES AFFECTED BY THE ECN. \nENSURING CONSISTENCY BETWEEN MULTI BATCH, TO ACHIEVE FIFO CONSUMPTION OF MIXED BATCHES.",
+          "raci": {
+            "r": [
+              "Material Handling"
+            ],
+            "a": [],
+            "c": [],
+            "i": [
+              "All"
+            ]
+          },
+          "businessStatus": "Not Defined",
+          "system": {
+            "name": "To Be Determined",
+            "status": "Offline",
+            "responsible": "EBRO IT"
+          },
+          "notes": "",
+          "businessDoc": "",
+          "userManual": ""
+        }
+      ],
       "workflow": {
         "nodes": [],
         "connections": []
