@@ -5856,7 +5856,7 @@
             "status": "Offline",
             "responsible": "EBRO IT"
           },
-          "notes": "",
+          "notes": "10.1\nInput: IDMS ECN Notification\nOutput: ECN Analyses info summary Email\n10.2\nInput: Packing List from Custom Clearance.\nOutput: Material Change/Exception List\n",
           "businessDoc": "",
           "userManual": ""
         },
