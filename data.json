@@ -5864,7 +5864,7 @@
           "id": "1793714795040-g86eerqz",
           "seq": "10.1",
           "name": "ECN Verification",
-          "description": "Verify Part Number, Batch ID, and Content of the Change\n1 - Confirm that the Part Number and Batch ID are present, correctly formatted, and consistent with the MWO content.\n2 - Review the described change for completeness and clarity.\n3 - Flag missing, inconsistent, or unclear information and route it for correction before further processing.\n",
+          "description": "Verify Part Number, Batch ID, and Content of the Change\n1 - Confirm that the Part Number and Batch ID are present, correctly formatted, and consistent with the MWO content.\n2 - Review the described change for completeness and clarity.\n3 - Contact OEM R&D for information clarity when is needed.\n3 - Flag missing, inconsistent, or unclear information and route it for correction before further processing.\n",
           "raci": {
             "r": [
               "BOM Management"
@@ -6039,7 +6039,7 @@
           "id": "1793717137919-f3cc46id",
           "seq": "30.1",
           "name": "W+2 Review",
-          "description": "Weekly meeting to review changes identified for next two weeks production.\n\nConfirm analysis outputs, Maintain meeting minutes and an action log with owners and due dates.\n\n",
+          "description": "Weekly meeting to review changes identified for bacthes that have been departured from China Port in last week. \n\nConfirm analysis outputs, Maintain meeting minutes and an action log with owners and due dates.\n\n",
           "raci": {
             "r": [
               "BOM Management"
