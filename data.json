@@ -5933,7 +5933,7 @@
             "status": "Offline",
             "responsible": "EBRO IT"
           },
-          "notes": "Input: ECN Email\nOutput: M0/M1 List — Owners: Alberto / KiKo",
+          "notes": "Input: ECN Email\nOutput: M0/M1 Action List — Owners: Alberto / KiKo",
           "businessDoc": "",
           "userManual": ""
         },
