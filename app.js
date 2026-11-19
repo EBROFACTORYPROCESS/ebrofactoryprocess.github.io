@@ -986,7 +986,116 @@ async function saveDataToGitHub(data) {
         }
     }
 }
+async function saveDataToFile() {
+    if (isSaving) return;
+    isSaving = true;
 
+    const saveBtn = document.getElementById('saveDataBtn');
+    if (saveBtn) {
+        saveBtn.textContent = '⏳ Saving...';
+        saveBtn.disabled = true;
+    }
+
+    try {
+        // Keep workflow nodes sorted for consistent output (same as old save path).
+        if (appData.scenarios) {
+            appData.scenarios.forEach(sc => {
+                if (sc.workflow && sc.workflow.nodes) sortWorkflowNodes(sc.workflow);
+            });
+        }
+
+        // Provenance stamp. Ask once, reuse thereafter; empty is allowed.
+        let savedBy = '';
+        try {
+            savedBy = localStorage.getItem('bpo_savedBy') || '';
+        } catch (e) { /* ignore */ }
+
+        if (!savedBy) {
+            const answer = prompt('Name for provenance (optional):', '');
+            if (answer === null) {
+                // User cancelled the prompt — proceed without savedBy.
+                savedBy = '';
+            } else if (answer.trim()) {
+                savedBy = answer.trim();
+                try { localStorage.setItem('bpo_savedBy', savedBy); } catch (e) { /* ignore */ }
+            }
+        }
+
+        // Clone + stamp.
+        const saveCopy = JSON.parse(JSON.stringify(appData));
+        saveCopy._meta = {
+            savedAt: new Date().toISOString()
+        };
+        if (savedBy) saveCopy._meta.savedBy = savedBy;
+
+        const jsonStr = JSON.stringify(saveCopy, null, 2);
+
+        // Try File System Access API first; fall back to Blob download.
+        let wroteToDisk = false;
+        if (window.showSaveFilePicker) {
+            try {
+                const handle = await window.showSaveFilePicker({
+                    suggestedName: 'data.json',
+                    types: [
+                        { description: 'JSON', accept: { 'application/json': ['.json'] } }
+                    ]
+                });
+                const writable = await handle.createWritable();
+                await writable.write(jsonStr);
+                await writable.close();
+                wroteToDisk = true;
+            } catch (e) {
+                if (e && e.name === 'AbortError') {
+                    // User cancelled the OS save dialog — silently no-op.
+                    return;
+                }
+                console.warn('showSaveFilePicker failed, falling back to Blob:', e);
+            }
+        }
+
+        if (!wroteToDisk) {
+            // Fallback path (non-Chromium or picker error).
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            wroteToDisk = true;
+        }
+
+        // Persist to localStorage for next visit (quota-guarded).
+        try {
+            localStorage.setItem('bpo_data', jsonStr);
+        } catch (e) {
+            console.warn('localStorage.setItem(bpo_data) failed after save:', e);
+            if (e && (e.name === 'QuotaExceededError' || e.code === 22)) {
+                alert(
+                    'Browser storage is full — data was saved to disk but will not ' +
+                    'auto-load next time. Please pick the file again on next visit.'
+                );
+            }
+        }
+
+        // Keep dead snapshot machinery coherent.
+        try { saveSnapshot(saveCopy); } catch (e) { /* ignore */ }
+
+        console.log('✅ Data saved to file.');
+
+    } catch (error) {
+        console.error('Save failed:', error);
+        alert(`❌ Save failed: ${error.message}`);
+    } finally {
+        isSaving = false;
+        if (saveBtn) {
+            saveBtn.textContent = '💾 Save data.json';
+            saveBtn.disabled = false;
+        }
+    }
+}
 function normalizeWorkflowData(workflow) {
     if (!workflow) return;
 
@@ -1077,74 +1186,233 @@ function normalizeWorkflowData(workflow) {
 // ============================
 // 8. Load Data
 // ============================
-
 async function loadData() {
     console.log('📊 loadData() called');
     const loading = document.getElementById('app-loading');
     const root = document.getElementById('app-root');
 
+    if (loading) loading.style.display = 'flex';
+    if (root) root.style.display = 'none';
+
+    // --------------------------------------------------------------
+    // Source 1: previously-picked data stored in localStorage
+    // --------------------------------------------------------------
+    let stored = null;
     try {
-        if (loading) loading.style.display = 'flex';
-        if (root) root.style.display = 'none';
-
-        const url = `data.json?t=${Date.now()}`;
-        const response = await fetch(url, {
-            cache: 'no-store',
-            headers: { 'Pragma': 'no-cache', 'Cache-Control': 'no-cache' }
-        });
-
-        if (!response.ok) {
-            if (response.status === 404) {
-                console.log('📄 data.json not found, creating default');
-                appData = getDefaultData();
-                normalizeData(appData);
-                lastSnapshot = JSON.parse(JSON.stringify(appData));
-                saveSnapshot(lastSnapshot);
-                renderApp();
-                if (loading) loading.style.display = 'none';
-                if (root) root.style.display = 'block';
-                return;
-            }
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const text = await response.text();
-        console.log('📄 Data loaded, length:', text.length);
-
-        let rawData = JSON.parse(text);
-        console.log('📊 Raw data parsed, scenarios:', rawData.scenarios?.length || 0);
-        localStorage.removeItem('bpo_snapshot');
-        appData = normalizeData(rawData);
-
-        localStorage.removeItem('bpo_snapshot');
-        console.log('🧹 Snapshot cleared for fresh start');
-        lastSnapshot = JSON.parse(JSON.stringify(appData));
-        saveSnapshot(lastSnapshot);
-        console.log('📸 Baseline snapshot set to loaded data (scenarios: ' + lastSnapshot.scenarios?.length + ')');
-        
-        if (lastSnapshot && lastSnapshot.scenarios) {
-            lastSnapshot.scenarios.forEach(sc => {
-                if (sc.workflow && sc.workflow.nodes) sortWorkflowNodes(sc.workflow);
-            });
-        }
-        if (loading) loading.style.display = 'none';
-        if (root) root.style.display = 'block';
-        renderApp();
-        console.log('✅ Data loaded and rendered successfully');
-
-    } catch (error) {
-        console.error('Failed to load data:', error);
-        if (loading) {
-            loading.innerHTML = `
-                <div style="color:#dc2626;font-size:1.5rem;">❌</div>
-                <div>Failed to load data</div>
-                <div style="font-size:0.8rem;color:#94a3b8;">${escapeHtml(error.message)}</div>
-                <button onclick="loadData()" style="margin-top:1rem;padding:0.5rem 1.5rem;border-radius:2rem;border:1px solid #2a5298;background:white;cursor:pointer;">Retry</button>
-            `;
-        }
+        stored = localStorage.getItem('bpo_data');
+    } catch (e) {
+        console.warn('localStorage read failed:', e);
     }
+
+    if (stored) {
+        let parsed = null;
+        let ok = false;
+        try {
+            parsed = JSON.parse(stored);
+            ok = isDataShapeValid(parsed);
+        } catch (e) {
+            console.warn('Stored bpo_data is not valid JSON:', e);
+            ok = false;
+        }
+        if (ok) {
+            applyLoadedData(parsed, loading, root);
+            return;
+        }
+        console.warn('Stored bpo_data failed validation — requesting file pick.');
+        showDataFilePicker(
+            'Invalid loaded data. Please choose the correct data file. ' +
+            'In case of questions, please reach out to the Key User of the tool.'
+        );
+        return;
+    }
+
+    // --------------------------------------------------------------
+    // Source 2: first visit — request file
+    // --------------------------------------------------------------
+    showDataFilePicker(null);
 }
 
+/**
+ * Minimal shape check for data.json.
+ * Only enforces: scenarios is an array of objects, each with a processes array.
+ * Everything else is repaired by normalizeData().
+ */
+function isDataShapeValid(data) {
+    if (!data || typeof data !== 'object' || Array.isArray(data)) return false;
+    if (!Array.isArray(data.scenarios)) return false;
+    for (const sc of data.scenarios) {
+        if (!sc || typeof sc !== 'object' || Array.isArray(sc)) return false;
+        if (!Array.isArray(sc.processes)) return false;
+    }
+    return true;
+}
+
+/**
+ * Finalize a successful load: normalize, snapshot, render.
+ * Mirrors the previous success branch of loadData() exactly.
+ */
+function applyLoadedData(rawData, loading, root) {
+    console.log('📊 Raw data parsed, scenarios:', rawData.scenarios?.length || 0);
+
+    appData = normalizeData(rawData);
+
+    // Keep snapshot machinery coherent (dead code stays coherent per Q6).
+    localStorage.removeItem('bpo_snapshot');
+    lastSnapshot = JSON.parse(JSON.stringify(appData));
+    saveSnapshot(lastSnapshot);
+    console.log('📸 Baseline snapshot set to loaded data (scenarios: ' + lastSnapshot.scenarios?.length + ')');
+
+    if (lastSnapshot && lastSnapshot.scenarios) {
+        lastSnapshot.scenarios.forEach(sc => {
+            if (sc.workflow && sc.workflow.nodes) sortWorkflowNodes(sc.workflow);
+        });
+    }
+
+    if (loading) loading.style.display = 'none';
+    if (root) root.style.display = 'block';
+    renderApp();
+    console.log('✅ Data loaded and rendered successfully');
+}
+// ============================
+// File Picker & Reader
+// ============================
+
+function showDataFilePicker(options) {
+    // Backward compatible: allow a plain string (boot error path) or an options object.
+    let opts = options;
+    if (typeof options === 'string' || options === null || options === undefined) {
+        opts = { errorMessage: options || null, mode: 'boot' };
+    }
+    const mode = opts.mode === 'reselect' ? 'reselect' : 'boot';
+    const errorMessage = opts.errorMessage || null;
+
+    // Boot mode hides the app; re-select mode keeps it visible behind the modal.
+    if (mode === 'boot') {
+        const loading = document.getElementById('app-loading');
+        const root = document.getElementById('app-root');
+        if (loading) loading.style.display = 'none';
+        if (root) root.style.display = 'none';
+    }
+
+    const prior = document.getElementById('dataFilePickerOverlay');
+    if (prior) prior.remove();
+
+    const subtitle = mode === 'reselect'
+        ? 'This will replace the currently loaded data in this browser. Choose a <strong>data.json</strong> file.'
+        : 'Choose the shared <strong>data.json</strong> file to load the process data.';
+
+    const overlay = document.createElement('div');
+    overlay.id = 'dataFilePickerOverlay';
+    overlay.className = 'custom-modal-overlay active';
+    overlay.innerHTML = `
+        <div class="custom-modal">
+            <h3>📂 ${mode === 'reselect' ? 'Re-select data.json' : 'Select data.json'}</h3>
+            <p style="margin:0.75rem 0;color:#475569;">${subtitle}</p>
+            ${errorMessage ? `<p style="margin:0.75rem 0;color:#dc2626;font-weight:600;">${escapeHtml(errorMessage)}</p>` : ''}
+            <div class="modal-buttons">
+                ${mode === 'reselect' ? '<button id="dataFileCancelBtn" class="cancel-btn">Cancel</button>' : ''}
+                <button id="dataFileSelectBtn" class="save-btn">Select file</button>
+            </div>
+            <input type="file" id="dataFileInput" accept=".json,application/json" style="display:none;">
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const selectBtn = document.getElementById('dataFileSelectBtn');
+    const fileInput = document.getElementById('dataFileInput');
+
+    selectBtn.onclick = () => fileInput.click();
+
+    if (mode === 'reselect') {
+        const cancelBtn = document.getElementById('dataFileCancelBtn');
+        if (cancelBtn) {
+            cancelBtn.onclick = () => {
+                overlay.remove();
+                // Nothing was touched — previous appData and localStorage remain intact.
+            };
+        }
+    }
+
+    fileInput.onchange = () => {
+        const file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+        readDataFile(
+            file,
+            () => {
+                overlay.remove();
+                if (mode === 'reselect') {
+                    refreshScenarioDropdown();
+                    rebuildFilterUI();
+                    updateUIVisibility();
+                    renderCurrentView();
+                }
+            },
+            (msg) => {
+                // Re-open picker with error, preserving mode and previous data.
+                showDataFilePicker({ errorMessage: msg, mode: mode });
+            }
+        );
+    };
+}
+
+function readDataFile(file, onSuccess, onError) {
+    const FAIL_MSG =
+        'Invalid loaded data. Please choose the correct data file. ' +
+        'In case of questions, please reach out to the Key User of the tool.';
+
+    const reader = new FileReader();
+
+    reader.onerror = () => {
+        console.error('FileReader error:', reader.error);
+        onError(FAIL_MSG);
+    };
+
+    reader.onload = (ev) => {
+        const text = ev.target.result;
+
+        let rawData = null;
+        try {
+            rawData = JSON.parse(text);
+        } catch (e) {
+            console.error('File is not valid JSON:', e);
+            onError(FAIL_MSG);
+            return;
+        }
+
+        if (!isDataShapeValid(rawData)) {
+            console.error('File shape check failed:', rawData && Object.keys(rawData));
+            onError(FAIL_MSG);
+            return;
+        }
+
+        // Persist first so next visit auto-loads, but a quota failure
+        // must not block the current session.
+        try {
+            localStorage.setItem('bpo_data', text);
+        } catch (e) {
+            console.warn('localStorage.setItem(bpo_data) failed:', e);
+            if (e && (e.name === 'QuotaExceededError' || e.code === 22)) {
+                alert(
+                    'Browser storage is full — data was saved to disk but will not ' +
+                    'auto-load next time. Please pick the file again on next visit.'
+                );
+            } else {
+                alert(
+                    'Browser storage unavailable — data was loaded for this session only. ' +
+                    'You may need to pick the file again on next visit.'
+                );
+            }
+        }
+
+        const loading = document.getElementById('app-loading');
+        const root = document.getElementById('app-root');
+        applyLoadedData(rawData, loading, root);
+
+        if (typeof onSuccess === 'function') onSuccess();
+    };
+
+    reader.readAsText(file);
+}
 // ============================
 // 9. Default Data
 // ============================
@@ -2239,7 +2507,8 @@ function renderApp() {
                 <div class="top-header">
                     <div class="title-section"><h1>📊 Business Process Orchestrator</h1><p>EBRO Factory Repository for all business processes details</p></div>
                     <div>
-                        <button id="saveDataBtn" class="save-html-btn" style="display:inline-flex;">💾 Save to GitHub</button>
+                        <button id="saveDataBtn" class="save-html-btn" style="display:inline-flex;">💾 Save data.json</button>
+                        <button id="reselectDataFileBtn" class="settings-btn" style="display:none;">📂 Re-select data.json</button>
                         <button id="settingsBtn" class="settings-btn" style="display:inline-flex;">⚙️ Master Data</button>
                         <button id="modeToggleBtn" class="mode-toggle-btn">👁️ Display Mode</button>
                     </div>
@@ -2546,8 +2815,15 @@ function bindEvents() {
     };
 
     document.getElementById('saveDataBtn').onclick = () => {
-        saveDataToGitHub(appData);
+        saveDataToFile();
     };
+
+    const reselectBtn = document.getElementById('reselectDataFileBtn');
+    if (reselectBtn) {
+        reselectBtn.onclick = () => {
+            showDataFilePicker({ errorMessage: null, mode: 'reselect' });
+        };
+    }
 
     document.getElementById('settingsBtn').onclick = () => {
         refreshMasterUI();
@@ -2671,11 +2947,13 @@ function updateUIVisibility() {
     const addBtn = document.getElementById('addRowBtn');
     const importBtn = document.getElementById('importProcessesBtn');
     const saveBtn = document.getElementById('saveDataBtn');
+    const reselectBtn = document.getElementById('reselectDataFileBtn');
     const modeBtn = document.getElementById('modeToggleBtn');
 
     if (addBtn) addBtn.style.display = isEdit ? 'inline-flex' : 'none';
     if (importBtn) importBtn.style.display = isEdit ? 'inline-flex' : 'none';
     if (saveBtn) saveBtn.style.display = isEdit ? 'inline-flex' : 'none';
+    if (reselectBtn) reselectBtn.style.display = 'inline-flex';
     if (modeBtn) modeBtn.innerHTML = isEdit ? '👁️ Display Mode' : '✏️ Edit Mode';
 
     const token = getGitHubToken();
