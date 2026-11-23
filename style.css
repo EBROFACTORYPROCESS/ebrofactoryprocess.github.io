@@ -705,3 +705,56 @@ body {
     cursor: default !important;
 }
 </style>
+#startGuideModal {
+    z-index: 10000 !important; 
+    /* display: none is handled inline in JS */
+}
+
+/* Make sure active class shows it if your framework relies on it */
+#startGuideModal.active {
+    display: flex !important;
+}
+
+.start-guide-modal {
+    max-width: 560px;
+    text-align: left;
+}
+
+.start-guide-steps {
+    margin: 0.5rem 0 1rem 1.2rem;
+    padding: 0;
+    line-height: 1.55;
+}
+
+.start-guide-steps li {
+    margin-bottom: 0.85rem;
+    color: #334155;
+}
+
+.start-guide-steps code {
+    background: #f1f5f9;
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.start-guide-extra {
+    background: #f8fafc;
+    border-left: 3px solid #2a5298;
+    padding: 0.75rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #475569;
+    margin-bottom: 1rem;
+}
+
+.start-guide-dontshow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+    cursor: pointer;
+    user-select: none;
+}
